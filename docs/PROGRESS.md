@@ -6,8 +6,8 @@ _Last updated 2026-11-10. This page is generated from `docs/progress.json`; to c
 
 ## Summary
 
-- ✅ **8** of **39** tasks done
-- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 31 pending
+- ✅ **9** of **39** tasks done
+- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 30 pending
 - ⬜ **2** manual steps waiting for you
 - 💡 0 feature ideas open
 
@@ -52,7 +52,7 @@ Work done before or outside the numbered tasks.
 - ✅ T06 · Adaptive engine and spaced repetition — 2026-11-10 · [PR #10](https://github.com/shlomyeisenberg-lang/Otiyot/pull/10)
 - ✅ T07 · Design system and UI shell — 2026-11-10 · [PR #12](https://github.com/shlomyeisenberg-lang/Otiyot/pull/12)
 - ✅ T08 · 3D engine kit — 2026-11-10 · [PR #14](https://github.com/shlomyeisenberg-lang/Otiyot/pull/14)
-- ⬜ T09 · 3D keyboard, finger guide, HUD and typing feedback
+- ✅ T09 · 3D keyboard, finger guide, HUD and typing feedback — 2026-11-10 · [PR #15](https://github.com/shlomyeisenberg-lang/Otiyot/pull/15)
 - ⬜ T10 · Audio engine and first music themes
 - ⬜ T11 · Combat, combo and difficulty kit
 - ⬜ T12 · Story system, title screen and intro
@@ -397,11 +397,47 @@ The game now has its 3D foundation: a renderer with four graphics presets that p
 
 Built by the Fable runner (Fable 5.2, effort Xhigh) over three attempts: the first two built the engine and the test range, the third looked at it in Chromium in both themes, fixed the black night theme and the phone overlay, and added the tests and docs. To try: open the live link, add #/range to the address, type the floating word and press the number keys 1 to 9; the arrow keys change the camera.
 
-### ⬜ T09 · 3D keyboard, finger guide, HUD and typing feedback
+### ✅ T09 · 3D keyboard, finger guide, HUD and typing feedback
 
-**Status:** Pending
+**Status:** Done · **Finished:** 2026-11-10 · **Pull request:** [PR #15](https://github.com/shlomyeisenberg-lang/Otiyot/pull/15)
 
-_Not started._
+Typing now feels alive: a paper strip shows the word letter by letter with the next word dimmed, a tilted 3D keyboard under the game lights the next key in its finger color (also right after a mistake), a combo meter grows and changes material, and every key lands in the 3D world with gold ink, while mistakes blink the world grey without ever blocking.
+
+**What changed**
+
+- src/game/typing.ts: TypingDriver turns a text source into words (each finished by its space), judges keys with the typing core, keeps letter states, lookahead, combo and best combo, combo tiers, WPM, accuracy and metrics, and gives the finger guide its next key (Backspace when a mistake must be fixed); lesson (once) and endless modes
+- src/game/hints.ts: HintCoach shows rare, kind tips after mistakes: wrong finger (names the finger) and hands drifting off the home row; at most one per 25 seconds
+- src/game/feedback.ts: TypingFeedback, the shared 3D feel: gold ink stroke, sparks and ink drops and a small combo-scaled knock per right key; stumble and desaturate flicker per wrong key; gold ring, shockwave and impact per word
+- src/engine/worldText.ts: WorldText shows the word in the world as carved stone, a parchment banner or a hologram, right to left for Hebrew, colored by letter state
+- src/engine/scene.ts: SceneContext.typing (TypingView) and GameScene.onWord; SceneManager.onWord; src/engine/postfx.ts: setSaturationScale for the error flicker
+- src/ui/hud.ts + src/ui/styles/hud.css: HUD with combo meter (ink, techelet, silver, gold, light), WPM and accuracy pills, paper strip with per-letter states and lookahead, lesson progress bar, tips and gold announcements; implements the scene HudPort
+- src/ui/keyboardGuide.ts: CSS-3D tilted keyboard in the active layout (other layout small in the corner), finger color coding, next key raised in techelet, Shift to hold, press animation, optional hands, caption naming key and finger
+- src/ui/play.ts: PlayController wires keyboard -> typing driver -> HUD, guide, hint coach -> SceneManager.onKey / onWord
+- Design tokens: --finger-pinky, --finger-ring, --finger-middle, --finger-index, --finger-thumb (light and dark, mirrored in palette.ts and DESIGN.md), --key-u and --key-tilt
+- Save v5: settings.keyboardGuide (keys, hands, off) with migration and test; Settings > Typing has a Keyboard guide choice
+- Test range: types the current lesson with an end card (Enter for the next) or endless learned words; pickers for text style and keyboard guide; world word moved higher
+- Locales: HUD, guide, finger names, tips, settings and range strings in Hebrew and English
+- Tests: tests/unit/game-typing.test.ts (driver, guide after errors, must-fix, lessons, hardcore, WPM, combo tiers, hint coach, RTL layout, learned letters only), v4->v5 migration test, token test now also checks engine.css and hud.css; e2e range test types whole lessons in English and Hebrew by following the guide
+- Fixed a female name in the range e2e test save (content rule)
+- Docs: ARCHITECTURE 7c Typing in play, DESIGN tokens and in-play components, CHANGELOG, ROADMAP tick
+
+**Decisions**
+
+- **The 3D keyboard is drawn with CSS 3D transforms over the canvas, not in WebGL** — Crisp glyphs in both layouts, token colors and themes for free, no second WebGL context or extra draw calls, and it works in the plugin
+- **Each word is typed together with the space after it, and the space finishes the word** — Touch typing includes the space bar; it also gives a clear moment for the word-done effect
+- **Mistakes follow the profile backspace setting (default: the cursor moves on, Backspace can fix; must-fix shows Backspace in the guide)** — Keeps the typing core rules from T02; nothing ever blocks unless the player chose must-fix
+- **Tips only after a mistake, at most one per 25 s and the same tip once per 90 s** — Owner asked for gentle hints; frequent tips would nag
+- **Combo tiers at 10, 25, 50 and 100 correct keys in a row** — Reachable early for learners, still special at the top
+- **Five new finger color tokens** — Finger coding needs distinct hues and DESIGN forbids colors outside the tokens
+- **The test range does not record lesson results** — It is a developer tool; real lesson recording belongs to the scenes and the hub
+
+**To do**
+
+- [ ] Sounds for keys, errors and words come with the audio engine (T10); scenes already call audio.play(key, error, space, restore)
+
+**Notes**
+
+Try it on the live site at #/range: type the word on the paper strip and press space after each word.
 
 ### ⬜ T10 · Audio engine and first music themes
 
