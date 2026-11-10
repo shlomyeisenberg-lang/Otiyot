@@ -46,7 +46,7 @@ Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Fable 5.2 
 - **Done when** Tests prove round-trip, migration from an older version, recovery from a corrupt save, and both adapters (Otzaria mocked).
 - **User must have ready** Nothing.
 
-### [ ] T04 · The two lesson tracks
+### [x] T04 · The two lesson tracks
 - **Branch** `t04-lesson-tracks`
 - **Model** Sonnet 5.5 · **Effort** Medium
 - **Goal** Both built-in courses, selectable per profile: Track 1 from plugin 3.3.0 and Track 2 from plugin 4.2.0.

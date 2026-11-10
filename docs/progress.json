@@ -136,15 +136,52 @@
       "notes": "Typed text is never stored. The manager is exported from src/main.ts as `saves` for later tasks."
     },
     "T04": {
-      "status": "pending",
+      "status": "in_progress",
       "finished": "",
       "pr": "",
-      "summary": "",
-      "changes": [],
-      "decisions": [],
+      "summary": "Both built-in lesson courses now exist as pure logic for Hebrew and English: Track 1 (letter by letter, from plugin 3.3.0) and Track 2 (two keys per lesson with real words, from plugin 4.2.0). Each profile picks a track, progress is kept separately per track and language, and a text source hands scenes the next text from the active track.",
+      "changes": [
+        "src/learn/track.ts: TRACK_1 and TRACK_2 with levels, lesson lists, titles and tips in both UI languages, unlock rule (70% of the previous level), find-next-lesson, 90% pass mark",
+        "src/learn/text1.ts and text2.ts: faithful ports of the lesson text generators of plugins 3.3.0 and 4.2.0 (character drills, word drills, Level 1 lessons, pseudo-words, final letters, niqqud level) with an injected random source",
+        "src/learn/data/banks.ts, curriculum.ts, lexicon.ts: word banks, sentences, paragraphs, key orders, level names and the Track 2 lexicon, generated from reference/ by scripts/extract-learn-data.mjs",
+        "src/learn/progress.ts: per-track and per-language progress on the profile, record a finished lesson (pass/best), switch track without losing progress",
+        "src/learn/source.ts: nextText, nextContinueText and lessonForBand give a scene band its text from the profile active track",
+        "tests/unit/learn-harness.ts, learn-tracks.test.ts, learn-progress.test.ts: the original plugin code runs in a sandbox and its lessons, titles, tips, unlock rule and generated text are compared with the ports for both tracks, both languages and several seeds; plus switching, progress and content-rule tests",
+        "docs/ROADMAP.md ticked, docs/ARCHITECTURE.md section 5 and CHANGELOG.md updated"
+      ],
+      "decisions": [
+        {
+          "decision": "The one niqqud sample taken from a verse (it contained a holy Name) was replaced with a plain greeting",
+          "why": "Content rules in ARCHITECTURE section 8 are binding: no holy Names and no pesukim as typing text"
+        },
+        {
+          "decision": "Progress is stored under profile.lessons[\"1\"]/[\"2\"] for Hebrew and \"1-en\"/\"2-en\" for English",
+          "why": "Both languages reuse the same lesson ids, so they need separate lists; the existing save schema needed no change and no migration"
+        },
+        {
+          "decision": "The active level is derived from the highest passed lesson instead of being stored",
+          "why": "Same result as the old setActiveLevel on passing, and one less thing to keep in sync"
+        },
+        {
+          "decision": "Weak keys, weak transitions and the difficulty level are inputs to the text generators, not computed here",
+          "why": "The adaptive engine is task T06; defaults (no weak keys, difficulty 0.3) match a new learner in the original"
+        },
+        {
+          "decision": "The 4.1 \"keep unlocked after key-order migration\" list and the frequent-word chunk drills were not ported",
+          "why": "The first only migrates old saves; the second is not part of the lesson list and belongs with the adaptive engine (T06)"
+        },
+        {
+          "decision": "Pass mark default is 90% as set in ARCHITECTURE, configurable per call",
+          "why": "The old plugin used the accuracy-target setting capped at 97%; the roadmap asks for 90% by default"
+        }
+      ],
       "manual_steps": [],
-      "todo": [],
-      "notes": ""
+      "todo": [
+        "T05 should extend src/learn/data/lexicon.ts (the Track 2 lexicon) into the full word library",
+        "T06 should feed weak keys, weak transitions and the difficulty level into TextContext and port the chunk drills",
+        "Legacy import (src/save/legacy.ts) files old English progress under lessons[\"2\"]; it should use the \"1-en\"/\"2-en\" keys and map old lesson ids to the right track (L1-n = Track 1, L1p-n = Track 2)"
+      ],
+      "notes": "Run node scripts/extract-learn-data.mjs && pnpm exec prettier --write src/learn/data to regenerate the data files."
     },
     "T05": {
       "status": "pending",
