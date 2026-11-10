@@ -4,13 +4,8 @@
 import { activeLevelOf, findNextLesson, getTrack } from './track';
 import { getProgress } from './progress';
 import type { Profile } from '../save';
-import {
-  DEFAULT_DIFFICULTY,
-  DEFAULT_PRACTICE_LENGTH,
-  type Lesson,
-  type Rng,
-  type TextContext,
-} from './types';
+import { adaptiveOptions } from './adaptive';
+import { DEFAULT_PRACTICE_LENGTH, type Lesson, type Rng, type TextContext } from './types';
 
 /** A slice of the track a scene teaches: a level, optionally one lesson of it. */
 export interface SceneBand {
@@ -30,15 +25,17 @@ export interface TextSourceOptions {
 
 export function contextFor(profile: Profile, opts: TextSourceOptions = {}): TextContext {
   const completed = getProgress(profile).completed;
+  // Weak keys, weak transitions and difficulty come from the adaptive engine unless given.
+  const adaptive = adaptiveOptions(profile);
   return {
     language: profile.layout,
     uiLanguage: profile.settings.uiLanguage,
     completed,
     activeLevel: activeLevelOf(completed),
     practiceLength: opts.practiceLength ?? DEFAULT_PRACTICE_LENGTH,
-    weakChars: opts.weakChars ?? [],
-    weakBigrams: opts.weakBigrams ?? [],
-    difficulty: opts.difficulty ?? DEFAULT_DIFFICULTY,
+    weakChars: opts.weakChars ?? adaptive.weakChars,
+    weakBigrams: opts.weakBigrams ?? adaptive.weakBigrams,
+    difficulty: opts.difficulty ?? adaptive.difficulty,
     rng: opts.rng ?? Math.random,
   };
 }

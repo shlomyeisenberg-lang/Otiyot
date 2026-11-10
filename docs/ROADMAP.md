@@ -74,7 +74,7 @@ Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Fable 5.2 
 - **Done when** At least 3,000 Hebrew and 3,000 English words plus 300 sentences each, all passing the content test; filter API unit-tested.
 - **User must have ready** Nothing.
 
-### [ ] T06 · Adaptive engine and spaced repetition
+### [x] T06 · Adaptive engine and spaced repetition
 - **Branch** `t06-adaptive`
 - **Model** Sonnet 5.5 · **Effort** High
 - **Goal** Drills that lean on the player's weak keys while keeping flow, with scheduled review.
