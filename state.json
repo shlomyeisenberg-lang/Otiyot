@@ -1,1 +1,1 @@
-{"claims":{},"attempts":{"T01":1,"T02":1,"T03":1,"T04":1},"skipped":{},"last_failure":{},"final_email_sent":false}
+{"claims":{"T05":{"at":"2026-11-10T03:00:00Z","runner":"Otiyot Sonnet builder"}},"attempts":{"T01":1,"T02":1,"T03":1,"T04":1,"T05":1},"skipped":{},"last_failure":{},"final_email_sent":false}
