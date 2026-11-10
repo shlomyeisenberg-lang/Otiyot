@@ -2,18 +2,28 @@
 
 # Otiyot — Progress
 
-_Last updated 2026-11-09. This page is generated from `docs/progress.json`; to change it, edit the JSON and run `node scripts/render-progress.mjs`._
+_Last updated 2026-11-10. This page is generated from `docs/progress.json`; to change it, edit the JSON and run `node scripts/render-progress.mjs`._
 
 ## Summary
 
 - ✅ **0** of **39** tasks done
-- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 39 pending
-- ⬜ **0** manual steps waiting for you
+- 🛠️ 1 in progress · ⛔ 0 blocked · ⬜ 38 pending
+- ⬜ **1** manual step waiting for you
 - 💡 0 feature ideas open
 
 ## Waiting for me
 
-Nothing is waiting. Every manual step is done. 🎉
+1 manual step only you can do. Paste each prompt into Claude in Chrome, and tell the AI when a step is finished.
+
+### ⬜ Import the repo into Vercel — T01 · Project setup, CI and plugin packer
+
+Go to vercel.com, sign in, click Add New > Project, pick the GitHub repo shlomyeisenberg-lang/Otiyot, keep the detected Vite settings and click Deploy. Main becomes the live link.
+
+Prompt for Claude in Chrome:
+
+```text
+Open https://vercel.com/new in my browser. Steps: 1) If asked to sign in, stop and hand control back to me. 2) Under Import Git Repository choose the GitHub repo shlomyeisenberg-lang/Otiyot (if it is not listed, click Adjust GitHub App Permissions and stop for me to approve). 3) Click Import. 4) Leave Framework Preset as Vite and keep the settings from vercel.json. 5) Click Deploy and wait until it finishes. Stop and hand control back to me for sign-in, passwords, 2FA, CAPTCHAs, payment, creating an account and pasting secret keys; never type a secret yourself. When done, report the live URL and what you did.
+```
 
 ## History
 
@@ -23,7 +33,7 @@ Work done before or outside the numbered tasks.
 
 ## Task overview
 
-- ⬜ T01 · Project setup, CI and plugin packer
+- 🛠️ T01 · Project setup, CI and plugin packer — 2026-11-10
 - ⬜ T02 · Typing core
 - ⬜ T03 · Saves and profiles
 - ⬜ T04 · The two lesson tracks
@@ -65,11 +75,47 @@ Work done before or outside the numbered tasks.
 
 ## Tasks
 
-### ⬜ T01 · Project setup, CI and plugin packer
+### 🛠️ T01 · Project setup, CI and plugin packer
 
-**Status:** Pending
+**Status:** In progress · **Finished:** 2026-11-10
 
-_Not started._
+The project now builds as a website and as an Otzaria plugin file, shows a placeholder Otiyot boot screen, and checks every pull request in CI.
+
+**What changed**
+
+- package.json, tsconfig.json (strict), vite.config.ts (relative base), pnpm lockfile
+- ESLint (no any), Prettier, Vitest unit tests, Playwright smoke test at 1280x720 and 375px
+- index.html + src/main.ts + src/boot.ts + src/ui/boot.css: placeholder boot screen and Otzaria detection helper
+- Folder skeleton from ARCHITECTURE section 2 (src/*, public/arcade, locales, plugin, tests)
+- plugin/manifest.json (id il.otzaria.otiyot) and plugin/pack.mjs: pnpm build:plugin writes dist-plugin/otiyot-<version>.otzplugin
+- .github/workflows/ci.yml: lint, typecheck, unit tests, build, plugin build uploaded as artifact, Playwright smoke
+- vercel.json, README.md, ASSETS.md, CHANGELOG.md, ASSUMPTIONS.md
+
+**Decisions**
+
+- **Pinned TypeScript to 5.x** — typescript-eslint does not support TypeScript 7 yet
+- **Plugin zip made with the fflate library instead of a system zip tool** — Works the same on any machine and in CI
+- **Plugin manifest is a trimmed copy of the 4.2.0 one with the new id, beta stability and no theme event permission** — Only what the game needs now; permissions can be added later
+
+**Manual steps**
+
+1. **Import the repo into Vercel** (⬜ open)
+
+   Go to vercel.com, sign in, click Add New > Project, pick the GitHub repo shlomyeisenberg-lang/Otiyot, keep the detected Vite settings and click Deploy. Main becomes the live link.
+
+   Prompt for Claude in Chrome:
+
+   ```text
+   Open https://vercel.com/new in my browser. Steps: 1) If asked to sign in, stop and hand control back to me. 2) Under Import Git Repository choose the GitHub repo shlomyeisenberg-lang/Otiyot (if it is not listed, click Adjust GitHub App Permissions and stop for me to approve). 3) Click Import. 4) Leave Framework Preset as Vite and keep the settings from vercel.json. 5) Click Deploy and wait until it finishes. Stop and hand control back to me for sign-in, passwords, 2FA, CAPTCHAs, payment, creating an account and pasting secret keys; never type a secret yourself. When done, report the live URL and what you did.
+   ```
+
+**To do**
+
+- [ ] Playwright browsers install in CI only; locally run pnpm exec playwright install chromium first
+
+**Notes**
+
+No game code yet; the boot screen is a placeholder until T07/T12.
 
 ### ⬜ T02 · Typing core
 
