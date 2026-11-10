@@ -8,7 +8,11 @@ export default defineConfig({
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
   },
-  use: { baseURL: 'http://localhost:4173' },
+  use: {
+    baseURL: 'http://localhost:4173',
+    // The 3D test needs WebGL; on machines without a graphics card Chromium draws it in software.
+    launchOptions: { args: ['--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] },
+  },
   projects: [
     {
       name: 'desktop',

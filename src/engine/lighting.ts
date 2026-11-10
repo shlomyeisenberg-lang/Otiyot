@@ -56,6 +56,8 @@ export interface ScenePalette {
 
 const MAX_BLOBS = 32;
 const SUN_DISTANCE = 380;
+/** Lowest linear brightness of the forgotten-world grey (see setPalette). */
+const FADE_FLOOR = 0.3;
 
 interface BlobCaster {
   obj: Object3D;
@@ -165,7 +167,11 @@ export class Atmosphere {
     u.uSunColor.value.setHex(p.sun);
     u.uFogColor.value.setHex(p.fog);
     u.uFogParams.value.set(p.fogDensity, p.fogBase, p.fogFalloff, p.inscatter);
-    u.uFadeColor.value.setHex(p.fade);
+    // The fade token is a UI grey; on the night-ink theme it is nearly black. A forgotten world
+    // must still be readable, so its grey never drops below a moonlit level.
+    const fade = u.uFadeColor.value.setHex(p.fade);
+    const lum = 0.2126 * fade.r + 0.7152 * fade.g + 0.0722 * fade.b;
+    if (lum < FADE_FLOOR) fade.multiplyScalar(FADE_FLOOR / Math.max(lum, 1e-3));
     u.uInkColor.value.setHex(p.ink);
     (this.sky.material.uniforms.uTop as { value: { setHex(h: number): void } }).value.setHex(
       p.skyTop,

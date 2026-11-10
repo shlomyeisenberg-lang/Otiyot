@@ -133,3 +133,11 @@
   background: var(--gold-soft);
   color: var(--gold-deep);
 }
+
+/* Small screens: the overlay keeps only frames per second and the quality preset, so it never
+   covers the scene. */
+@media (max-width: 600px) {
+  .perf > :nth-child(n + 3):nth-child(-n + 10) {
+    display: none;
+  }
+}
