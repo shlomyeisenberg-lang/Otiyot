@@ -1,0 +1,120 @@
+// ---- 4.1: lexicon for real-word lessons and word-chunk drills ----
+// Plain everyday words, no niqqud, final letters only at the end of a word.
+// Used to build Level 1 lessons from *real* words made only of keys the
+// learner already knows, and for the "frequent words" chunk drills.
+// (Divine names are deliberately left out.)
+
+const HEBREW_LEXICON = (
+    // core frequent letters: כ ח י ל ו ה מ ם
+    'כי לי חי כל כלי חיל ליל לו לה היה היו הוי כולו כולה כוח חולה לילה הכל וכל יכול כלה היכל חייל חיים לחם חלום ' +
+    'מה מי מים הם כמו מילה מילים יום היום ימים חם חמים חומה מלח מוח מלכה כמה למה להם לכם מול כולם מחלה חכם חכמה ' +
+    'חכמים מכה יהלום המולה חול כחול חלה חיה וילה מיכל מלוח ממלכה המים הכלים כלים מחכה כולל מכיל ' +
+    // + א ר
+    'אור אם אל אחר אחרי הרים הר ירח אמר אמרה אמרו רוח אמא ראה רואה רואים מורה מורים אוכל ארוחה אוויר אריה מחיר ' +
+    'מכיר אורח אורחים מאיר לאה מאה אומר הראה רחל חמור רמה רם אלה אלו אולי כאילו מראה מאוחר אחרים רחם רחמים יראה ' +
+    'אמור מחר מאור לאור רכה מרים אמירה מילואים אוהל אוהלים הרואה ' +
+    // + ת נ ן
+    'את אתה אתם אתמול אותו אותה אותם תורה נר אני אנחנו נחמה נוח מתנה תמונה תנאי נהר חנות חתול תוכנית מכונה ' +
+    'מכונית לתת תאנה נחל מנהל תרנגול התחלה אמת נמר אותיות חתונה תרומה מתנות מתחת מאתיים חותם תור תמר אמונה ' +
+    'כאן אין חלון ארון אחרון ארמון נכון ניתן תוכן נותן ' +
+    // + ב
+    'בן אבן לבן בית בנות אבא בא באה בואו בנים לב חבר חברה חברים רחוב בבית הבית מבין הבנה בנה בניין תבנית אהבה ' +
+    'אוהב אוהבת כתב כתוב מכתב בחירה הבא הבאה רב רבים רבה הרבה ברור לבנה נביא בחור בחורה רכבת אביב חלב כלב כלבים ' +
+    'ביום בלילה ברכה אבנים ארנב בננה בלון מבחן ' +
+    // + ש ד
+    'שם של יש שלום דבר אדם דלת שמש שמים שלוש שבת שאלה שיר ראש חדש חודש ישן דבש מדבר תודה ילד ילדה ילדים שולחן ' +
+    'שנה שמחה שמח דוד דודה דרום מדינה שדה שמן אש איש אישה אנשים נשים שוב לימוד למידה תלמיד תלמידה תלמידים דירה ' +
+    'חשוב חשבון מחשב מחשבה שאלות תשובה דיבור מדברים ישראל שלושה שתיים שש שמונה אחד שמאל ימין שנים שינה חדשות ' +
+    'דבורה שומר בדרך לבד ' +
+    // + ך ע
+    'לך כך שלך ארוך דרך מלך ברוך הולך חושך איך כמוך אליך עליך מלאך ' +
+    'עם על עוד עולם עיר ערב עבודה עין עיניים עשר עשרה שעה שעון שבוע ארבע ארבעה שבעה תשע יודע יודעת לעשות עושה ' +
+    'עכשיו בעיה רעב רע עני עלה עלים ענן עננים מעיל מעל רעיון עברית לשמוע שומע עמוד נעים נעל נעליים דעה עדיין ' +
+    // + ג ק
+    'גם גדול גדולה גן גשם גבוה גלגל דג חג רגל רגע רגליים גבר גיל דגל חגים גמל דגים גלידה גשר אגם גאה גלים שגיאה ' +
+    'שגיאות דאגה הגיע מגיע קול קר קרוב קריאה קורא קורה בוקר ירוק רחוק מקום שוק חוק קיר קל קלה קשה קשר לקח קיבל ' +
+    'קנה קמח דקה דקות בדיקה בדיוק רק עמוק חלק חלקים מקלדת הקלדה מקליד קומה קודם קדימה קהל ענק שיעור שיעורים עוגה ' +
+    'עגול ריק חוקר קרן ברק ' +
+    // + פ ף
+    'פה פעם פעמים פרח פרחים פרי פתח פתוח פשוט פנים פינה פתאום כף אף עוף גוף חוף דף יפה פרק פרקים מפה שפה משפחה ' +
+    'פגישה פיל פרה אפשר תפוח תפוחים עיפרון פרפר חופש חופשה מפתח פנימה קפה דפים רופא תפילה שפע פעולה לפני עייף ' +
+    'חריף כיף תוף ' +
+    // + ס ט
+    'ספר ספרים סוף כסף סיפור ספרייה סבא סבתא סוס כוס כיסא סגור ספורט טוב טובה קטן קטנה שקט מעט לאט טלפון מטוס ' +
+    'אוטובוס רטוב משפט טעים טעם טיול טבע סטודנט סדר מסע מסיבה מסעדה בסדר סבון סיבה סתיו חסר בטוח בטן סימן נסיעה ' +
+    'תוספת סלט טרי מיטה חיטה שוטר מספר מספרים טקסט סל ' +
+    // + צ ץ
+    'עץ ארץ רץ חוץ קיץ מיץ צריך צבע צבעים צהריים ציפור ציפורים צחוק צעיר צד צורה רצון לרוץ מצא יצא יוצא חצי מצב ' +
+    'אצל ביצה פרצוף קבוצה תוצאה מרוץ קופץ רוצה רוצים צמח צלחת צל צפון מציאות הצלחה מצליח צעד צעדים עצים ארצות ' +
+    'צדק צורך נמרץ אמיץ עציץ ציור ציורים לצייר ' +
+    // + ז '
+    'זה זאת זמן זוג זכר זהב זית אזור מזל עזרה עוזר חזק חזרה מזרח זריחה גזר זבוב זקן זכות אוזן מוזיקה זול אזרח רמז ' +
+    "ג'ינס צ'יפס ג'ירפה ז'קט"
+).split(/\s+/).filter(Boolean);
+
+// The 100 most frequent Hebrew words (function words first). Typing these as
+// whole chunks — not letter by letter — is what makes everyday text fast.
+const HEBREW_TOP_WORDS = (
+    'של את על לא הוא זה עם כל גם אני היא יש אבל או כי מה אם היה הם אין רק עוד אחד לו כך בין אז כמו יותר הזה ' +
+    'אחרי שלא לי היו אותו אל מי שם אנחנו הזאת איך אתה להיות לפני כאן עכשיו אחת שלו שלי כבר שני טוב ביותר אפשר ' +
+    'מאוד אותה צריך אתם שלנו הרבה כדי כן יכול בית יום שנה דבר אחר לך שלה אותם אלה למה ככה הכל זאת פה עד ' +
+    'בו לה היום גדול ישראל לנו שהוא איזה חדש אולי תמיד לעשות אומר אמר אף מן בכל כמה שוב אדם עולם שלהם'
+).split(/\s+/).filter(Boolean);
+
+// Common prefixes (ה־ ו־ ב־ ל־ ש־ מ־) and suffixes (־ים ־ות ־ה ־תי), as real
+// words so the learner types the affix and the stem as one movement.
+const HEBREW_AFFIX_CHUNKS = {
+    prefixes: [
+        ['ה', ['הבית', 'הילד', 'היום', 'הספר', 'העיר', 'הזמן', 'השולחן', 'המורה', 'הדלת', 'החבר']],
+        ['ו', ['והוא', 'והיא', 'וגם', 'ולא', 'וכל', 'ואני', 'ועוד', 'ואז', 'ושם', 'ויש']],
+        ['ב', ['בבית', 'בבוקר', 'בערב', 'בלילה', 'בעיר', 'בזמן', 'בכל', 'בגן', 'בספר', 'בדרך']],
+        ['ל', ['לבית', 'לעיר', 'לספר', 'לילד', 'לחבר', 'למורה', 'לכל', 'לעשות', 'ללמוד', 'לכתוב']],
+        ['ש', ['שהוא', 'שהיא', 'שלא', 'שאני', 'שיש', 'שגם', 'שכל', 'שאין', 'שהם', 'שזה']],
+        ['מ', ['מהבית', 'מהעיר', 'מכל', 'מהיום', 'מהספר', 'מאוד', 'מעט', 'מתי', 'מהר', 'מחר']]
+    ],
+    suffixes: [
+        ['ים', ['ילדים', 'ספרים', 'מילים', 'שנים', 'ימים', 'חברים', 'אנשים', 'תלמידים', 'פרחים', 'עצים']],
+        ['ות', ['בנות', 'שאלות', 'אותיות', 'דקות', 'מכוניות', 'תמונות', 'חנויות', 'עבודות', 'מילות', 'ארוחות']],
+        ['ה', ['ילדה', 'תלמידה', 'מורה', 'גדולה', 'קטנה', 'יפה', 'חדשה', 'טובה', 'שמחה', 'חברה']],
+        ['תי', ['אמרתי', 'כתבתי', 'הלכתי', 'למדתי', 'ראיתי', 'עשיתי', 'שמעתי', 'ידעתי', 'חשבתי', 'קראתי']]
+    ],
+    // stacked prefixes are typed as one unit too: ושה־, וכש־, שב־ …
+    clusters: ['וה', 'וב', 'ול', 'וש', 'ומ', 'שה', 'שב', 'של', 'מה', 'כש', 'וכש', 'ושה', 'ובה', 'ולה']
+};
+
+const ENGLISH_LEXICON = (
+    'add ask sad dad fall lad lass salad flask all alas adds falls ' +
+    'has had glad shall half dash hall flash gash hash lash sash ' +
+    'rush full hug sugar shark hurl dull drug rug jug hard hush sure shall lurk dark ark ' +
+    'read idea side like life file hide here sea free fire desk lake glide kid dial ride ' +
+    'the that this they there these their this its it at sit hit let get yet key try they eye eat tea tree ' +
+    'water word work world wood two too toward slow show how who what why where were well wild ' +
+    'quiet quite quick question opposite pop paper people place play post port top stop pure up upper ' +
+    'very give have five over never even vote voice new now near nine name note none ' +
+    'come came could cool can cat cut cup cold clock come computer common music much make many more ' +
+    'box six next text fix mix six extra taxi ' +
+    'zero zone size prize lazy dozen be big book but by best both blue black brown begin baby ' +
+    'home hand type time good fast learn study school class house friend family lesson practice ' +
+    'keyboard learning accuracy progress exercise language important comfortable improvement'
+).split(/\s+/).filter(Boolean);
+
+const ENGLISH_TOP_WORDS = (
+    'the of and to a in is you that it he was for on are as with his they i at be this have from or one had by ' +
+    'word but not what all were we when your can said there use an each which she do how their if will up other ' +
+    'about out many then them these so some her would make like him into time has look two more write go see ' +
+    'number no way could people my than first water been call who its now find long down day did get come made may part over'
+).split(/\s+/).filter(Boolean);
+
+const ENGLISH_AFFIX_CHUNKS = {
+    prefixes: [
+        ['re', ['redo', 'replay', 'return', 'reread', 'rewrite', 'remake']],
+        ['un', ['undo', 'unkind', 'unhappy', 'unlike', 'unless', 'until']]
+    ],
+    suffixes: [
+        ['ing', ['going', 'doing', 'making', 'playing', 'reading', 'typing']],
+        ['ed', ['played', 'looked', 'asked', 'walked', 'called', 'learned']],
+        ['s', ['books', 'words', 'keys', 'hands', 'days', 'friends']],
+        ['ly', ['quickly', 'slowly', 'really', 'only', 'nearly', 'early']]
+    ],
+    clusters: ['th', 'the', 'ing', 'and', 'ion', 'er', 're', 'ed', 'ou', 'an']
+};

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>מורה הקלדה עברית</title>
+<link rel="stylesheet" href="css/main.css">
+<link rel="stylesheet" href="css/keyboard.css">
+<link rel="stylesheet" href="css/features.css">
+<link rel="stylesheet" href="css/game3d.css">
+</head>
+<body>
+    <div id="appRoot">
+        <header class="app-header">
+            <div class="header-top">
+                <h1>⌨️ מורה הקלדה עברית</h1>
+                <div id="headerStatus" class="header-status"></div>
+            </div>
+            <nav id="mainNav" class="main-nav"></nav>
+        </header>
+
+        <main class="app-main">
+            <section id="dashboardScreen" class="screen"></section>
+            <section id="todayScreen" class="screen"></section>
+            <section id="analyticsScreen" class="screen"></section>
+            <section id="assessmentScreen" class="screen"></section>
+            <section id="maintenanceScreen" class="screen"></section>
+            <section id="teacherScreen" class="screen"></section>
+            <section id="ergonomicsScreen" class="screen"></section>
+            <section id="lessonsScreen" class="screen"></section>
+            <section id="gamesScreen" class="screen"></section>
+            <section id="testScreen" class="screen"></section>
+            <section id="customScreen" class="screen"></section>
+            <section id="settingsScreen" class="screen"></section>
+
+            <section id="practiceScreen" class="screen">
+                <div class="practice-header">
+                    <span class="practice-title"></span>
+                    <span class="practice-header-actions">
+                        <button class="btn-chip" id="btnToggleSpeech">🔇</button>
+                        <button class="btn-chip" id="btnToggleLiveDash">📊</button>
+                        <button class="btn-chip" id="btnRestartPractice">↻ התחל מחדש</button>
+                        <button class="btn-esc" id="btnExitPractice">יציאה (Esc)</button>
+                    </span>
+                </div>
+                <div class="practice-metrics"></div>
+                <div class="live-dash"></div>
+                <div class="practice-progress"><div class="practice-progress-fill"></div></div>
+                <div class="practice-coach"></div>
+                <div class="practice-fatigue-banner" style="display:none"></div>
+                <div class="practice-text-wrap">
+                    <div class="practice-text-container"></div>
+                    <div class="practice-paused" style="display:none">⏸ מושהה — הקלידו כדי להמשיך</div>
+                </div>
+                <div class="practice-keyboard"></div>
+                <div class="practice-finger-guide"></div>
+            </section>
+
+            <section id="resultsScreen" class="screen"></section>
+        </main>
+    </div>
+
+    <script src="js/constants.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/typing-engine.js"></script>
+    <script src="js/daily-limit.js"></script>
+    <script src="js/adaptive.js"></script>
+    <script src="js/pedagogy.js"></script>
+    <script src="js/keyboard.js"></script>
+    <script src="js/rewards.js"></script>
+    <script src="js/practice.js"></script>
+    <script src="js/advanced.js"></script>
+    <script src="js/lessons.js"></script>
+    <script src="js/test-custom.js"></script>
+    <script src="js/speech.js"></script>
+    <script src="js/games.js"></script>
+    <script src="js/game3d-common.js"></script>
+    <script src="js/game3d-galaxy.js"></script>
+    <script src="js/game3d-sefarim.js"></script>
+    <script src="js/game3d-race.js"></script>
+    <script src="js/game3d-arena.js"></script>
+    <script src="js/game3d-tower.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="js/settings.js"></script>
+    <script src="js/i18n.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        document.getElementById('btnExitPractice').addEventListener('click', () => {
+            document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+        });
+    </script>
+</body>
+</html>

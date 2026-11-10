@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>מורה הקלדה עברית</title>
+<link rel="stylesheet" href="css/main.css">
+<link rel="stylesheet" href="css/keyboard.css">
+<link rel="stylesheet" href="css/features.css">
+<link rel="stylesheet" href="css/game3d.css">
+<link rel="stylesheet" href="css/ui.css">
+<link rel="stylesheet" href="css/plus.css">
+</head>
+<body>
+    <div id="appRoot">
+        <aside class="app-sidebar" id="appSidebar">
+            <div class="sb-brand">
+                <span class="sb-logo" aria-hidden="true">א</span>
+                <h1>הקלדה עברית</h1>
+                <button class="sb-collapse" id="btnSidebarCollapse" type="button" aria-label="כווץ תפריט" title="כווץ תפריט">
+                    <svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg>
+                </button>
+            </div>
+            <div id="headerStatus" class="header-status"></div>
+            <nav id="mainNav" class="main-nav" aria-label="ניווט ראשי"></nav>
+        </aside>
+<main class="app-main">
+            <section id="dashboardScreen" class="screen"></section>
+            <section id="todayScreen" class="screen"></section>
+            <section id="progressScreen" class="screen"></section>
+            <section id="teacherScreen" class="screen"></section>
+            <section id="ergonomicsScreen" class="screen"></section>
+            <section id="lessonsScreen" class="screen"></section>
+            <section id="gamesScreen" class="screen"></section>
+            <section id="customScreen" class="screen"></section>
+            <section id="settingsScreen" class="screen"></section>
+
+            <section id="practiceScreen" class="screen">
+                <div class="practice-header">
+                    <button class="btn-esc" id="btnExitPractice" type="button" title="יציאה (Esc)"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg><span>יציאה (Esc)</span></button>
+                    <span class="practice-title"></span>
+                    <span class="practice-header-actions">
+                        <button class="btn-chip icon" id="btnToggleSpeech" type="button">🔇</button>
+                        <button class="btn-chip icon" id="btnToggleLiveDash" type="button">📊</button>
+                        <button class="btn-chip" id="btnRestartPractice" type="button">↻ התחל מחדש</button>
+                    </span>
+                </div>
+                <div class="practice-metrics"></div>
+                <div class="live-dash"></div>
+                <div class="practice-progress"><div class="practice-progress-fill"></div></div>
+                <div class="practice-coach"></div>
+                <div class="practice-fatigue-banner" style="display:none"></div>
+                <div class="practice-text-wrap">
+                    <div class="practice-text-container"></div>
+                    <div class="practice-paused" style="display:none">⏸ מושהה — הקלידו כדי להמשיך</div>
+                </div>
+                <div class="practice-keyboard"></div>
+                <div class="practice-finger-guide"></div>
+            </section>
+
+            <section id="resultsScreen" class="screen"></section>
+        </main>
+    </div>
+
+    <script src="js/constants.js"></script>
+    <script src="js/lexicon.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/typing-engine.js"></script>
+    <script src="js/daily-limit.js"></script>
+    <script src="js/adaptive.js"></script>
+    <script src="js/pedagogy.js"></script>
+    <script src="js/keyboard.js"></script>
+    <script src="js/rewards.js"></script>
+    <script src="js/practice.js"></script>
+    <script src="js/advanced.js"></script>
+    <script src="js/lessons.js"></script>
+    <script src="js/test-custom.js"></script>
+    <script src="js/speech.js"></script>
+    <script src="js/games.js"></script>
+    <script src="js/game3d-common.js"></script>
+    <script src="js/game3d-galaxy.js"></script>
+    <script src="js/game3d-sefarim.js"></script>
+    <script src="js/game3d-race.js"></script>
+    <script src="js/game3d-arena.js"></script>
+    <script src="js/game3d-tower.js"></script>
+    <script src="js/plus.js"></script>
+    <script src="js/plus-games.js"></script>
+    <script src="js/game3d-runner.js"></script>
+    <script src="js/game3d-rhythm.js"></script>
+    <script src="js/game3d-fortress.js"></script>
+    <script src="js/storm2d.js"></script>
+    <script src="js/newgen.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="js/settings.js"></script>
+    <script src="js/i18n.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        document.getElementById('btnExitPractice').addEventListener('click', () => {
+            document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+        });
+    </script>
+</body>
+</html>
