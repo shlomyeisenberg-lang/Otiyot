@@ -221,9 +221,9 @@
       "notes": "Frequency tiers use pack order and the classic top-word list only; there is no corpus-based ranking."
     },
     "T06": {
-      "status": "in_progress",
-      "finished": "",
-      "pr": "",
+      "status": "done",
+      "finished": "2026-11-10",
+      "pr": "https://github.com/shlomyeisenberg-lang/Otiyot/pull/10",
       "summary": "The adaptive engine is now pure logic in src/learn/adaptive.ts: it learns per-key, per-finger and per-letter-pair skill, picks weak keys and transitions, schedules spaced reviews, keeps difficulty near the 92 to 96 percent accuracy band, and builds drills deterministically from a seed. TextSource now fills weak keys and difficulty from the player's profile automatically.",
       "changes": [
         "src/learn/adaptive.ts: charMastery, pairMastery, skillState, recordKeystroke, recordRetentionCheck, weakCharacters, weakBigrams, topErrorPairs, fingerSkills, dueToday, recordChallenge, difficultyParams, generateCharDrill, generateBigramDrill, generateErrorDrill, generateWordDrill, buildMicroLesson, unlockGate, adaptiveOptions",
