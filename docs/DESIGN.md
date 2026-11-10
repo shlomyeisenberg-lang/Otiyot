@@ -27,6 +27,8 @@ Never hard-code a color, font size, radius or shadow. Add a token first. Tokens 
 | `--err-fg` / `--err-bg` | `#9B2F24` / `#F2D9D3` | `#F08F82` / `#3A1814` | wrong key |
 | `--fade` | `#B9B4A8` | `#56524A` | the Forgetting: anything not yet restored |
 
+Helper tokens are only ever mixes of the ones above (`--gold-deep`, `--gold-soft`, `--gold-glow`, `--techelet-soft`, `--rule`, `--scrim`, `--on-gold`, the three shadows); spacing is `--sp-1..8`, type `--fs-12..64`, radius `--radius-1..3`.
+
 Each scene adds a small palette of its own (sky, key light, fog, accent) in its folder; UI tokens never change per scene. Colorblind palettes swap ok/err for blue/orange. High-contrast mode raises ink to pure black/white and thickens borders.
 
 ## Typography
@@ -48,7 +50,7 @@ Radius 6 / 12 / 20. Panels look like paper: 1px `--line` border, soft warm shado
 
 ## Core components
 
-Button (primary gold, quiet, danger) · Panel · Tabs · Toggle · Slider · Select · Key-cap chip · Stat tile · Progress bar · Rank badge (S/A/B/C) · Dialogue box with speaker portrait and subtitles · Toast · Modal · Key heatmap · Line chart · Track picker card. A `/styleguide` page (dev only) shows every token and component in light, dark, RTL and LTR.
+Button (primary gold, quiet, danger) · Panel · Tabs · Toggle · Slider · Select · Key-cap chip · Stat tile · Progress bar · Rank badge (S/A/B/C) · Dialogue box with speaker portrait and subtitles · Toast · Modal · Key heatmap · Line chart · Track picker card. A `/styleguide` page (dev only, `pnpm dev` then `#/styleguide`) shows every token and component in light, dark, RTL and LTR. All of these are built in `src/ui/components` (T07); the key heatmap is `keyboardMap` with `heat`, and the track picker card is `choiceCard`. Large panels use `panel({ deckled: true })`. The page background is a scored parchment sheet (faint ruled lines); un-restored things in menus use `--fade` and a dashed outline.
 
 ## 3D art direction
 

@@ -1,7 +1,7 @@
 // Save versioning. Every schema change adds ONE entry to MIGRATIONS (from-version -> next version)
 // and bumps CURRENT_VERSION, plus a test in tests/unit/save-migrations.test.ts.
 
-export const CURRENT_VERSION = 2;
+export const CURRENT_VERSION = 3;
 
 type Rec = Record<string, unknown>;
 export type Migration = (raw: Rec) => Rec;
@@ -53,7 +53,32 @@ const v1ToV2: Migration = (raw) => {
   return { ...raw, version: 2, profiles };
 };
 
-export const MIGRATIONS: Readonly<Record<number, Migration>> = { 0: v0ToV1, 1: v1ToV2 };
+/**
+ * v2 -> v3 (T07). Settings gain the display options: theme ('auto'), colorblind palette, high
+ * contrast, large text and the dyslexia-friendly font (all off). Values already present are kept.
+ */
+const v2ToV3: Migration = (raw) => {
+  const display = {
+    theme: 'auto',
+    colorblind: false,
+    highContrast: false,
+    largeText: false,
+    dyslexiaFont: false,
+  };
+  const isRec = (v: unknown): v is Rec => typeof v === 'object' && v !== null && !Array.isArray(v);
+  const profiles = Array.isArray(raw.profiles)
+    ? raw.profiles.map((p) =>
+        isRec(p) ? { ...p, settings: { ...display, ...(isRec(p.settings) ? p.settings : {}) } } : p,
+      )
+    : raw.profiles;
+  return { ...raw, version: 3, profiles };
+};
+
+export const MIGRATIONS: Readonly<Record<number, Migration>> = {
+  0: v0ToV1,
+  1: v1ToV2,
+  2: v2ToV3,
+};
 
 export function versionOf(raw: Rec): number {
   const v = raw.version;

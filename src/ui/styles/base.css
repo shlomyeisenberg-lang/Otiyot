@@ -1,0 +1,165 @@
+/* Page base: a scored sheet of parchment (the scribe's sirtut lines), lit from the top. */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  height: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100%;
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(
+      120% 70% at 50% -10%,
+      color-mix(in srgb, var(--gold) var(--glow), transparent),
+      transparent 62%
+    ),
+    radial-gradient(
+      140% 120% at 50% 50%,
+      transparent 55%,
+      color-mix(in srgb, var(--shade) 14%, transparent) 100%
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent calc(var(--sp-6) - 1px),
+      var(--rule) calc(var(--sp-6) - 1px),
+      var(--rule) var(--sp-6)
+    );
+  background-attachment: fixed;
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: var(--fs-16);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+#app {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1.15;
+  text-wrap: balance;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+a {
+  color: var(--techelet);
+}
+
+:focus {
+  outline: none;
+}
+:focus-visible {
+  outline: var(--focus-w) solid var(--techelet);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: var(--gold-glow);
+}
+
+[hidden] {
+  display: none !important;
+}
+
+.sr-only {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.u-soft {
+  color: var(--ink-soft);
+}
+.u-typing {
+  font-family: var(--font-typing);
+  font-size: var(--fs-28);
+  letter-spacing: var(--typing-spacing);
+}
+[lang='he'] .u-typing,
+.u-typing[lang='he'] {
+  letter-spacing: calc(var(--typing-spacing) * 0.5);
+}
+
+.icon {
+  inline-size: 1.25em;
+  block-size: 1.25em;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+/* arrows and chevrons point the reading way */
+[dir='rtl'] .icon--flip {
+  transform: scaleX(-1);
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes ink-draw {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+:root[data-motion='reduce'] *,
+:root[data-motion='reduce'] *::before,
+:root[data-motion='reduce'] *::after {
+  animation-name: fade-in !important;
+  transition-property: opacity, color, background-color, border-color !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-name: fade-in !important;
+    transition-property: opacity, color, background-color, border-color !important;
+  }
+}

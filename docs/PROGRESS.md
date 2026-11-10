@@ -6,8 +6,8 @@ _Last updated 2026-11-10. This page is generated from `docs/progress.json`; to c
 
 ## Summary
 
-- ✅ **6** of **39** tasks done
-- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 33 pending
+- ✅ **7** of **39** tasks done
+- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 32 pending
 - ⬜ **1** manual step waiting for you
 - 💡 0 feature ideas open
 
@@ -39,7 +39,7 @@ Work done before or outside the numbered tasks.
 - ✅ T04 · The two lesson tracks — 2026-11-10 · [PR #6](https://github.com/shlomyeisenberg-lang/Otiyot/pull/6)
 - ✅ T05 · Word and sentence library — 2026-11-10 · [PR #8](https://github.com/shlomyeisenberg-lang/Otiyot/pull/8)
 - ✅ T06 · Adaptive engine and spaced repetition — 2026-11-10 · [PR #10](https://github.com/shlomyeisenberg-lang/Otiyot/pull/10)
-- ⬜ T07 · Design system and UI shell
+- ✅ T07 · Design system and UI shell — 2026-11-10 · [PR #12](https://github.com/shlomyeisenberg-lang/Otiyot/pull/12)
 - ⬜ T08 · 3D engine kit
 - ⬜ T09 · 3D keyboard, finger guide, HUD and typing feedback
 - ⬜ T10 · Audio engine and first music themes
@@ -272,11 +272,53 @@ The adaptive engine is now pure logic in src/learn/adaptive.ts: it learns per-ke
 
 Hebrew words in labels are not needed here: challengeLabel returns a code (guarded, growing, challenging, advanced) that the UI maps to locale strings later.
 
-### ⬜ T07 · Design system and UI shell
+### ✅ T07 · Design system and UI shell
 
-**Status:** Pending
+**Status:** Done · **Finished:** 2026-11-10 · **Pull request:** [PR #12](https://github.com/shlomyeisenberg-lang/Otiyot/pull/12)
 
-_Not started._
+The game now has its real look and its menus: parchment and night-ink themes, bundled Hebrew and Latin fonts, every core component, Hebrew (right to left) and English menus, and a first-run welcome that sets up a player with a name, a keyboard and a lesson track.
+
+**What changed**
+
+- src/ui/styles/tokens.css: all design tokens (light, dark, colorblind, high contrast, large text, dyslexia font, reduce motion); base.css, components.css, screens.css use tokens only
+- src/ui/styles/fonts.css: bundled fonts from @fontsource (Frank Ruhl Libre, Assistant, Noto Sans Hebrew, Noto Sans, OpenDyslexic), woff2, Hebrew and Latin subsets only
+- src/engine/palette.ts: the same colors for 3D, kept identical to tokens.css and the DESIGN.md table by a test
+- src/ui/i18n.ts + locales/he.json + locales/en.json (179 strings each): language loader, direction switching, helpers for text that mixes Hebrew and English
+- src/ui/hotkeys.ts + src/ui/components/menu.ts: every menu item can be chosen by typing its gold letter, by arrows and Enter, or by mouse; Esc goes back
+- src/ui/components: button, field, toggle, slider, select, tabs, panel with deckled paper edge, key-cap chip, status, stat tile, progress bar, rank badge, dialogue box with portrait and captions, toast, modal, keyboard map and key heatmap, line chart, choice card (track picker card), menu
+- src/ui/shell.ts + src/ui/app.ts: top bar (back, player, language, theme), screen switching by address (#/menu, #/players, #/track, #/layout, #/settings, #/pause), one keyboard listener
+- Screens in src/ui/screens: main menu, players (switch, add, rename, delete), new player in three steps and first-run welcome, lesson track picker with a plain explanation and the real first keys of each track, keyboard picker with a mini keyboard, settings skeleton (Display, Sound, Typing), pause menu
+- src/ui/screens/styleguide.ts: #/styleguide page, development only, showing every token and component in light, dark, RTL and LTR
+- src/ui/theme.ts: applies theme and accessibility switches to the page
+- Save schema v3 (src/save/schema.ts, migrations.ts): settings gain theme, colorblind, highContrast, largeText, dyslexiaFont, with a migration and test
+- src/main.ts, index.html: boot now loads the save and starts the shell; the placeholder boot screen and boot.css are gone
+- Tests: tests/unit/ui-i18n.test.ts, ui-hotkeys.test.ts, ui-tokens.test.ts, a v2 to v3 migration test, and tests/e2e/shell.spec.ts (first run, Hebrew keyboard-only menus, pause menu) at 1280x720 and 375px
+- Docs: ARCHITECTURE.md (new section 5b and the settings fields), DESIGN.md, ASSETS.md (fonts and licences), CHANGELOG.md, ROADMAP.md ticked
+
+**Decisions**
+
+- **Menu letters also work through the physical key, on both layouts** — A Hebrew menu must still answer when the computer keyboard is set to English (and the other way round); otherwise the gold letters would seem broken to half the players.
+- **Added five display settings to the save (schema v3) now instead of waiting for T36** — Theme, colorblind, high contrast, large text and dyslexia font are part of the token system and must be remembered per player; T36 can build on them.
+- **New player steps are name, then keyboard, then lesson track** — The track cards show the real first keys of each track, which depend on the keyboard chosen.
+- **On a first visit the three steps fill in the player that every new save already has, instead of adding a second one** — Otherwise every device would start with an unused player called Player.
+- **Screens are addressed by the part after # in the address (for example #/settings)** — It works the same on the website and inside Otzaria, where the game is opened from a folder, and makes every screen testable.
+- **The Journey item is shown on the main menu but faded and marked Soon** — The story arrives in T12 and T13; a faded, un-restored item fits the world and is honest about what is not built yet.
+- **Fonts are declared by hand (woff2 only, Hebrew and Latin subsets, only the weights used)** — The ready-made @fontsource stylesheets would also ship older woff files and unused subsets and roughly double the size of the Otzaria plugin. OpenDyslexic is the largest single file (115 KB).
+- **The styleguide is left out of the real build** — DESIGN.md says it is for development only. To see it: pnpm dev, then open #/styleguide.
+- **Charts and the keyboard picture always run left to right, also in Hebrew** — A physical keyboard does not mirror, and time on a chart reads left to right in both languages.
+- **The frontend-design skill named in the roadmap was not available in the unattended run** — The design was worked out from DESIGN.md directly and checked by looking at screenshots at 1366x768 and 375px, in both languages and themes.
+
+**To do**
+
+- [ ] The Journey menu item is disabled until the story and hub exist (T12, T13).
+- [ ] Sound sliders save their values but nothing plays until the audio engine (T10).
+- [ ] The pause menu is ready but only reachable at #/pause until scenes call it (T08 onward).
+- [ ] T36 adds the remaining settings (shake and flash sliders, text speed, health reminders).
+- [ ] The dialogue box has one generic scribe portrait; named characters arrive with the story system (T12).
+
+**Notes**
+
+Built by the Fable runner (Fable 5.2, effort High) on the second attempt; the first run left no branch. Website build is about 380 KB in total, of which 115 KB is the optional OpenDyslexic font. To try: open the live link, go through the three welcome steps, then try typing the gold letters, the language button and the theme button in the top corner.
 
 ### ⬜ T08 · 3D engine kit
 

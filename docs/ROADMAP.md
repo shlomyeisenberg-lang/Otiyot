@@ -89,7 +89,7 @@ Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Fable 5.2 
 
 ## Phase 1 · Vertical slice (must already feel great)
 
-### [ ] T07 · Design system and UI shell
+### [x] T07 · Design system and UI shell
 - **Branch** `t07-design-system`
 - **Model** Fable 5.2 · **Effort** High
 - **Goal** Turn DESIGN.md into real tokens, fonts and components, with Hebrew RTL and English LTR, and the menu shell.
