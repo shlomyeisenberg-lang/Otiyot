@@ -405,15 +405,15 @@ export function normalizePracticeText(text: string, keepNiqqud = false): string 
   let t = text.normalize('NFKD');
   t = t
     .replace(/\r\n?/g, '\n')
-    .replace(/[‎‏‪-‮⁦-⁩﻿​-‍]/g, '')
-    .replace(/[\n\t  - 　]+/g, ' ')
-    .replace(/[״“”„«»]/g, '"')
-    .replace(/[׳‘’‚´]/g, "'")
-    .replace(/[–—‐‑־−]/g, '-')
-    .replace(/…/g, '...')
-    .replace(/׃/g, ':')
-    .replace(/[׀׆]/g, '')
-    .replace(/[֑-ׇֽֿׅ֯ׄ]/g, '');
+    .replace(/[\u200e\u200f\u202a-\u202e\u2066-\u2069\ufeff\u200b-\u200d]/g, '')
+    .replace(/[\n\t\u00a0\u2000-\u200a\u3000]+/g, ' ')
+    .replace(/[\u05f4\u201c\u201d\u201e\u00ab\u00bb]/g, '"')
+    .replace(/[\u05f3\u2018\u2019\u201a\u00b4]/g, "'")
+    .replace(/[\u2013\u2014\u2010\u2011\u05be\u2212]/g, '-')
+    .replace(/\u2026/g, '...')
+    .replace(/\u05c3/g, ':')
+    .replace(/[\u05c0\u05c6]/g, '')
+    .replace(/[\u0591-\u05af\u05bd\u05bf\u05c4\u05c5\u05c7]/g, '');
   if (!keepNiqqud) t = t.replace(/[ְ-ּׁׂ]/g, '');
   t = t.normalize('NFC');
   const kept = toGraphemes(t).filter((g) => {
