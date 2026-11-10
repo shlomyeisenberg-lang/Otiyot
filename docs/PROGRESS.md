@@ -6,8 +6,8 @@ _Last updated 2026-11-10. This page is generated from `docs/progress.json`; to c
 
 ## Summary
 
-- ✅ **5** of **39** tasks done
-- 🛠️ 1 in progress · ⛔ 0 blocked · ⬜ 33 pending
+- ✅ **6** of **39** tasks done
+- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 33 pending
 - ⬜ **1** manual step waiting for you
 - 💡 0 feature ideas open
 
@@ -38,7 +38,7 @@ Work done before or outside the numbered tasks.
 - ✅ T03 · Saves and profiles — 2026-11-10 · [PR #4](https://github.com/shlomyeisenberg-lang/Otiyot/pull/4)
 - ✅ T04 · The two lesson tracks — 2026-11-10 · [PR #6](https://github.com/shlomyeisenberg-lang/Otiyot/pull/6)
 - ✅ T05 · Word and sentence library — 2026-11-10 · [PR #8](https://github.com/shlomyeisenberg-lang/Otiyot/pull/8)
-- 🛠️ T06 · Adaptive engine and spaced repetition
+- ✅ T06 · Adaptive engine and spaced repetition — 2026-11-10 · [PR #10](https://github.com/shlomyeisenberg-lang/Otiyot/pull/10)
 - ⬜ T07 · Design system and UI shell
 - ⬜ T08 · 3D engine kit
 - ⬜ T09 · 3D keyboard, finger guide, HUD and typing feedback
@@ -243,9 +243,9 @@ A built-in library of over 4,000 Hebrew and 4,200 English words in themed packs 
 
 Frequency tiers use pack order and the classic top-word list only; there is no corpus-based ranking.
 
-### 🛠️ T06 · Adaptive engine and spaced repetition
+### ✅ T06 · Adaptive engine and spaced repetition
 
-**Status:** In progress
+**Status:** Done · **Finished:** 2026-11-10 · **Pull request:** [PR #10](https://github.com/shlomyeisenberg-lang/Otiyot/pull/10)
 
 The adaptive engine is now pure logic in src/learn/adaptive.ts: it learns per-key, per-finger and per-letter-pair skill, picks weak keys and transitions, schedules spaced reviews, keeps difficulty near the 92 to 96 percent accuracy band, and builds drills deterministically from a seed. TextSource now fills weak keys and difficulty from the player's profile automatically.
 
