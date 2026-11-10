@@ -21,6 +21,7 @@ import {
   type NiqqudMode,
   type TypedKey,
 } from '../core';
+import type { ComboPolicy } from './combo';
 
 /** Words to type. Same shape as the scene contract's TextSource (engine/scene.ts). */
 export interface WordSource {
@@ -70,6 +71,8 @@ export interface DriverOptions {
    * (a whole lesson) and ends the run when its last word is typed.
    */
   mode?: 'endless' | 'once';
+  /** How the streak reacts to errors (soft breaks, Steady Hand). Default: an error resets it. */
+  combo?: ComboPolicy;
 }
 
 /** Combo thresholds: the meter changes material at each one (ink, techelet, silver, gold, light). */
@@ -179,11 +182,12 @@ export class TypingDriver {
       if (key.kind === 'char') {
         this.combo += 1;
         if (this.combo > this.bestCombo) this.bestCombo = this.combo;
+        this.opts.combo?.onHit(this.combo);
       }
     } else {
       this.states[key.index] = 'err';
       this.hadError[key.index] = true;
-      this.combo = 0;
+      this.combo = this.opts.combo ? this.opts.combo.onMiss(this.combo) : 0;
     }
 
     if (this.session.status === 'failed') {
@@ -209,6 +213,36 @@ export class TypingDriver {
       this.markNext();
     }
     return { key, word, ended: false };
+  }
+
+  /** True when no letter of the current word has been typed yet (it can still be swapped). */
+  get atWordStart(): boolean {
+    return this.session.pos === 0 && !this.session.mustFix && !this.hadError.some(Boolean);
+  }
+
+  /**
+   * Swaps the word to type for another one before its first letter is typed (combat: the
+   * player locks onto a different enemy by typing its first letter, or the old target is gone).
+   * `lookahead` replaces the word shown after it. Returns false when a letter is already typed.
+   */
+  retarget(word: string, lookahead = ''): boolean {
+    const w = word.trim();
+    if (this.ended || !w || !this.atWordStart) return false;
+    if (w === this.word) {
+      this.lookahead = lookahead;
+      return true;
+    }
+    this.queue.length = 0;
+    this.queue.push(w);
+    if (lookahead) this.queue.push(lookahead);
+    this.session = this.load();
+    this.lookahead = lookahead;
+    return true;
+  }
+
+  /** Sets the streak from outside (a Blot reached the scribe). Never raises the best combo. */
+  setCombo(combo: number): void {
+    this.combo = Math.max(0, Math.floor(combo));
   }
 
   /** The key the finger guide shows: the next letter, or Backspace when a fix is required. */

@@ -4,11 +4,23 @@
 // The 3D code is loaded on demand, so the menus never pay for it.
 
 import { learnedWordSource, nextContinueText } from '../../learn';
+import { WaveFight, type CombatListener } from '../../game/combat';
+import { ComboRules, dropTiers } from '../../game/combo';
+import { DIFFICULTIES, DIFFICULTY_IDS, type DifficultyId } from '../../game/difficulty';
+import {
+  LEVEL_IDS,
+  LEVELS,
+  levelWordSource,
+  levelsFor,
+  suggestLevel,
+  type LevelId,
+} from '../../game/levels';
+import { rewardsOf, type RunRewards } from '../../game/results';
 import type { Engine, QualityChoice, QualityName, SceneManager, TextStyle } from '../../engine';
 import type { WordSource } from '../../game/typing';
 import type { RangeDemo, RangeScene } from '../../scenes/range';
 import type { AppContext, Screen } from '../app';
-import { button, keycap, status } from '../components';
+import { button, keycap, rankBadge, statTile, status } from '../components';
 import { h } from '../dom';
 import type { MessageKey } from '../i18n';
 import { GUIDE_MODES } from '../keyboardGuide';
@@ -32,7 +44,9 @@ const CAMERAS = ['follow', 'rail', 'cockpit'] as const;
 const ANIMS = ['write', 'hit', 'stagger', 'fall', 'cheer'] as const;
 const QUALITIES: readonly QualityChoice[] = ['auto', 'low', 'medium', 'high', 'ultra'];
 const STYLES: readonly TextStyle[] = ['carved', 'banner', 'hologram'];
-const MODES = ['lesson', 'words'] as const;
+const MODES = ['lesson', 'words', 'fight'] as const;
+/** Seconds of celebration between the last broken shield and the results. */
+const RESULTS_DELAY_MS = 1600;
 type RunMode = (typeof MODES)[number];
 
 /** What the page exposes for the smoke test (and for a curious developer's console). */
@@ -55,6 +69,23 @@ interface RangeProbe {
   /** What exactly was left, for debugging a leak. */
   left: { geometries: number; textures: number; programs: number } | null;
   sceneLeak: number;
+  /** The wave fight, while one runs. */
+  fight: {
+    wave: number;
+    waves: number;
+    onField: number;
+    broken: number;
+    smudges: number;
+    total: number;
+    done: boolean;
+    difficulty: DifficultyId;
+    level: LevelId;
+  } | null;
+  /** The results of the last fight. */
+  results: (RunRewards & { accuracy: number; wpm: number; failed: boolean }) | null;
+  /** The level the range suggests now, and the levels open to this player. */
+  suggested: LevelId;
+  levels: LevelId[];
   /** Runs the world forward without waiting for the clock (tests). */
   step: (seconds: number) => void;
 }
@@ -89,6 +120,10 @@ export function rangeScreen(ctx: AppContext): Screen {
     leaked: null,
     left: null,
     sceneLeak: 0,
+    fight: null,
+    results: null,
+    suggested: 'easy',
+    levels: ['easy'],
     step: (seconds) => engine?.simulate(seconds),
   };
   window.__otiyotRange = probe;
@@ -104,7 +139,27 @@ export function rangeScreen(ctx: AppContext): Screen {
   let rngNext: () => number = Math.random;
   const play = new PlayController(t, ctx.profile.layout, settings, settings.keyboardGuide);
   const done = h('div', { class: 'range__done', hidden: true, role: 'status' });
-  view.append(play.hud.el, done);
+  const results = h('div', { class: 'range__results', hidden: true, role: 'dialog' });
+  view.append(play.hud.el, done, results);
+
+  // Wave fights: difficulty and level are the player's to choose; the level is suggested from
+  // recent fights and only levels the course has opened can be picked.
+  let difficulty: DifficultyId = 'steady';
+  const recentFights = (): { accuracy: number; wpm: number }[] =>
+    ctx.profile.history.filter((e) => e.mode.startsWith('fight:')).slice(-6);
+  const lastLevel = (): LevelId => {
+    const last = ctx.profile.history.filter((e) => e.mode.startsWith('fight:')).at(-1);
+    const id = last?.mode.split(':')[1];
+    return (LEVEL_IDS as readonly string[]).includes(id ?? '') ? (id as LevelId) : 'easy';
+  };
+  let openLevels: LevelId[] = levelsFor(ctx.profile);
+  let suggested: LevelId = suggestLevel(recentFights(), lastLevel(), openLevels);
+  let level: LevelId = suggested;
+  let fight: WaveFight | null = null;
+  let fightOver = false;
+  let resultsTimer = 0;
+  probe.levels = openLevels;
+  probe.suggested = suggested;
 
   const sync = (): void => {
     const d = play.current;
@@ -117,12 +172,35 @@ export function rangeScreen(ctx: AppContext): Screen {
     probe.nextShift = next?.shift ?? null;
     probe.mode = mode;
     probe.restored = scene?.restoredStage ?? 0;
+    probe.fight = fight
+      ? {
+          wave: fight.wave,
+          waves: fight.waves,
+          onField: fight.onField,
+          broken: fight.broken,
+          smudges: fight.smudges,
+          total: fight.total,
+          done: fight.done,
+          difficulty,
+          level,
+        }
+      : null;
     live.textContent = probe.word ? t.t('range.typeWord', { word: probe.word }) : '';
   };
 
   /** Text for a run: the learner's current lesson, or endless words from learned letters. */
   const startRun = (): void => {
     done.hidden = true;
+    results.hidden = true;
+    window.clearTimeout(resultsTimer);
+    if (mode === 'fight') {
+      startFight();
+      return;
+    }
+    if (fight) {
+      fight = null;
+      scene?.stopFight();
+    }
     // Words to type use only the letters this player has already learned (ARCHITECTURE 8).
     const words = learnedWordSource(ctx.profile, { rng: rngNext, minLength: 3, maxLength: 7 });
     let source: WordSource = words;
@@ -135,6 +213,164 @@ export function rangeScreen(ctx: AppContext): Screen {
       }
     }
     play.begin(source, once ? 'once' : 'endless', ctx.profile.layout);
+    sync();
+  };
+
+  /** A wave fight: Blots with word shields, on the chosen difficulty and level. */
+  const startFight = (): void => {
+    if (!scene) return;
+    const d = DIFFICULTIES[difficulty];
+    const lv = LEVELS[level];
+    fightOver = false;
+    const seed = Math.floor(rngNext() * 0x7fffffff);
+    // Shield words use only the letters this player has already learned (ARCHITECTURE 8).
+    const words = levelWordSource(ctx.profile, lv, d, rngNext);
+    const f = new WaveFight({ level: lv, difficulty: d, seed, words });
+    fight = f;
+    const rules = new ComboRules({ errorTiers: d.errorTiers });
+    const relay: CombatListener = {
+      spawn: () => {
+        play.retarget();
+        sync();
+      },
+      broken: () => sync(),
+      smudge: () => {
+        const c = play.current?.combo ?? 0;
+        play.setCombo(dropTiers(c, d.smudgeTiers));
+        play.hud.stumble();
+        sync();
+      },
+      wave: (i, total) => {
+        play.hud.announce(t.t('range.fight.wave', { n: i + 1, total }));
+        sync();
+      },
+      cleared: () => {
+        fightOver = true;
+        scene?.celebrate();
+        play.hud.announce(t.t('range.fight.cleared'));
+        sync();
+        resultsTimer = window.setTimeout(() => finishFight(false), RESULTS_DELAY_MS);
+      },
+    };
+    scene.startFight(f, relay);
+    play.begin({ next: () => f.auto('')?.word ?? words.next() }, 'endless', ctx.profile.layout, {
+      hardcore: d.failOnError ? true : undefined,
+      combo: rules,
+      targeting: f,
+    });
+    sync();
+  };
+
+  /** The results card: rank, numbers, and what the fight earned. */
+  const finishFight = (failed: boolean): void => {
+    const d = play.current;
+    if (!fight || !d) return;
+    fightOver = true;
+    const now = performance.now();
+    const m = d.metrics(now);
+    const accuracy = Math.round(d.accuracy() * 10) / 10;
+    const wpm = Math.round(m.netWpm);
+    const r = rewardsOf(
+      {
+        accuracy,
+        wpm,
+        bestCombo: d.bestCombo,
+        words: d.wordsDone,
+        perfect: fight.perfect,
+        broken: fight.broken,
+        smudges: fight.smudges,
+        failed,
+      },
+      DIFFICULTIES[difficulty],
+      level,
+    );
+    probe.results = { ...r, accuracy, wpm, failed };
+    // Statistics only (never typed text): they feed the level suggestion.
+    ctx.saves.update((p) => {
+      p.history.push({
+        at: Date.now(),
+        track: p.track,
+        mode: `fight:${level}:${difficulty}`,
+        wpm,
+        accuracy,
+        durationMs: Math.round(m.elapsedMs),
+        chars: d.keys.length,
+      });
+    });
+    openLevels = levelsFor(ctx.profile);
+    suggested = suggestLevel(recentFights(), level, openLevels);
+    probe.levels = openLevels;
+    probe.suggested = suggested;
+    markLevels();
+    const title = failed
+      ? t.t('range.results.failed')
+      : t.t(`range.results.title.${r.rank}` as MessageKey);
+    results.replaceChildren(
+      h(
+        'div',
+        { class: 'range__results-head' },
+        rankBadge(r.rank, t.t('range.results.rank', { rank: r.rank })),
+        h(
+          'div',
+          {},
+          h('h2', { class: 'range__results-title', text: title }),
+          h('p', {
+            class: 'range__results-sub',
+            text: t.t('range.results.sub', {
+              difficulty: t.t(`range.difficulty.${difficulty}` as MessageKey),
+              level: t.t(`range.level.${level}` as MessageKey),
+            }),
+          }),
+        ),
+      ),
+      h(
+        'div',
+        { class: 'range__results-stats' },
+        statTile({
+          label: t.t('range.results.accuracy'),
+          value: accuracy,
+          unit: '%',
+          gold: accuracy >= 98,
+        }),
+        statTile({ label: t.t('hud.wpm'), value: wpm }),
+        statTile({ label: t.t('range.results.combo'), value: d.bestCombo }),
+        statTile({
+          label: t.t('range.results.shields'),
+          value: t.t('range.results.ofTotal', { n: fight.broken, total: fight.total }),
+        }),
+      ),
+      h(
+        'div',
+        { class: 'range__results-earned' },
+        statTile({ label: t.t('range.results.xp'), value: `+${r.xp}`, gold: true }),
+        statTile({ label: t.t('range.results.glyphs'), value: `+${r.glyphs}`, gold: true }),
+        statTile({ label: t.t('range.results.ink'), value: `+${r.ink}`, gold: true }),
+      ),
+      fight.smudges > 0
+        ? h('p', {
+            class: 'range__results-note',
+            text: t.t('range.results.smudges', { n: fight.smudges }),
+          })
+        : '',
+      suggested !== level
+        ? h('p', {
+            class: 'range__results-note',
+            text: t.t('range.results.suggest', {
+              level: t.t(`range.level.${suggested}` as MessageKey),
+            }),
+          })
+        : '',
+      h(
+        'div',
+        { class: 'range__results-actions' },
+        button({
+          label: t.t('range.results.again'),
+          variant: 'primary',
+          onClick: () => startRun(),
+        }),
+      ),
+    );
+    results.hidden = false;
     sync();
   };
 
@@ -156,7 +392,8 @@ export function rangeScreen(ctx: AppContext): Screen {
   };
   play.onEnd = (end) => {
     sync();
-    showDone(end);
+    if (fight) finishFight(end.failed);
+    else showDone(end);
   };
   play.onJudged = () => sync();
   const pressed = new Map<string, HTMLButtonElement>();
@@ -249,6 +486,27 @@ export function rangeScreen(ctx: AppContext): Screen {
       ),
     ),
     group(
+      'range.fight',
+      ...DIFFICULTY_IDS.map((id) =>
+        pick('difficulty', id, t.t(`range.difficulty.${id}` as MessageKey), () => {
+          difficulty = id;
+          mark('difficulty', id);
+          chooseFight();
+        }),
+      ),
+      ...LEVEL_IDS.map((id) =>
+        pick('level', id, t.t(`range.level.${id}` as MessageKey), () => {
+          if (!openLevels.includes(id)) {
+            ctx.toast.show(t.t('range.level.locked', { n: LEVELS[id].needsLetters }));
+            return;
+          }
+          level = id;
+          mark('level', id);
+          chooseFight();
+        }),
+      ),
+    ),
+    group(
       'range.camera',
       ...CAMERAS.map((mode, i) =>
         pick('camera', mode, t.t(`range.camera.${mode}`), () => setCamera(i)),
@@ -265,6 +523,25 @@ export function rangeScreen(ctx: AppContext): Screen {
       ...QUALITIES.map((q) => pick('quality', q, t.t(`range.quality.${q}`), () => setQuality(q))),
     ),
   );
+  /** Picking a difficulty or level starts a fight with it. */
+  function chooseFight(): void {
+    mode = 'fight';
+    mark('mode', 'fight');
+    startRun();
+  }
+  /** Locked levels look locked; the suggested one carries a small star. */
+  function markLevels(): void {
+    for (const id of LEVEL_IDS) {
+      const b = pressed.get(`level:${id}`);
+      if (!b) continue;
+      b.setAttribute('aria-disabled', String(!openLevels.includes(id)));
+      b.dataset.suggested = String(id === suggested);
+      b.title = id === suggested ? t.t('range.level.suggested') : '';
+    }
+  }
+  markLevels();
+  mark('difficulty', difficulty);
+  mark('level', level);
   mark('camera', 'follow');
   mark('mode', mode);
   mark('style', 'banner');
@@ -377,8 +654,10 @@ export function rangeScreen(ctx: AppContext): Screen {
     full: true,
     onKey(ev) {
       if (!scene || !manager || ev.ctrlKey || ev.metaKey || ev.altKey) return false;
-      if (play.current?.ended) {
-        if (ev.key !== 'Enter') return false;
+      if (play.current?.ended || (fight && fightOver)) {
+        if (ev.key !== 'Enter') return !play.current?.ended;
+        // During the celebration before the results, Enter waits too.
+        if (fight && results.hidden) return true;
         startRun();
         return true;
       }
