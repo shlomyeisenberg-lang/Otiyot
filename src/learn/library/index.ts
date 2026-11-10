@@ -5,6 +5,7 @@ import type { LayoutId } from '../../core';
 import { normalizePracticeText } from '../../core';
 import type { Rng } from '../types';
 import { EN_LEXICON, HE_LEXICON } from '../data/lexicon';
+import { isAllowedText, isAllowedWord } from '../content';
 import { EN_SENTENCE_PACKS, EN_WORD_PACKS } from './data-en';
 import { HE_SENTENCE_PACKS, HE_WORD_PACKS } from './data-he';
 import { MAX_CUSTOM_LISTS, MAX_CUSTOM_WORDS, MAX_CUSTOM_WORD_LENGTH } from '../../save/schema';
@@ -32,7 +33,7 @@ function buildWordPacks(language: LayoutId): Readonly<Record<string, readonly st
   const take = (id: string, words: readonly string[]): void => {
     const list: string[] = [];
     for (const w of words) {
-      if (!plain.test(w) || seen.has(w)) continue;
+      if (!plain.test(w) || seen.has(w) || !isAllowedWord(w, language)) continue;
       seen.add(w);
       list.push(w);
     }
@@ -69,8 +70,8 @@ export function sentencePackIds(language: LayoutId): string[] {
 
 export function sentencesOf(language: LayoutId, pack?: string): readonly string[] {
   const packs = language === 'he' ? HE_SENTENCE_PACKS : EN_SENTENCE_PACKS;
-  if (pack !== undefined) return packs[pack] ?? [];
-  return Object.values(packs).flat();
+  const all = pack !== undefined ? (packs[pack] ?? []) : Object.values(packs).flat();
+  return all.filter((x) => isAllowedText(x, language));
 }
 
 export interface WordFilter {

@@ -58,6 +58,7 @@ export const TINT = {
   walkerRobe: 0xb05c44,
   walkerHem: 0x5a2c22,
   walkerTrim: 0xf0e2c0,
+  walkerBeard: 0x4a3626,
   elderRobe: 0x6a6480,
   elderHem: 0x403a54,
   elderTrim: 0x2a2420,

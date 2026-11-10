@@ -154,6 +154,7 @@ Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Fable 5.2 
   - Five difficulties (GAME_DESIGN) as data: time pressure, error cost, word complexity, enemy pace; Calm has no timers
   - Run results: rank S/A/B/C (accuracy first), XP, glyphs and ink earned; results screen
   - Enemy spawner patterns driven by a seed
+  - Level system: every scene run takes a level (Easy / Standard / Hard) and builds its text from the profile's learned key set only (see GAME_DESIGN 'Levels follow your learning'); unit test that no unlearned key ever appears; auto-level suggestion from recent accuracy and speed
 - **Done when** A sandbox wave fight in the test range is fun on all five difficulties and ends with a results screen.
 - **User must have ready** Nothing.
 
@@ -167,6 +168,7 @@ Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Fable 5.2 
   - Title: gold-ink letters fall onto a blank parchment and form the name, camera fly-through
   - Intro: the lamp-sign goes blank; Reb Ezra gives the quill; Dyo appears (Act 1 opening in GAME_DESIGN)
   - Write the characters with real personality; keep lines short
+  - All characters are male (no women anywhere); player look options are male apprentices only
 - **Done when** From launch: title → new game → intro cutscene plays, can be skipped, and hands over to the hub.
 - **User must have ready** Nothing.
 
@@ -179,6 +181,7 @@ Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Fable 5.2 
   - Stations chosen by typing their word: Desk (continue story / map of scenes), Game Room door (shows an in-world 'opening soon' sign until the arcade tasks are merged; record that in todo), Shop shelf, Trophy shelf (ranks), Journal, Practice corner, Settings
   - NPCs: Reb Ezra and Dyo with idle behaviour and context lines; Naftali drops by after scene 7
   - Scene map showing restored vs faded regions
+  - Scene map unlocks by course progress, shows levels per scene, suggests the best level, and for a locked scene shows what to learn first with a jump to that lesson. All hub NPCs are male
 - **Done when** The player can walk the hub by typing, start any unlocked scene, and the hub visibly gains color as regions are restored.
 - **User must have ready** Nothing.
 

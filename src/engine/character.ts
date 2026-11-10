@@ -22,7 +22,8 @@ import { Tracker } from './disposal';
 import type { MaterialKit } from './materials';
 import { makeSpring, stepSpring } from './motion';
 
-export type Headwear = 'cap' | 'hat' | 'scarf';
+/** All figures are men (ARCHITECTURE section 8): a cap, a brimmed hat or a wound turban. */
+export type Headwear = 'cap' | 'hat' | 'turban';
 
 export interface CharacterLook {
   robe: number;
@@ -188,11 +189,14 @@ export class Character {
         paint(new CylinderGeometry(0.16, 0.19, 0.17, 8), look.trim).translate(0, 0.21, 0),
       );
     } else {
+      // A wound turban: a low dome over a thick rolled band.
       headParts.push(
-        paint(new SphereGeometry(0.228, 8, 5, 0, Math.PI * 2, 0, 1.75), look.trim)
-          .rotateX(-0.62)
-          .translate(0, 0.012, -0.012),
-        paint(new SphereGeometry(0.07, 5, 4), look.trim).translate(0, -0.1, -0.2),
+        paint(new SphereGeometry(0.2, 8, 3, 0, Math.PI * 2, 0, 1.25), look.trim)
+          .scale(1, 0.8, 1)
+          .translate(0, 0.07, -0.01),
+        paint(new CylinderGeometry(0.235, 0.225, 0.085, 9), look.trim)
+          .rotateX(-0.12)
+          .translate(0, 0.085, -0.012),
       );
     }
     this.head.position.set(0, 0.68, 0);

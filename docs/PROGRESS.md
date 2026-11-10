@@ -40,6 +40,7 @@ Open the live Otiyot website in my browser (the Vercel address of the project sh
 Work done before or outside the numbered tasks.
 
 - **2026-11-09** — Planning docs: ARCHITECTURE, GAME_DESIGN, DESIGN, ROADMAP (39 tasks), CLAUDE.md, playbook, progress log. Original plugins 3.3.0 and 4.2.0 added under reference/. (docs/)
+- **2026-11-10** — Owner rules added: no women or sexual content anywhere; text uses only learned letters; scene levels follow learning progress. Content filter (src/learn/content.ts) applied to word packs, sentences and lesson texts. (docs/ARCHITECTURE.md section 8, docs/GAME_DESIGN.md, CLAUDE.md, src/learn/content.ts)
 
 ## Task overview
 
@@ -355,6 +356,8 @@ The game now has its 3D foundation: a renderer with four graphics presets that p
 - tests/unit/engine-kit.test.ts (20 tests) and tests/e2e/range.spec.ts (full tour, budget check, zero leaked GPU objects after closing); playwright.config.ts lets the test browser draw 3D in software
 - package.json: added the libraries three and postprocessing (listed in ASSETS.md)
 - docs: ARCHITECTURE section 7b (engine kit) and save v4, DESIGN 3D art direction note, CHANGELOG, ASSETS, ROADMAP tick
+- src/learn/source.ts: learnedWordSource, words built only from the letters the player has already learned (real words when enough letters are known, short letter drills before that); the test range uses it; tests/unit/learned-words.test.ts checks both languages and both tracks
+- src/engine/character.ts: headwear is a cap, a brimmed hat or a turban; the head scarf was removed and the walking figure in the range is now a bearded man in a turban
 
 **Decisions**
 
@@ -367,6 +370,8 @@ The game now has its 3D foundation: a renderer with four graphics presets that p
 - **The test range is reached by address (#/range) and is not in the menus** — It is a tool for building scenes, not part of the game.
 - **Audio and HUD are silent stand-ins in SceneContext for now** — They are built in T09 and T10; scenes written today will not need changing when they arrive.
 - **With reduce motion on, shake, push-in, flash, chromatic pulse and hit-stop are switched off completely** — Those are exactly the effects that bother motion-sensitive players; color sweeps and particles stay.
+- **Applied the two new owner rules (merged into main while this task was being built) inside this task** — They are binding for every task: the range had one figure in a head scarf that could be read as a woman, and its words came from the whole library instead of the learned letters.
+- **Before enough letters are learned to spell real words, the range shows short drills made of the learned letters** — A new player knows only two keys; nothing unlearned may ever be asked, so drills are the only honest text.
 
 **Manual steps**
 
@@ -386,6 +391,7 @@ The game now has its 3D foundation: a renderer with four graphics presets that p
 - [ ] There is no graphics quality picker in Settings yet; for now it can only be changed in the test range. T36 adds it.
 - [ ] Scenes get silent audio and an empty HUD until T09 (HUD) and T10 (audio) are built.
 - [ ] The engine code is about 740 KB (187 KB compressed) and is loaded only when a 3D screen opens; menus do not pay for it.
+- [ ] The test range has no Easy / Standard / Hard levels: it is a developer tool, not a playable scene. Levels arrive with the combat and difficulty kit (T11).
 
 **Notes**
 

@@ -423,7 +423,8 @@ export class RangeScene implements GameScene {
       trim: TINT.walkerTrim,
       skin: TINT.skinDeep,
       ink: TINT.elderTrim,
-      headwear: 'scarf',
+      headwear: 'turban',
+      beard: TINT.walkerBeard,
       height: 0.95,
       seed: 3,
     });

@@ -4,6 +4,7 @@
 // The 3D code is loaded on demand, so the menus never pay for it.
 
 import { TypingSession } from '../../core';
+import { learnedWordSource } from '../../learn';
 import type { Engine, QualityChoice, QualityName, SceneManager } from '../../engine';
 import type { RangeDemo, RangeScene } from '../../scenes/range';
 import type { AppContext, Screen } from '../app';
@@ -172,10 +173,9 @@ export function rangeScreen(ctx: AppContext): Screen {
   };
 
   const boot = async (): Promise<void> => {
-    const [eng, rangeMod, lib] = await Promise.all([
+    const [eng, rangeMod] = await Promise.all([
       import('../../engine'),
       import('../../scenes/range'),
-      import('../../learn/library'),
     ]);
     if (disposed) return;
     const auto = ctx.saves.save.meta.autoQuality;
@@ -214,11 +214,14 @@ export function rangeScreen(ctx: AppContext): Screen {
     };
     scene.onAnimation = (name) => mark('anim', name);
 
-    // Words come from the library, like in the real game: short ones the atlas can draw.
+    // Words to type use only the letters this player has already learned (ARCHITECTURE 8).
     const layout = ctx.profile.layout;
     const rng = new eng.Rng(2026);
-    const words = lib.wordsOf(layout).filter((w) => w.length >= 3 && w.length <= 7);
-    const text = { next: (): string => (words.length > 0 ? rng.pick(words) : 'otiyot') };
+    const text = learnedWordSource(ctx.profile, {
+      rng: () => rng.next(),
+      minLength: 3,
+      maxLength: 7,
+    });
 
     const stats = engine.stats;
     probe.stats = stats;
