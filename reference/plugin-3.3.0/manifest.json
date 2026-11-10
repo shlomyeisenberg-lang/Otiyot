@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "sdkVersion": "1.x",
+  "id": "il.otzaria.hebrew-typing-tutor",
+  "name": "הקלדה עברית",
+  "version": "3.3.0",
+  "description": "מורה הקלדה דו-לשוני עם ממשק עברית/אנגלית, תוכניות הקלדה עברית ואנגלית, 5 משחקי תלת־ממד, שמירת התקדמות אמינה ומודל למידה אדפטיבי",
+  "author": "הלומד",
+  "type": "webapp",
+  "category": "Utilities",
+  "stability": "stable",
+  "minAppVersion": "0.9.96",
+  "entrypoint": "index.html",
+  "permissions": [
+    "plugin.storage.read",
+    "plugin.storage.write",
+    "ui.feedback",
+    "events.subscribe:theme.changed"
+  ],
+  "contributes": {
+    "toolTab": {
+      "title": "הקלדה עברית",
+      "iconName": "keyboard_24_regular"
+    }
+  }
+}

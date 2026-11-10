@@ -1,0 +1,443 @@
+{
+  "updated": "2026-11-09",
+  "history": [
+    {
+      "date": "2026-11-09",
+      "what": "Planning docs: ARCHITECTURE, GAME_DESIGN, DESIGN, ROADMAP (39 tasks), CLAUDE.md, playbook, progress log. Original plugins 3.3.0 and 4.2.0 added under reference/.",
+      "where": "docs/"
+    }
+  ],
+  "tasks": {
+    "T01": {
+      "status": "pending",
+      "finished": "",
+      "pr": "",
+      "summary": "",
+      "changes": [],
+      "decisions": [],
+      "manual_steps": [],
+      "todo": [],
+      "notes": ""
+    },
+    "T02": {
+      "status": "pending",
+      "finished": "",
+      "pr": "",
+      "summary": "",
+      "changes": [],
+      "decisions": [],
+      "manual_steps": [],
+      "todo": [],
+      "notes": ""
+    },
+    "T03": {
+      "status": "pending",
+      "finished": "",
+      "pr": "",
+      "summary": "",
+      "changes": [],
+      "decisions": [],
+      "manual_steps": [],
+      "todo": [],
+      "notes": ""
+    },
+    "T04": {
+      "status": "pending",
+      "finished": "",
+      "pr": "",
+      "summary": "",
+      "changes": [],
+      "decisions": [],
+      "manual_steps": [],
+      "todo": [],
+      "notes": ""
+    },
+    "T05": {
+      "status": "pending",
+      "finished": "",
+      "pr": "",
+      "summary": "",
+      "changes": [],
+      "decisions": [],
+      "manual_steps": [],
+      "todo": [],
+      "notes": ""
+    },
+    "T06": {
+      "status": "pending",
+      "finished": "",
+      "pr": "",
+      "summary": "",
+      "changes": [],
+      "decisions": [],
+      "manual_steps": [],
+      "todo": [],
+      "notes": ""
+    },
+    "T07": {
+      "status": "pending",
+      "finished": "",
+      "pr": "",
+      "summary": "",
+      "changes": [],
+      "decisions": [],
+      "manual_steps": [],
+      "todo": [],
+      "notes": ""
+    },
+    "T08": {
+      "status": "pending",
+      "finished": "",
+      "pr": "",
+      "summary": "",
+      "changes": [],
+      "decisions": [],
+      "manual_steps": [],
+      "todo": [],
+      "notes": ""
+    },
+    "T09": {
+      "status": "pending",
+      "finished": "",
+      "pr": "",
+      "summary": "",
+      "changes": [],
+      "decisions": [],
+      "manual_steps": [],
+      "todo": [],
+      "notes": ""
+    },
+    "T10": {
+      "status": "pending",
+      "finished": "",
+      "pr": "",
+      "summary": "",
+      "changes": [],
+      "decisions": [],
+      "manual_steps": [],
+      "todo": [],
+      "notes": ""
+    },
+    "T11": {
+      "status": "pending",
+      "finished": "",
+      "pr": "",
+      "summary": "",
+      "changes": [],
+      "decisions": [],
+      "manual_steps": [],
+      "todo": [],
+      "notes": ""
+    },
+    "T12": {
+      "status": "pending",
+      "finished": "",
+      "pr": "",
+      "summary": "",
+      "changes": [],
+      "decisions": [],
+      "manual_steps": [],
+      "todo": [],
+      "notes": ""
+    },
+    "T13": {
+      "status": "pending",
+      "finished": "",
+      "pr": "",
+      "summary": "",
+      "changes": [],
+      "decisions": [],
+      "manual_steps": [],
+      "todo": [],
+      "notes": ""
+    },
+    "T14": {
+      "status": "pending",
+      "finished": "",
+      "pr": "",
+      "summary": "",
+      "changes": [],
+      "decisions": [],
+      "manual_steps": [],
+      "todo": [],
+      "notes": ""
+    },
+    "T15": {
+      "status": "pending",
+      "finished": "",
+      "pr": "",
+      "summary": "",
+      "changes": [],
+      "decisions": [],
+      "manual_steps": [],
+      "todo": [],
+      "notes": ""
+    },
+    "T16": {
+      "status": "pending",
+      "finished": "",
+      "pr": "",
+      "summary": "",
+      "changes": [],
+      "decisions": [],
+      "manual_steps": [],
+      "todo": [],
+      "notes": ""
+    },
+    "T17": {
+      "status": "pending",
+      "finished": "",
+      "pr": "",
+      "summary": "",
+      "changes": [],
+      "decisions": [],
+      "manual_steps": [],
+      "todo": [],
+      "notes": ""
+    },
+    "T18": {
+      "status": "pending",
+      "finished": "",
+      "pr": "",
+      "summary": "",
+      "changes": [],
+      "decisions": [],
+      "manual_steps": [],
+      "todo": [],
+      "notes": ""
+    },
+    "T19": {
+      "status": "pending",
+      "finished": "",
+      "pr": "",
+      "summary": "",
+      "changes": [],
+      "decisions": [],
+      "manual_steps": [],
+      "todo": [],
+      "notes": ""
+    },
+    "T20": {
+      "status": "pending",
+      "finished": "",
+      "pr": "",
+      "summary": "",
+      "changes": [],
+      "decisions": [],
+      "manual_steps": [],
+      "todo": [],
+      "notes": ""
+    },
+    "T21": {
+      "status": "pending",
+      "finished": "",
+      "pr": "",
+      "summary": "",
+      "changes": [],
+      "decisions": [],
+      "manual_steps": [],
+      "todo": [],
+      "notes": ""
+    },
+    "T22": {
+      "status": "pending",
+      "finished": "",
+      "pr": "",
+      "summary": "",
+      "changes": [],
+      "decisions": [],
+      "manual_steps": [],
+      "todo": [],
+      "notes": ""
+    },
+    "T23": {
+      "status": "pending",
+      "finished": "",
+      "pr": "",
+      "summary": "",
+      "changes": [],
+      "decisions": [],
+      "manual_steps": [],
+      "todo": [],
+      "notes": ""
+    },
+    "T24": {
+      "status": "pending",
+      "finished": "",
+      "pr": "",
+      "summary": "",
+      "changes": [],
+      "decisions": [],
+      "manual_steps": [],
+      "todo": [],
+      "notes": ""
+    },
+    "T25": {
+      "status": "pending",
+      "finished": "",
+      "pr": "",
+      "summary": "",
+      "changes": [],
+      "decisions": [],
+      "manual_steps": [],
+      "todo": [],
+      "notes": ""
+    },
+    "T26": {
+      "status": "pending",
+      "finished": "",
+      "pr": "",
+      "summary": "",
+      "changes": [],
+      "decisions": [],
+      "manual_steps": [],
+      "todo": [],
+      "notes": ""
+    },
+    "T27": {
+      "status": "pending",
+      "finished": "",
+      "pr": "",
+      "summary": "",
+      "changes": [],
+      "decisions": [],
+      "manual_steps": [],
+      "todo": [],
+      "notes": ""
+    },
+    "T28": {
+      "status": "pending",
+      "finished": "",
+      "pr": "",
+      "summary": "",
+      "changes": [],
+      "decisions": [],
+      "manual_steps": [],
+      "todo": [],
+      "notes": ""
+    },
+    "T29": {
+      "status": "pending",
+      "finished": "",
+      "pr": "",
+      "summary": "",
+      "changes": [],
+      "decisions": [],
+      "manual_steps": [],
+      "todo": [],
+      "notes": ""
+    },
+    "T30": {
+      "status": "pending",
+      "finished": "",
+      "pr": "",
+      "summary": "",
+      "changes": [],
+      "decisions": [],
+      "manual_steps": [],
+      "todo": [],
+      "notes": ""
+    },
+    "T31": {
+      "status": "pending",
+      "finished": "",
+      "pr": "",
+      "summary": "",
+      "changes": [],
+      "decisions": [],
+      "manual_steps": [],
+      "todo": [],
+      "notes": ""
+    },
+    "T32": {
+      "status": "pending",
+      "finished": "",
+      "pr": "",
+      "summary": "",
+      "changes": [],
+      "decisions": [],
+      "manual_steps": [],
+      "todo": [],
+      "notes": ""
+    },
+    "T33": {
+      "status": "pending",
+      "finished": "",
+      "pr": "",
+      "summary": "",
+      "changes": [],
+      "decisions": [],
+      "manual_steps": [],
+      "todo": [],
+      "notes": ""
+    },
+    "T34": {
+      "status": "pending",
+      "finished": "",
+      "pr": "",
+      "summary": "",
+      "changes": [],
+      "decisions": [],
+      "manual_steps": [],
+      "todo": [],
+      "notes": ""
+    },
+    "T35": {
+      "status": "pending",
+      "finished": "",
+      "pr": "",
+      "summary": "",
+      "changes": [],
+      "decisions": [],
+      "manual_steps": [],
+      "todo": [],
+      "notes": ""
+    },
+    "T36": {
+      "status": "pending",
+      "finished": "",
+      "pr": "",
+      "summary": "",
+      "changes": [],
+      "decisions": [],
+      "manual_steps": [],
+      "todo": [],
+      "notes": ""
+    },
+    "T37": {
+      "status": "pending",
+      "finished": "",
+      "pr": "",
+      "summary": "",
+      "changes": [],
+      "decisions": [],
+      "manual_steps": [],
+      "todo": [],
+      "notes": ""
+    },
+    "T38": {
+      "status": "pending",
+      "finished": "",
+      "pr": "",
+      "summary": "",
+      "changes": [],
+      "decisions": [],
+      "manual_steps": [],
+      "todo": [],
+      "notes": ""
+    },
+    "T39": {
+      "status": "pending",
+      "finished": "",
+      "pr": "",
+      "summary": "",
+      "changes": [],
+      "decisions": [],
+      "manual_steps": [],
+      "todo": [],
+      "notes": ""
+    }
+  },
+  "feature_ideas": [],
+  "notes": ""
+}
