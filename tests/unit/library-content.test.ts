@@ -5,6 +5,72 @@ import { CLASSIC_PACK, sentencePackIds, sentencesOf, wordPackIds, wordsOf } from
 // Content rules (ARCHITECTURE section 8): no holy Names, no pesukim or prayer text.
 const HE_BLOCK = ['יהוה', 'אדני', 'אלוה', 'אלוק', 'שדי', 'השם', 'צבאות', 'ישראל ה'];
 const EN_BLOCK = ['jehovah', 'adonai', 'hashem', 'yahweh', 'lord', 'god'];
+// Content rules (ARCHITECTURE section 8): no women, nothing romantic or suggestive.
+const HE_FEMALE = [
+  'אישה',
+  'אשה',
+  'נשים',
+  'בחורה',
+  'נערה',
+  'ילדה',
+  'ילדות',
+  'אמא',
+  'אימא',
+  'סבתא',
+  'בת',
+  'בנות',
+  'כלה',
+  'גברת',
+  'מלכה',
+  'נסיכה',
+  'שמלה',
+  'חברה',
+  'אהבה',
+  'אוהב',
+  'אוהבת',
+  'לאהוב',
+  'נשיקה',
+  'חיבוק',
+  'חתן',
+  'רומנטי',
+  'תחתונים',
+];
+const EN_FEMALE = [
+  'woman',
+  'women',
+  'girl',
+  'girls',
+  'lady',
+  'ladies',
+  'mother',
+  'mom',
+  'mum',
+  'grandmother',
+  'grandma',
+  'daughter',
+  'sister',
+  'wife',
+  'bride',
+  'queen',
+  'princess',
+  'she',
+  'her',
+  'hers',
+  'kiss',
+  'love',
+  'lover',
+  'romance',
+  'romantic',
+  'sexy',
+  'dating',
+  'date',
+  'wedding',
+  'hug',
+  'dress',
+  'skirt',
+  'bikini',
+  'underwear',
+];
 const FINALS = new Set(Object.keys(FINAL_LETTERS));
 
 function hebrewShapeOk(w: string): boolean {
@@ -70,5 +136,14 @@ describe('library content', () => {
     for (const text of [...wordsOf('en'), ...sentencesOf('en')]) {
       for (const tok of text.split(' ')) expect(EN_BLOCK.includes(tok), text).toBe(false);
     }
+  });
+
+  it('contains no women, romance or suggestive words', () => {
+    const he = new Set(HE_FEMALE);
+    const en = new Set(EN_FEMALE);
+    for (const t of [...wordsOf('he'), ...sentencesOf('he').flatMap((x) => x.split(' '))])
+      expect(he.has(t), t).toBe(false);
+    for (const t of [...wordsOf('en'), ...sentencesOf('en').flatMap((x) => x.split(' '))])
+      expect(en.has(t.toLowerCase()), t).toBe(false);
   });
 });

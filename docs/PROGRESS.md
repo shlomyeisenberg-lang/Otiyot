@@ -30,6 +30,7 @@ Open https://vercel.com/new in my browser. Steps: 1) If asked to sign in, stop a
 Work done before or outside the numbered tasks.
 
 - **2026-11-09** — Planning docs: ARCHITECTURE, GAME_DESIGN, DESIGN, ROADMAP (39 tasks), CLAUDE.md, playbook, progress log. Original plugins 3.3.0 and 4.2.0 added under reference/. (docs/)
+- **2026-11-10** — Owner rules added: no women or sexual content anywhere; text uses only learned letters; scene levels follow learning progress. Content filter (src/learn/content.ts) applied to word packs, sentences and lesson texts. (docs/ARCHITECTURE.md section 8, docs/GAME_DESIGN.md, CLAUDE.md, src/learn/content.ts)
 
 ## Task overview
 

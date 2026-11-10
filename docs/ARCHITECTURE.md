@@ -105,8 +105,10 @@ Target 60 fps at 1080p on integrated graphics (Intel Iris Xe). Presets low / med
 
 ## 8. Content rules
 
+- **No women, no sexualized content, anywhere.** No female characters, figures, silhouettes, voices, portraits or NPCs in any scene, cutscene, menu, cosmetic, journal entry or arcade game. All human characters (the player's apprentice, mentor, rival, merchants, crew, librarian, the Keeper) are male, and non-human characters (Dyo the ink drop, animals, machines, drones, letters) are fine. Nothing sexy, suggestive, romantic or flirtatious in visuals, text, jokes or word lists. The player's look options are male apprentices only (different robes, caps, quills, colors). The word and sentence packs must not contain words that point to women, romance or intimacy, and a unit test scans every pack against a blocklist. If an old arcade game from `reference/` draws or names a woman, it is changed or left out.
 - Family-safe and modest throughout: characters dress modestly, no romance, no crude humor, nothing graphic. Tension is fine (the Lantern Caves are tense, not horror).
 - Jewish culture as the setting: the alef-beis, sofer's tools, places in Eretz Yisrael, holidays, gematria, atbash, proverbs and everyday words. No holy Names anywhere (use ה׳ only if unavoidable), no full pesukim as typing text, no depiction of anything sacred being damaged, and no theology or debate.
+- **Learned letters only.** Typing text in any scene, mode or arcade game uses only the keys the active profile has already learned in the active lesson track (plus space and the punctuation already learned). A key that has not been unlocked never appears in text to type. The only place a new key appears is the lesson that teaches it, where the guide shows it and drills it alone. See GAME_DESIGN 'Levels follow your learning'.
 - Hebrew is the primary language of the world; English is a full second language for UI and typing.
 
 ## 9. Safety guardrails

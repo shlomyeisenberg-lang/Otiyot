@@ -20,7 +20,8 @@ Otiyot is a 3D Jewish-themed touch-typing adventure (Hebrew + English), shipped 
 - UI: tokens and components from DESIGN only; every string in `locales/he.json` and `locales/en.json`; logical CSS properties so RTL works.
 - Saves: every schema change is a new migration with a test. Never store typed text.
 - `reference/` is read-only. `public/arcade/` legacy code is changed only by the arcade tasks.
-- Content rules in ARCHITECTURE section 8 are binding (family-safe, modest, no holy Names, no pesukim as typing text).
+- Content rules in ARCHITECTURE section 8 are binding: **no women and nothing sexy anywhere** (all human characters male, no suggestive content in visuals, text or word lists), family-safe, modest, no holy Names, no pesukim as typing text.
+- **Learned letters only**: all text to type uses only keys the active profile has already learned in its lesson track. Every scene has levels (Easy / Standard / Hard) built from the learned set and unlocks by course progress. See GAME_DESIGN 'Levels follow your learning'. Add a unit test for this in every task that produces typing text.
 - Performance budgets in ARCHITECTURE section 7. No allocations inside `update()`.
 - No gameplay placeholders. Anything unfinished is listed in `todo` in the progress log.
 - Every asset or font added is listed in `ASSETS.md` with source and licence. User-visible changes go in `CHANGELOG.md`.

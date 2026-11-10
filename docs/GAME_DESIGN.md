@@ -23,7 +23,7 @@ The letters are fading. Signs go blank, songs lose their words, people forget ea
 | **Naftali** | Rival, the fastest courier in the land ("swift as a deer"). Mocks slow typing, respects speed, ends as an ally who holds the line in the final fight | Quick, teasing |
 | **Dyo** (דיו, "ink") | Comic sidekick, a talking ink drop who lives in your inkwell, terrified of blotting paper | Excitable, puns on letters |
 | **The Keeper** | Antagonist with a sympathetic motive (see Act 3) | Quiet, tired, never shouts |
-| Merchants, forge master, station crew, librarian | Region NPCs | One strong trait each |
+| Merchants, forge master, station crew, librarian | Region NPCs, all male (see ARCHITECTURE section 8) | One strong trait each |
 
 ## Core loop
 
@@ -58,6 +58,17 @@ Each has its own mechanic, palette, weather, time of day, music theme and enemie
 | 16 | **The Ladder** (endless) | A tower of letters rising through the clouds | Free play, high scores, modifiers | Adaptive |
 
 The Game Room in the hub opens the **Arcade**: all 16 games from the earlier plugins in one lobby.
+
+## Levels follow your learning
+
+The game adapts to where the player is in their course. The active profile's lesson track and per-key skill model decide what is playable and what text appears.
+
+- **Learned set.** At every moment the profile has a set of unlocked keys, from the active track (Track 1 or Track 2). All typing text in every scene, mode and arcade game is built only from that set. Nothing the player has not learned is ever asked of them. New keys appear only in the lesson that teaches them.
+- **Levels per scene.** Every scene has several levels (at least 3: Easy, Standard, Hard) generated from the learned set: word length, speed pressure, enemy count and lookahead grow with skill, never by adding unlearned keys. A scene with a key band that is not yet learned (Forge = numbers, Shuk = symbols) stays locked on the map with a plain note such as 'learn the number row first', and a button that jumps to the lesson that teaches it.
+- **Scene order follows the course.** Scenes unlock as their key band is learned in the active track, not by a fixed list, so the story never runs ahead of the typist.
+- **Auto level.** The hub suggests the best level for now from recent accuracy and speed (about 90% accuracy and rising speed moves the suggestion up; low accuracy moves it down). The player can always pick any unlocked level or difficulty.
+- **Switching tracks** recomputes the learned set from that track's progress; nothing is lost.
+- **Practice and Daily** use the same rule: drills and the daily seed are built from the learned set, so every player gets a fair challenge.
 
 ## Combat
 

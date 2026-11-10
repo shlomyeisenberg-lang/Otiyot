@@ -5,6 +5,7 @@ import { activeLevelOf, findNextLesson, getTrack } from './track';
 import { getProgress } from './progress';
 import type { Profile } from '../save';
 import { adaptiveOptions } from './adaptive';
+import { cleanText } from './content';
 import { DEFAULT_PRACTICE_LENGTH, type Lesson, type Rng, type TextContext } from './types';
 
 /** A slice of the track a scene teaches: a level, optionally one lesson of it. */
@@ -59,9 +60,10 @@ export function nextText(profile: Profile, band: SceneBand, opts: TextSourceOpti
   const ctx = contextFor(profile, opts);
   const levels = track.levels(ctx.language, ctx.uiLanguage);
   const levelId = Math.max(0, Math.min(levels.length - 1, Math.floor(band.level)));
-  if (levelId >= 2 && band.lesson === undefined) return track.exercise(levelId, ctx);
+  if (levelId >= 2 && band.lesson === undefined)
+    return cleanText(track.exercise(levelId, ctx), ctx.language);
   const lesson = lessonForBand(profile, { level: levelId, lesson: band.lesson });
-  return lesson ? lesson.text(ctx) : '';
+  return lesson ? cleanText(lesson.text(ctx), ctx.language) : '';
 }
 
 /** Text for the learner's next unfinished lesson ("Continue"); null when the course is done. */
@@ -69,5 +71,5 @@ export function nextContinueText(profile: Profile, opts: TextSourceOptions = {})
   const track = getTrack(profile.track);
   const ctx = contextFor(profile, opts);
   const next = findNextLesson(track, ctx.language, ctx.uiLanguage, ctx.completed);
-  return next ? next.lesson.text(ctx) : null;
+  return next ? cleanText(next.lesson.text(ctx), ctx.language) : null;
 }
