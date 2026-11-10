@@ -4,7 +4,7 @@
 import type { BackspacePolicy, NiqqudMode } from '../../core';
 import type { KeyboardGuideMode, Settings, ThemeChoice } from '../../save';
 import type { AppContext, Screen } from '../app';
-import { button, field, select, slider, status, tabs, toggle } from '../components';
+import { button, field, select, slider, tabs, toggle } from '../components';
 import { h } from '../dom';
 import { LANGS, type Lang, type MessageKey } from '../i18n';
 import { frame } from './frame';
@@ -30,7 +30,10 @@ export function settingsScreen(ctx: AppContext): Screen {
     return field({ label: t.t(label), hint: t.t(hint) }, tg.el, tg.state);
   };
 
-  const volumeRow = (key: 'musicVolume' | 'sfxVolume', label: MessageKey): HTMLElement => {
+  const volumeRow = (
+    key: 'musicVolume' | 'sfxVolume' | 'voiceVolume' | 'uiVolume',
+    label: MessageKey,
+  ): HTMLElement => {
     const sl = slider({
       min: 0,
       max: 100,
@@ -74,7 +77,18 @@ export function settingsScreen(ctx: AppContext): Screen {
       {},
       volumeRow('musicVolume', 'settings.music'),
       volumeRow('sfxVolume', 'settings.sfx'),
-      h('p', { class: 'page__note' }, status(t.t('common.soon')), ' ', t.t('settings.soundNote')),
+      volumeRow('voiceVolume', 'settings.voice'),
+      volumeRow('uiVolume', 'settings.ui'),
+      h(
+        'div',
+        { class: 'page__actions' },
+        button({
+          label: t.t('settings.soundRoom'),
+          icon: 'sound',
+          onClick: () => ctx.go('sound'),
+        }),
+      ),
+      h('p', { class: 'page__note', text: t.t('settings.soundRoomHint') }),
     );
 
   const typing = (): HTMLElement => {

@@ -1,7 +1,7 @@
 // Save versioning. Every schema change adds ONE entry to MIGRATIONS (from-version -> next version)
 // and bumps CURRENT_VERSION, plus a test in tests/unit/save-migrations.test.ts.
 
-export const CURRENT_VERSION = 5;
+export const CURRENT_VERSION = 6;
 
 type Rec = Record<string, unknown>;
 export type Migration = (raw: Rec) => Rec;
@@ -108,12 +108,36 @@ const v4ToV5: Migration = (raw) => {
   return { ...raw, version: 5, profiles };
 };
 
+/**
+ * v5 -> v6 (T10). The sound mixer gains two more volumes: spoken lines (`voiceVolume`) and menu
+ * sounds (`uiVolume`). Both start at the defaults; music and effects volumes are kept.
+ */
+const v5ToV6: Migration = (raw) => {
+  const isRec = (v: unknown): v is Rec => typeof v === 'object' && v !== null && !Array.isArray(v);
+  const profiles = Array.isArray(raw.profiles)
+    ? raw.profiles.map((p) =>
+        isRec(p)
+          ? {
+              ...p,
+              settings: {
+                voiceVolume: 0.9,
+                uiVolume: 0.6,
+                ...(isRec(p.settings) ? p.settings : {}),
+              },
+            }
+          : p,
+      )
+    : raw.profiles;
+  return { ...raw, version: 6, profiles };
+};
+
 export const MIGRATIONS: Readonly<Record<number, Migration>> = {
   0: v0ToV1,
   1: v1ToV2,
   2: v2ToV3,
   3: v3ToV4,
   4: v4ToV5,
+  5: v5ToV6,
 };
 
 export function versionOf(raw: Rec): number {

@@ -1,6 +1,7 @@
 // The UI shell: top bar, screen switching by location hash, one keyboard listener, theme and
 // language. Screens are plain factories (src/ui/screens); the shell owns nothing game-specific.
 
+import { AudioEngine } from '../audio';
 import type { LoadResult, SaveManager, Settings } from '../save';
 import {
   parseRoute,
@@ -20,6 +21,7 @@ import { openPauseMenu } from './screens/pause';
 import { playersScreen } from './screens/players';
 import { rangeScreen } from './screens/range';
 import { settingsScreen } from './screens/settings';
+import { soundScreen } from './screens/sound';
 import { trackScreen } from './screens/track';
 import { wizardScreen } from './screens/wizard';
 import { applyTheme, nextTheme } from './theme';
@@ -54,6 +56,13 @@ function deckleFilter(): SVGElement {
   return svg;
 }
 
+/** Menus: drone, harp and melody, no drums. */
+const MENU_INTENSITY = 0.3;
+
+function volumesOf(s: Settings): { music: number; sfx: number; voice: number; ui: number } {
+  return { music: s.musicVolume, sfx: s.sfxVolume, voice: s.voiceVolume, ui: s.uiVolume };
+}
+
 export interface ShellOptions {
   root: HTMLElement;
   saves: SaveManager;
@@ -77,6 +86,9 @@ export class Shell {
   private screen: Screen | null = null;
   private route: Route = 'menu';
   private needsWelcome: boolean;
+  private readonly audio: AudioEngine;
+  /** True while the player moves with the keyboard (focus changes then tick softly). */
+  private keyboardNav = false;
 
   constructor(o: ShellOptions) {
     this.root = o.root;
@@ -93,11 +105,17 @@ export class Shell {
       settings: settingsScreen,
       pause: mainMenuScreen,
       range: rangeScreen,
+      sound: soundScreen,
       ...o.extraScreens,
     };
     const saves = this.saves;
+    this.audio = new AudioEngine({
+      volumes: volumesOf(saves.activeProfile.settings),
+      doc: this.win.document,
+    });
     this.ctx = {
       saves,
+      audio: this.audio,
       i18n: this.i18n,
       toast: this.toast,
       get profile() {
@@ -127,6 +145,7 @@ export class Shell {
     this.applySettings();
     this.win.addEventListener('hashchange', () => this.render());
     this.win.document.addEventListener('keydown', (ev) => this.onKey(ev));
+    this.listenForSound();
     this.win
       .matchMedia?.('(prefers-color-scheme: dark)')
       .addEventListener?.('change', () => this.applySettings());
@@ -138,7 +157,52 @@ export class Shell {
     const html = this.win.document.documentElement;
     this.i18n.setLang(settings.uiLanguage, html);
     applyTheme(settings, html);
+    this.audio.setVolumes(volumesOf(settings));
     this.win.document.title = this.i18n.t('app.name');
+  }
+
+  /**
+   * Sound may only start after the player does something, so the first key press or click wakes
+   * the audio. Menus answer clicks and keyboard moves with soft sounds of their own.
+   */
+  private listenForSound(): void {
+    const doc = this.win.document;
+    const wake = (): void => this.audio.unlock();
+    doc.addEventListener(
+      'keydown',
+      () => {
+        wake();
+        this.keyboardNav = true;
+      },
+      true,
+    );
+    doc.addEventListener(
+      'pointerdown',
+      () => {
+        wake();
+        this.keyboardNav = false;
+      },
+      true,
+    );
+    this.root.addEventListener('click', (ev) => {
+      const el = (ev.target as HTMLElement | null)?.closest?.(
+        'button, [role="tab"], [role="radio"], [role="switch"], a[href]',
+      );
+      if (!el || el.hasAttribute('disabled')) return;
+      const role = el.getAttribute('role');
+      this.audio.play(role === 'switch' || role === 'radio' ? 'ui-toggle' : 'ui-click');
+    });
+    this.root.addEventListener('focusin', (ev) => {
+      if (!this.keyboardNav) return;
+      const el = ev.target as HTMLElement | null;
+      if (
+        el?.matches?.(
+          'button, [role="tab"], [role="radio"], [role="switch"], a[href], select, input',
+        )
+      ) {
+        this.audio.play('ui-move');
+      }
+    });
   }
 
   private go(route: Route): void {
@@ -149,7 +213,10 @@ export class Shell {
 
   private back(): void {
     const parent = PARENT[this.route];
-    if (parent) this.go(parent);
+    if (parent) {
+      this.audio.play('ui-back');
+      this.go(parent);
+    }
   }
 
   private render(): void {
@@ -170,6 +237,11 @@ export class Shell {
         : 'stage';
     this.stage.dataset.route = route;
     this.stage.replaceChildren(screen.el);
+    // Menus play the title theme softly; 3D screens choose their own music.
+    if (!screen.full && !screen.ownsMusic) {
+      this.audio.music('title');
+      this.audio.intensity(MENU_INTENSITY);
+    }
     this.win.scrollTo(0, 0);
     screen.focus?.();
     if (route === 'pause') {

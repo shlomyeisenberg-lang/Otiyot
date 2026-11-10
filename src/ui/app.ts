@@ -1,5 +1,6 @@
 // What every screen is given, and what every screen must be.
 
+import type { AudioEngine } from '../audio';
 import type { Profile, SaveManager, Settings } from '../save';
 import type { ToastHost } from './components';
 import type { I18n, Lang } from './i18n';
@@ -14,12 +15,15 @@ export type Route =
   | 'settings'
   | 'pause'
   | 'styleguide'
-  | 'range';
+  | 'range'
+  | 'sound';
 
 export interface AppContext {
   readonly saves: SaveManager;
   readonly i18n: I18n;
   readonly toast: ToastHost;
+  /** The one audio engine: music, effects, menu sounds (silent until the first key or click). */
+  readonly audio: AudioEngine;
   readonly profile: Profile;
   go(route: Route): void;
   back(): void;
@@ -38,6 +42,8 @@ export interface Screen {
   focus?(): void;
   /** Wider column (cards side by side). */
   wide?: boolean;
+  /** The screen picks its own music (otherwise menus play the title theme softly). */
+  ownsMusic?: boolean;
   /** Fills the whole area under the top bar (3D views). */
   full?: boolean;
   /** Called when the screen is replaced: stop loops, free what was created. */
@@ -58,6 +64,7 @@ export const PARENT: Readonly<Record<Route, Route | null>> = {
   pause: 'menu',
   styleguide: 'menu',
   range: 'menu',
+  sound: 'settings',
 };
 
 const ROUTES = Object.keys(PARENT) as Route[];

@@ -6,8 +6,8 @@ _Last updated 2026-11-10. This page is generated from `docs/progress.json`; to c
 
 ## Summary
 
-- ✅ **9** of **39** tasks done
-- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 30 pending
+- ✅ **10** of **39** tasks done
+- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 29 pending
 - ⬜ **2** manual steps waiting for you
 - 💡 0 feature ideas open
 
@@ -53,7 +53,7 @@ Work done before or outside the numbered tasks.
 - ✅ T07 · Design system and UI shell — 2026-11-10 · [PR #12](https://github.com/shlomyeisenberg-lang/Otiyot/pull/12)
 - ✅ T08 · 3D engine kit — 2026-11-10 · [PR #14](https://github.com/shlomyeisenberg-lang/Otiyot/pull/14)
 - ✅ T09 · 3D keyboard, finger guide, HUD and typing feedback — 2026-11-10 · [PR #15](https://github.com/shlomyeisenberg-lang/Otiyot/pull/15)
-- ⬜ T10 · Audio engine and first music themes
+- ✅ T10 · Audio engine and first music themes — 2026-11-10 · [PR #16](https://github.com/shlomyeisenberg-lang/Otiyot/pull/16)
 - ⬜ T11 · Combat, combo and difficulty kit
 - ⬜ T12 · Story system, title screen and intro
 - ⬜ T13 · Hub: the House of the Scribe
@@ -439,11 +439,53 @@ Typing now feels alive: a paper strip shows the word letter by letter with the n
 
 Try it on the live site at #/range: type the word on the paper strip and press space after each word.
 
-### ⬜ T10 · Audio engine and first music themes
+### ✅ T10 · Audio engine and first music themes
 
-**Status:** Pending
+**Status:** Done · **Finished:** 2026-11-10 · **Pull request:** [PR #16](https://github.com/shlomyeisenberg-lang/Otiyot/pull/16)
 
-_Not started._
+The game now has sound, all made in code: five music themes that build layer by layer with your streak and always change on the beat, key clicks that climb the music's own scale, a soft knock for mistakes, menu sounds, place sounds that can come from a point in the world, four volume sliders and a sound room to hear everything.
+
+**What changed**
+
+- src/audio/theory.ts: modes (freygish, minor, dorian, mi sheberach), scale degrees to notes, the pentatonic click ladder (two octaves up and back), seeded random numbers, volume curve
+- src/audio/themes.ts: five themes as data: title (D freygish, 60, clarinet, 6/8), hub (G minor, 80, oud, brushes, swung), meadow (A dorian, 112, flute, darbuka), cliffs (E mi sheberach, 92, violin, kanun, 6/8), boss (C freygish, 138, strings, cello ostinato, taiko, three phases with the last one a semitone higher)
+- src/audio/composer.ts: the composer writes every bar of five stems (drone, pulse, melody, counter-melody, percussion); melodies in 4-bar phrases following a contour, ending each section on the tonic, with ornaments that change on every visit so ten minutes never loop exactly; stemLevels and tierIntensity (which stems play at which combo tier); BarClock holds intensity, section and boss-phase changes until the next bar line
+- src/audio/synth.ts: instruments made from oscillators, filters and noise: pad, harp, oud, kanun, flute, clarinet, violin, strings, cello, bell; darbuka, frame drum, taiko and brush kits; a hall reverb made from decaying noise
+- src/audio/sfx.ts: one-shot sounds: key (wooden tap coloured per character plus a note on the ladder, brighter per tier), space, error (low muted knock), word, perfect, restore, tier chime, impact, impact-small, shatter, whoosh, success, and menu sounds ui-move, ui-click, ui-back, ui-open, ui-toggle, ui-error
+- src/audio/ambience.ts: looping place sounds wind, birds, water, fire, crickets, machine hum, each optionally at a point in the world
+- src/audio/engine.ts: AudioEngine: starts only after the first key press or click (browser rule), mixer with music, effects, voice and menu buses plus limiter, music ducking under errors and impacts, look-ahead scheduler, stems fading over one beat at bar lines, positional one-shots and ambience (HRTF), listener, pause while the tab is hidden, status snapshot, offline render for tests
+- src/engine/scene.ts: AudioPort grows playAt, section, ambience, clearAmbience and listen (SILENT_AUDIO updated); SceneManager points the ears along the camera every frame and stops ambience when a scene unloads
+- src/ui/shell.ts + src/ui/app.ts: one AudioEngine for the app (AppContext.audio), volumes applied from settings, menus play the title theme softly, menu sounds on clicks, keyboard moves and Back; Screen.ownsMusic
+- src/ui/screens/sound.ts + screens.css: the sound room at #/sound (from Settings > Sound): theme cards, streak-level slider, stem lamps, a typing pad that builds a real streak, boss phase buttons, stop, place sounds and every effect
+- src/ui/screens/settings.ts: Sound tab has four volume sliders (music, effects, voice, menu sounds) and a button to the sound room; the old "sound comes later" note removed; new sound icon in src/ui/icons.ts
+- Save v6: settings.voiceVolume (0.9) and settings.uiVolume (0.6) with migration v5 -> v6 and test
+- Test range: plays the meadow theme with wind and birds in the trees; music layers follow the combo tier, new tiers chime, key clicks carry the typed character, words ring
+- Locales: sound room, theme names and moods, modes, stems, tiers, places, effects and new settings strings in Hebrew and English
+- Tests: tests/unit/audio-music.test.ts (theory, click ladder, volume curve, every theme well formed and distinct, ten minutes of every theme and boss phase in tune, in time and in range, determinism, recognisable but not looping, cadences on the tonic, layering, bar-synced changes, boss phases); tests/e2e/sound.spec.ts (every theme renders clean sound without clipping and layers add to it, sound wakes only on a key, a typed streak brings in the drums on the bar and a mistake takes them out, boss phases, place sounds, four saved volumes)
+- Docs: ARCHITECTURE 7d Audio and the save model, DESIGN Sound direction (how it was built), CHANGELOG, ASSETS (no audio files), ROADMAP tick
+
+**Decisions**
+
+- **Music layers follow the combo tier directly: ink = drone and soft harp, techelet = melody, silver = drums, gold = second voice, light = busier drums and fills** — The roadmap says stems build with the combo; using the same five tiers as the HUD combo meter makes what you see and what you hear match
+- **After a mistake the layers drop back on the next bar line, with a one-beat fade, not instantly** — Errors must stay soft ("impact without punishment"); a bar-synced fade sounds musical instead of like a penalty
+- **Key clicks are tuned to the theme that is playing and climb its pentatonic ladder two octaves, then back down** — A long streak then plays a melody in key with the music instead of rising out of hearing or clashing
+- **Menus play the title theme quietly (melody, no drums); 3D screens and the sound room choose their own music** — Menus feel alive without being noisy; scenes stay in charge of their own sound
+- **Added voiceVolume (0.9) and uiVolume (0.6) to the save as a new version (v6) with a migration** — The roadmap asks for music, effects, voice and UI volumes; menu sounds start a bit lower so they never tire
+- **Voice volume is exposed as a number for speech synthesis instead of routing speech through Web Audio** — Browser speech cannot be routed through Web Audio; T35 will set the utterance volume from it
+- **The AudioPort that scenes use gained playAt, section, ambience, clearAmbience and listen; the scene manager moves the ears with the camera and stops ambience on unload** — Positional sound and boss phases need these, and doing the listener and cleanup in the manager means no scene can forget them
+- **Added a sound room screen (#/sound, opened from Settings > Sound)** — There are no game scenes with music yet besides the test range; the sound room lets the owner hear every theme, layer, place and effect right away
+- **Quality is checked by rendering every theme offline in the browser test (real samples: not silent, no clipping, louder with more layers) plus unit tests that compose ten minutes of every theme** — An unattended run cannot listen; these checks prove the music is in tune, in time, varied and clean
+- **Brushes in the hub theme swish softly through a band-pass filter instead of a bright high-pass hiss** — A spectrum check of the first version showed the hub was too hissy for a cosy room
+
+**To do**
+
+- [ ] Listen to the five themes in the sound room and say what to change (tempo, instruments, mood): the music was checked by measurement, not by ear
+- [ ] Themes for the other regions (Forge, Shuk, Jaffa Line, Geniza, Hermon, Station, Atbash City, Midbar, Lantern Caves, Keeper) come with their scene tasks; the voice bus is used by spoken lines in T35
+- [ ] The richer instrument and mix pass is part of T34 (art, lighting, VFX and music pass)
+
+**Notes**
+
+No typing text is produced in this task (the sound room counts any letters only for sound), so the learned-letters test does not apply. No audio files: everything is synthesized live, so the plugin stays small and offline.
 
 ### ⬜ T11 · Combat, combo and difficulty kit
 

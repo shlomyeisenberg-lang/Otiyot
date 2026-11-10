@@ -3,7 +3,7 @@
 // group it is given, registers what it creates with the tracker, and never touches the keyboard
 // or the save file.
 
-import { Group } from 'three';
+import { Group, Vector3 } from 'three';
 import type { LayoutId, TypedKey } from '../core';
 import type { CameraRig } from './camera';
 import { Tracker, type GpuCounts } from './disposal';
@@ -42,12 +42,32 @@ export interface RunConfig {
  * one in, scenes get `SILENT_AUDIO` and simply make no sound.
  */
 export interface AudioPort {
-  /** A one-shot sound by name ('key', 'error', 'restore', ...). `pitch` is in scale steps. */
-  play(sound: string, pitch?: number): void;
-  /** The scene's music theme, or null for silence. */
+  /**
+   * A one-shot sound by name ('key', 'error', 'space', 'word', 'restore', 'impact', ...; the
+   * full list is SFX_NAMES in src/audio/sfx.ts). For 'key', `pitch` is the combo (the click climbs
+   * the music's scale with it) and `variant` the character typed (each key has its own click).
+   */
+  play(sound: string, pitch?: number, variant?: string): void;
+  /** The same, coming from a point in the world (pans and fades with distance from the camera). */
+  playAt(sound: string, x: number, y: number, z: number, pitch?: number): void;
+  /** The scene's music theme ('title', 'hub', 'meadow', 'cliffs', 'boss'), or null for silence. */
   music(theme: string | null): void;
-  /** 0..1: how many music layers are in (follows the combo). */
+  /** 0..1: how many music layers are in (follows the combo; see tierIntensity). Bar-synced. */
   intensity(level: number): void;
+  /** Jumps the music to a section or boss phase ('phase1', 'phase2', 'phase3') on the next bar. */
+  section(name: string): void;
+  /** A looping place sound ('wind', 'birds', 'water', 'fire', 'crickets', 'hum'), optionally at a point. */
+  ambience(id: string, x?: number, y?: number, z?: number): AmbienceHandle;
+  /** Stops every ambience (the scene manager calls this when a scene unloads). */
+  clearAmbience(): void;
+  /** Where the ears are: position and facing direction (the scene manager follows the camera). */
+  listen(x: number, y: number, z: number, fx: number, fy: number, fz: number): void;
+}
+
+/** A running ambience: move it, or stop it. */
+export interface AmbienceHandle {
+  move(x: number, y: number, z: number): void;
+  stop(): void;
 }
 
 /**
@@ -96,7 +116,16 @@ export const NO_TYPING: TypingView = {
   layout: 'he',
 };
 
-export const SILENT_AUDIO: AudioPort = { play() {}, music() {}, intensity() {} };
+export const SILENT_AUDIO: AudioPort = {
+  play() {},
+  playAt() {},
+  music() {},
+  intensity() {},
+  section() {},
+  ambience: () => ({ move() {}, stop() {} }),
+  clearAmbience() {},
+  listen() {},
+};
 export const NO_HUD: HudPort = { line() {}, set() {}, announce() {} };
 
 export interface SceneContext {
@@ -159,6 +188,10 @@ export class SceneManager {
   private tracker: Tracker | null = null;
   private baseline: GpuCounts | null = null;
   private busy = false;
+  private readonly ears = new Vector3();
+  private get audio(): AudioPort {
+    return this.host.audio ?? SILENT_AUDIO;
+  }
 
   constructor(
     private readonly engine: Engine,
@@ -166,7 +199,20 @@ export class SceneManager {
     private readonly host: SceneHost,
   ) {
     engine.onUpdate = (dt) => this.current?.update(dt);
-    engine.onFrame = (dt) => this.current?.frame?.(dt);
+    engine.onFrame = (dt) => {
+      this.current?.frame?.(dt);
+      // The ears follow the camera, so positional sounds pan and fade as it moves.
+      const cam = engine.camera;
+      cam.getWorldDirection(this.ears);
+      this.audio.listen(
+        cam.position.x,
+        cam.position.y,
+        cam.position.z,
+        this.ears.x,
+        this.ears.y,
+        this.ears.z,
+      );
+    };
     engine.onQuality = (preset) => {
       // A new preset means new buffers and shadow maps: measure the engine afresh next time.
       this.baseline = null;
@@ -243,6 +289,7 @@ export class SceneManager {
       e.scene.remove(this.root);
       this.root = null;
     }
+    this.audio.clearAmbience();
     e.materials.clearSweeps();
     e.materials.restoreAll(0, 0);
     e.post.setGrade();
