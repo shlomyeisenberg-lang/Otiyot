@@ -72,7 +72,7 @@ No accounts. Multiple local **profiles**; each has its own settings, skill model
 
 ## 4. Data model (save file, versioned)
 
-`Save { version, profiles[], activeProfileId, meta { legacyChecked } }`. `Profile { id, name, avatar, settings, track: 1|2, layout: 'he'|'en', lessons{ [track]: progress }, keys{ [char]: KeyStat }, srs, story{ scene ranks, flags }, wallet{ glyphs, ink }, unlocks, cosmetics, history[] (sessions), arcade (opaque blob owned by the legacy games), createdAt }`. `KeyStat { hits, misses, avgMs, lastSeen, ease, due, confusions{} }`. Every schema change adds a migration in `src/save/migrations.ts` with a unit test. Typed text itself is never stored, only statistics.
+`Save { version, profiles[], activeProfileId, meta { legacyChecked } }`. `Profile { id, name, avatar, settings, track: 1|2, layout: 'he'|'en', lessons{ [track]: progress }, keys{ [char]: KeyStat }, srs, story{ scene ranks, flags }, wallet{ glyphs, ink }, unlocks, cosmetics, history[] (sessions), customLists{ [id]: { name, language, words[] } } (v2, T05), arcade (opaque blob owned by the legacy games), createdAt }`. `KeyStat { hits, misses, avgMs, lastSeen, ease, due, confusions{} }`. Every schema change adds a migration in `src/save/migrations.ts` with a unit test. Typed text itself is never stored, only statistics.
 
 ## 5. Lesson tracks
 
@@ -81,6 +81,8 @@ No accounts. Multiple local **profiles**; each has its own settings, skill model
 - Both exist for Hebrew and English. The player picks a track per profile (first run and in Settings) and can switch any time; progress is kept per track. Per-key skill data is shared between tracks.
 - **Code (T04).** `src/learn/track.ts` holds `TRACK_1` and `TRACK_2` (levels, lessons, unlock rule, "continue"); text generators are `text1.ts` (3.3.0) and `text2.ts` (4.2.0) and take an injected random source, so lessons are reproducible. Word banks and the lexicon in `src/learn/data/` are generated from `reference/` by `scripts/extract-learn-data.mjs`. Progress lives in `profile.lessons`: key `"1"`/`"2"` for Hebrew and `"1-en"`/`"2-en"` for English (`src/learn/progress.ts`); switching tracks only changes `profile.track`. `nextText(profile, {level, lesson?})` in `src/learn/source.ts` is what scenes call. Weak keys and weak transitions are passed in by the adaptive engine (T06). Tests run the original plugin code in a sandbox and compare lessons text for text.
 - Story scenes ask the active track for text: each scene maps to a band of the track (see GAME_DESIGN), so the story *is* the course. A key set unlocks only when accuracy on the current one passes the threshold (default 90%).
+
+- **Word library (T05).** `src/learn/library/` holds themed word packs and sentence packs per language (`data-he.ts`, `data-en.ts`, drafted by a helper model and reviewed) plus the older lexicon as the `classic` pack. API: `wordsOf`, `sentencesOf`, `tierOf` (1-3, 4-5, 6-7, 8+ letters), `eligibleWords` / `pickWords` (allowed key set, length, tier, pack, weights toward weak keys), and custom lists (`parseWordList`, `setCustomList`, `removeCustomList`) stored on `profile.customLists`. `tests/unit/library-content.test.ts` scans every pack against the content rules (blocklist of holy Names).
 
 ## 6. Arcade (the 16 earlier games)
 

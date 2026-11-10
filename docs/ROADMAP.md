@@ -60,7 +60,7 @@ Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Fable 5.2 
 - **Done when** Both tracks produce the same lesson content as their originals, for Hebrew and English, and switching tracks works in tests.
 - **User must have ready** Nothing.
 
-### [ ] T05 · Word and sentence library
+### [x] T05 · Word and sentence library
 - **Branch** `t05-word-library`
 - **Model** Sonnet 5.5 · **Effort** Medium
 - **Goal** A large built-in library of words and sentences by difficulty tier, with Jewish-themed packs, plus custom lists.

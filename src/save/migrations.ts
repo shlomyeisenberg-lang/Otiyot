@@ -1,7 +1,7 @@
 // Save versioning. Every schema change adds ONE entry to MIGRATIONS (from-version -> next version)
 // and bumps CURRENT_VERSION, plus a test in tests/unit/save-migrations.test.ts.
 
-export const CURRENT_VERSION = 1;
+export const CURRENT_VERSION = 2;
 
 type Rec = Record<string, unknown>;
 export type Migration = (raw: Rec) => Rec;
@@ -41,7 +41,19 @@ const v0ToV1: Migration = (raw) => {
   return { version: 1, profiles: [profile], activeProfileId: profile.id };
 };
 
-export const MIGRATIONS: Readonly<Record<number, Migration>> = { 0: v0ToV1 };
+/** v1 -> v2 (T05). Profiles gain `customLists` (the player's own word lists), empty to start. */
+const v1ToV2: Migration = (raw) => {
+  const profiles = Array.isArray(raw.profiles)
+    ? raw.profiles.map((p) =>
+        typeof p === 'object' && p !== null && !Array.isArray(p)
+          ? { customLists: {}, ...(p as Rec) }
+          : p,
+      )
+    : raw.profiles;
+  return { ...raw, version: 2, profiles };
+};
+
+export const MIGRATIONS: Readonly<Record<number, Migration>> = { 0: v0ToV1, 1: v1ToV2 };
 
 export function versionOf(raw: Rec): number {
   const v = raw.version;

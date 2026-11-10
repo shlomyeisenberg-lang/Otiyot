@@ -7,7 +7,7 @@ _Last updated 2026-11-10. This page is generated from `docs/progress.json`; to c
 ## Summary
 
 - ✅ **4** of **39** tasks done
-- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 35 pending
+- 🛠️ 1 in progress · ⛔ 0 blocked · ⬜ 34 pending
 - ⬜ **1** manual step waiting for you
 - 💡 0 feature ideas open
 
@@ -37,7 +37,7 @@ Work done before or outside the numbered tasks.
 - ✅ T02 · Typing core — 2026-11-10 · [PR #3](https://github.com/shlomyeisenberg-lang/Otiyot/pull/3)
 - ✅ T03 · Saves and profiles — 2026-11-10 · [PR #4](https://github.com/shlomyeisenberg-lang/Otiyot/pull/4)
 - ✅ T04 · The two lesson tracks — 2026-11-10 · [PR #6](https://github.com/shlomyeisenberg-lang/Otiyot/pull/6)
-- ⬜ T05 · Word and sentence library
+- 🛠️ T05 · Word and sentence library — 2026-11-10
 - ⬜ T06 · Adaptive engine and spaced repetition
 - ⬜ T07 · Design system and UI shell
 - ⬜ T08 · 3D engine kit
@@ -213,11 +213,35 @@ Both built-in lesson courses now exist as pure logic for Hebrew and English: Tra
 
 Run node scripts/extract-learn-data.mjs && pnpm exec prettier --write src/learn/data to regenerate the data files.
 
-### ⬜ T05 · Word and sentence library
+### 🛠️ T05 · Word and sentence library
 
-**Status:** Pending
+**Status:** In progress · **Finished:** 2026-11-10
 
-_Not started._
+A built-in library of over 4,000 Hebrew and 4,200 English words in themed packs and 360 sentences per language now exists as pure logic, with difficulty tiers, a key-limited filter weighted toward weak keys, and personal word lists stored on the profile. Every pack is scanned by a content test with a blocklist of holy Names.
+
+**What changed**
+
+- src/learn/library/data-he.ts and data-en.ts: word packs (everyday, home, market, numbers, travel, sea, sky, desert, holidays, nature, school; Hebrew also extra) and sentence packs (everyday, home, market, travel, sea-and-sky, desert, holidays, proverbs)
+- src/learn/library/index.ts: wordsOf, sentencesOf, tierOf, eligibleWords, pickWords (allowed keys, length, tier, pack, weak-key weighting), parseWordList, setCustomList, removeCustomList; older lexicon kept as the classic pack
+- src/save/schema.ts and migrations.ts: Profile.customLists, save version 2 with a v1 to v2 migration
+- tests/unit/library-content.test.ts and library-api.test.ts: amounts, packs, no duplicates, typeable plain text, holy-Names blocklist, filter, custom lists, migration
+- docs/ROADMAP.md ticked, docs/ARCHITECTURE.md sections 4 and 5, CHANGELOG.md updated
+
+**Decisions**
+
+- **Word and sentence drafts were written by Haiku helper agents, then checked by scripts and tests (letters only, final letters, no duplicates, blocklist) and spot-read** — CLAUDE.md allows cheaper helpers for bulk lists; tests make the content rules binding
+- **Sentences are original short sayings, no punctuation or capitals** — The typing engine has no punctuation keys in the lesson text and ARCHITECTURE section 8 forbids pesukim as typing text
+- **Tiers are by word length; row coverage is answered by the allowed-key filter** — Keeps one simple rule; lessons pass the key set they have taught
+- **Custom lists capped at 20 lists, 2,000 words each, 24 letters per word** — Keeps saves small; only words are stored, never typed text
+
+**To do**
+
+- [ ] The Hebrew word packs contain some English-transliterated Hebrew words in the English holidays pack (for example shalom, challah); a native-speaker review of both libraries is worthwhile
+- [ ] Screens for choosing packs and managing custom lists come with the mode tasks (T31)
+
+**Notes**
+
+Frequency tiers use pack order and the classic top-word list only; there is no corpus-based ranking.
 
 ### ⬜ T06 · Adaptive engine and spaced repetition
 
