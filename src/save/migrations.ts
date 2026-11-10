@@ -1,7 +1,7 @@
 // Save versioning. Every schema change adds ONE entry to MIGRATIONS (from-version -> next version)
 // and bumps CURRENT_VERSION, plus a test in tests/unit/save-migrations.test.ts.
 
-export const CURRENT_VERSION = 3;
+export const CURRENT_VERSION = 4;
 
 type Rec = Record<string, unknown>;
 export type Migration = (raw: Rec) => Rec;
@@ -74,10 +74,29 @@ const v2ToV3: Migration = (raw) => {
   return { ...raw, version: 3, profiles };
 };
 
+/**
+ * v3 -> v4 (T08). Settings gain `quality` ('auto': let the first-run benchmark decide) and the
+ * save remembers what the benchmark picked for this device in `meta.autoQuality` (null until it
+ * has run). Values already present are kept.
+ */
+const v3ToV4: Migration = (raw) => {
+  const isRec = (v: unknown): v is Rec => typeof v === 'object' && v !== null && !Array.isArray(v);
+  const profiles = Array.isArray(raw.profiles)
+    ? raw.profiles.map((p) =>
+        isRec(p)
+          ? { ...p, settings: { quality: 'auto', ...(isRec(p.settings) ? p.settings : {}) } }
+          : p,
+      )
+    : raw.profiles;
+  const meta = { autoQuality: null, ...(isRec(raw.meta) ? raw.meta : {}) };
+  return { ...raw, version: 4, profiles, meta };
+};
+
 export const MIGRATIONS: Readonly<Record<number, Migration>> = {
   0: v0ToV1,
   1: v1ToV2,
   2: v2ToV3,
+  3: v3ToV4,
 };
 
 export function versionOf(raw: Rec): number {

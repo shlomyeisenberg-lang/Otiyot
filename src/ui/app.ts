@@ -13,7 +13,8 @@ export type Route =
   | 'layout'
   | 'settings'
   | 'pause'
-  | 'styleguide';
+  | 'styleguide'
+  | 'range';
 
 export interface AppContext {
   readonly saves: SaveManager;
@@ -37,6 +38,10 @@ export interface Screen {
   focus?(): void;
   /** Wider column (cards side by side). */
   wide?: boolean;
+  /** Fills the whole area under the top bar (3D views). */
+  full?: boolean;
+  /** Called when the screen is replaced: stop loops, free what was created. */
+  dispose?(): void;
 }
 
 export type ScreenFactory = (ctx: AppContext) => Screen;
@@ -52,6 +57,7 @@ export const PARENT: Readonly<Record<Route, Route | null>> = {
   settings: 'menu',
   pause: 'menu',
   styleguide: 'menu',
+  range: 'menu',
 };
 
 const ROUTES = Object.keys(PARENT) as Route[];

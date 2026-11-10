@@ -4,8 +4,9 @@
 import { activeLevelOf, findNextLesson, getTrack } from './track';
 import { getProgress } from './progress';
 import type { Profile } from '../save';
-import { adaptiveOptions } from './adaptive';
-import { cleanText } from './content';
+import { adaptiveOptions, knownKeysOf } from './adaptive';
+import { cleanText, isAllowedWord } from './content';
+import { eligibleWords } from './library';
 import { DEFAULT_PRACTICE_LENGTH, type Lesson, type Rng, type TextContext } from './types';
 
 /** A slice of the track a scene teaches: a level, optionally one lesson of it. */
@@ -72,4 +73,56 @@ export function nextContinueText(profile: Profile, opts: TextSourceOptions = {})
   const ctx = contextFor(profile, opts);
   const next = findNextLesson(track, ctx.language, ctx.uiLanguage, ctx.completed);
   return next ? cleanText(next.lesson.text(ctx), ctx.language) : null;
+}
+
+export interface LearnedWordOptions {
+  rng: Rng;
+  /** Shortest and longest word, in letters. Defaults 2 and 7. */
+  minLength?: number;
+  maxLength?: number;
+}
+
+/** Fewer real words than this and letter drills are mixed in, so the text does not repeat. */
+const MIN_WORD_POOL = 12;
+
+/**
+ * Single words built only from the keys this profile has already learned on its active track
+ * (ARCHITECTURE section 8, "Learned letters only"). Real words from the library when the learned
+ * set can spell enough of them; otherwise short drills made of the learned letters themselves.
+ * The learned set is read once, when the source is made.
+ */
+export function learnedWordSource(
+  profile: Profile,
+  opts: LearnedWordOptions,
+): { next(): string; readonly keys: ReadonlySet<string> } {
+  const { rng } = opts;
+  const min = Math.max(1, opts.minLength ?? 2);
+  const max = Math.max(min, opts.maxLength ?? 7);
+  const language = profile.layout;
+  const keys = knownKeysOf(profile);
+  const letters = [...keys].filter((c) => c.trim() !== '' && /\p{L}/u.test(c));
+  const pool = eligibleWords({ language, allowedChars: keys, minLength: min, maxLength: max });
+  const pick = <T>(items: readonly T[]): T =>
+    items[Math.min(items.length - 1, Math.floor(rng() * items.length))] as T;
+
+  const drill = (): string => {
+    if (letters.length === 0) return '';
+    const top = Math.min(max, Math.max(min, 4));
+    for (let attempt = 0; attempt < 8; attempt += 1) {
+      const length = min + Math.floor(rng() * (top - min + 1));
+      let word = '';
+      for (let i = 0; i < length; i += 1) word += pick(letters);
+      if (isAllowedWord(word, language)) return word;
+    }
+    return pick(letters).repeat(min);
+  };
+
+  return {
+    keys,
+    next(): string {
+      if (pool.length >= MIN_WORD_POOL) return pick(pool);
+      if (pool.length > 0 && rng() < 0.5) return pick(pool);
+      return drill();
+    },
+  };
 }

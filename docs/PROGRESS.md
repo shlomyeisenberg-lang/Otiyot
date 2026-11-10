@@ -6,14 +6,14 @@ _Last updated 2026-11-10. This page is generated from `docs/progress.json`; to c
 
 ## Summary
 
-- ✅ **7** of **39** tasks done
-- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 32 pending
-- ⬜ **1** manual step waiting for you
+- ✅ **8** of **39** tasks done
+- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 31 pending
+- ⬜ **2** manual steps waiting for you
 - 💡 0 feature ideas open
 
 ## Waiting for me
 
-1 manual step only you can do. Paste each prompt into Claude in Chrome, and tell the AI when a step is finished.
+2 manual steps only you can do. Paste each prompt into Claude in Chrome, and tell the AI when a step is finished.
 
 ### ⬜ Import the repo into Vercel — T01 · Project setup, CI and plugin packer
 
@@ -23,6 +23,16 @@ Prompt for Claude in Chrome:
 
 ```text
 Open https://vercel.com/new in my browser. Steps: 1) If asked to sign in, stop and hand control back to me. 2) Under Import Git Repository choose the GitHub repo shlomyeisenberg-lang/Otiyot (if it is not listed, click Adjust GitHub App Permissions and stop for me to approve). 3) Click Import. 4) Leave Framework Preset as Vite and keep the settings from vercel.json. 5) Click Deploy and wait until it finishes. Stop and hand control back to me for sign-in, passwords, 2FA, CAPTCHAs, payment, creating an account and pasting secret keys; never type a secret yourself. When done, report the live URL and what you did.
+```
+
+### ⬜ Check the frame rate on a real computer — T08 · 3D engine kit
+
+The cloud build machine has no graphics card, so real speed could not be measured there. On your own computer open the live link, add #/range to the end of the address, click Medium under Quality and read the first line of the small box in the corner: it should say about 60 and not be red. Needs the live link from the T01 step (Import the repo into Vercel).
+
+Prompt for Claude in Chrome:
+
+```text
+Open the live Otiyot website in my browser (the Vercel address of the project shlomyeisenberg-lang/Otiyot; if you do not know it, open https://vercel.com/dashboard, open the project named otiyot and use its production address; if asked to sign in, stop and hand control back to me). Steps: 1) Add #/range to the end of the address and press Enter. 2) If the welcome steps appear, type the name Test, press Enter, then click Next twice, then go to the #/range address again. 3) Wait about 5 seconds until the 3D scene appears. 4) In the Quality group click Medium. 5) Wait 5 seconds, then read the small box in the top corner: frames per second, frame time, draw calls, triangles. 6) Press the number keys 1 to 9 one at a time and read frames per second again. 7) Click High and read the numbers once more. Stop and hand control back to me for sign-in, passwords, 2FA, CAPTCHAs, payment and creating an account; never type a secret yourself. When done, report the numbers you read for Medium and High, whether any number was shown in red, and what computer and browser this is.
 ```
 
 ## History
@@ -41,7 +51,7 @@ Work done before or outside the numbered tasks.
 - ✅ T05 · Word and sentence library — 2026-11-10 · [PR #8](https://github.com/shlomyeisenberg-lang/Otiyot/pull/8)
 - ✅ T06 · Adaptive engine and spaced repetition — 2026-11-10 · [PR #10](https://github.com/shlomyeisenberg-lang/Otiyot/pull/10)
 - ✅ T07 · Design system and UI shell — 2026-11-10 · [PR #12](https://github.com/shlomyeisenberg-lang/Otiyot/pull/12)
-- ⬜ T08 · 3D engine kit
+- ✅ T08 · 3D engine kit — 2026-11-10 · [PR #14](https://github.com/shlomyeisenberg-lang/Otiyot/pull/14)
 - ⬜ T09 · 3D keyboard, finger guide, HUD and typing feedback
 - ⬜ T10 · Audio engine and first music themes
 - ⬜ T11 · Combat, combo and difficulty kit
@@ -321,11 +331,71 @@ The game now has its real look and its menus: parchment and night-ink themes, bu
 
 Built by the Fable runner (Fable 5.2, effort High) on the second attempt; the first run left no branch. Website build is about 380 KB in total, of which 115 KB is the optional OpenDyslexic font. To try: open the live link, go through the three welcome steps, then try typing the gold letters, the language button and the theme button in the top corner.
 
-### ⬜ T08 · 3D engine kit
+### ✅ T08 · 3D engine kit
 
-**Status:** Pending
+**Status:** Done · **Finished:** 2026-11-10 · **Pull request:** [PR #14](https://github.com/shlomyeisenberg-lang/Otiyot/pull/14)
 
-_Not started._
+The game now has its 3D foundation: a renderer with four graphics presets that picks the right one for each computer, lighting, fog, shadows and screen effects, a camera rig, a kit of gold-ink effects, modest robed characters animated by code, scene loading behind an ink wipe, and a test range that shows all of it.
+
+**What changed**
+
+- src/engine/engine.ts + loop.ts: one renderer, resize handling, fixed 1/60 s logic steps, hit-stop, frame statistics, simulate() for tests, dispose() that reports anything left on the graphics card
+- src/engine/quality.ts: presets low, medium, high, ultra and the 2-second first-run benchmark that picks one from measured frame times; budgets 150 draw calls and 300k triangles on medium
+- src/engine/materials.ts: MaterialKit, the one place surfaces are made, with the grey-to-color restoration sweep (gold wavefront, up to 6 at once), height fog with sun glow, flat low-poly shading
+- src/engine/lighting.ts: Atmosphere (sky, one hero sun, fill light, fog) with blob shadows on low, one shadow map on medium, three cascaded shadow maps on high and ultra
+- src/engine/postfx.ts: bloom, screen-space god rays, SSAO on high and ultra, chromatic-aberration hit pulse, tone mapping, color grading, screen flash, vignette
+- src/engine/camera.ts: camera rig with third-person follow and collision, rail and cockpit modes, shake and push-in; modes glide into each other
+- src/engine/vfx.ts: pooled effects moved by the graphics card: gold sparks, ink splashes, ink trails, letters breaking into fragments, shockwaves, restoration sweep, flash, combined impact
+- src/engine/letters.ts: every Hebrew and Latin letter drawn once into one texture; many floating letters in a single draw call
+- src/engine/character.ts + characterAnim.ts: modest robed figures (hat, cap or head scarf, optional beard and quill) with idle, walk, run, write, hit, stagger, fall, cheer and smooth blending
+- src/engine/scene.ts + transition.ts + disposal.ts: the GameScene and SceneContext contract, SceneManager, ink-wipe loading transition, disposal tracking with a leak check after every scene
+- src/engine/perf.ts: performance overlay (frames per second, frame time, draw calls, triangles, GPU objects, preset); compact on phones
+- src/scenes/range + src/ui/screens/range.ts + src/ui/styles/engine.css: the test range at #/range with buttons and number keys for every effect, camera, animation and preset; typing the floating word restores color
+- src/save/schema.ts + migrations.ts: save version 4 adds settings.quality and meta.autoQuality, with a migration and test
+- locales/he.json + locales/en.json: all test range and overlay strings in Hebrew and English
+- tests/unit/engine-kit.test.ts (20 tests) and tests/e2e/range.spec.ts (full tour, budget check, zero leaked GPU objects after closing); playwright.config.ts lets the test browser draw 3D in software
+- package.json: added the libraries three and postprocessing (listed in ASSETS.md)
+- docs: ARCHITECTURE section 7b (engine kit) and save v4, DESIGN 3D art direction note, CHANGELOG, ASSETS, ROADMAP tick
+- src/learn/source.ts: learnedWordSource, words built only from the letters the player has already learned (real words when enough letters are known, short letter drills before that); the test range uses it; tests/unit/learned-words.test.ts checks both languages and both tracks
+- src/engine/character.ts: headwear is a cap, a brimmed hat or a turban; the head scarf was removed and the walking figure in the range is now a bearded man in a turban
+
+**Decisions**
+
+- **Use the postprocessing library for screen effects instead of writing every pass by hand** — It merges effects into one or two full-screen passes, which is what keeps bloom, god rays and grading affordable on integrated graphics.
+- **All surfaces are made by one MaterialKit that shares one set of shader inputs** — The color sweep, fog and theme then work on every object in every scene without scene authors thinking about it, and a sweep costs nothing per material.
+- **Effects are animated on the graphics card from ring buffers** — Spawning an effect writes a few numbers; nothing is allocated while playing, which the performance rules require.
+- **The benchmark runs on medium and judges steadiness, not just average speed** — A browser never draws faster than the screen, so high is only chosen when 95 percent of frames are on time.
+- **The draw-call budget is enforced on low and medium only** — ARCHITECTURE sets the budget for medium; high and ultra spend extra draw calls on cascaded shadows by design (about 260 in the range).
+- **On the night-ink theme the forgotten-world grey is lifted to a moonlit level** — The dark fade token is nearly black; when I looked at the range in the dark theme the whole ground was pure black. It is now dim but readable.
+- **The test range is reached by address (#/range) and is not in the menus** — It is a tool for building scenes, not part of the game.
+- **Audio and HUD are silent stand-ins in SceneContext for now** — They are built in T09 and T10; scenes written today will not need changing when they arrive.
+- **With reduce motion on, shake, push-in, flash, chromatic pulse and hit-stop are switched off completely** — Those are exactly the effects that bother motion-sensitive players; color sweeps and particles stay.
+- **Applied the two new owner rules (merged into main while this task was being built) inside this task** — They are binding for every task: the range had one figure in a head scarf that could be read as a woman, and its words came from the whole library instead of the learned letters.
+- **Before enough letters are learned to spell real words, the range shows short drills made of the learned letters** — A new player knows only two keys; nothing unlearned may ever be asked, so drills are the only honest text.
+
+**Manual steps**
+
+1. **Check the frame rate on a real computer** (⬜ open)
+
+   The cloud build machine has no graphics card, so real speed could not be measured there. On your own computer open the live link, add #/range to the end of the address, click Medium under Quality and read the first line of the small box in the corner: it should say about 60 and not be red. Needs the live link from the T01 step (Import the repo into Vercel).
+
+   Prompt for Claude in Chrome:
+
+   ```text
+   Open the live Otiyot website in my browser (the Vercel address of the project shlomyeisenberg-lang/Otiyot; if you do not know it, open https://vercel.com/dashboard, open the project named otiyot and use its production address; if asked to sign in, stop and hand control back to me). Steps: 1) Add #/range to the end of the address and press Enter. 2) If the welcome steps appear, type the name Test, press Enter, then click Next twice, then go to the #/range address again. 3) Wait about 5 seconds until the 3D scene appears. 4) In the Quality group click Medium. 5) Wait 5 seconds, then read the small box in the top corner: frames per second, frame time, draw calls, triangles. 6) Press the number keys 1 to 9 one at a time and read frames per second again. 7) Click High and read the numbers once more. Stop and hand control back to me for sign-in, passwords, 2FA, CAPTCHAs, payment and creating an account; never type a secret yourself. When done, report the numbers you read for Medium and High, whether any number was shown in red, and what computer and browser this is.
+   ```
+
+**To do**
+
+- [ ] Real frame rate on integrated graphics is not yet confirmed (see the manual step); the measured load on medium is about 95 draw calls and 25k triangles, well inside the budget.
+- [ ] There is no graphics quality picker in Settings yet; for now it can only be changed in the test range. T36 adds it.
+- [ ] Scenes get silent audio and an empty HUD until T09 (HUD) and T10 (audio) are built.
+- [ ] The engine code is about 740 KB (187 KB compressed) and is loaded only when a 3D screen opens; menus do not pay for it.
+- [ ] The test range has no Easy / Standard / Hard levels: it is a developer tool, not a playable scene. Levels arrive with the combat and difficulty kit (T11).
+
+**Notes**
+
+Built by the Fable runner (Fable 5.2, effort Xhigh) over three attempts: the first two built the engine and the test range, the third looked at it in Chromium in both themes, fixed the black night theme and the phone overlay, and added the tests and docs. To try: open the live link, add #/range to the address, type the floating word and press the number keys 1 to 9; the arrow keys change the camera.
 
 ### ⬜ T09 · 3D keyboard, finger guide, HUD and typing feedback
 

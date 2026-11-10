@@ -18,6 +18,7 @@ import { layoutScreen } from './screens/layout';
 import { mainMenuScreen } from './screens/mainMenu';
 import { openPauseMenu } from './screens/pause';
 import { playersScreen } from './screens/players';
+import { rangeScreen } from './screens/range';
 import { settingsScreen } from './screens/settings';
 import { trackScreen } from './screens/track';
 import { wizardScreen } from './screens/wizard';
@@ -91,6 +92,7 @@ export class Shell {
       layout: layoutScreen,
       settings: settingsScreen,
       pause: mainMenuScreen,
+      range: rangeScreen,
       ...o.extraScreens,
     };
     const saves = this.saves;
@@ -158,9 +160,14 @@ export class Shell {
     this.applySettings();
     this.renderBar();
     const factory = this.screens[route] ?? mainMenuScreen;
+    this.screen?.dispose?.();
     const screen = factory(this.ctx);
     this.screen = screen;
-    this.stage.className = screen.wide ? 'stage stage--wide' : 'stage';
+    this.stage.className = screen.full
+      ? 'stage stage--full'
+      : screen.wide
+        ? 'stage stage--wide'
+        : 'stage';
     this.stage.dataset.route = route;
     this.stage.replaceChildren(screen.el);
     this.win.scrollTo(0, 0);

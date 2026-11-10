@@ -1,0 +1,143 @@
+/* The 3D view, the ink wipe, the performance overlay and the test range (T08).
+   Tokens only: no raw colors, sizes or shadows here. */
+
+.stage--full {
+  display: block;
+  padding: 0;
+  min-block-size: 0;
+}
+
+.engine__canvas {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+/* The ink is dark in both themes: deep ink by day, the night page itself after dark. */
+.inkwipe {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  pointer-events: none;
+  color: var(--ink);
+  z-index: 3;
+}
+[data-theme='dark'] .inkwipe {
+  color: var(--bg);
+}
+
+.perf {
+  position: absolute;
+  inset-block-start: var(--sp-2);
+  inset-inline-end: var(--sp-2);
+  z-index: 2;
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 0 var(--sp-3);
+  margin: 0;
+  padding: var(--sp-2) var(--sp-3);
+  border: var(--border-w) solid var(--line);
+  border-radius: var(--radius-1);
+  background: color-mix(in srgb, var(--surface) 86%, transparent);
+  color: var(--ink-soft);
+  font-size: var(--fs-12);
+  line-height: 1.5;
+  pointer-events: none;
+}
+.perf dt {
+  margin: 0;
+}
+.perf dd {
+  margin: 0;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  text-align: end;
+}
+.perf dd.perf__over {
+  color: var(--err-fg);
+  font-weight: 700;
+}
+
+.range {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--bg);
+}
+.range__view {
+  position: relative;
+  flex: 1;
+  min-block-size: 0;
+}
+.range__live {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.range__panel {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: start;
+  gap: var(--sp-1) var(--sp-5);
+  max-block-size: 45%;
+  overflow-y: auto;
+  padding: var(--sp-2) var(--sp-4) var(--sp-3);
+  border-block-start: var(--border-w) solid var(--line);
+  background: var(--surface);
+  box-shadow: var(--shadow-2);
+}
+.range__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--sp-1) var(--sp-4);
+  inline-size: 100%;
+}
+.range__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-20);
+}
+.range__hint {
+  flex: 1;
+  min-inline-size: 14rem;
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: var(--fs-14);
+}
+.range__group:first-of-type {
+  flex: 1 1 100%;
+}
+.range__label {
+  margin: 0 0 var(--sp-1);
+  color: var(--ink-soft);
+  font-size: var(--fs-12);
+  font-weight: 600;
+}
+.range__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1);
+}
+.range__row .btn {
+  gap: var(--sp-1);
+}
+.range__row .btn[aria-pressed='true'] {
+  border-color: var(--gold);
+  background: var(--gold-soft);
+  color: var(--gold-deep);
+}
+
+/* Small screens: the overlay keeps only frames per second and the quality preset, so it never
+   covers the scene. */
+@media (max-width: 600px) {
+  .perf > :nth-child(n + 3):nth-child(-n + 10) {
+    display: none;
+  }
+}
