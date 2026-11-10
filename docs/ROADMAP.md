@@ -33,7 +33,7 @@ Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Fable 5.2 
 - **Done when** Unit tests cover scoring, layout mapping and a recorded session for both layouts.
 - **User must have ready** Nothing.
 
-### [ ] T03 · Saves and profiles
+### [x] T03 · Saves and profiles
 - **Branch** `t03-saves`
 - **Model** Sonnet 5.5 · **Effort** Medium
 - **Goal** Reliable local saves with several profiles, in the browser and inside Otzaria.

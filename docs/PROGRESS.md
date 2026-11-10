@@ -7,7 +7,7 @@ _Last updated 2026-11-10. This page is generated from `docs/progress.json`; to c
 ## Summary
 
 - ✅ **2** of **39** tasks done
-- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 37 pending
+- 🛠️ 1 in progress · ⛔ 0 blocked · ⬜ 36 pending
 - ⬜ **1** manual step waiting for you
 - 💡 0 feature ideas open
 
@@ -35,7 +35,7 @@ Work done before or outside the numbered tasks.
 
 - ✅ T01 · Project setup, CI and plugin packer — 2026-11-10 · [PR #2](https://github.com/shlomyeisenberg-lang/Otiyot/pull/2)
 - ✅ T02 · Typing core — 2026-11-10 · [PR #3](https://github.com/shlomyeisenberg-lang/Otiyot/pull/3)
-- ⬜ T03 · Saves and profiles
+- 🛠️ T03 · Saves and profiles
 - ⬜ T04 · The two lesson tracks
 - ⬜ T05 · Word and sentence library
 - ⬜ T06 · Adaptive engine and spaced repetition
@@ -142,11 +142,41 @@ The typing engine every scene and mode will use now exists as pure logic: keyboa
 
 Timing-based hints use simple thresholds; T06 (adaptive engine) may tune them.
 
-### ⬜ T03 · Saves and profiles
+### 🛠️ T03 · Saves and profiles
 
-**Status:** Pending
+**Status:** In progress
 
-_Not started._
+Saves now exist as pure logic: several local profiles, a versioned save with migrations, browser and Otzaria storage chosen at boot, autosave that keeps the last good copy, JSON export/import and a one-time import of old plugin progress.
+
+**What changed**
+
+- src/save/schema.ts: Save/Profile types from ARCHITECTURE section 4, defaults, tolerant normaliser that repairs bad fields
+- src/save/migrations.ts: CURRENT_VERSION 1, migration chain, v0 (unversioned) to v1, refuses saves from newer versions
+- src/save/store.ts: SaveStore with localStorage, Otzaria (storage.get/set with a local mirror) and memory adapters; detectStore picks at boot
+- src/save/manager.ts: SaveManager with load + recovery (primary, then last good copy, then fresh), debounced autosave, profile create/rename/delete/switch, export/import JSON
+- src/save/legacy.ts: one-time import of old plugin progress (hebtyper_data_v2) into a new profile
+- src/main.ts: creates the SaveManager at boot, loads it, flushes on pagehide
+- tests/unit/save-*.test.ts: 40 new tests (round-trip, migration, corrupt recovery, both adapters with a mocked Otzaria, profiles, export/import, legacy import)
+- docs/ROADMAP.md, docs/ARCHITECTURE.md, CHANGELOG.md updated
+
+**Decisions**
+
+- **Version 0 is the unversioned early shape and the current version is 1** — There was no older released format; this proves the migration chain works and leaves a clear place for the next change
+- **Hand-written validation instead of adding a schema library** — Keeps the bundle small and avoids a new dependency; the normaliser repairs fields instead of rejecting the whole save
+- **Every autosave first copies the previous good save to a backup key** — A half-written main save can then always be recovered from the last good copy
+- **A broken or too-new save is kept under otiyot_save_unreadable and a too-new save is never overwritten** — Nothing the player earned is lost by an update or a downgrade
+- **Importing a profile file adds profiles (new ids on clash) unless replace is asked for** — Safer: importing can never wipe existing profiles by accident
+- **Deleting the last profile creates a fresh one** — The game always has a player
+- **Added meta.legacyChecked and createdAt to the schema** — Makes the old-plugin import happen once only
+
+**To do**
+
+- [ ] The UI for choosing, creating, renaming and exporting profiles comes with the design system and title screen (T07, T12)
+- [ ] Legacy import maps statistics and completed lessons only; old lesson ids are kept as they are and will be matched to the new tracks in T04
+
+**Notes**
+
+Typed text is never stored. The manager is exported from src/main.ts as `saves` for later tasks.
 
 ### ⬜ T04 · The two lesson tracks
 
