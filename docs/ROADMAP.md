@@ -6,7 +6,7 @@ Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Fable 5.2 
 
 ## Phase 0 · Foundation (logic, no visuals)
 
-### [ ] T01 · Project setup, CI and plugin packer
+### [x] T01 · Project setup, CI and plugin packer
 - **Branch** `t01-setup`
 - **Model** Sonnet 5.5 · **Effort** Medium
 - **Goal** A running empty project that builds as a website and as an Otzaria plugin, with checks on every pull request.

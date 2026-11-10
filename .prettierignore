@@ -1,0 +1,10 @@
+dist
+dist-plugin
+reference
+public/arcade
+pnpm-lock.yaml
+docs
+playwright-report
+test-results
+CLAUDE.md
+scripts
