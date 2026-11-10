@@ -20,7 +20,7 @@ Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Fable 5.2 
 - **Done when** CI is green, `pnpm dev` shows the boot screen, and the plugin file is produced.
 - **User must have ready** Nothing.
 
-### [ ] T02 · Typing core
+### [x] T02 · Typing core
 - **Branch** `t02-typing-core`
 - **Model** Sonnet 5.5 · **Effort** High
 - **Goal** The pure-logic typing engine every scene and mode will use.
