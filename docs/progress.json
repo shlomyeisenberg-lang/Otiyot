@@ -84,9 +84,9 @@
       "notes": "Timing-based hints use simple thresholds; T06 (adaptive engine) may tune them."
     },
     "T03": {
-      "status": "in_progress",
-      "finished": "",
-      "pr": "",
+      "status": "done",
+      "finished": "2026-11-10",
+      "pr": "https://github.com/shlomyeisenberg-lang/Otiyot/pull/4",
       "summary": "Saves now exist as pure logic: several local profiles, a versioned save with migrations, browser and Otzaria storage chosen at boot, autosave that keeps the last good copy, JSON export/import and a one-time import of old plugin progress.",
       "changes": [
         "src/save/schema.ts: Save/Profile types from ARCHITECTURE section 4, defaults, tolerant normaliser that repairs bad fields",

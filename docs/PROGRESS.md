@@ -6,8 +6,8 @@ _Last updated 2026-11-10. This page is generated from `docs/progress.json`; to c
 
 ## Summary
 
-- ✅ **2** of **39** tasks done
-- 🛠️ 1 in progress · ⛔ 0 blocked · ⬜ 36 pending
+- ✅ **3** of **39** tasks done
+- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 36 pending
 - ⬜ **1** manual step waiting for you
 - 💡 0 feature ideas open
 
@@ -35,7 +35,7 @@ Work done before or outside the numbered tasks.
 
 - ✅ T01 · Project setup, CI and plugin packer — 2026-11-10 · [PR #2](https://github.com/shlomyeisenberg-lang/Otiyot/pull/2)
 - ✅ T02 · Typing core — 2026-11-10 · [PR #3](https://github.com/shlomyeisenberg-lang/Otiyot/pull/3)
-- 🛠️ T03 · Saves and profiles
+- ✅ T03 · Saves and profiles — 2026-11-10 · [PR #4](https://github.com/shlomyeisenberg-lang/Otiyot/pull/4)
 - ⬜ T04 · The two lesson tracks
 - ⬜ T05 · Word and sentence library
 - ⬜ T06 · Adaptive engine and spaced repetition
@@ -142,9 +142,9 @@ The typing engine every scene and mode will use now exists as pure logic: keyboa
 
 Timing-based hints use simple thresholds; T06 (adaptive engine) may tune them.
 
-### 🛠️ T03 · Saves and profiles
+### ✅ T03 · Saves and profiles
 
-**Status:** In progress
+**Status:** Done · **Finished:** 2026-11-10 · **Pull request:** [PR #4](https://github.com/shlomyeisenberg-lang/Otiyot/pull/4)
 
 Saves now exist as pure logic: several local profiles, a versioned save with migrations, browser and Otzaria storage chosen at boot, autosave that keeps the last good copy, JSON export/import and a one-time import of old plugin progress.
 
