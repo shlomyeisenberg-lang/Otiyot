@@ -2,6 +2,8 @@
 
 Two scheduled tasks build this list while nobody watches: **"Otiyot Fable builder"** and **"Otiyot Sonnet builder"**. They work strictly in the order below. Each builds only the tasks whose OWNER is its own model, and waits while the earliest unfinished task belongs to the other.
 
+**Rules for every task (from the owner):** (1) No women and nothing sexy anywhere: every human character is male, nothing suggestive in visuals, text, jokes or word lists. (2) Text to type uses only letters the player has already learned in their lesson track, and every scene has levels (Easy / Standard / Hard) built from that learned set and unlocked by course progress. Details: CLAUDE.md, ARCHITECTURE section 8, GAME_DESIGN 'Levels follow your learning'.
+
 Owner rule: anything that needs taste or skill (visual design, 3D scenes, game feel, story, music, bosses) is Fable's. Mechanical work (setup, ports of existing code, saves, tests, packaging) is Sonnet's.
 
 Effort guide: Low = quick and direct · Medium = normal care · High = think the design through before building, test edge cases · Xhigh = plan, build, then play it and critique it yourself and improve at least once before merging.

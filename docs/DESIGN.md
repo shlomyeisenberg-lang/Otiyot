@@ -54,7 +54,7 @@ Button (primary gold, quiet, danger) · Panel · Tabs · Toggle · Slider · Sel
 
 ## 3D art direction
 
-Low-poly, flat-shaded forms with soft gradients, strong silhouettes, one hero light per scene, colored fog for depth, bloom on anything made of gold ink. Letters are physical things in the world: carved, floating, falling, worn as shields. Un-restored things use `--fade` and no saturation; restoring sweeps color outward from the typed word. Characters are simple stylized figures (robes, caps, scarves; modest), animated by code: idle, walk, run, write (cast), hit, stagger, fall, cheer.
+Low-poly, flat-shaded forms with soft gradients, strong silhouettes, one hero light per scene, colored fog for depth, bloom on anything made of gold ink. Letters are physical things in the world: carved, floating, falling, worn as shields. Un-restored things use `--fade` and no saturation; restoring sweeps color outward from the typed word. Characters are simple stylized male figures only, never female (robes, caps, scarves; modest), animated by code: idle, walk, run, write (cast), hit, stagger, fall, cheer.
 
 ## Sound direction
 

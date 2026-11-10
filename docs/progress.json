@@ -5,6 +5,11 @@
       "date": "2026-11-09",
       "what": "Planning docs: ARCHITECTURE, GAME_DESIGN, DESIGN, ROADMAP (39 tasks), CLAUDE.md, playbook, progress log. Original plugins 3.3.0 and 4.2.0 added under reference/.",
       "where": "docs/"
+    },
+    {
+      "date": "2026-11-10",
+      "what": "Owner rules added: no women or sexual content anywhere; text uses only learned letters; scene levels follow learning progress. Content filter (src/learn/content.ts) applied to word packs, sentences and lesson texts.",
+      "where": "docs/ARCHITECTURE.md section 8, docs/GAME_DESIGN.md, CLAUDE.md, src/learn/content.ts"
     }
   ],
   "tasks": {
