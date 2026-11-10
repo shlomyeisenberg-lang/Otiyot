@@ -108,4 +108,34 @@ describe('normalisation', () => {
     const history = Array.from({ length: 600 }, (_, i) => ({ at: i, wpm: 1 }));
     expect(normalizeProfile({ ...p, history }, 'z', 0).history).toHaveLength(500);
   });
+
+  it('v2 -> v3 adds the display settings and keeps what the player already chose', () => {
+    const v2 = {
+      version: 2,
+      profiles: [
+        { id: 'a', name: 'A', settings: { musicVolume: 0.3, reducedMotion: true } },
+        { id: 'b', name: 'B' },
+      ],
+      activeProfileId: 'a',
+    };
+    const m = migrate(v2);
+    expect(m.version).toBe(3);
+    const save = normalizeSave(m, CURRENT_VERSION, counter(), 0);
+    const a = save?.profiles[0]?.settings;
+    expect(a).toMatchObject({
+      musicVolume: 0.3,
+      reducedMotion: true,
+      theme: 'auto',
+      colorblind: false,
+      highContrast: false,
+      largeText: false,
+      dyslexiaFont: false,
+    });
+    expect(save?.profiles[1]?.settings.theme).toBe('auto');
+    // a later save keeps a chosen theme
+    const kept = migrate({ version: 2, profiles: [{ id: 'c', settings: { theme: 'dark' } }] });
+    expect(normalizeSave(kept, CURRENT_VERSION, counter(), 0)?.profiles[0]?.settings.theme).toBe(
+      'dark',
+    );
+  });
 });

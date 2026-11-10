@@ -8,6 +8,9 @@ export type JsonValue =
 
 export type Track = 1 | 2;
 
+/** 'auto' follows the device (light parchment by day, night ink when the system is dark). */
+export type ThemeChoice = 'auto' | 'light' | 'dark';
+
 export interface Settings {
   uiLanguage: LayoutId;
   musicVolume: number;
@@ -16,6 +19,12 @@ export interface Settings {
   niqqud: NiqqudMode;
   hardcore: boolean;
   reducedMotion: boolean;
+  /** Display options (v3, T07). */
+  theme: ThemeChoice;
+  colorblind: boolean;
+  highContrast: boolean;
+  largeText: boolean;
+  dyslexiaFont: boolean;
 }
 
 export interface LessonBest {
@@ -107,6 +116,11 @@ export function defaultSettings(): Settings {
     niqqud: 'ignore',
     hardcore: false,
     reducedMotion: false,
+    theme: 'auto',
+    colorblind: false,
+    highContrast: false,
+    largeText: false,
+    dyslexiaFont: false,
   };
 }
 
@@ -203,6 +217,11 @@ function normalizeSettings(raw: unknown): Settings {
     niqqud: r.niqqud === 'ignore' || r.niqqud === 'required' ? r.niqqud : d.niqqud,
     hardcore: r.hardcore === true,
     reducedMotion: r.reducedMotion === true,
+    theme: r.theme === 'light' || r.theme === 'dark' ? r.theme : d.theme,
+    colorblind: r.colorblind === true,
+    highContrast: r.highContrast === true,
+    largeText: r.largeText === true,
+    dyslexiaFont: r.dyslexiaFont === true,
   };
 }
 

@@ -1,0 +1,186 @@
+/*
+ * Otiyot design tokens (docs/DESIGN.md). The ONLY place a raw color, size, radius or shadow may be
+ * written. The color tokens are mirrored for 3D in src/engine/palette.ts; a unit test keeps the two
+ * files identical.
+ *
+ * The raw colors live in the first two blocks; everything mixed from them is in the "derived" block,
+ * which is re-evaluated inside any element that carries data-theme (the styleguide uses this to
+ * show light and dark side by side).
+ *
+ * Switches, all set on <html> by src/ui/theme.ts:
+ *   data-theme="light|dark"   data-palette="cb"   data-contrast="high"
+ *   data-text="large"         data-font="dyslexia"   data-motion="reduce"
+ */
+
+:root,
+[data-theme='light'] {
+  color-scheme: light;
+
+  /* color: parchment */
+  --bg: #f4ebd8;
+  --surface: #fbf5e6;
+  --surface-2: #eadfc6;
+  --ink: #1f1a14;
+  --ink-soft: #5e5546;
+  --line: #d2c4a4;
+  --gold: #b8862b;
+  --techelet: #1f5fa8;
+  --ok-fg: #2f6b3a;
+  --ok-bg: #dcebd6;
+  --warn-fg: #8a5a12;
+  --warn-bg: #f3e3bf;
+  --err-fg: #9b2f24;
+  --err-bg: #f2d9d3;
+  --fade: #b9b4a8;
+
+  --on-gold: #1f1a14;
+  --shade: #4a3414;
+  --shade-1: 16%;
+  --shade-2: 34%;
+  --shade-3: 46%;
+  --glow: 13%;
+}
+
+/* color: night ink */
+[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #14110d;
+  --surface: #1e1a14;
+  --surface-2: #2a241b;
+  --ink: #f1e7d2;
+  --ink-soft: #b3a68d;
+  --line: #3a3226;
+  --gold: #e0b354;
+  --techelet: #5fa4e8;
+  --ok-fg: #8fd09a;
+  --ok-bg: #1b2e1f;
+  --warn-fg: #e6be72;
+  --warn-bg: #33270f;
+  --err-fg: #f08f82;
+  --err-bg: #3a1814;
+  --fade: #56524a;
+
+  --on-gold: #14110d;
+  --shade: #000000;
+  --shade-1: 50%;
+  --shade-2: 80%;
+  --shade-3: 90%;
+  --glow: 9%;
+}
+
+/* colorblind: correct / wrong become blue / orange */
+[data-palette='cb'] {
+  --ok-fg: #1f5fa8;
+  --ok-bg: #d9e6f5;
+  --err-fg: #a8480a;
+  --err-bg: #f7e0cc;
+}
+[data-theme='dark'][data-palette='cb'] {
+  --ok-fg: #5fa4e8;
+  --ok-bg: #152538;
+  --err-fg: #f0a050;
+  --err-bg: #3a2410;
+}
+
+/* high contrast: pure ink, thicker borders */
+[data-contrast='high'] {
+  --ink: #000000;
+  --ink-soft: #2b251c;
+  --line: #1f1a14;
+  --surface: #ffffff;
+  --fade: #6f6a5e;
+  --gold: #8a5f0f;
+  --on-gold: #ffffff;
+  --border-w: 2px;
+  --focus-w: 4px;
+}
+[data-theme='dark'][data-contrast='high'] {
+  --ink: #ffffff;
+  --ink-soft: #e4d9c2;
+  --line: #f1e7d2;
+  --surface: #000000;
+  --fade: #a39d8f;
+  --gold: #f2c96a;
+  --on-gold: #000000;
+}
+
+/* derived color and depth: never a new hue, only mixes of the tokens above */
+:root,
+[data-theme] {
+  --gold-deep: color-mix(in srgb, var(--gold) 80%, var(--ink));
+  --gold-soft: color-mix(in srgb, var(--gold) 16%, var(--surface));
+  --gold-glow: color-mix(in srgb, var(--gold) 38%, transparent);
+  --techelet-soft: color-mix(in srgb, var(--techelet) 14%, var(--surface));
+  --rule: color-mix(in srgb, var(--line) 42%, transparent);
+  --scrim: color-mix(in srgb, var(--shade) 55%, transparent);
+
+  /* warm paper shadows */
+  --shadow-1: 0 1px 2px color-mix(in srgb, var(--shade) var(--shade-1), transparent);
+  --shadow-2:
+    0 1px 2px color-mix(in srgb, var(--shade) var(--shade-1), transparent),
+    0 10px 28px -10px color-mix(in srgb, var(--shade) var(--shade-2), transparent);
+  --shadow-3:
+    0 2px 4px color-mix(in srgb, var(--shade) var(--shade-1), transparent),
+    0 28px 60px -18px color-mix(in srgb, var(--shade) var(--shade-3), transparent);
+  --shadow-key: 0 2px 0 var(--line);
+}
+
+:root {
+  /* type */
+  --font-display: 'Frank Ruhl Libre', 'Times New Roman', serif;
+  --font-ui: 'Assistant', system-ui, sans-serif;
+  --font-typing: 'Noto Sans Hebrew', 'Noto Sans', system-ui, sans-serif;
+  --fs-12: 0.75rem;
+  --fs-14: 0.875rem;
+  --fs-16: 1rem;
+  --fs-20: 1.25rem;
+  --fs-28: 1.75rem;
+  --fs-40: 2.5rem;
+  --fs-64: 4rem;
+  --typing-spacing: 0.08em;
+
+  /* shape */
+  --radius-1: 6px;
+  --radius-2: 12px;
+  --radius-3: 20px;
+  --radius-pill: 999px;
+  --border-w: 1px;
+  --focus-w: 3px;
+
+  /* space */
+  --sp-1: 0.25rem;
+  --sp-2: 0.5rem;
+  --sp-3: 0.75rem;
+  --sp-4: 1rem;
+  --sp-5: 1.5rem;
+  --sp-6: 2rem;
+  --sp-7: 3rem;
+  --sp-8: 4rem;
+
+  /* motion */
+  --t-feedback: 120ms;
+  --t-panel: 240ms;
+  --t-cinematic: 600ms;
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  --column: 34rem;
+  --column-wide: 58rem;
+}
+
+/* large text: the whole rem scale grows */
+:root[data-text='large'] {
+  font-size: 118.75%;
+}
+
+/* dyslexia-friendly: OpenDyslexic for Latin, wider spacing for Hebrew */
+:root[data-font='dyslexia'] {
+  --font-ui: 'OpenDyslexic', 'Assistant', system-ui, sans-serif;
+  --font-typing: 'OpenDyslexic', 'Noto Sans Hebrew', system-ui, sans-serif;
+  --typing-spacing: 0.16em;
+}
+
+/* reduce motion: keep fades, drop movement */
+:root[data-motion='reduce'] {
+  --t-panel: 1ms;
+  --t-cinematic: 1ms;
+}
