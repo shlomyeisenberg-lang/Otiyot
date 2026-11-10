@@ -184,9 +184,9 @@
       "notes": "Run node scripts/extract-learn-data.mjs && pnpm exec prettier --write src/learn/data to regenerate the data files."
     },
     "T05": {
-      "status": "in_progress",
+      "status": "done",
       "finished": "2026-11-10",
-      "pr": "",
+      "pr": "https://github.com/shlomyeisenberg-lang/Otiyot/pull/8",
       "summary": "A built-in library of over 4,000 Hebrew and 4,200 English words in themed packs and 360 sentences per language now exists as pure logic, with difficulty tiers, a key-limited filter weighted toward weak keys, and personal word lists stored on the profile. Every pack is scanned by a content test with a blocklist of holy Names.",
       "changes": [
         "src/learn/library/data-he.ts and data-en.ts: word packs (everyday, home, market, numbers, travel, sea, sky, desert, holidays, nature, school; Hebrew also extra) and sentence packs (everyday, home, market, travel, sea-and-sky, desert, holidays, proverbs)",

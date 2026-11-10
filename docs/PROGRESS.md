@@ -6,8 +6,8 @@ _Last updated 2026-11-10. This page is generated from `docs/progress.json`; to c
 
 ## Summary
 
-- ✅ **4** of **39** tasks done
-- 🛠️ 1 in progress · ⛔ 0 blocked · ⬜ 34 pending
+- ✅ **5** of **39** tasks done
+- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 34 pending
 - ⬜ **1** manual step waiting for you
 - 💡 0 feature ideas open
 
@@ -37,7 +37,7 @@ Work done before or outside the numbered tasks.
 - ✅ T02 · Typing core — 2026-11-10 · [PR #3](https://github.com/shlomyeisenberg-lang/Otiyot/pull/3)
 - ✅ T03 · Saves and profiles — 2026-11-10 · [PR #4](https://github.com/shlomyeisenberg-lang/Otiyot/pull/4)
 - ✅ T04 · The two lesson tracks — 2026-11-10 · [PR #6](https://github.com/shlomyeisenberg-lang/Otiyot/pull/6)
-- 🛠️ T05 · Word and sentence library — 2026-11-10
+- ✅ T05 · Word and sentence library — 2026-11-10 · [PR #8](https://github.com/shlomyeisenberg-lang/Otiyot/pull/8)
 - ⬜ T06 · Adaptive engine and spaced repetition
 - ⬜ T07 · Design system and UI shell
 - ⬜ T08 · 3D engine kit
@@ -213,9 +213,9 @@ Both built-in lesson courses now exist as pure logic for Hebrew and English: Tra
 
 Run node scripts/extract-learn-data.mjs && pnpm exec prettier --write src/learn/data to regenerate the data files.
 
-### 🛠️ T05 · Word and sentence library
+### ✅ T05 · Word and sentence library
 
-**Status:** In progress · **Finished:** 2026-11-10
+**Status:** Done · **Finished:** 2026-11-10 · **Pull request:** [PR #8](https://github.com/shlomyeisenberg-lang/Otiyot/pull/8)
 
 A built-in library of over 4,000 Hebrew and 4,200 English words in themed packs and 360 sentences per language now exists as pure logic, with difficulty tiers, a key-limited filter weighted toward weak keys, and personal word lists stored on the profile. Every pack is scanned by a content test with a blocklist of holy Names.
 
