@@ -20,6 +20,11 @@ export const COLOR_TOKENS = [
   'err-fg',
   'err-bg',
   'fade',
+  'finger-pinky',
+  'finger-ring',
+  'finger-middle',
+  'finger-index',
+  'finger-thumb',
 ] as const;
 
 export type ColorToken = (typeof COLOR_TOKENS)[number];
@@ -42,6 +47,11 @@ export const PALETTE: Readonly<Record<ThemeName, Palette>> = {
     'err-fg': '#9b2f24',
     'err-bg': '#f2d9d3',
     fade: '#b9b4a8',
+    'finger-pinky': '#7a4e9a',
+    'finger-ring': '#2e7d7a',
+    'finger-middle': '#b0652a',
+    'finger-index': '#4f7a2e',
+    'finger-thumb': '#6b6253',
   },
   dark: {
     bg: '#14110d',
@@ -59,6 +69,11 @@ export const PALETTE: Readonly<Record<ThemeName, Palette>> = {
     'err-fg': '#f08f82',
     'err-bg': '#3a1814',
     fade: '#56524a',
+    'finger-pinky': '#b793d6',
+    'finger-ring': '#6cc4be',
+    'finger-middle': '#e59a5c',
+    'finger-index': '#9cc870',
+    'finger-thumb': '#a99c84',
   },
 };
 

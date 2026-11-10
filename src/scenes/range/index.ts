@@ -2,8 +2,10 @@
 // animations, camera modes, fog, shadows, the restoration sweep) and doubles as the first real
 // example of a GameScene. It is a developer's tool, reached by address only (#/range).
 //
-// The world starts forgotten (grey). Typing the floating word breaks each letter into gold
-// fragments; finishing a word sends color racing outward from the scribe.
+// The world starts forgotten (grey). The word to type stands above the dais as world text
+// (carved, banner or hologram); every right key writes its letter in gold with an ink stroke,
+// a wrong key makes the world blink grey, and finishing a word sends color racing outward from
+// the scribe. The typing itself is judged by the host (PlayController); this scene only reacts.
 
 import {
   Box3,
@@ -24,12 +26,10 @@ import {
   type BufferGeometry,
   type Material,
 } from 'three';
-import { toGraphemes } from '../../core';
 import {
   ACTIONS,
   burstStyle,
   Character,
-  LetterField,
   Rng,
   smoothstep,
   type ActionName,
@@ -40,8 +40,11 @@ import {
   type RunConfig,
   type SceneContext,
   type Trail,
+  type TextStyle,
   type TypedKey,
+  WorldText,
 } from '../../engine';
+import { TypingFeedback } from '../../game/feedback';
 import { SKY, TINT } from './palette';
 
 export const RANGE_DEMOS = [
@@ -60,10 +63,8 @@ export type RangeDemo = (typeof RANGE_DEMOS)[number];
 
 export const RANGE_CAMERAS: readonly CameraMode[] = ['follow', 'rail', 'cockpit'];
 
-const MAX_LETTERS = 14;
-const LETTER_SIZE = 1.25;
-const LETTER_GAP = 1.02;
-const WORD_Y = 4.1;
+const LETTER_SIZE = 1.15;
+const WORD_Y = 5.1;
 const DAIS = 5.2;
 const DAIS_TOP = 0.3;
 const SWEEP_STAGES = [15, 30, 52] as const;
@@ -88,8 +89,6 @@ function ground(x: number, z: number): number {
 
 export class RangeScene implements GameScene {
   readonly id = 'range';
-  /** Told when a new word floats up, so the host can start judging it. */
-  onWord: ((word: string) => void) | null = null;
   /** Told which animation the elder is showing. */
   onAnimation: ((name: ActionName) => void) | null = null;
 
@@ -100,16 +99,13 @@ export class RangeScene implements GameScene {
   private walker!: Character;
   private elder!: Character;
   private child!: Character;
-  private letters!: LetterField;
+  private text!: WorldText;
+  private feedback!: TypingFeedback;
+  private shownLetters: readonly string[] | null = null;
   private rail!: CatmullRomCurve3;
   private readonly colliders: Box3[] = [];
 
-  private word: string[] = [];
-  private typed = 0;
-  private wordAge = 0;
   private stage = 0;
-  private combo = 0;
-  private wrongShake = 0;
 
   private time = 0;
   private walkerAngle = 0;
@@ -459,9 +455,30 @@ export class RangeScene implements GameScene {
       ctx.atmosphere.addBlob(c.root, 0.62);
     }
 
-    // --- The floating word.
-    this.letters = new LetterField(ctx.engine.atlas, kit, ctx.vfx.billboard, MAX_LETTERS);
-    root.add(this.letters.mesh);
+    // --- The word to type, standing above the dais.
+    this.text = new WorldText({
+      atlas: ctx.engine.atlas,
+      materials: kit,
+      billboard: ctx.vfx.billboard,
+      colors: {
+        // A parchment banner and dark ink in both themes; light letters on the carved stone.
+        ink: this.inkDark,
+        paper: this.paper,
+        stone: ctx.color('fade'),
+        gold: this.gold,
+        techelet: this.techelet,
+        err: this.err,
+      },
+      style: 'banner',
+      size: LETTER_SIZE,
+    });
+    this.text.anchor.set(0, WORD_Y, 0);
+    root.add(this.text.root);
+    this.feedback = new TypingFeedback(ctx, {
+      gold: this.gold,
+      ink: this.inkDark,
+      techelet: this.techelet,
+    });
 
     // --- Camera.
     this.onQuality(ctx.quality);
@@ -494,19 +511,13 @@ export class RangeScene implements GameScene {
     this.run = run;
     this.rng.next();
     this.stage = 0;
-    this.combo = 0;
     this.time = 0;
-    this.nextWord();
+    this.shownLetters = null;
   }
 
-  /** The word now floating above the dais, letter by letter. */
+  /** The word being typed (from the host's typing driver). */
   get currentWord(): string {
-    return this.word.join('');
-  }
-
-  /** The letter waiting to be typed, or null between words. */
-  get expected(): string | null {
-    return this.word[this.typed] ?? null;
+    return this.ctx.typing.word;
   }
 
   /** 0 (all forgotten) .. 4 (all restored). */
@@ -514,16 +525,13 @@ export class RangeScene implements GameScene {
     return this.stage;
   }
 
-  private nextWord(): void {
-    const raw = this.run?.text.next() ?? '';
-    const first = raw.trim().split(/\s+/)[0] ?? '';
-    this.word = toGraphemes(first)
-      .filter((g) => this.ctx.engine.atlas.has(g))
-      .slice(0, MAX_LETTERS);
-    this.typed = 0;
-    this.wordAge = 0;
-    for (let i = 0; i < MAX_LETTERS; i++) this.letters.hide(i);
-    this.onWord?.(this.currentWord);
+  /** How the word to type stands in the world. */
+  setTextStyle(style: TextStyle): void {
+    this.text.setStyle(style);
+  }
+
+  get textStyle(): TextStyle {
+    return this.text.style;
   }
 
   setCamera(mode: CameraMode): void {
@@ -535,42 +543,28 @@ export class RangeScene implements GameScene {
       rig.follow(this.scribe.root, { distance: 7.6, height: 2.2, lookHeight: 2.5, stiffness: 4 });
   }
 
-  /** Where letter `i` of the word hangs right now (they always face the camera). */
-  private letterPos(i: number, out: Vector3): Vector3 {
-    const n = this.word.length;
-    const rtl = this.run?.layout !== 'en';
-    const k = (i - (n - 1) / 2) * LETTER_GAP * (rtl ? -1 : 1);
-    const right = this.ctx.vfx.billboard.uRight.value;
-    const bob = Math.sin(this.time * 1.6 + i * 0.7) * 0.07;
-    return out.set(right.x * k, WORD_Y + bob, right.z * k);
-  }
-
   onKey(ev: TypedKey): void {
-    const { vfx } = this.ctx;
-    if (this.typed >= this.word.length) return;
-    const at = this.letterPos(this.typed, this.v);
+    const typing = this.ctx.typing;
     if (!ev.correct) {
-      // Errors are brief and soft: a small knock, no punishment.
-      this.combo = 0;
-      this.wrongShake = 1;
-      this.ctx.rig.shake(0.12);
-      vfx.flash(this.err, 0.07, 0.16);
+      // Errors are brief and soft: a stumble and a blink of grey, never a block.
+      this.text.miss();
+      this.feedback.wrong();
       this.ctx.audio.play('error');
       return;
     }
-    const ch = this.word[this.typed] as string;
-    this.combo += 1;
-    vfx.shatter(ch, at.x, at.y, at.z, LETTER_SIZE, this.gold, 2.6, 2.4);
-    vfx.burst(this.sparks, at.x, at.y, at.z);
-    vfx.shockwave(at.x, at.y, at.z, 1.5, this.gold, 0.4, false, 1.2);
-    this.letters.hide(this.typed);
+    if (ev.kind !== 'char') return;
+    if (ev.expected === ' ') {
+      this.ctx.audio.play('space');
+      return;
+    }
+    const at = this.text.letterPosition(ev.index, this.v);
+    this.text.hit(ev.index);
+    this.feedback.correct(at.x, at.y, at.z, LETTER_SIZE, typing.tier);
     this.scribe.play('write');
-    this.ctx.audio.play('key', this.combo);
-    this.typed += 1;
-    if (this.typed >= this.word.length) this.wordDone();
+    this.ctx.audio.play('key', typing.combo);
   }
 
-  private wordDone(): void {
+  onWord(word: string, perfect: boolean): void {
     const { vfx } = this.ctx;
     const o = this.scribe.root.position;
     if (this.stage < SWEEP_STAGES.length) {
@@ -581,12 +575,12 @@ export class RangeScene implements GameScene {
     }
     this.stage = Math.min(this.stage + 1, SWEEP_STAGES.length + 1);
     vfx.burst(this.fountain, o.x, DAIS_TOP + 2, o.z, 0, 1, 0);
-    vfx.impact(0.55, this.gold);
+    const a = this.text.anchor;
+    this.feedback.word(a.x, a.y, a.z, perfect);
     this.ctx.rig.pushIn(0.5, 0.35);
     this.child.play('cheer');
     this.ctx.audio.play('restore');
-    this.ctx.hud.announce(this.currentWord);
-    this.nextWord();
+    if (perfect) this.ctx.hud.announce(word);
   }
 
   /** Shows one effect on request (the buttons of the test range). */
@@ -617,7 +611,7 @@ export class RangeScene implements GameScene {
         break;
       case 'shatter':
         vfx.shatter(
-          r.pick(this.word.length > 0 ? this.word : ['א']),
+          r.pick(this.ctx.typing.letters.length > 1 ? this.ctx.typing.letters.slice(0, -1) : ['א']),
           r.signed() * 3,
           2.2 + r.next() * 1.5,
           3 + r.signed(),
@@ -724,9 +718,6 @@ export class RangeScene implements GameScene {
     if (this.stage > 0 && this.rng.next() < dt * 6 * this.stage) {
       vfx.burst(this.motes, 0, 2.5, 0);
     }
-
-    this.wordAge += dt;
-    if (this.wrongShake > 0) this.wrongShake = Math.max(0, this.wrongShake - dt * 5);
   }
 
   frame(dt: number): void {
@@ -734,29 +725,18 @@ export class RangeScene implements GameScene {
     const rig = this.ctx.rig;
     if (this.cameraMode === 'follow') rig.orbit = Math.PI + 0.7 + 0.5 * Math.sin(this.time * 0.16);
     else if (this.cameraMode === 'rail') rig.railT = 0.5 - 0.5 * Math.cos(this.time * 0.11);
-    void dt;
 
-    // Lay the word out facing the camera: waiting letters are paper, the next one glows blue.
-    const n = this.word.length;
-    for (let i = this.typed; i < n; i++) {
-      const p = this.letterPos(i, this.v);
-      const appear = smoothstep(0, 0.35, this.wordAge - i * 0.05);
-      const next = i === this.typed;
-      let x = p.x;
-      if (next && this.wrongShake > 0) x += Math.sin(this.time * 70) * 0.09 * this.wrongShake;
-      const pulse = next ? 1 + 0.07 * Math.sin(this.time * 6) : 1;
-      this.letters.set(
-        i,
-        this.word[i] as string,
-        x,
-        p.y + (1 - appear) * -0.6,
-        p.z,
-        LETTER_SIZE * appear * pulse,
-        next ? (this.wrongShake > 0.2 ? this.err : this.techelet) : this.paper,
-        next ? 2.3 : 1.25,
-      );
+    // The word to type: a new one rises when the driver moves on.
+    const typing = this.ctx.typing;
+    if (typing.letters !== this.shownLetters) {
+      this.shownLetters = typing.letters;
+      const n = typing.letters.length;
+      // The space that ends a word is typed but not drawn.
+      const end = n > 0 && typing.letters[n - 1] === ' ' ? n - 1 : n;
+      this.text.setWord(typing.letters.slice(0, end), /[\u0590-\u05ff]/.test(typing.word));
     }
-    this.letters.commit();
+    this.text.frame(dt, typing.states);
+    this.feedback.frame(dt);
   }
 
   dispose(): void {
@@ -769,10 +749,10 @@ export class RangeScene implements GameScene {
       this.ctx.atmosphere.removeBlob(c.root);
       c.dispose();
     }
-    this.letters?.mesh.removeFromParent();
-    this.letters?.dispose();
+    this.text?.dispose();
+    this.feedback?.dispose();
+    this.shownLetters = null;
     this.colliders.length = 0;
-    this.onWord = null;
     this.onAnimation = null;
     this.run = null;
   }

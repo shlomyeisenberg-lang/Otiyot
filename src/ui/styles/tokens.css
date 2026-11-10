@@ -33,6 +33,13 @@
   --err-bg: #f2d9d3;
   --fade: #b9b4a8;
 
+  /* finger colors: the keyboard guide (T09) */
+  --finger-pinky: #7a4e9a;
+  --finger-ring: #2e7d7a;
+  --finger-middle: #b0652a;
+  --finger-index: #4f7a2e;
+  --finger-thumb: #6b6253;
+
   --on-gold: #1f1a14;
   --shade: #4a3414;
   --shade-1: 16%;
@@ -59,6 +66,11 @@
   --err-fg: #f08f82;
   --err-bg: #3a1814;
   --fade: #56524a;
+  --finger-pinky: #b793d6;
+  --finger-ring: #6cc4be;
+  --finger-middle: #e59a5c;
+  --finger-index: #9cc870;
+  --finger-thumb: #a99c84;
 
   --on-gold: #14110d;
   --shade: #000000;
@@ -162,6 +174,10 @@
   --t-panel: 240ms;
   --t-cinematic: 600ms;
   --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  /* the keyboard guide (T09): one key unit and the deck's tilt */
+  --key-u: clamp(1.1rem, min(2.5vw, 3.7vh), 2.3rem);
+  --key-tilt: 26deg;
 
   --column: 34rem;
   --column-wide: 58rem;

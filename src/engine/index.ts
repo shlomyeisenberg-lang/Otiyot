@@ -17,3 +17,4 @@ export * from './quality';
 export * from './scene';
 export * from './transition';
 export * from './vfx';
+export * from './worldText';

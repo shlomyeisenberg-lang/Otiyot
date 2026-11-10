@@ -1,0 +1,657 @@
+/* The in-play HUD and the keyboard guide (T09). Tokens only: no raw colors, sizes or shadows. */
+
+/* ---- HUD frame ------------------------------------------------------------------------------ */
+
+.hud {
+  --halo:
+    0 0 0.3em color-mix(in srgb, var(--bg) 85%, transparent),
+    0 0 0.08em color-mix(in srgb, var(--bg) 90%, transparent);
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: var(--sp-3) var(--sp-4) var(--sp-2);
+  pointer-events: none;
+  color: var(--ink);
+}
+
+.hud-top {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  min-block-size: var(--sp-8);
+}
+
+/* ---- combo meter: grows with the streak, changes material at each tier ----------------------- */
+
+.hud-combo {
+  --p: 0;
+  --grow: 1;
+  --mat: var(--ink);
+  --glow: transparent;
+  position: relative;
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  inline-size: var(--sp-8);
+  block-size: var(--sp-8);
+  opacity: 0;
+  transform: scale(calc(var(--grow) * 0.8));
+  transition:
+    opacity var(--t-panel) var(--ease),
+    transform var(--t-panel) var(--ease);
+}
+.hud-combo.is-shown {
+  opacity: 1;
+  transform: scale(var(--grow));
+}
+.hud-combo.is-bump .hud-combo__value {
+  animation: combo-bump var(--t-panel) var(--ease);
+}
+.hud-combo__ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      closest-side,
+      color-mix(in srgb, var(--surface) 78%, transparent) 76%,
+      transparent 78%
+    ),
+    conic-gradient(
+      var(--mat) calc(var(--p) * 1turn),
+      color-mix(in srgb, var(--mat) 18%, transparent) 0
+    );
+  box-shadow: 0 0 var(--sp-4) var(--glow);
+}
+.hud-combo__value {
+  position: relative;
+  font-family: var(--font-display);
+  font-size: var(--fs-28);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--mat);
+  font-variant-numeric: tabular-nums;
+}
+.hud-combo__label {
+  position: relative;
+  color: var(--ink-soft);
+  font-size: var(--fs-12);
+  letter-spacing: 0.06em;
+}
+.hud-combo[data-tier='1'] {
+  --mat: var(--techelet);
+  --glow: color-mix(in srgb, var(--techelet) 30%, transparent);
+}
+.hud-combo[data-tier='2'] {
+  --mat: color-mix(in srgb, var(--fade) 55%, var(--ink-soft));
+  --glow: color-mix(in srgb, var(--fade) 45%, transparent);
+}
+.hud-combo[data-tier='2'] .hud-combo__value,
+.hud-combo[data-tier='3'] .hud-combo__value,
+.hud-combo[data-tier='4'] .hud-combo__value {
+  background: linear-gradient(
+    170deg,
+    var(--surface),
+    var(--mat) 45%,
+    color-mix(in srgb, var(--mat) 70%, var(--ink))
+  );
+  background-clip: text;
+  color: transparent;
+}
+.hud-combo[data-tier='3'] {
+  --mat: var(--gold);
+  --glow: var(--gold-glow);
+}
+.hud-combo[data-tier='4'] {
+  --mat: var(--gold);
+  --glow: color-mix(in srgb, var(--techelet) 45%, var(--gold-glow));
+}
+.hud-combo[data-tier='4'] .hud-combo__ring {
+  animation: combo-light 1.6s linear infinite;
+}
+
+@keyframes combo-bump {
+  40% {
+    transform: scale(1.22);
+  }
+}
+@keyframes combo-light {
+  50% {
+    box-shadow: 0 0 var(--sp-6) var(--glow);
+  }
+}
+
+/* ---- WPM and accuracy, small, in the top corner -------------------------------------------------- */
+
+.hud-stats {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  display: flex;
+  gap: var(--sp-4);
+}
+.hud-stat {
+  display: grid;
+  justify-items: start;
+  min-inline-size: var(--sp-8);
+  padding: var(--sp-1) var(--sp-3);
+  border: var(--border-w) solid color-mix(in srgb, var(--line) 70%, transparent);
+  border-radius: var(--radius-2);
+  background: color-mix(in srgb, var(--surface) 82%, transparent);
+  box-shadow: var(--shadow-1);
+}
+.hud-stat__value {
+  font-size: var(--fs-20);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+.hud-stat__label {
+  color: var(--ink-soft);
+  font-size: var(--fs-12);
+}
+
+/* ---- announcements: a word rises in gold --------------------------------------------------------- */
+
+.hud-calls {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-start: 30%;
+  display: grid;
+  justify-items: center;
+}
+.hud-call {
+  grid-area: 1 / 1;
+  font-family: var(--font-display);
+  font-size: var(--fs-40);
+  font-weight: 700;
+  background: linear-gradient(170deg, var(--gold-soft), var(--gold) 45%, var(--gold-deep));
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 0 var(--sp-2) var(--gold-glow));
+  animation: call-rise 1.2s var(--ease) forwards;
+}
+@keyframes call-rise {
+  from {
+    opacity: 0;
+    transform: translateY(var(--sp-4)) scale(0.85);
+  }
+  20% {
+    opacity: 1;
+    transform: none;
+  }
+  to {
+    opacity: 0;
+    transform: translateY(calc(var(--sp-6) * -1));
+  }
+}
+
+/* ---- the paper strip ----------------------------------------------------------------------------- */
+
+.hud-bottom {
+  display: grid;
+  justify-items: center;
+  gap: var(--sp-2);
+}
+.hud-tips {
+  min-block-size: var(--sp-6);
+  display: grid;
+  align-items: end;
+}
+.hud-tip {
+  margin: 0;
+  padding: var(--sp-1) var(--sp-3);
+  border: var(--border-w) solid var(--line);
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  box-shadow: var(--shadow-1);
+  color: var(--ink-soft);
+  font-size: var(--fs-14);
+  animation: rise-in var(--t-panel) var(--ease);
+}
+
+.hud-strip {
+  position: relative;
+  max-inline-size: 100%;
+  padding: var(--sp-2) var(--sp-6) var(--sp-3);
+  border: var(--border-w) solid var(--line);
+  border-radius: var(--radius-2);
+  background:
+    linear-gradient(var(--rule) 1px, transparent 1px) 0 72% / 100% 100% no-repeat,
+    var(--surface);
+  box-shadow: var(--shadow-2);
+}
+.hud-strip.is-stumble {
+  animation: strip-stumble 220ms var(--ease);
+}
+.hud-strip__line {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: var(--sp-5);
+  white-space: nowrap;
+}
+.hud-word {
+  display: inline-flex;
+  align-items: baseline;
+  font-family: var(--font-typing);
+  font-size: var(--fs-40);
+  letter-spacing: var(--typing-spacing);
+  line-height: 1.35;
+}
+.hud-word.is-in {
+  animation: rise-in var(--t-panel) var(--ease);
+}
+.hud-ahead {
+  color: var(--ink-soft);
+  font-family: var(--font-typing);
+  font-size: var(--fs-28);
+  letter-spacing: var(--typing-spacing);
+  opacity: 0.55;
+}
+
+.hud-l {
+  position: relative;
+  padding-inline: 0.04em;
+  border-radius: var(--radius-1);
+  transition: color var(--t-feedback) var(--ease);
+}
+.hud-l[data-state='next'] {
+  color: var(--techelet);
+}
+.hud-l[data-state='next']::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0.06em;
+  inset-block-end: 0.02em;
+  block-size: 0.08em;
+  border-radius: var(--radius-pill);
+  background: var(--techelet);
+  animation: next-pulse 1.1s var(--ease) infinite;
+}
+.hud-l[data-state='ok'] {
+  color: var(--gold-deep);
+  animation: ink-in var(--t-panel) var(--ease);
+}
+.hud-l[data-state='fixed'] {
+  color: var(--warn-fg);
+}
+.hud-l[data-state='err'] {
+  color: var(--err-fg);
+  background: var(--err-bg);
+  text-decoration: underline wavy var(--err-fg);
+  text-decoration-thickness: 0.05em;
+  text-underline-offset: 0.18em;
+}
+.hud-l--space {
+  inline-size: 0.6em;
+}
+.hud-l--space::before {
+  content: '';
+  position: absolute;
+  inset-inline: 0.12em;
+  inset-block-end: 0.3em;
+  block-size: 0.18em;
+  border: 0.05em solid var(--line);
+  border-block-start: 0;
+}
+.hud-l--space[data-state='next']::before {
+  border-color: var(--techelet);
+}
+.hud-l--space[data-state='err'] {
+  text-decoration: none;
+}
+
+.hud-strip__progress {
+  position: absolute;
+  inset-inline: var(--sp-4);
+  inset-block-end: var(--sp-1);
+  display: none;
+  block-size: 3px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-2);
+  overflow: hidden;
+}
+.hud-strip.has-progress .hud-strip__progress {
+  display: block;
+}
+.hud-strip__bar {
+  --p: 0;
+  display: block;
+  block-size: 100%;
+  inline-size: calc(var(--p) * 100%);
+  background: var(--gold);
+  transition: inline-size var(--t-panel) var(--ease);
+}
+
+@keyframes ink-in {
+  from {
+    color: var(--techelet);
+    transform: translateY(-0.08em) scale(1.18);
+  }
+}
+@keyframes next-pulse {
+  50% {
+    opacity: 0.45;
+  }
+}
+@keyframes strip-stumble {
+  25% {
+    transform: translateX(-0.35em);
+  }
+  60% {
+    transform: translateX(0.25em);
+  }
+}
+
+/* ---- the keyboard guide -------------------------------------------------------------------------- */
+
+.kg {
+  --gap: calc(var(--key-u) * 0.09);
+  display: grid;
+  justify-items: center;
+  gap: var(--sp-1);
+}
+.kg[data-mode='off'] {
+  display: none;
+}
+.kg__stage {
+  perspective: calc(var(--key-u) * 22);
+  perspective-origin: 50% 0;
+}
+.kg__deck {
+  display: grid;
+  gap: var(--gap);
+  padding: calc(var(--gap) * 2.4);
+  border: var(--border-w) solid color-mix(in srgb, var(--line) 80%, transparent);
+  border-radius: var(--radius-2);
+  background: color-mix(in srgb, var(--surface-2) 82%, transparent);
+  box-shadow: var(--shadow-3);
+  transform: rotateX(var(--key-tilt));
+  transform-origin: 50% 100%;
+  transform-style: preserve-3d;
+}
+.kg__row {
+  display: flex;
+  gap: var(--gap);
+  transform-style: preserve-3d;
+}
+
+.kg__key {
+  --kg-f: var(--finger-thumb);
+  --w: 1;
+  position: relative;
+  flex: none;
+  inline-size: calc(var(--key-u) * var(--w) + var(--gap) * (var(--w) - 1));
+  block-size: var(--key-u);
+  transform-style: preserve-3d;
+}
+.kg__key--pinky {
+  --kg-f: var(--finger-pinky);
+}
+.kg__key--ring {
+  --kg-f: var(--finger-ring);
+}
+.kg__key--middle {
+  --kg-f: var(--finger-middle);
+}
+.kg__key--index {
+  --kg-f: var(--finger-index);
+}
+.kg__key--backspace {
+  --w: 2;
+}
+.kg__key--tab {
+  --w: 1.5;
+}
+.kg__row--top .kg__key:last-child {
+  --w: 1.5;
+}
+.kg__key--capslock {
+  --w: 1.75;
+}
+.kg__key--enter {
+  --w: 2.25;
+}
+.kg__key--shiftleft {
+  --w: 2.25;
+}
+.kg__key--shiftright {
+  --w: 2.75;
+}
+.kg__key--space {
+  --w: 6.25;
+}
+.kg__row--space {
+  justify-content: center;
+}
+
+.kg__cap {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  border: var(--border-w) solid color-mix(in srgb, var(--kg-f) 35%, var(--line));
+  border-block-end-width: calc(var(--key-u) * 0.1);
+  border-block-end-color: color-mix(in srgb, var(--kg-f) 75%, var(--ink));
+  border-radius: calc(var(--key-u) * 0.16);
+  background: color-mix(in srgb, var(--kg-f) 10%, var(--surface));
+  color: var(--ink);
+  transition:
+    transform var(--t-feedback) var(--ease),
+    background var(--t-feedback) var(--ease),
+    box-shadow var(--t-feedback) var(--ease);
+}
+.kg__key--home .kg__cap {
+  background: color-mix(in srgb, var(--kg-f) 22%, var(--surface));
+}
+.kg__key--bump .kg__cap::after {
+  content: '';
+  position: absolute;
+  inset-block-end: 18%;
+  inline-size: 26%;
+  block-size: calc(var(--key-u) * 0.05);
+  border-radius: var(--radius-pill);
+  background: var(--ink-soft);
+}
+.kg__key--wide .kg__cap {
+  color: var(--ink-soft);
+}
+.kg__main {
+  font-family: var(--font-typing);
+  font-size: calc(var(--key-u) * 0.44);
+  line-height: 1;
+}
+.kg__alt {
+  position: absolute;
+  inset-block-start: 8%;
+  inset-inline-end: 12%;
+  color: var(--ink-soft);
+  font-family: var(--font-ui);
+  font-size: calc(var(--key-u) * 0.22);
+  line-height: 1;
+  opacity: 0.7;
+}
+
+/* the next key rises toward the player and glows techelet */
+.kg__key.is-next .kg__cap {
+  transform: translateZ(calc(var(--key-u) * 0.3)) translateY(calc(var(--key-u) * -0.1));
+  border-color: var(--techelet);
+  border-block-end-color: color-mix(in srgb, var(--techelet) 70%, var(--ink));
+  background: var(--techelet);
+  color: var(--surface);
+  box-shadow:
+    0 0 0 calc(var(--gap) * 0.9) color-mix(in srgb, var(--kg-f) 85%, transparent),
+    0 0 calc(var(--key-u) * 0.6) color-mix(in srgb, var(--techelet) 70%, transparent);
+  animation: key-glow 1.1s var(--ease) infinite;
+}
+.kg__key.is-next .kg__alt {
+  color: var(--surface);
+}
+.kg__key.is-shift .kg__cap {
+  border-color: var(--techelet);
+  background: var(--techelet-soft);
+  color: var(--techelet);
+  box-shadow: 0 0 calc(var(--key-u) * 0.3) color-mix(in srgb, var(--techelet) 45%, transparent);
+}
+.kg__key.is-fix .kg__cap {
+  border-color: var(--warn-fg);
+  border-block-end-color: color-mix(in srgb, var(--warn-fg) 70%, var(--ink));
+  background: var(--warn-bg);
+  color: var(--warn-fg);
+  box-shadow: 0 0 calc(var(--key-u) * 0.5) color-mix(in srgb, var(--warn-fg) 55%, transparent);
+}
+
+/* the press: the key dips, gold when right, red when wrong */
+.kg__key.is-down .kg__cap {
+  animation: key-down 160ms var(--ease);
+}
+.kg__key.is-ok .kg__cap {
+  background: var(--gold);
+  color: var(--on-gold);
+}
+.kg__key.is-err .kg__cap {
+  background: var(--err-bg);
+  border-color: var(--err-fg);
+  color: var(--err-fg);
+}
+
+@keyframes key-down {
+  40% {
+    transform: translateZ(calc(var(--key-u) * -0.12)) translateY(calc(var(--key-u) * 0.06))
+      scale(0.94);
+  }
+}
+@keyframes key-glow {
+  50% {
+    box-shadow:
+      0 0 0 calc(var(--gap) * 0.9) color-mix(in srgb, var(--kg-f) 85%, transparent),
+      0 0 calc(var(--key-u) * 0.9) color-mix(in srgb, var(--techelet) 85%, transparent);
+  }
+}
+
+/* hands, palms down, the finger to use lifted */
+.kg__hands {
+  display: none;
+  inline-size: calc(var(--key-u) * 9);
+  block-size: auto;
+  margin-block-start: calc(var(--key-u) * -0.4);
+}
+.kg[data-mode='hands'] .kg__hands {
+  display: block;
+}
+.kg__palm {
+  fill: color-mix(in srgb, var(--surface) 88%, transparent);
+  stroke: var(--line);
+  stroke-width: 2;
+}
+.kg__finger {
+  --fc: var(--finger-thumb);
+  fill: color-mix(in srgb, var(--fc) 30%, var(--surface));
+  stroke: color-mix(in srgb, var(--fc) 70%, var(--line));
+  stroke-width: 2;
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  transition:
+    transform var(--t-feedback) var(--ease),
+    fill var(--t-feedback) var(--ease);
+}
+.kg__finger--pinky {
+  --fc: var(--finger-pinky);
+}
+.kg__finger--ring {
+  --fc: var(--finger-ring);
+}
+.kg__finger--middle {
+  --fc: var(--finger-middle);
+}
+.kg__finger--index {
+  --fc: var(--finger-index);
+}
+.kg__finger.is-active {
+  fill: var(--fc);
+  stroke: var(--techelet);
+  stroke-width: 3;
+  transform: translateY(-14%) scaleY(1.08);
+}
+
+.kg__caption {
+  margin: 0;
+  padding: 0 var(--sp-2);
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--surface) 80%, transparent);
+  color: var(--ink-soft);
+  font-size: var(--fs-14);
+}
+.kg__caption:empty {
+  visibility: hidden;
+}
+
+/* ---- the test range's end-of-lesson card ---------------------------------------------------------- */
+
+.range__done {
+  position: absolute;
+  inset-block-start: 22%;
+  inset-inline: 0;
+  z-index: 3;
+  justify-self: center;
+  margin-inline: auto;
+  inline-size: min(26rem, calc(100% - var(--sp-6)));
+  padding: var(--sp-5) var(--sp-6);
+  border: var(--border-w) solid var(--line);
+  border-radius: var(--radius-3);
+  background: var(--surface);
+  box-shadow: var(--shadow-3);
+  text-align: center;
+  animation: rise-in var(--t-panel) var(--ease);
+}
+.range__done[hidden] {
+  display: none;
+}
+.range__done-title {
+  margin: 0 0 var(--sp-2);
+  font-family: var(--font-display);
+  font-size: var(--fs-28);
+  color: var(--gold-deep);
+}
+.range__done-body {
+  margin: 0 0 var(--sp-3);
+  font-size: var(--fs-20);
+}
+.range__done-again {
+  margin: 0;
+  color: var(--ink-soft);
+}
+
+/* narrow screens: a smaller strip; the keyboard shrinks to fit */
+@media (max-width: 40rem) {
+  .hud {
+    --key-u: calc((100vw - var(--sp-6)) / 15.6);
+  }
+  .hud-word {
+    font-size: var(--fs-28);
+  }
+  .hud-ahead {
+    display: none;
+  }
+  .hud-strip {
+    padding-inline: var(--sp-4);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kg__key.is-next .kg__cap,
+  .hud-l[data-state='next']::after,
+  .hud-combo[data-tier='4'] .hud-combo__ring {
+    animation: none;
+  }
+}
+:root[data-motion='reduce'] .kg__key.is-next .kg__cap,
+:root[data-motion='reduce'] .hud-l[data-state='next']::after,
+:root[data-motion='reduce'] .hud-strip.is-stumble,
+:root[data-motion='reduce'] .hud-combo[data-tier='4'] .hud-combo__ring {
+  animation: none;
+}

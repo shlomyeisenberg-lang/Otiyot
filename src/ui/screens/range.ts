@@ -3,14 +3,16 @@
 // address only; it is a tool for building scenes, not part of the game's menus.
 // The 3D code is loaded on demand, so the menus never pay for it.
 
-import { TypingSession } from '../../core';
-import { learnedWordSource } from '../../learn';
-import type { Engine, QualityChoice, QualityName, SceneManager } from '../../engine';
+import { learnedWordSource, nextContinueText } from '../../learn';
+import type { Engine, QualityChoice, QualityName, SceneManager, TextStyle } from '../../engine';
+import type { WordSource } from '../../game/typing';
 import type { RangeDemo, RangeScene } from '../../scenes/range';
 import type { AppContext, Screen } from '../app';
 import { button, keycap, status } from '../components';
 import { h } from '../dom';
 import type { MessageKey } from '../i18n';
+import { GUIDE_MODES } from '../keyboardGuide';
+import { PlayController, type RunEnd } from '../play';
 import { resolveTheme } from '../theme';
 
 const DEMO_KEYS = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'] as const;
@@ -29,6 +31,9 @@ const DEMO_ORDER: readonly RangeDemo[] = [
 const CAMERAS = ['follow', 'rail', 'cockpit'] as const;
 const ANIMS = ['write', 'hit', 'stagger', 'fall', 'cheer'] as const;
 const QUALITIES: readonly QualityChoice[] = ['auto', 'low', 'medium', 'high', 'ultra'];
+const STYLES: readonly TextStyle[] = ['carved', 'banner', 'hologram'];
+const MODES = ['lesson', 'words'] as const;
+type RunMode = (typeof MODES)[number];
 
 /** What the page exposes for the smoke test (and for a curious developer's console). */
 interface RangeProbe {
@@ -37,6 +42,14 @@ interface RangeProbe {
   stats: Engine['stats'] | null;
   restored: number;
   word: string;
+  /** Words finished in this run, and whether the lesson is over. */
+  words: number;
+  ended: boolean;
+  mode: RunMode;
+  combo: number;
+  /** The key the finger guide is showing, and the Shift to hold with it. */
+  nextKey: string | null;
+  nextShift: string | null;
   /** GPU objects still held after the screen was closed; null while it is open. */
   leaked: number | null;
   /** What exactly was left, for debugging a leak. */
@@ -67,6 +80,12 @@ export function rangeScreen(ctx: AppContext): Screen {
     stats: null,
     restored: 0,
     word: '',
+    words: 0,
+    ended: false,
+    mode: 'lesson',
+    combo: 0,
+    nextKey: null,
+    nextShift: null,
     leaked: null,
     left: null,
     sceneLeak: 0,
@@ -81,6 +100,65 @@ export function rangeScreen(ctx: AppContext): Screen {
   let camera = 0;
   let choice: QualityChoice = settings.quality;
   let cleanup: (() => void) | null = null;
+  let mode: RunMode = 'lesson';
+  let rngNext: () => number = Math.random;
+  const play = new PlayController(t, ctx.profile.layout, settings, settings.keyboardGuide);
+  const done = h('div', { class: 'range__done', hidden: true, role: 'status' });
+  view.append(play.hud.el, done);
+
+  const sync = (): void => {
+    const d = play.current;
+    probe.word = d?.word ?? '';
+    probe.words = d?.wordsDone ?? 0;
+    probe.ended = d?.ended ?? false;
+    probe.combo = d?.combo ?? 0;
+    const next = d?.guide() ?? null;
+    probe.nextKey = next?.code ?? null;
+    probe.nextShift = next?.shift ?? null;
+    probe.mode = mode;
+    probe.restored = scene?.restoredStage ?? 0;
+    live.textContent = probe.word ? t.t('range.typeWord', { word: probe.word }) : '';
+  };
+
+  /** Text for a run: the learner's current lesson, or endless words from learned letters. */
+  const startRun = (): void => {
+    done.hidden = true;
+    // Words to type use only the letters this player has already learned (ARCHITECTURE 8).
+    const words = learnedWordSource(ctx.profile, { rng: rngNext, minLength: 3, maxLength: 7 });
+    let source: WordSource = words;
+    let once = false;
+    if (mode === 'lesson') {
+      const lesson = nextContinueText(ctx.profile, { rng: rngNext });
+      if (lesson) {
+        source = { next: () => lesson };
+        once = true;
+      }
+    }
+    play.begin(source, once ? 'once' : 'endless', ctx.profile.layout);
+    sync();
+  };
+
+  const showDone = (end: RunEnd): void => {
+    const m = end.metrics;
+    done.replaceChildren(
+      h('h2', { class: 'range__done-title', text: t.t('range.done.title') }),
+      h('p', {
+        class: 'range__done-body',
+        text: t.t('range.done.body', {
+          wpm: Math.round(m.netWpm),
+          accuracy: m.accuracy,
+          combo: end.bestCombo,
+        }),
+      }),
+      h('p', { class: 'range__done-again', text: t.t('range.done.again') }),
+    );
+    done.hidden = false;
+  };
+  play.onEnd = (end) => {
+    sync();
+    showDone(end);
+  };
+  play.onJudged = () => sync();
   const pressed = new Map<string, HTMLButtonElement>();
 
   const group = (title: MessageKey, ...items: HTMLElement[]): HTMLElement =>
@@ -148,6 +226,29 @@ export function rangeScreen(ctx: AppContext): Screen {
       }),
     ),
     group(
+      'range.text',
+      ...MODES.map((m) =>
+        pick('mode', m, t.t(`range.mode.${m}`), () => {
+          mode = m;
+          mark('mode', m);
+          startRun();
+        }),
+      ),
+      ...STYLES.map((st) =>
+        pick('style', st, t.t(`range.textStyle.${st}`), () => {
+          scene?.setTextStyle(st);
+          mark('style', st);
+        }),
+      ),
+      ...GUIDE_MODES.map((g) =>
+        pick('guide', g, t.t(`guide.mode.${g}`), () => {
+          play.setGuideMode(g);
+          ctx.saves.update((p) => (p.settings.keyboardGuide = g));
+          mark('guide', g);
+        }),
+      ),
+    ),
+    group(
       'range.camera',
       ...CAMERAS.map((mode, i) =>
         pick('camera', mode, t.t(`range.camera.${mode}`), () => setCamera(i)),
@@ -165,6 +266,9 @@ export function rangeScreen(ctx: AppContext): Screen {
     ),
   );
   mark('camera', 'follow');
+  mark('mode', mode);
+  mark('style', 'banner');
+  mark('guide', settings.keyboardGuide);
   mark('quality', choice);
 
   const fail = (key: MessageKey): void => {
@@ -205,35 +309,35 @@ export function rangeScreen(ctx: AppContext): Screen {
       settings.theme,
       window.matchMedia?.('(prefers-color-scheme: dark)').matches === true,
     );
-    manager = new eng.SceneManager(engine, wipe, { theme, colorblind: settings.colorblind });
+    manager = new eng.SceneManager(engine, wipe, {
+      theme,
+      colorblind: settings.colorblind,
+      hud: play.hud,
+      typing: play.view,
+    });
+    play.target = manager;
     scene = new rangeMod.RangeScene();
-    scene.onWord = (w) => {
-      probe.word = w;
-      probe.restored = scene?.restoredStage ?? 0;
-      live.textContent = t.t('range.typeWord', { word: w });
-    };
     scene.onAnimation = (name) => mark('anim', name);
 
-    // Words to type use only the letters this player has already learned (ARCHITECTURE 8).
     const layout = ctx.profile.layout;
     const rng = new eng.Rng(2026);
-    const text = learnedWordSource(ctx.profile, {
-      rng: () => rng.next(),
-      minLength: 3,
-      maxLength: 7,
-    });
+    rngNext = () => rng.next();
+    startRun();
+    const text = learnedWordSource(ctx.profile, { rng: rngNext, minLength: 3, maxLength: 7 });
 
     const stats = engine.stats;
     probe.stats = stats;
     let lastPerf = performance.now();
     let perfRaf = 0;
     const tickPerf = (now: number): void => {
+      play.frame(now);
       perf.update(stats, (now - lastPerf) / 1000);
       lastPerf = now;
       perfRaf = requestAnimationFrame(tickPerf);
     };
     cleanup = () => {
       cancelAnimationFrame(perfRaf);
+      play.dispose();
       manager?.dispose();
       probe.sceneLeak = manager?.lastLeak ?? 0;
       wipe.dispose();
@@ -272,8 +376,15 @@ export function rangeScreen(ctx: AppContext): Screen {
     full: true,
     onKey(ev) {
       if (!scene || !manager || ev.ctrlKey || ev.metaKey || ev.altKey) return false;
+      if (play.current?.ended) {
+        if (ev.key !== 'Enter') return false;
+        startRun();
+        return true;
+      }
+      // Number keys show the effects, unless the text itself asks for a digit.
       const demo = DEMO_KEYS.indexOf(ev.key as (typeof DEMO_KEYS)[number]);
-      if (demo >= 0) {
+      const wantsDigit = /\d/.test(play.current?.guide()?.char ?? '');
+      if (demo >= 0 && !wantsDigit) {
         runDemo(DEMO_ORDER[demo] as RangeDemo);
         return true;
       }
@@ -281,18 +392,11 @@ export function rangeScreen(ctx: AppContext): Screen {
         setCamera(camera + (ev.key === 'ArrowRight' ? 1 : -1));
         return true;
       }
-      if (ev.key === 'Enter' || ev.key === 'Tab' || ev.key === ' ') return false;
-      const expected = scene.expected;
-      if (!expected) return false;
-      // Judged by the typing core, one letter at a time: a wrong key is simply tried again.
-      const judged = new TypingSession(expected, { layout: ctx.profile.layout }).press(
-        { code: ev.code, key: ev.key, shift: ev.shiftKey },
-        performance.now(),
-      );
-      if (!judged) return false;
-      manager.onKey(judged);
-      probe.restored = scene.restoredStage;
-      return true;
+      if (ev.key === 'Enter' || ev.key === 'Tab') return false;
+      // Judged by the typing driver; the scene and the HUD react.
+      const used = play.key(ev, performance.now());
+      if (used) sync();
+      return used;
     },
     focus() {
       el.focus?.();

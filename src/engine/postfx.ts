@@ -115,6 +115,8 @@ class GradeEffect extends Effect {
 export class PostFx {
   /** 0..1 multipliers from the player's settings (reduce motion sets both to 0). */
   flashScale = 1;
+  /** Multiplies the graded saturation; 1 = as graded. Brief effects (the error flicker) use it. */
+  private satScale = 1;
   chromaScale = 1;
 
   private composer: EffectComposer | null = null;
@@ -226,7 +228,7 @@ export class PostFx {
   private applyGrade(): void {
     const g = this.grade;
     if (this.gradeFx) {
-      this.gradeFx.uniform<number>('saturation').value = g.saturation;
+      this.gradeFx.uniform<number>('saturation').value = g.saturation * this.satScale;
       this.gradeFx.uniform<number>('contrast').value = g.contrast;
       this.gradeFx.uniform<Color>('shadowTint').value.setHex(g.shadowTint);
       this.gradeFx.uniform<Color>('lightTint').value.setHex(g.lightTint).multiplyScalar(g.exposure);
@@ -237,6 +239,13 @@ export class PostFx {
     }
     if (this.vignette) this.vignette.darkness = g.vignette;
     if (this.godRays) this.godRays.godRaysMaterial.exposure = g.godRays;
+  }
+
+  /** Drains (k < 1) or restores (k = 1) color for a moment without changing the grade. */
+  setSaturationScale(k: number): void {
+    if (k === this.satScale) return;
+    this.satScale = k;
+    if (this.gradeFx) this.gradeFx.uniform<number>('saturation').value = this.grade.saturation * k;
   }
 
   /** The hit pulse: colors split toward the screen edges for a moment. `strength` 0..1. */
