@@ -6,8 +6,8 @@ _Last updated 2026-11-10. This page is generated from `docs/progress.json`; to c
 
 ## Summary
 
-- ✅ **3** of **39** tasks done
-- 🛠️ 1 in progress · ⛔ 0 blocked · ⬜ 35 pending
+- ✅ **4** of **39** tasks done
+- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 35 pending
 - ⬜ **1** manual step waiting for you
 - 💡 0 feature ideas open
 
@@ -36,7 +36,7 @@ Work done before or outside the numbered tasks.
 - ✅ T01 · Project setup, CI and plugin packer — 2026-11-10 · [PR #2](https://github.com/shlomyeisenberg-lang/Otiyot/pull/2)
 - ✅ T02 · Typing core — 2026-11-10 · [PR #3](https://github.com/shlomyeisenberg-lang/Otiyot/pull/3)
 - ✅ T03 · Saves and profiles — 2026-11-10 · [PR #4](https://github.com/shlomyeisenberg-lang/Otiyot/pull/4)
-- 🛠️ T04 · The two lesson tracks
+- ✅ T04 · The two lesson tracks — 2026-11-10 · [PR #6](https://github.com/shlomyeisenberg-lang/Otiyot/pull/6)
 - ⬜ T05 · Word and sentence library
 - ⬜ T06 · Adaptive engine and spaced repetition
 - ⬜ T07 · Design system and UI shell
@@ -178,9 +178,9 @@ Saves now exist as pure logic: several local profiles, a versioned save with mig
 
 Typed text is never stored. The manager is exported from src/main.ts as `saves` for later tasks.
 
-### 🛠️ T04 · The two lesson tracks
+### ✅ T04 · The two lesson tracks
 
-**Status:** In progress
+**Status:** Done · **Finished:** 2026-11-10 · **Pull request:** [PR #6](https://github.com/shlomyeisenberg-lang/Otiyot/pull/6)
 
 Both built-in lesson courses now exist as pure logic for Hebrew and English: Track 1 (letter by letter, from plugin 3.3.0) and Track 2 (two keys per lesson with real words, from plugin 4.2.0). Each profile picks a track, progress is kept separately per track and language, and a text source hands scenes the next text from the active track.
 
