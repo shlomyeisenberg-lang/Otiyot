@@ -103,7 +103,7 @@ Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Fable 5.2 
 - **Done when** Menus are beautiful and usable in both languages and themes at 1366×768 and 375px; a new profile can be created with a track and layout.
 - **User must have ready** Nothing.
 
-### [ ] T08 · 3D engine kit
+### [x] T08 · 3D engine kit
 - **Branch** `t08-engine-kit`
 - **Model** Fable 5.2 · **Effort** Xhigh
 - **Goal** The reusable 3D foundation every scene is built on, tuned for integrated graphics.
