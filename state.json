@@ -1,1 +1,1 @@
-{"claims":{},"attempts":{"T01":1,"T02":1,"T03":1,"T04":1,"T05":1,"T06":1,"T07":2,"T08":3},"skipped":{},"last_failure":{},"final_email_sent":false}
+{"claims":{"T09":{"at":"2026-11-10T15:49:00Z","runner":"Otiyot Fable builder"}},"attempts":{"T01":1,"T02":1,"T03":1,"T04":1,"T05":1,"T06":1,"T07":2,"T08":3,"T09":1},"skipped":{},"last_failure":{},"final_email_sent":false}
