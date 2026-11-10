@@ -26,6 +26,11 @@ Never hard-code a color, font size, radius or shadow. Add a token first. Tokens 
 | `--warn-fg` / `--warn-bg` | `#8A5A12` / `#F3E3BF` | `#E6BE72` / `#33270F` | caution |
 | `--err-fg` / `--err-bg` | `#9B2F24` / `#F2D9D3` | `#F08F82` / `#3A1814` | wrong key |
 | `--fade` | `#B9B4A8` | `#56524A` | the Forgetting: anything not yet restored |
+| `--finger-pinky` | `#7A4E9A` | `#B793D6` | little fingers (keyboard guide) |
+| `--finger-ring` | `#2E7D7A` | `#6CC4BE` | ring fingers |
+| `--finger-middle` | `#B0652A` | `#E59A5C` | middle fingers |
+| `--finger-index` | `#4F7A2E` | `#9CC870` | index fingers |
+| `--finger-thumb` | `#6B6253` | `#A99C84` | thumbs (space) |
 
 Helper tokens are only ever mixes of the ones above (`--gold-deep`, `--gold-soft`, `--gold-glow`, `--techelet-soft`, `--rule`, `--scrim`, `--on-gold`, the three shadows); spacing is `--sp-1..8`, type `--fs-12..64`, radius `--radius-1..3`.
 
@@ -50,7 +55,7 @@ Radius 6 / 12 / 20. Panels look like paper: 1px `--line` border, soft warm shado
 
 ## Core components
 
-Button (primary gold, quiet, danger) · Panel · Tabs · Toggle · Slider · Select · Key-cap chip · Stat tile · Progress bar · Rank badge (S/A/B/C) · Dialogue box with speaker portrait and subtitles · Toast · Modal · Key heatmap · Line chart · Track picker card. A `/styleguide` page (dev only, `pnpm dev` then `#/styleguide`) shows every token and component in light, dark, RTL and LTR. All of these are built in `src/ui/components` (T07); the key heatmap is `keyboardMap` with `heat`, and the track picker card is `choiceCard`. Large panels use `panel({ deckled: true })`. The page background is a scored parchment sheet (faint ruled lines); un-restored things in menus use `--fade` and a dashed outline.
+Button (primary gold, quiet, danger) · Panel · Tabs · Toggle · Slider · Select · Key-cap chip · Stat tile · Progress bar · Rank badge (S/A/B/C) · Dialogue box with speaker portrait and subtitles · Toast · Modal · Key heatmap · Line chart · Track picker card. A `/styleguide` page (dev only, `pnpm dev` then `#/styleguide`) shows every token and component in light, dark, RTL and LTR. In play (T09): the paper strip (letter states: waiting, next in `--techelet` with an underline, right in gold, fixed in `--warn-fg`, wrong in `--err-fg` on `--err-bg` with a wavy line), the combo meter (ink, techelet, silver, gold, light), the WPM and accuracy pills, gentle tips, and the keyboard guide (tilted, keys coded by the `--finger-*` colors, next key raised in techelet, optional hands); world text comes carved, on a banner or as a hologram. All of these are built in `src/ui/components` (T07); the key heatmap is `keyboardMap` with `heat`, and the track picker card is `choiceCard`. Large panels use `panel({ deckled: true })`. The page background is a scored parchment sheet (faint ruled lines); un-restored things in menus use `--fade` and a dashed outline.
 
 ## 3D art direction
 

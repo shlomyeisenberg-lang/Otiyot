@@ -150,7 +150,7 @@ describe('normalisation', () => {
       meta: { legacyChecked: true },
     };
     const m = migrate(v3);
-    expect(m.version).toBe(4);
+    expect(m.version).toBe(CURRENT_VERSION);
     const save = normalizeSave(m, CURRENT_VERSION, counter(), 0);
     expect(save?.profiles[0]?.settings).toMatchObject({ theme: 'dark', quality: 'auto' });
     expect(save?.profiles[1]?.settings.quality).toBe('low');
@@ -166,5 +166,28 @@ describe('normalisation', () => {
     const fixed = normalizeSave(bad, CURRENT_VERSION, counter(), 0);
     expect(fixed?.meta.autoQuality).toBeNull();
     expect(fixed?.profiles[0]?.settings.quality).toBe('auto');
+  });
+
+  it('v4 -> v5 adds the keyboard guide choice (keys by default, kept when set)', () => {
+    const v4 = {
+      version: 4,
+      profiles: [
+        { id: 'a', name: 'A', settings: { quality: 'low' } },
+        { id: 'b', name: 'B', settings: { keyboardGuide: 'hands' } },
+        { id: 'c', name: 'C' },
+      ],
+      activeProfileId: 'a',
+      meta: { legacyChecked: true, autoQuality: null },
+    };
+    const m = migrate(v4);
+    expect(m.version).toBe(5);
+    const save = normalizeSave(m, CURRENT_VERSION, counter(), 0);
+    expect(save?.profiles[0]?.settings).toMatchObject({ quality: 'low', keyboardGuide: 'keys' });
+    expect(save?.profiles[1]?.settings.keyboardGuide).toBe('hands');
+    expect(save?.profiles[2]?.settings.keyboardGuide).toBe('keys');
+    const bad = { version: 5, profiles: [{ id: 'd', settings: { keyboardGuide: 'big' } }] };
+    expect(
+      normalizeSave(bad, CURRENT_VERSION, counter(), 0)?.profiles[0]?.settings.keyboardGuide,
+    ).toBe('keys');
   });
 });

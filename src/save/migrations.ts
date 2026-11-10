@@ -1,7 +1,7 @@
 // Save versioning. Every schema change adds ONE entry to MIGRATIONS (from-version -> next version)
 // and bumps CURRENT_VERSION, plus a test in tests/unit/save-migrations.test.ts.
 
-export const CURRENT_VERSION = 4;
+export const CURRENT_VERSION = 5;
 
 type Rec = Record<string, unknown>;
 export type Migration = (raw: Rec) => Rec;
@@ -92,11 +92,28 @@ const v3ToV4: Migration = (raw) => {
   return { ...raw, version: 4, profiles, meta };
 };
 
+/**
+ * v4 -> v5 (T09). Settings gain `keyboardGuide`: the keyboard under the play view shows the keys
+ * ('keys', the default), the keys with hands ('hands'), or is hidden ('off'). Kept if present.
+ */
+const v4ToV5: Migration = (raw) => {
+  const isRec = (v: unknown): v is Rec => typeof v === 'object' && v !== null && !Array.isArray(v);
+  const profiles = Array.isArray(raw.profiles)
+    ? raw.profiles.map((p) =>
+        isRec(p)
+          ? { ...p, settings: { keyboardGuide: 'keys', ...(isRec(p.settings) ? p.settings : {}) } }
+          : p,
+      )
+    : raw.profiles;
+  return { ...raw, version: 5, profiles };
+};
+
 export const MIGRATIONS: Readonly<Record<number, Migration>> = {
   0: v0ToV1,
   1: v1ToV2,
   2: v2ToV3,
   3: v3ToV4,
+  4: v4ToV5,
 };
 
 export function versionOf(raw: Rec): number {

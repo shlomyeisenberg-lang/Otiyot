@@ -2,7 +2,7 @@
 // add their own rows here (T36 fills in the rest of accessibility and health).
 
 import type { BackspacePolicy, NiqqudMode } from '../../core';
-import type { Settings, ThemeChoice } from '../../save';
+import type { KeyboardGuideMode, Settings, ThemeChoice } from '../../save';
 import type { AppContext, Screen } from '../app';
 import { button, field, select, slider, status, tabs, toggle } from '../components';
 import { h } from '../dom';
@@ -90,9 +90,20 @@ export function settingsScreen(ctx: AppContext): Screen {
       cur().niqqud,
       (v) => ctx.updateSettings({ niqqud: v }),
     );
+    const guides: KeyboardGuideMode[] = ['keys', 'hands', 'off'];
+    const guide = select<KeyboardGuideMode>(
+      guides.map((v) => ({ value: v, label: t.t(`guide.mode.${v}`) })),
+      cur().keyboardGuide,
+      (v) => ctx.updateSettings({ keyboardGuide: v }),
+    );
+    guide.dataset.setting = 'keyboardGuide';
     return h(
       'div',
       {},
+      field(
+        { label: t.t('settings.keyboardGuide'), hint: t.t('settings.keyboardGuideHint') },
+        guide,
+      ),
       field({ label: t.t('settings.backspace'), hint: t.t('settings.backspaceHint') }, backspace),
       field({ label: t.t('settings.niqqud'), hint: t.t('settings.niqqudHint') }, niqqud),
       switchRow('hardcore', 'settings.hardcore', 'settings.hardcoreHint'),

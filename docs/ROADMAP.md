@@ -118,7 +118,7 @@ Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Fable 5.2 
 - **Done when** The test range runs at 60 fps on medium, shows every effect and animation, and leaves zero leaked GPU objects after dispose (test).
 - **User must have ready** Nothing.
 
-### [ ] T09 · 3D keyboard, finger guide, HUD and typing feedback
+### [x] T09 · 3D keyboard, finger guide, HUD and typing feedback
 - **Branch** `t09-keyboard-hud`
 - **Model** Fable 5.2 · **Effort** High
 - **Goal** The moment-to-moment feel of typing: what the player sees and feels on every key.

@@ -28,7 +28,11 @@ export interface Settings {
   dyslexiaFont: boolean;
   /** Graphics quality (v4, T08): a fixed preset, or 'auto' to use the benchmark's pick. */
   quality: QualityChoice;
+  /** The keyboard guide under the play view (v5, T09): keys, keys with hands, or hidden. */
+  keyboardGuide: KeyboardGuideMode;
 }
+
+export type KeyboardGuideMode = 'keys' | 'hands' | 'off';
 
 export interface LessonBest {
   wpm: number;
@@ -127,6 +131,7 @@ export function defaultSettings(): Settings {
     largeText: false,
     dyslexiaFont: false,
     quality: 'auto',
+    keyboardGuide: 'keys',
   };
 }
 
@@ -229,6 +234,10 @@ function normalizeSettings(raw: unknown): Settings {
     largeText: r.largeText === true,
     dyslexiaFont: r.dyslexiaFont === true,
     quality: isQualityName(r.quality) ? r.quality : d.quality,
+    keyboardGuide:
+      r.keyboardGuide === 'keys' || r.keyboardGuide === 'hands' || r.keyboardGuide === 'off'
+        ? r.keyboardGuide
+        : d.keyboardGuide,
   };
 }
 

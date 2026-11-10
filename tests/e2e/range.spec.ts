@@ -1,6 +1,7 @@
-// Smoke test for the 3D test range (T08): the engine starts, every effect, camera and animation
-// runs, the scene stays inside the medium budget, typing restores color, and closing the screen
-// leaves zero GPU objects behind.
+// Smoke test for the 3D test range (T08, T09): the engine starts, every effect, camera and
+// animation runs, the scene stays inside the medium budget, a whole lesson is typed by following
+// the finger guide (in English and in Hebrew) with the HUD and keyboard reacting, typing restores
+// color, and closing the screen leaves zero GPU objects behind.
 
 import { expect, test, type Page } from '@playwright/test';
 
@@ -9,7 +10,7 @@ const SAVE = {
   profiles: [
     {
       id: 'a',
-      name: 'דבורה',
+      name: 'דוד',
       settings: { uiLanguage: 'en', theme: 'light' },
       track: 1,
       layout: 'en',
@@ -25,6 +26,11 @@ interface Probe {
   stats: { drawCalls: number; triangles: number; quality: string; geometries: number } | null;
   restored: number;
   word: string;
+  words: number;
+  ended: boolean;
+  combo: number;
+  nextKey: string | null;
+  nextShift: string | null;
   leaked: number | null;
   sceneLeak: number;
   step: (seconds: number) => void;
@@ -37,6 +43,27 @@ const probe = <K extends Readable>(page: Page, key: K): Promise<Probe[K]> =>
     (k) => (window as unknown as { __otiyotRange: Probe }).__otiyotRange[k] as Probe[K],
     key,
   );
+
+/** Types the next key exactly as the finger guide shows it. */
+async function followGuide(page: Page): Promise<void> {
+  const code = await probe(page, 'nextKey');
+  if (!code) throw new Error('the guide shows no key');
+  const shift = await probe(page, 'nextShift');
+  if (shift) await page.keyboard.down('Shift');
+  await page.keyboard.press(code === 'Space' ? 'Space' : code);
+  if (shift) await page.keyboard.up('Shift');
+}
+
+/** Types the whole lesson by following the guide; returns how many keys it took. */
+async function typeLesson(page: Page): Promise<number> {
+  let keys = 0;
+  while (!(await probe(page, 'ended'))) {
+    await followGuide(page);
+    keys += 1;
+    if (keys > 2000) throw new Error('lesson never ended');
+  }
+  return keys;
+}
 
 const step = (page: Page, seconds: number): Promise<void> =>
   page.evaluate(
@@ -106,13 +133,34 @@ test.describe('test range', () => {
         await step(page, 0.5);
       }
 
-      // Type the floating word: color comes back one stage per word.
-      const word = await probe(page, 'word');
-      expect(word.length).toBeGreaterThan(0);
+      // The HUD and the keyboard guide are up, with exactly one key lit.
+      await expect(page.getByTestId('hud')).toBeVisible();
+      await expect(page.locator('.hud-l[data-state="next"]')).toHaveCount(1);
+      await expect(page.locator('.kg__key.is-next')).toHaveCount(1);
+      const first = await probe(page, 'nextKey');
+      await expect(page.locator(`.kg__key.is-next[data-code="${first}"]`)).toHaveCount(1);
+
+      // A wrong key: the letter turns red, nothing blocks, the guide moves on to the next key.
+      await page.keyboard.press(first === 'KeyQ' ? 'KeyZ' : 'KeyQ');
+      await expect(page.locator('.hud-l[data-state="err"]')).toHaveCount(1);
+      await expect(page.locator('.kg__key.is-next')).toHaveCount(1);
+      expect(await probe(page, 'combo')).toBe(0);
+      // Backspace takes it back; the guide returns to the first key.
+      await page.keyboard.press('Backspace');
+      expect(await probe(page, 'nextKey')).toBe(first);
+
+      // Type the whole lesson by following the guide: color comes back, the card shows.
       const before = await probe(page, 'restored');
-      await page.keyboard.type(word);
+      await typeLesson(page);
       await step(page, 2.5);
+      expect(await probe(page, 'words')).toBeGreaterThan(0);
       expect(await probe(page, 'restored')).toBeGreaterThan(before);
+      expect(await probe(page, 'combo')).toBeGreaterThan(5);
+      await expect(page.getByText('Lesson complete')).toBeVisible();
+      // Enter starts the next lesson.
+      await page.keyboard.press('Enter');
+      await expect(page.getByText('Lesson complete')).toBeHidden();
+      expect(await probe(page, 'ended')).toBe(false);
       expect(await probe(page, 'word')).not.toBe('');
 
       // Wait for one real frame so the counters are fresh, then check the medium budget.
@@ -134,5 +182,37 @@ test.describe('test range', () => {
     expect(await probe(page, 'leaked')).toBe(0);
     expect(await probe(page, 'sceneLeak')).toBe(0);
     expect(errors).toEqual([]);
+  });
+
+  test('a Hebrew lesson reads right to left and can be typed by following the guide', async ({
+    page,
+  }, testInfo) => {
+    test.skip(testInfo.project.name !== 'desktop', 'one layout check is enough');
+    const save = {
+      ...SAVE,
+      profiles: [
+        { ...SAVE.profiles[0], settings: { uiLanguage: 'he', theme: 'dark' }, layout: 'he' },
+      ],
+    };
+    await page.addInitScript((s) => {
+      if (!localStorage.getItem('otiyot_save')) localStorage.setItem('otiyot_save', s);
+    }, JSON.stringify(save));
+    await page.goto('/#/range');
+    await page.waitForFunction(
+      () => {
+        const p = (window as unknown as { __otiyotRange?: Probe }).__otiyotRange;
+        return p?.ready === true || p?.failed === true;
+      },
+      null,
+      { timeout: 120_000 },
+    );
+    expect(await probe(page, 'failed')).toBe(false);
+    await expect(page.locator('.hud-word')).toHaveAttribute('dir', 'rtl');
+    // The keyboard itself is physical: always left to right.
+    await expect(page.locator('.kg__deck')).toHaveAttribute('dir', 'ltr');
+    // Keys pressed with the computer set to English still type Hebrew (physical keys).
+    await typeLesson(page);
+    await expect(page.getByText('השיעור הושלם')).toBeVisible();
+    await page.getByRole('button', { name: 'חזרה' }).click();
   });
 });

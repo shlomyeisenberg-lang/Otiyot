@@ -17,6 +17,7 @@ import type { PostFx } from './postfx';
 import type { QualityPreset } from './quality';
 import type { InkWipe } from './transition';
 import type { VfxKit } from './vfx';
+import type { WorldLetterState } from './worldText';
 
 export type { TypedKey };
 
@@ -62,6 +63,39 @@ export interface HudPort {
   announce(text: string): void;
 }
 
+/**
+ * The word being typed, as a scene sees it. The host's typing driver (src/game/typing.ts, T09)
+ * judges every key; the scene only reads this to draw the word in its world, and is told about
+ * each judged key (`onKey`) and each finished word (`onWord`).
+ */
+export interface TypingView {
+  /** The word to type, without the space that ends it. */
+  readonly word: string;
+  /** Letters of the word plus that space. */
+  readonly letters: readonly string[];
+  /** How each of `letters` looks right now. */
+  readonly states: readonly WorldLetterState[];
+  /** Index into `letters` of the letter to type. */
+  readonly position: number;
+  /** The word after this one ('' at the end of a lesson). */
+  readonly lookahead: string;
+  readonly combo: number;
+  /** Combo tier 0..4 (ink, techelet, silver, gold, light). */
+  readonly tier: number;
+  readonly layout: LayoutId;
+}
+
+export const NO_TYPING: TypingView = {
+  word: '',
+  letters: [],
+  states: [],
+  position: 0,
+  lookahead: '',
+  combo: 0,
+  tier: 0,
+  layout: 'he',
+};
+
 export const SILENT_AUDIO: AudioPort = { play() {}, music() {}, intensity() {} };
 export const NO_HUD: HudPort = { line() {}, set() {}, announce() {} };
 
@@ -80,6 +114,8 @@ export interface SceneContext {
   readonly quality: QualityPreset;
   readonly audio: AudioPort;
   readonly hud: HudPort;
+  /** The word being typed and its letter states (NO_TYPING when the host types nothing). */
+  readonly typing: TypingView;
   readonly theme: ThemeName;
   /** A UI color token as a 0xRRGGBB number, honoring the colorblind palette. */
   color(token: ColorToken): number;
@@ -96,6 +132,8 @@ export interface GameScene {
   update(dt: number): void;
   /** A key press, already judged by the typing core. */
   onKey(ev: TypedKey): void;
+  /** Optional: a word was finished (after its last key reached `onKey`). */
+  onWord?(word: string, perfect: boolean): void;
   /** Free everything the tracker does not know about (and stop anything still running). */
   dispose(): void;
   /** Optional: once per drawn frame with real time, for things that must not freeze in hit-stop. */
@@ -109,6 +147,7 @@ export interface SceneHost {
   colorblind: boolean;
   audio?: AudioPort;
   hud?: HudPort;
+  typing?: TypingView;
 }
 
 export class SceneManager {
@@ -167,6 +206,7 @@ export class SceneManager {
         quality: e.preset,
         audio: host.audio ?? SILENT_AUDIO,
         hud: host.hud ?? NO_HUD,
+        typing: host.typing ?? NO_TYPING,
         theme: host.theme,
         color: (token) => colorNumber(host.theme, token, host.colorblind),
       };
@@ -184,6 +224,10 @@ export class SceneManager {
 
   onKey(ev: TypedKey): void {
     this.current?.onKey(ev);
+  }
+
+  onWord(word: string, perfect: boolean): void {
+    this.current?.onWord?.(word, perfect);
   }
 
   /** Unloads the current scene and checks that it left nothing behind. */
