@@ -7,6 +7,7 @@ import {
   SaveTooNewError,
   SaveUnreadableError,
   createProfile,
+  MIGRATIONS,
   type Migration,
 } from '../../src/save';
 import { counter } from './save-helpers';
@@ -179,7 +180,7 @@ describe('normalisation', () => {
       activeProfileId: 'a',
       meta: { legacyChecked: true, autoQuality: null },
     };
-    const m = migrate(v4);
+    const m = migrate(v4, MIGRATIONS, 5);
     expect(m.version).toBe(5);
     const save = normalizeSave(m, CURRENT_VERSION, counter(), 0);
     expect(save?.profiles[0]?.settings).toMatchObject({ quality: 'low', keyboardGuide: 'keys' });
@@ -189,5 +190,36 @@ describe('normalisation', () => {
     expect(
       normalizeSave(bad, CURRENT_VERSION, counter(), 0)?.profiles[0]?.settings.keyboardGuide,
     ).toBe('keys');
+  });
+
+  it('v5 -> v6 adds voice and menu volumes, keeping music and effects', () => {
+    const v5 = {
+      version: 5,
+      profiles: [
+        { id: 'a', name: 'A', settings: { musicVolume: 0.2, sfxVolume: 0.4 } },
+        { id: 'b', name: 'B', settings: { uiVolume: 0.1 } },
+        { id: 'c', name: 'C' },
+      ],
+      activeProfileId: 'a',
+      meta: { legacyChecked: true, autoQuality: null },
+    };
+    const m = migrate(v5);
+    expect(m.version).toBe(6);
+    const save = normalizeSave(m, CURRENT_VERSION, counter(), 0);
+    expect(save?.profiles[0]?.settings).toMatchObject({
+      musicVolume: 0.2,
+      sfxVolume: 0.4,
+      voiceVolume: 0.9,
+      uiVolume: 0.6,
+    });
+    expect(save?.profiles[1]?.settings.uiVolume).toBe(0.1);
+    expect(save?.profiles[2]?.settings.voiceVolume).toBe(0.9);
+    const bad = {
+      version: 6,
+      profiles: [{ id: 'd', settings: { voiceVolume: 9, uiVolume: 'x' } }],
+    };
+    const fixed = normalizeSave(bad, CURRENT_VERSION, counter(), 0)?.profiles[0]?.settings;
+    expect(fixed?.voiceVolume).toBe(1);
+    expect(fixed?.uiVolume).toBe(0.6);
   });
 });

@@ -65,6 +65,8 @@ Low-poly, flat-shaded forms with soft gradients, strong silhouettes, one hero li
 
 Typing: soft wooden/quill clicks with slight per-key variation, pitch climbing a pentatonic scale with the combo; error is a low muted knock. Music: modal melodies (freygish / minor) on plucked and bowed synth voices, built in stems (drone, pulse, melody, counter-melody, percussion) that layer in with the combo. Each region has its own theme and tempo.
 
+In the build (T10): stems come in by combo tier (ink: drone and soft harp; techelet: melody; silver: drums; gold: second voice; light: busier drums and fills), always on the next bar line. Clicks climb the playing theme's own pentatonic ladder (two octaves up, then back down) so a streak is a melody in key; a new tier rings a short kanun-and-bell chime. Menus play the title theme softly with tiny wooden ticks for moves and clicks, rising two notes to open and falling two to go back. Mixer levels: music, effects, voice and menu sounds, each a slider in Settings > Sound. The sound room (`.sound` in screens.css: theme cards like choice cards, stem lamps as gold-lit pills, a dashed techelet typing pad, effect chips) lets the player hear everything.
+
 ## Accessibility
 
 Status is always color + icon + word. Visible focus ring in `--techelet`. Keyboard-only everywhere. Screen-reader labels on menus. Captions for every voice line. Options: reduce motion, shake and flash sliders, colorblind palettes, high contrast, large text, dyslexia-friendly font, text speed.

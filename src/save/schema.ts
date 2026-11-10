@@ -16,6 +16,9 @@ export interface Settings {
   uiLanguage: LayoutId;
   musicVolume: number;
   sfxVolume: number;
+  /** Spoken lines and menu sounds (v6, T10). */
+  voiceVolume: number;
+  uiVolume: number;
   backspace: BackspacePolicy;
   niqqud: NiqqudMode;
   hardcore: boolean;
@@ -121,6 +124,8 @@ export function defaultSettings(): Settings {
     uiLanguage: 'he',
     musicVolume: 0.7,
     sfxVolume: 0.8,
+    voiceVolume: 0.9,
+    uiVolume: 0.6,
     backspace: 'allowed',
     niqqud: 'ignore',
     hardcore: false,
@@ -221,6 +226,8 @@ function normalizeSettings(raw: unknown): Settings {
     uiLanguage: layoutOf(r.uiLanguage, d.uiLanguage),
     musicVolume: num(r.musicVolume, d.musicVolume, 0, 1),
     sfxVolume: num(r.sfxVolume, d.sfxVolume, 0, 1),
+    voiceVolume: num(r.voiceVolume, d.voiceVolume, 0, 1),
+    uiVolume: num(r.uiVolume, d.uiVolume, 0, 1),
     backspace:
       r.backspace === 'allowed' || r.backspace === 'disabled' || r.backspace === 'mustFix'
         ? r.backspace

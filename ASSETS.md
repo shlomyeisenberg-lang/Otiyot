@@ -12,4 +12,4 @@ Every asset, font or library added to the game is listed here with its source an
 | three.js (3D library)                          | `three` 0.187.0                      | MIT         | The 3D engine (`src/engine`)   |
 | postprocessing (screen effects library)        | `postprocessing` 6.39.6              | Zlib        | Bloom, god rays, SSAO, grading |
 
-Icons, the scribe portrait and the deckled paper edge are drawn in code (`src/ui/icons.ts`, `src/ui/components/feedback.ts`, `src/ui/shell.ts`); no image files. The 3D world, the characters, the sky and the letter texture are built in code as well (`src/engine`, `src/scenes`); no models or textures are shipped.
+Icons, the scribe portrait and the deckled paper edge are drawn in code (`src/ui/icons.ts`, `src/ui/components/feedback.ts`, `src/ui/shell.ts`); no image files. The 3D world, the characters, the sky and the letter texture are built in code as well (`src/engine`, `src/scenes`); no models or textures are shipped. All music and sound effects are synthesized live with Web Audio (`src/audio`); no audio files or samples are shipped.

@@ -480,3 +480,175 @@
   gap: var(--sp-4);
   padding-block-start: var(--sp-6);
 }
+
+/* ---------- Sound room (T10) ---------- */
+.sound {
+  display: grid;
+  gap: var(--sp-6);
+}
+.sound__section {
+  display: grid;
+  gap: var(--sp-4);
+}
+.sound__h {
+  font-family: var(--font-display);
+  font-size: var(--fs-20);
+  padding-block-end: var(--sp-2);
+  border-block-end: var(--border-w) solid var(--rule);
+}
+.sound__themes {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
+  gap: var(--sp-3);
+}
+.sound__theme {
+  display: grid;
+  gap: var(--sp-1);
+  padding: var(--sp-4);
+  text-align: start;
+  border: var(--border-w) solid var(--line);
+  border-radius: var(--radius-3);
+  background: var(--surface);
+  box-shadow: var(--shadow-1);
+  transition:
+    transform var(--t-panel) var(--ease),
+    border-color var(--t-feedback) var(--ease),
+    box-shadow var(--t-panel) var(--ease);
+}
+.sound__theme:hover {
+  transform: translateY(-2px);
+  border-color: var(--gold);
+  box-shadow: var(--shadow-2);
+}
+.sound__theme[aria-checked='true'] {
+  border-color: var(--gold);
+  background: linear-gradient(to bottom, var(--gold-soft), var(--surface) 70%);
+  box-shadow:
+    0 0 0 3px var(--gold-glow),
+    var(--shadow-2);
+}
+.sound__theme-name {
+  font-family: var(--font-display);
+  font-size: var(--fs-16);
+  font-weight: 700;
+}
+.sound__theme-mood {
+  color: var(--ink-soft);
+  font-size: var(--fs-14);
+}
+.sound__theme-meta {
+  color: var(--techelet);
+  font-size: var(--fs-12);
+}
+.sound__level {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-3);
+}
+.sound__label {
+  font-weight: 600;
+}
+.sound__level .slider {
+  flex: 1 1 12rem;
+}
+.sound__lamps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+.sound__lamp {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-1) var(--sp-3);
+  border: var(--border-w) solid var(--line);
+  border-radius: var(--radius-pill);
+  color: var(--ink-soft);
+  font-size: var(--fs-14);
+  transition:
+    color var(--t-feedback) var(--ease),
+    border-color var(--t-feedback) var(--ease),
+    background var(--t-feedback) var(--ease);
+}
+.sound__lamp-dot {
+  inline-size: 0.6rem;
+  block-size: 0.6rem;
+  border-radius: 50%;
+  border: var(--border-w) solid var(--fade);
+  background: transparent;
+  transition:
+    background var(--t-feedback) var(--ease),
+    box-shadow var(--t-feedback) var(--ease);
+}
+.sound__lamp.is-on {
+  color: var(--ink);
+  border-color: var(--gold);
+  background: var(--gold-soft);
+}
+.sound__lamp.is-on .sound__lamp-dot {
+  border-color: var(--gold-deep);
+  background: var(--gold);
+  box-shadow: 0 0 8px var(--gold-glow);
+}
+.sound__pad {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-4);
+  padding: var(--sp-4);
+  border: var(--border-w) dashed var(--techelet);
+  border-radius: var(--radius-2);
+  background: var(--techelet-soft);
+}
+.sound__combo {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--sp-2);
+  color: var(--ink-soft);
+}
+.sound__combo-n {
+  font-family: var(--font-display);
+  font-size: var(--fs-40);
+  color: var(--ink);
+  min-inline-size: 3ch;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+.sound__pad-hint {
+  flex: 1 1 14rem;
+  color: var(--ink-soft);
+  font-size: var(--fs-14);
+}
+.sound__row,
+.sound__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+.sound__chip {
+  padding: var(--sp-2) var(--sp-3);
+  border: var(--border-w) solid var(--line);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  font-size: var(--fs-14);
+  transition:
+    border-color var(--t-feedback) var(--ease),
+    background var(--t-feedback) var(--ease);
+}
+.sound__chip:hover {
+  border-color: var(--gold);
+}
+.sound__chip:active {
+  background: var(--gold-soft);
+}
+.sound__chip[aria-pressed='true'] {
+  border-color: var(--techelet);
+  background: var(--techelet-soft);
+  color: var(--ink);
+}
+@media (prefers-reduced-motion: reduce) {
+  .sound__theme:hover {
+    transform: none;
+  }
+}

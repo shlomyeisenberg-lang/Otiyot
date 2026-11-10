@@ -44,6 +44,7 @@ import {
   type TypedKey,
   WorldText,
 } from '../../engine';
+import { tierIntensity } from '../../audio/composer';
 import { TypingFeedback } from '../../game/feedback';
 import { SKY, TINT } from './palette';
 
@@ -106,6 +107,8 @@ export class RangeScene implements GameScene {
   private readonly colliders: Box3[] = [];
 
   private stage = 0;
+  /** The combo tier last heard, so reaching a new one rings once. */
+  private heardTier = 0;
 
   private time = 0;
   private walkerAngle = 0;
@@ -143,6 +146,12 @@ export class RangeScene implements GameScene {
     this.err = ctx.color('err-fg');
     this.paper = ctx.theme === 'light' ? ctx.color('surface') : ctx.color('ink');
     this.inkDark = ctx.theme === 'light' ? ctx.color('ink') : ctx.color('bg');
+
+    // Sound: the meadow theme (layers follow the combo), wind, and birds in the far trees.
+    ctx.audio.music('meadow');
+    ctx.audio.intensity(0);
+    ctx.audio.ambience('wind');
+    ctx.audio.ambience('birds', -14, 6, -12);
 
     ctx.atmosphere.setPalette({ ...SKY[ctx.theme], fade: ctx.color('fade'), ink: this.gold });
     ctx.atmosphere.groundAt = ground;
@@ -550,6 +559,7 @@ export class RangeScene implements GameScene {
       this.text.miss();
       this.feedback.wrong();
       this.ctx.audio.play('error');
+      this.hearTier(typing.tier);
       return;
     }
     if (ev.kind !== 'char') return;
@@ -561,7 +571,15 @@ export class RangeScene implements GameScene {
     this.text.hit(ev.index);
     this.feedback.correct(at.x, at.y, at.z, LETTER_SIZE, typing.tier);
     this.scribe.play('write');
-    this.ctx.audio.play('key', typing.combo);
+    this.ctx.audio.play('key', typing.combo, ev.expected);
+    this.hearTier(typing.tier);
+  }
+
+  /** The music builds with the combo tier; a new tier rings a chime. */
+  private hearTier(tier: number): void {
+    if (tier > this.heardTier) this.ctx.audio.play('tier', tier);
+    this.heardTier = tier;
+    this.ctx.audio.intensity(tierIntensity(tier));
   }
 
   onWord(word: string, perfect: boolean): void {
@@ -580,6 +598,7 @@ export class RangeScene implements GameScene {
     this.ctx.rig.pushIn(0.5, 0.35);
     this.child.play('cheer');
     this.ctx.audio.play('restore');
+    this.ctx.audio.play(perfect ? 'perfect' : 'word');
     if (perfect) this.ctx.hud.announce(word);
   }
 

@@ -131,7 +131,7 @@ Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Fable 5.2 
 - **Done when** In the test range a full lesson can be typed in Hebrew and English with satisfying feedback, correct RTL, and the finger guide always showing the next key (also right after an error).
 - **User must have ready** Nothing.
 
-### [ ] T10 · Audio engine and first music themes
+### [x] T10 · Audio engine and first music themes
 - **Branch** `t10-audio`
 - **Model** Fable 5.2 · **Effort** High
 - **Goal** Procedural sound that makes typing feel musical.

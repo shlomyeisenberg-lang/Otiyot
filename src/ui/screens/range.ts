@@ -312,6 +312,7 @@ export function rangeScreen(ctx: AppContext): Screen {
     manager = new eng.SceneManager(engine, wipe, {
       theme,
       colorblind: settings.colorblind,
+      audio: ctx.audio,
       hud: play.hud,
       typing: play.view,
     });
