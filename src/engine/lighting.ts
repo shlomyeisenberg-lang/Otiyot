@@ -7,13 +7,13 @@
 import { CSM } from 'three/addons/csm/CSM.js';
 import {
   CircleGeometry,
+  Color,
   DirectionalLight,
   DynamicDrawUsage,
   HemisphereLight,
   InstancedMesh,
   Matrix4,
   Mesh,
-  MeshBasicMaterial,
   PlaneGeometry,
   ShaderMaterial,
   SphereGeometry,
@@ -25,6 +25,7 @@ import {
   type WebGLRenderer,
 } from 'three';
 import type { MaterialKit } from './materials';
+import { FX_LAYER } from './postfx';
 import type { QualityPreset, ShadowMode } from './quality';
 
 /** The small palette every scene defines in its own folder (DESIGN: "Color tokens"). */
@@ -64,7 +65,7 @@ interface BlobCaster {
 export class Atmosphere {
   readonly sunDir = new Vector3(0.4, 0.8, 0.4).normalize();
   /** The visible sun (also the source of the god rays). */
-  readonly sunDisc: Mesh<CircleGeometry, MeshBasicMaterial>;
+  readonly sunDisc: Mesh<CircleGeometry, ShaderMaterial>;
   /** Ground height under a point, for blob shadows. Scenes with hills replace it. */
   groundAt: (x: number, z: number) => number = () => 0;
 
@@ -96,7 +97,28 @@ export class Atmosphere {
 
     this.sunDisc = new Mesh(
       new CircleGeometry(1, 24),
-      new MeshBasicMaterial({ transparent: true, depthWrite: false, fog: false, toneMapped: false }),
+      new ShaderMaterial({
+        transparent: true,
+        depthWrite: false,
+        fog: false,
+        toneMapped: false,
+        uniforms: { uColor: { value: new Color(0xffffff) } },
+        vertexShader: /* glsl */ `
+          varying vec2 vP;
+          void main() {
+            vP = position.xy;
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+          }`,
+        fragmentShader: /* glsl */ `
+          uniform vec3 uColor;
+          varying vec2 vP;
+          void main() {
+            // A bright core melting into a soft halo: no hard edge to betray the low-poly disc.
+            float r = length(vP);
+            float a = smoothstep(1.0, 0.0, r);
+            gl_FragColor = vec4(uColor * (0.25 + 0.75 * smoothstep(0.55, 0.2, r)), a * a);
+          }`,
+      }),
     );
     this.sunDisc.frustumCulled = false;
     this.sunDisc.renderOrder = -9;
@@ -129,6 +151,7 @@ export class Atmosphere {
     this.blobs.count = 0;
     this.blobs.renderOrder = 1;
 
+    for (const o of [this.sky, this.sunDisc, this.blobs]) o.layers.set(FX_LAYER);
     this.sun.shadow.bias = -0.0006;
     this.sun.shadow.normalBias = 0.04;
     scene.add(this.sky, this.sunDisc, this.hemi, this.sun, this.sun.target, this.blobs);
@@ -156,7 +179,9 @@ export class Atmosphere {
     this.sun.color.setHex(p.sun);
     this.sunIntensity = p.sunIntensity;
     // Brighter than white, so the bloom and the god rays have something to hold on to.
-    this.sunDisc.material.color.setHex(p.sun).multiplyScalar(6);
+    (this.sunDisc.material.uniforms.uColor as { value: Color }).value
+      .setHex(p.sun)
+      .multiplyScalar(6);
     this.applyLights();
   }
 
@@ -217,7 +242,7 @@ export class Atmosphere {
       for (const l of this.csm.lights) {
         l.color.copy(this.sun.color);
         l.intensity = this.sunIntensity;
-        l.shadow.normalBias = 0.05;
+        l.shadow.normalBias = 0.14;
       }
       this.csm.lightDirection.copy(this.sunDir).negate();
     }
@@ -231,7 +256,7 @@ export class Atmosphere {
       maxFar: 95,
       mode: 'practical',
       shadowMapSize: this.mapSize,
-      shadowBias: -0.0004,
+      shadowBias: -0.0012,
       lightDirection: this.sunDir.clone().negate(),
       lightIntensity: this.sunIntensity,
       lightMargin: 60,
@@ -269,6 +294,14 @@ export class Atmosphere {
     this.csm = null;
   }
 
+  /**
+   * Shows every object the atmosphere owns (or puts them back), so one warm-up frame uploads
+   * them all and they are never mistaken for something a scene left behind.
+   */
+  warm(on: boolean): void {
+    this.blobs.visible = on || this.mode === 'blob';
+  }
+
   /** Call when the camera's projection changes (resize, field of view). */
   onCameraChange(): void {
     this.csm?.updateFrustums();
@@ -279,7 +312,7 @@ export class Atmosphere {
     this.focus.copy(focus);
     const cam = this.camera;
     this.sunDisc.position.copy(cam.position).addScaledVector(this.sunDir, SUN_DISTANCE);
-    this.sunDisc.scale.setScalar(SUN_DISTANCE * 0.045);
+    this.sunDisc.scale.setScalar(SUN_DISTANCE * 0.075);
     this.sunDisc.quaternion.copy(cam.quaternion);
 
     if (this.mode === 'single') {

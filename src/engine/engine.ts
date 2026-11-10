@@ -9,7 +9,7 @@ import { LetterAtlas } from './letters';
 import { Atmosphere } from './lighting';
 import { FixedLoop } from './loop';
 import { MaterialKit } from './materials';
-import { PostFx } from './postfx';
+import { FX_LAYER, PostFx } from './postfx';
 import {
   BENCHMARK_SECONDS,
   BENCHMARK_WARMUP,
@@ -104,6 +104,7 @@ export class Engine {
     this.renderer.domElement.className = 'engine__canvas';
     host.append(this.renderer.domElement);
 
+    this.camera.layers.enable(FX_LAYER);
     this.materials = new MaterialKit(this.preset.fog);
     this.atmosphere = new Atmosphere(this.scene, this.camera, this.renderer, this.materials);
     this.post = new PostFx(this.renderer);
@@ -208,9 +209,27 @@ export class Engine {
     cancelAnimationFrame(this.raf);
   }
 
+  /**
+   * Runs the world forward by `seconds` in fixed steps, then draws once. For tests and tools:
+   * the same steps the loop would take, without waiting for the clock.
+   */
+  simulate(seconds: number): void {
+    if (this.disposed) return;
+    const steps = Math.round(seconds / this.loop.step);
+    for (let i = 0; i < steps; i++) {
+      this.handlers.update(this.loop.step);
+      this.onFrame?.(this.loop.step);
+      this.rig.update(this.loop.step);
+    }
+    this.frame(0);
+  }
+
   /** Draws one frame right now (used before measuring what the engine itself holds). */
   renderOnce(): void {
-    if (!this.disposed) this.frame(0);
+    if (this.disposed) return;
+    this.atmosphere.warm(true);
+    this.frame(0);
+    this.atmosphere.warm(false);
   }
 
   private frame(dt: number): void {
@@ -273,10 +292,12 @@ export class Engine {
     this.vfx.dispose();
     this.atmosphere.dispose();
     this.post.dispose();
+    this.materials.dispose();
     this.atlas.dispose();
     this.renderer.renderLists.dispose();
-    const left = this.gpuCounts();
+    // The renderer keeps a few shaders of its own (shadow depth) until it is disposed itself.
     this.renderer.dispose();
+    const left = this.gpuCounts();
     this.renderer.domElement.remove();
     return left;
   }

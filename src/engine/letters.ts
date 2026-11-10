@@ -19,6 +19,8 @@ import {
   type IUniform,
 } from 'three';
 import { FOG_GLSL, type MaterialKit } from './materials';
+import { colorNumber } from './palette';
+import { FX_LAYER } from './postfx';
 
 export const HEBREW_LETTERS = 'אבגדהוזחטיכךלמםנןסעפףצץקרשת';
 const LATIN = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -113,14 +115,30 @@ void main() {
 
 const FIELD_FRAG = /* glsl */ `
 uniform sampler2D uAtlas;
+uniform vec3 uOutline;
 varying vec2 vUv;
 varying vec3 vColor;
 varying vec3 vWorld;
 ${FOG_GLSL}
 void main() {
   float a = texture2D(uAtlas, vUv).a;
-  if (a < 0.02) discard;
-  gl_FragColor = vec4(otiFog(vColor, vWorld), a);
+  // A dark rim keeps the text readable against any sky (DESIGN: "The text is the hero").
+  const float o = ${(0.028 / GRID).toFixed(5)};
+  float rim = max(
+    max(texture2D(uAtlas, vUv + vec2(o, 0.0)).a, texture2D(uAtlas, vUv - vec2(o, 0.0)).a),
+    max(texture2D(uAtlas, vUv + vec2(0.0, o)).a, texture2D(uAtlas, vUv - vec2(0.0, o)).a)
+  );
+  rim = max(
+    rim,
+    max(
+      max(texture2D(uAtlas, vUv + vec2(o, o) * 0.7).a, texture2D(uAtlas, vUv - vec2(o, o) * 0.7).a),
+      max(texture2D(uAtlas, vUv + vec2(o, -o) * 0.7).a, texture2D(uAtlas, vUv - vec2(o, -o) * 0.7).a)
+    )
+  );
+  float alpha = max(a, rim * 0.85);
+  if (alpha < 0.02) discard;
+  vec3 col = mix(uOutline, vColor, a);
+  gl_FragColor = vec4(otiFog(col, vWorld), alpha);
 }`;
 
 /** Up to `capacity` letters in one draw call. Letters face the camera unless a plane is set. */
@@ -137,6 +155,8 @@ export class LetterField {
     kit: MaterialKit,
     billboard: Billboard,
     readonly capacity: number,
+    /** Color of the thin rim around each letter (dark ink by default). */
+    outline = colorNumber('dark', 'bg'),
   ) {
     const quad = new PlaneGeometry(1, 1);
     const geo = new InstancedBufferGeometry();
@@ -161,6 +181,7 @@ export class LetterField {
         defines: { OTI_FOG: 1 },
         uniforms: {
           uAtlas: { value: atlas.texture },
+          uOutline: { value: new Color(outline) },
           uRight: billboard.uRight,
           uUp: billboard.uUp,
           uFogColor: u.uFogColor,
@@ -173,6 +194,7 @@ export class LetterField {
       }),
     );
     this.mesh.frustumCulled = false;
+    this.mesh.layers.set(FX_LAYER);
     this.mesh.renderOrder = 5;
   }
 

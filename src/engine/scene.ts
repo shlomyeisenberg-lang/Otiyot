@@ -6,7 +6,7 @@
 import { Group } from 'three';
 import type { LayoutId, TypedKey } from '../core';
 import type { CameraRig } from './camera';
-import { leaked, Tracker, type GpuCounts } from './disposal';
+import { Tracker, type GpuCounts } from './disposal';
 import type { Engine } from './engine';
 import type { Atmosphere } from './lighting';
 import type { FixedLoop } from './loop';
@@ -128,7 +128,11 @@ export class SceneManager {
   ) {
     engine.onUpdate = (dt) => this.current?.update(dt);
     engine.onFrame = (dt) => this.current?.frame?.(dt);
-    engine.onQuality = (preset) => this.current?.onQuality?.(preset);
+    engine.onQuality = (preset) => {
+      // A new preset means new buffers and shadow maps: measure the engine afresh next time.
+      this.baseline = null;
+      this.current?.onQuality?.(preset);
+    };
   }
 
   /** Covers the screen with ink, swaps scenes, starts the run and reveals it. */
@@ -203,7 +207,12 @@ export class SceneManager {
     if (this.baseline) {
       e.renderOnce();
       const now = e.gpuCounts();
-      this.lastLeak = Math.max(0, leaked(now) - leaked(this.baseline));
+      // Shader programs are a cache the renderer shares between scenes (and keeps a few of its
+      // own), so a scene is judged on what it owns: geometries and textures.
+      this.lastLeak = Math.max(
+        0,
+        now.geometries + now.textures - this.baseline.geometries - this.baseline.textures,
+      );
       if (this.lastLeak > 0 && import.meta.env.DEV) {
         console.warn(`Scene left ${this.lastLeak} GPU objects behind`, now, this.baseline);
       }

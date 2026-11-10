@@ -12,12 +12,14 @@ import {
   Color,
   DoubleSide,
   MeshBasicMaterial,
+  MeshDepthMaterial,
   MeshLambertMaterial,
   ShaderMaterial,
   Vector3,
   Vector4,
   type IUniform,
   type Material,
+  type Object3D,
   type Side,
   type WebGLProgramParametersWithUniforms,
 } from 'three';
@@ -58,7 +60,7 @@ vec3 otiFog(vec3 col, vec3 wp) {
   #if OTI_FOG >= 1
     // Low-lying mist: thick near the fog floor, thinning with height.
     float h = exp(-uFogParams.z * max(0.0, wp.y - uFogParams.y));
-    float mist = (1.0 - exp(-dist * uFogParams.x * 2.2)) * h * 0.55;
+    float mist = (1.0 - exp(-dist * uFogParams.x * 2.0)) * h * 0.4;
     f = max(f * mix(0.55, 1.0, h), mist);
   #endif
   #if OTI_FOG >= 2
@@ -109,6 +111,11 @@ export interface WorldMaterialOptions {
   emissiveIntensity?: number;
   /** Takes part in the grey → color sweep. Characters and gold ink do not. Default true. */
   restore?: boolean;
+  /**
+   * Self-light, as a share of the surface's own color (0.15 is plenty). Keeps characters readable
+   * when the sun is behind them, without flattening their shading.
+   */
+  lift?: number;
   flat?: boolean;
   side?: Side;
   transparent?: boolean;
@@ -127,6 +134,11 @@ export class MaterialKit {
   /** Every lit surface material alive (cascaded shadows must be wired into each one). */
   readonly lit = new Set<Material>();
   private readonly patched = new Set<Material>();
+  /**
+   * The material shadow maps are drawn with. Three.js would otherwise use a hidden one of its
+   * own that can never be freed; with ours, a closed engine leaves nothing behind.
+   */
+  readonly shadowDepth = new MeshDepthMaterial();
   /** Called for each new lit material (set by the Atmosphere while cascades are on). */
   onCreate: ((m: Material) => void) | null = null;
 
@@ -164,6 +176,17 @@ export class MaterialKit {
     }
   }
 
+  /** Marks one object as a shadow caster (or not). Always use this instead of `castShadow`. */
+  caster<T extends Object3D>(obj: T, cast = true): T {
+    obj.castShadow = cast;
+    obj.customDepthMaterial = this.shadowDepth;
+    return obj;
+  }
+
+  dispose(): void {
+    this.shadowDepth.dispose();
+  }
+
   /** The standard surface: flat-shaded Lambert with the sweep and the fog. */
   surface(o: WorldMaterialOptions = {}): MeshLambertMaterial {
     const m = new MeshLambertMaterial({
@@ -178,6 +201,7 @@ export class MaterialKit {
       fog: false,
     });
     this.patch(m, o.restore ?? true);
+    if (o.lift) m.defines = { ...m.defines, OTI_LIFT: o.lift.toFixed(3) };
     this.lit.add(m);
     m.addEventListener('dispose', () => this.lit.delete(m));
     this.onCreate?.(m);
@@ -266,6 +290,9 @@ export class MaterialKit {
         .replace(
           '#include <opaque_fragment>',
           /* glsl */ `#include <opaque_fragment>
+          #ifdef OTI_LIFT
+            gl_FragColor.rgb += diffuseColor.rgb * OTI_LIFT;
+          #endif
           #ifdef OTI_RESTORE
             gl_FragColor.rgb = otiRestore(gl_FragColor.rgb, vOtiWorld);
           #endif

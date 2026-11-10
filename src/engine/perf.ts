@@ -48,7 +48,13 @@ export class PerfOverlay {
     const c = this.cells;
     this.put(c[0], s.fps.toFixed(0), s.fps < 50);
     this.put(c[1], `${s.frameMs.toFixed(1)} ms`, s.frameMs > 20);
-    this.put(c[2], `${s.drawCalls} / ${BUDGET.drawCalls}`, s.drawCalls > BUDGET.drawCalls);
+    // The budgets are set for medium; high and ultra spend more on shadows by design.
+    const budgeted = s.quality === 'low' || s.quality === 'medium';
+    this.put(
+      c[2],
+      `${s.drawCalls} / ${BUDGET.drawCalls}`,
+      budgeted && s.drawCalls > BUDGET.drawCalls,
+    );
     this.put(
       c[3],
       `${(s.triangles / 1000).toFixed(1)}k / ${BUDGET.triangles / 1000}k`,

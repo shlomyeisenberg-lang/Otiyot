@@ -2,6 +2,7 @@
 // Typed text is never stored, only statistics.
 
 import type { BackspacePolicy, LayoutId, NiqqudMode } from '../core';
+import { isQualityName, type QualityChoice, type QualityName } from '../engine/quality';
 
 export type JsonValue =
   null | boolean | number | string | JsonValue[] | { [key: string]: JsonValue };
@@ -25,6 +26,8 @@ export interface Settings {
   highContrast: boolean;
   largeText: boolean;
   dyslexiaFont: boolean;
+  /** Graphics quality (v4, T08): a fixed preset, or 'auto' to use the benchmark's pick. */
+  quality: QualityChoice;
 }
 
 export interface LessonBest {
@@ -94,6 +97,8 @@ export interface Profile {
 export interface SaveMeta {
   /** True once the old plugin's progress has been looked for (imported or not found). */
   legacyChecked: boolean;
+  /** The preset the first-run benchmark picked for this device (v4, T08); null until it has run. */
+  autoQuality: QualityName | null;
 }
 
 export interface Save {
@@ -121,6 +126,7 @@ export function defaultSettings(): Settings {
     highContrast: false,
     largeText: false,
     dyslexiaFont: false,
+    quality: 'auto',
   };
 }
 
@@ -151,7 +157,7 @@ export function createSave(version: number, firstProfile: Profile): Save {
     version,
     profiles: [firstProfile],
     activeProfileId: firstProfile.id,
-    meta: { legacyChecked: false },
+    meta: { legacyChecked: false, autoQuality: null },
   };
 }
 
@@ -222,6 +228,7 @@ function normalizeSettings(raw: unknown): Settings {
     highContrast: r.highContrast === true,
     largeText: r.largeText === true,
     dyslexiaFont: r.dyslexiaFont === true,
+    quality: isQualityName(r.quality) ? r.quality : d.quality,
   };
 }
 
@@ -351,6 +358,9 @@ export function normalizeSave(
     version,
     profiles,
     activeProfileId: active,
-    meta: { legacyChecked: meta.legacyChecked === true },
+    meta: {
+      legacyChecked: meta.legacyChecked === true,
+      autoQuality: isQualityName(meta.autoQuality) ? meta.autoQuality : null,
+    },
   };
 }

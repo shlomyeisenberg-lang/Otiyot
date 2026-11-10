@@ -119,7 +119,7 @@ describe('normalisation', () => {
       activeProfileId: 'a',
     };
     const m = migrate(v2);
-    expect(m.version).toBe(3);
+    expect(m.version).toBe(CURRENT_VERSION);
     const save = normalizeSave(m, CURRENT_VERSION, counter(), 0);
     const a = save?.profiles[0]?.settings;
     expect(a).toMatchObject({
@@ -137,5 +137,34 @@ describe('normalisation', () => {
     expect(normalizeSave(kept, CURRENT_VERSION, counter(), 0)?.profiles[0]?.settings.theme).toBe(
       'dark',
     );
+  });
+
+  it('v3 -> v4 adds the graphics quality choice and the benchmark result', () => {
+    const v3 = {
+      version: 3,
+      profiles: [
+        { id: 'a', name: 'A', settings: { theme: 'dark' } },
+        { id: 'b', name: 'B', settings: { quality: 'low' } },
+      ],
+      activeProfileId: 'a',
+      meta: { legacyChecked: true },
+    };
+    const m = migrate(v3);
+    expect(m.version).toBe(4);
+    const save = normalizeSave(m, CURRENT_VERSION, counter(), 0);
+    expect(save?.profiles[0]?.settings).toMatchObject({ theme: 'dark', quality: 'auto' });
+    expect(save?.profiles[1]?.settings.quality).toBe('low');
+    expect(save?.meta).toEqual({ legacyChecked: true, autoQuality: null });
+    // a result already stored is kept, and nonsense is dropped
+    const kept = migrate({ version: 3, profiles: [{ id: 'c' }], meta: { autoQuality: 'high' } });
+    expect(normalizeSave(kept, CURRENT_VERSION, counter(), 0)?.meta.autoQuality).toBe('high');
+    const bad = {
+      version: 4,
+      profiles: [{ id: 'd', settings: { quality: 'x' } }],
+      meta: { autoQuality: 7 },
+    };
+    const fixed = normalizeSave(bad, CURRENT_VERSION, counter(), 0);
+    expect(fixed?.meta.autoQuality).toBeNull();
+    expect(fixed?.profiles[0]?.settings.quality).toBe('auto');
   });
 });

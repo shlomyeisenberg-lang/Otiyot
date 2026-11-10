@@ -12,6 +12,7 @@ import {
   EffectPass,
   GodRaysEffect,
   NormalPass,
+  Pass,
   RenderPass,
   SSAOEffect,
   ToneMappingEffect,
@@ -74,6 +75,24 @@ const DEFAULT_GRADE: Required<Grade> = {
   exposure: 1,
 };
 
+/**
+ * Layer of everything that is light rather than matter: sky, sun, particles, letters, trails.
+ * The main camera sees it; the SSAO normal pass must not, or effects would cast fake occlusion.
+ */
+export const FX_LAYER = 1;
+
+/** A pass that only runs a callback between two other passes. */
+class CallPass extends Pass {
+  constructor(private readonly fn: () => void) {
+    super('CallPass');
+    this.needsSwap = false;
+  }
+
+  override render(): void {
+    this.fn();
+  }
+}
+
 class GradeEffect extends Effect {
   constructor() {
     super('GradeEffect', GRADE_FRAGMENT, {
@@ -127,7 +146,9 @@ export class PostFx {
     const world: Effect[] = [];
     if (q.ssao) {
       this.normalPass = new NormalPass(scene, camera);
+      composer.addPass(new CallPass(() => camera.layers.disable(FX_LAYER)));
       composer.addPass(this.normalPass);
+      composer.addPass(new CallPass(() => camera.layers.enable(FX_LAYER)));
       world.push(
         new SSAOEffect(camera, this.normalPass.texture, {
           blendFunction: BlendFunction.MULTIPLY,
@@ -170,7 +191,7 @@ export class PostFx {
       world.push(this.bloom);
     }
 
-    this.tone = new ToneMappingEffect({ mode: ToneMappingMode.AGX });
+    this.tone = new ToneMappingEffect({ mode: ToneMappingMode.NEUTRAL });
     this.gradeFx = new GradeEffect();
     this.vignette = new VignetteEffect({ offset: 0.32, darkness: this.grade.vignette });
     const finish: Effect[] = [this.tone, this.gradeFx, this.vignette];
@@ -253,6 +274,14 @@ export class PostFx {
   }
 
   dispose(): void {
+    // The normal pass never frees the material it draws normals with: do it for it.
+    const np = this.normalPass as unknown as {
+      renderPass?: { overrideMaterial: { dispose(): void } | null };
+    } | null;
+    if (np?.renderPass) {
+      np.renderPass.overrideMaterial?.dispose();
+      np.renderPass.overrideMaterial = null;
+    }
     this.composer?.dispose();
     this.composer = null;
     this.bloom = null;

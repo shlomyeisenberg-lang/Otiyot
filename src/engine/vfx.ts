@@ -29,7 +29,7 @@ import type { LetterAtlas, Billboard } from './letters';
 import type { FixedLoop } from './loop';
 import type { MaterialKit } from './materials';
 import { Rng } from './motion';
-import type { PostFx } from './postfx';
+import { FX_LAYER, type PostFx } from './postfx';
 import { scaledCount, type QualityPreset } from './quality';
 
 /** How a burst of particles looks. Make these once (module constants), not per call. */
@@ -164,6 +164,7 @@ class ParticlePool {
       }),
     );
     this.points.frustumCulled = false;
+    this.points.layers.set(FX_LAYER);
     this.points.renderOrder = blending === AdditiveBlending ? 8 : 7;
   }
 
@@ -310,6 +311,7 @@ class TrailMesh {
       }),
     );
     this.mesh.frustumCulled = false;
+    this.mesh.layers.set(FX_LAYER);
     this.mesh.renderOrder = 6;
   }
 
@@ -368,7 +370,8 @@ class TrailMesh {
         if (a > 0) alive += 1;
         // A brush stroke: thin where it starts, full in the middle, tapering at the pen.
         const along = n > 1 ? k / (n - 1) : 0;
-        const w = t.width * 0.5 * Math.sin(Math.PI * Math.min(1, 0.15 + along * 0.85)) * (0.4 + 0.6 * a);
+        const w =
+          t.width * 0.5 * Math.sin(Math.PI * Math.min(1, 0.15 + along * 0.85)) * (0.4 + 0.6 * a);
         this.pos.setXYZ(v, x + this.side.x * w, y + this.side.y * w, z + this.side.z * w);
         this.pos.setXYZ(v + 1, x - this.side.x * w, y - this.side.y * w, z - this.side.z * w);
         this.col.setXYZW(v, t.color.r, t.color.g, t.color.b, a);
@@ -383,7 +386,6 @@ class TrailMesh {
       this.pos.needsUpdate = true;
       this.col.needsUpdate = true;
     }
-    this.mesh.visible = any;
   }
 
   dispose(): void {
@@ -495,6 +497,7 @@ class FragmentPool {
       }),
     );
     this.mesh.frustumCulled = false;
+    this.mesh.layers.set(FX_LAYER);
     this.mesh.renderOrder = 9;
   }
 
@@ -621,6 +624,7 @@ class WavePool {
       }),
     );
     this.mesh.frustumCulled = false;
+    this.mesh.layers.set(FX_LAYER);
     this.mesh.renderOrder = 6;
   }
 
@@ -695,12 +699,30 @@ export class VfxKit {
   ) {
     this.preset = preset;
     const u = d.materials.uniforms;
-    this.glow = new ParticlePool(preset.maxParticles, AdditiveBlending, u.uTime, this.uScale, u.uFogParams);
-    this.ink = new ParticlePool(preset.maxParticles >> 1, NormalBlending, u.uTime, this.uScale, u.uFogParams);
+    this.glow = new ParticlePool(
+      preset.maxParticles,
+      AdditiveBlending,
+      u.uTime,
+      this.uScale,
+      u.uFogParams,
+    );
+    this.ink = new ParticlePool(
+      preset.maxParticles >> 1,
+      NormalBlending,
+      u.uTime,
+      this.uScale,
+      u.uFogParams,
+    );
     this.fragments = new FragmentPool(preset.maxFragments, d.atlas, u.uTime, this.billboard);
     this.waves = new WavePool(u.uTime, this.billboard);
     this.trails = new TrailMesh(u.uTime);
-    d.root.add(this.glow.points, this.ink.points, this.fragments.mesh, this.waves.mesh, this.trails.mesh);
+    d.root.add(
+      this.glow.points,
+      this.ink.points,
+      this.fragments.mesh,
+      this.waves.mesh,
+      this.trails.mesh,
+    );
   }
 
   /** Rebuilds the pools at a new size when the quality preset changes. */
@@ -715,8 +737,20 @@ export class VfxKit {
     this.ink.dispose();
     this.fragments.dispose();
     this.preset = preset;
-    this.glow = new ParticlePool(preset.maxParticles, AdditiveBlending, u.uTime, this.uScale, u.uFogParams);
-    this.ink = new ParticlePool(preset.maxParticles >> 1, NormalBlending, u.uTime, this.uScale, u.uFogParams);
+    this.glow = new ParticlePool(
+      preset.maxParticles,
+      AdditiveBlending,
+      u.uTime,
+      this.uScale,
+      u.uFogParams,
+    );
+    this.ink = new ParticlePool(
+      preset.maxParticles >> 1,
+      NormalBlending,
+      u.uTime,
+      this.uScale,
+      u.uFogParams,
+    );
     this.fragments = new FragmentPool(preset.maxFragments, this.d.atlas, u.uTime, this.billboard);
     this.d.root.add(this.glow.points, this.ink.points, this.fragments.mesh);
   }
@@ -734,7 +768,16 @@ export class VfxKit {
    * A burst of particles at a point, thrown along (dx, dy, dz). `ink` particles are opaque
    * droplets; the default glows and blooms. The count follows the quality preset.
    */
-  burst(style: BurstStyle, x: number, y: number, z: number, dx = 0, dy = 1, dz = 0, ink = false): void {
+  burst(
+    style: BurstStyle,
+    x: number,
+    y: number,
+    z: number,
+    dx = 0,
+    dy = 1,
+    dz = 0,
+    ink = false,
+  ): void {
     const pool = ink ? this.ink : this.glow;
     const n = scaledCount(this.preset, style.count);
     const r = this.rng;
@@ -835,7 +878,16 @@ export class VfxKit {
   }
 
   /** A ring racing outward. `flat` lies on the ground; otherwise it faces the camera. */
-  shockwave(x: number, y: number, z: number, radius: number, color: number, seconds = 0.7, flat = true, intensity = 1.6): void {
+  shockwave(
+    x: number,
+    y: number,
+    z: number,
+    radius: number,
+    color: number,
+    seconds = 0.7,
+    flat = true,
+    intensity = 1.6,
+  ): void {
     this.c.setHex(color).multiplyScalar(intensity);
     this.waves.spawn(this.now, x, y, z, radius, seconds, flat, this.c);
   }
@@ -847,7 +899,16 @@ export class VfxKit {
   restore(x: number, y: number, z: number, radius: number, seconds = 1.6): void {
     this.d.materials.sweep(x, y, z, radius, seconds);
     this.inkColor.copy(this.d.materials.uniforms.uInkColor.value);
-    this.waves.spawn(this.now, x, y + 0.06, z, radius, seconds * 1.05, true, this.inkColor.multiplyScalar(1.4));
+    this.waves.spawn(
+      this.now,
+      x,
+      y + 0.06,
+      z,
+      radius,
+      seconds * 1.05,
+      true,
+      this.inkColor.multiplyScalar(1.4),
+    );
   }
 
   /** A soft full-screen flash (scaled by the player's flash setting). */
@@ -880,7 +941,13 @@ export class VfxKit {
   }
 
   dispose(): void {
-    this.d.root.remove(this.glow.points, this.ink.points, this.fragments.mesh, this.waves.mesh, this.trails.mesh);
+    this.d.root.remove(
+      this.glow.points,
+      this.ink.points,
+      this.fragments.mesh,
+      this.waves.mesh,
+      this.trails.mesh,
+    );
     this.glow.dispose();
     this.ink.dispose();
     this.fragments.dispose();

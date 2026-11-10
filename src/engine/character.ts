@@ -108,14 +108,16 @@ export class Character {
   private readonly tail = new Group();
   private readonly scarfSpring = makeSpring(0, 70, 0.4);
   private readonly material: MeshLambertMaterial;
+  /** Thin parts (arms, feet, scarf, quill): they cast shadows only when asked to. */
+  private readonly minor: Mesh[] = [];
 
   constructor(kit: MaterialKit, look: CharacterLook) {
     this.anim = new Animator(look.seed ?? 0);
-    this.material = this.tracker.track(kit.surface({ vertexColors: true, restore: false }));
+    this.material = this.tracker.track(
+      kit.surface({ vertexColors: true, restore: false, lift: 0.2 }),
+    );
     const mesh = (g: BufferGeometry): Mesh => {
-      const m = new Mesh(this.tracker.track(g), this.material);
-      m.castShadow = true;
-      return m;
+      return kit.caster(new Mesh(this.tracker.track(g), this.material));
     };
 
     // Robe: a long flared skirt from the hips to the ankles, fading to a darker hem.
@@ -210,10 +212,15 @@ export class Character {
     this.armR.position.set(-0.27, 0.36, 0);
     this.elbowL.position.set(0, -0.3, 0);
     this.elbowR.position.set(0, -0.3, 0);
-    this.armL.add(mesh(upper()), this.elbowL);
-    this.armR.add(mesh(upper()), this.elbowR);
-    this.elbowL.add(mesh(fore()));
-    this.elbowR.add(mesh(fore()));
+    const thin = (g: BufferGeometry): Mesh => {
+      const m = mesh(g);
+      this.minor.push(m);
+      return m;
+    };
+    this.armL.add(thin(upper()), this.elbowL);
+    this.armR.add(thin(upper()), this.elbowR);
+    this.elbowL.add(thin(fore()));
+    this.elbowR.add(thin(fore()));
     this.chest.add(this.armL, this.armR);
 
     this.quillTip.position.set(0, -0.33, 0.04);
@@ -224,7 +231,7 @@ export class Character {
           .scale(1, 1, 0.25)
           .translate(0, -0.12, 0),
       ]).rotateX(1.9);
-      const q = mesh(quill);
+      const q = thin(quill);
       q.position.set(0, -0.31, 0.03);
       this.elbowR.add(q);
       this.quillTip.position.set(0, -0.41, 0.31);
@@ -234,14 +241,14 @@ export class Character {
     // Feet peek out from under the robe.
     const foot = (): BufferGeometry =>
       paint(new BoxGeometry(0.13, 0.085, 0.25), look.ink).translate(0, 0, 0.05);
-    this.footL = mesh(foot());
-    this.footR = mesh(foot());
+    this.footL = thin(foot());
+    this.footR = thin(foot());
     this.hips.add(this.footL, this.footR);
 
     // The loose end of the scarf, swinging behind.
     this.tail.position.set(0.05, 0.47, -0.14);
     this.tail.add(
-      mesh(paint(new BoxGeometry(0.13, 0.46, 0.028), look.trim).translate(0, -0.23, 0)),
+      thin(paint(new BoxGeometry(0.13, 0.46, 0.028), look.trim).translate(0, -0.23, 0)),
     );
     this.chest.add(this.tail);
 
@@ -253,6 +260,14 @@ export class Character {
   /** Ground speed in units per second: the figure walks or runs to match. */
   set speed(v: number) {
     this.anim.speed = v;
+  }
+
+  /**
+   * Full shadows (every part) or cheap ones (robe, torso and head only). Each shadow-casting
+   * part is one more draw call per shadow map, so medium quality uses the cheap kind.
+   */
+  shadowDetail(full: boolean): void {
+    for (const m of this.minor) m.castShadow = full;
   }
 
   play(action: ActionName): void {

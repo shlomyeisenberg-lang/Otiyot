@@ -117,7 +117,11 @@ export class CameraRig {
   rail(curve: Curve<Vector3>, o: RailOptions = {}): void {
     this.mode = 'rail';
     this.curve = curve;
-    this.ro = { lookAt: o.lookAt ?? null, lookAhead: o.lookAhead ?? 0.04, stiffness: o.stiffness ?? 4 };
+    this.ro = {
+      lookAt: o.lookAt ?? null,
+      lookAhead: o.lookAhead ?? 0.04,
+      stiffness: o.stiffness ?? 4,
+    };
     this.railNow = this.railT;
   }
 
@@ -160,7 +164,12 @@ export class CameraRig {
       this.look.copy(this.wantLook);
       this.snap = false;
     } else {
-      const k = this.mode === 'cockpit' ? 30 : this.mode === 'rail' ? this.ro.stiffness * 2 : this.fo.stiffness;
+      const k =
+        this.mode === 'cockpit'
+          ? 30
+          : this.mode === 'rail'
+            ? this.ro.stiffness * 2
+            : this.fo.stiffness;
       this.pos.x = damp(this.pos.x, this.wantPos.x, k, dt);
       this.pos.y = damp(this.pos.y, this.wantPos.y, k, dt);
       this.pos.z = damp(this.pos.z, this.wantPos.z, k, dt);
