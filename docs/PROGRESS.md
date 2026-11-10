@@ -6,14 +6,14 @@ _Last updated 2026-11-10. This page is generated from `docs/progress.json`; to c
 
 ## Summary
 
-- ✅ **10** of **39** tasks done
-- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 29 pending
-- ⬜ **2** manual steps waiting for you
-- 💡 0 feature ideas open
+- ✅ **11** of **39** tasks done
+- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 28 pending
+- ⬜ **3** manual steps waiting for you
+- 💡 1 feature idea open
 
 ## Waiting for me
 
-2 manual steps only you can do. Paste each prompt into Claude in Chrome, and tell the AI when a step is finished.
+3 manual steps only you can do. Paste each prompt into Claude in Chrome, and tell the AI when a step is finished.
 
 ### ⬜ Import the repo into Vercel — T01 · Project setup, CI and plugin packer
 
@@ -35,6 +35,16 @@ Prompt for Claude in Chrome:
 Open the live Otiyot website in my browser (the Vercel address of the project shlomyeisenberg-lang/Otiyot; if you do not know it, open https://vercel.com/dashboard, open the project named otiyot and use its production address; if asked to sign in, stop and hand control back to me). Steps: 1) Add #/range to the end of the address and press Enter. 2) If the welcome steps appear, type the name Test, press Enter, then click Next twice, then go to the #/range address again. 3) Wait about 5 seconds until the 3D scene appears. 4) In the Quality group click Medium. 5) Wait 5 seconds, then read the small box in the top corner: frames per second, frame time, draw calls, triangles. 6) Press the number keys 1 to 9 one at a time and read frames per second again. 7) Click High and read the numbers once more. Stop and hand control back to me for sign-in, passwords, 2FA, CAPTCHAs, payment and creating an account; never type a secret yourself. When done, report the numbers you read for Medium and High, whether any number was shown in red, and what computer and browser this is.
 ```
 
+### ⬜ Try a wave fight on your computer — T11 · Combat, combo and difficulty kit
+
+The cloud machine has no graphics card, so the fight was checked at about 2 frames per second. On your own computer open the live link, add #/range to the end of the address, click Calm and then Easy under Wave fight, and type the words on the Blots' shields. Then try Steady and Swift. Tell me if it is fun, too easy or too hard.
+
+Prompt for Claude in Chrome:
+
+```text
+Open the live Otiyot website in my browser (the Vercel address of the project shlomyeisenberg-lang/Otiyot; if you do not know it, open https://vercel.com/dashboard, open the project named otiyot and use its production address; if asked to sign in, stop and hand control back to me). Steps: 1) Add #/range to the end of the address and press Enter. 2) If the welcome steps appear, type the name Test, press Enter, then click Next twice, then go to the #/range address again. 3) Wait about 5 seconds until the 3D scene appears. 4) In the Wave fight group click Calm, then Easy. 5) Type the words shown on the paper strip, pressing the key the keyboard picture lights up, with a space after each word, until a results card appears. 6) Read the rank letter and the numbers on the card. 7) Read frames per second in the small box in the top corner. Stop and hand control back to me for sign-in, passwords, 2FA, CAPTCHAs, payment and creating an account; never type a secret yourself. When done, report the rank, the numbers on the results card, the frames per second, and anything that looked broken.
+```
+
 ## History
 
 Work done before or outside the numbered tasks.
@@ -54,7 +64,7 @@ Work done before or outside the numbered tasks.
 - ✅ T08 · 3D engine kit — 2026-11-10 · [PR #14](https://github.com/shlomyeisenberg-lang/Otiyot/pull/14)
 - ✅ T09 · 3D keyboard, finger guide, HUD and typing feedback — 2026-11-10 · [PR #15](https://github.com/shlomyeisenberg-lang/Otiyot/pull/15)
 - ✅ T10 · Audio engine and first music themes — 2026-11-10 · [PR #16](https://github.com/shlomyeisenberg-lang/Otiyot/pull/16)
-- ⬜ T11 · Combat, combo and difficulty kit
+- ✅ T11 · Combat, combo and difficulty kit — 2026-11-10 · [PR #17](https://github.com/shlomyeisenberg-lang/Otiyot/pull/17)
 - ⬜ T12 · Story system, title screen and intro
 - ⬜ T13 · Hub: the House of the Scribe
 - ⬜ T14 · Scene: Home Row Meadow
@@ -487,11 +497,64 @@ The game now has sound, all made in code: five music themes that build layer by 
 
 No typing text is produced in this task (the sound room counts any letters only for sound), so the learned-letters test does not apply. No audio files: everything is synthesized live, so the plugin stays small and offline.
 
-### ⬜ T11 · Combat, combo and difficulty kit
+### ✅ T11 · Combat, combo and difficulty kit
 
-**Status:** Pending
+**Status:** Done · **Finished:** 2026-11-10 · **Pull request:** [PR #17](https://github.com/shlomyeisenberg-lang/Otiyot/pull/17)
 
-_Not started._
+The first enemies and the combat rules every action scene will share: Blots float in behind glass word shields, the first letter you type locks onto one, every letter fires a gold ink bolt, the finished word shatters the shield and color returns where it stood; five difficulties, three levels built only from learned letters, soft combo breaks, and a results card with rank, XP, glyphs and ink. Playable now as the Wave fight mode of the test range.
+
+**What changed**
+
+- src/game/difficulty.ts: the five difficulties as data (Calm with no timers, Steady, Swift, Fierce, Sofer's Trial that fails on the first error): enemy pace, spawn gap, Blots on the field, combo cost of errors and smudges, extra word length, reward and the speed for rank S
+- src/game/levels.ts: Easy, Standard and Hard (word lengths, waves, Blots per wave, speed pressure); levelWordSource builds shield words only from learned keys; Standard opens at 10 learned letters and Hard at 18; suggestLevel picks a level from recent accuracy and speed
+- src/game/combo.ts: ComboRules: errors drop the streak to the start of a lower tier instead of zero (dropTiers), Steady Hand charges that absorb errors (hook for T33), tierPower and tierVfx
+- src/game/combat.ts: WaveFight: a pool of 8 Blots with word shields, seeded wave plans with five spawn patterns (arc, pincer, stream, scatter, pairs, a big Blot at the end of later waves), different first letters on the field, targeting by first letter and auto-target of the nearest Blot, smudge and knockback, waves and the end of the fight, events for scenes
+- src/game/results.ts: rank S/A/B/C from accuracy first and speed second, and XP, glyphs (accuracy) and ink (streak) for a run
+- src/game/blots.ts: BlotField, the 3D look of a fight for any scene: ink bodies with pale eyes, geodesic glass shields that turn gold as they crack, word banners with the first letter glowing, a gold lock-on ring, ink bolts from the quill, gold letter shatter, ink burst, shockwave and a local color sweep on every break, all scaled by the combo tier
+- src/game/typing.ts: TypingDriver takes a combo policy (soft breaks), can retarget the word before its first letter, and can have its streak set from outside (smudges)
+- src/ui/play.ts: PlayController.begin takes run options (hardcore for the Trial, combo rules, targeting); the first letter picks the target; retarget() and setCombo()
+- src/scenes/range/index.ts: the test range hosts wave fights: startFight, stopFight, celebrate; the world forgets its color when a fight starts, the boss theme plays, a high camera over the scribe's shoulder leans toward the locked Blot, the scribe turns to face it
+- src/ui/screens/range.ts: new Wave fight mode with difficulty and level buttons (locked levels explain why, the suggested level has a star), wave announcements, smudges soften the streak, results card with rank, accuracy, WPM, best streak, shields, XP, glyphs and ink, Enter to fight again; each fight saves a statistics-only history entry for the level suggestion
+- src/ui/styles/hud.css: results card styles (rank stamp animation, off with reduce motion), locked and suggested level buttons
+- locales/en.json, locales/he.json: wave fight, difficulty, level and results strings
+- tests/unit/game-combat.test.ts: 39 tests: difficulties, learned-letters-only for every level and difficulty on both tracks and both languages (whole fights played), level unlocks and suggestions, soft combo breaks and Steady Hand, retarget, seeded waves, unique first letters, targeting, Calm never smudges, timed smudges, waves in order, early spawn, no new Blot objects, ranks and rewards
+- tests/e2e/fight.spec.ts: plays a whole Calm fight in the test range by following the finger guide, checks every shield word uses only learned keys, the results card and rank, Enter for another fight, and zero GPU objects left after leaving
+- docs/ARCHITECTURE.md (new section 7e Combat kit), docs/GAME_DESIGN.md (Combat), docs/ROADMAP.md (T11 ticked), CHANGELOG.md
+
+**Decisions**
+
+- **The sandbox fight lives in the existing test range as a third text mode (Wave fight) instead of a new screen** — The roadmap asks for the fight in the test range; it reuses the range's world, camera, HUD and leak checks, and keeps the game's menus untouched
+- **Targeting changes the typing driver's word before its first letter (TypingDriver.retarget) rather than giving each enemy its own typing session** — One driver keeps the HUD, keyboard guide, hint coach, metrics and combo exactly as in every other scene; the guide always shows the nearest Blot's first letter, so a beginner is never stuck
+- **Blots on the field always get words with different first letters** — One key then picks exactly one target, which makes locking on clear and fair
+- **Errors drop the streak to the start of a lower tier (Calm keeps the current tier's start, Fierce loses two tiers); a Blot reaching the scribe costs streak tiers too, but only Sofer's Trial can fail a run** — GAME_DESIGN says the combo breaks softly and only hardcore modes fail the player
+- **Calm Blots stop about a third of the way in and wait; nothing ever reaches the scribe** — Calm has no timers
+- **Rank thresholds: S 98% plus the difficulty's speed (15/25/35 WPM on Steady/Swift/Fierce, 30 on the Trial, none on Calm), A 94%, B 88%, else C** — Accuracy first, speed second, as GAME_DESIGN asks; accurate but slow still earns A
+- **Level gates by learned letters: Standard at 10, Hard at 18** — Levels open with course progress; fewer letters cannot make longer real words, so Hard would only repeat drills
+- **XP, glyphs and ink are shown on the results card but not yet added to the player's wallet** — XP is not in the save yet and the economy (wallet, shop, abilities) is task T33; adding half of it now would need undoing
+- **Each fight stores one statistics-only history entry (mode fight:level:difficulty, WPM, accuracy, time, key count)** — The level suggestion needs recent accuracy and speed; no typed text is stored
+- **Shields are a geodesic wireframe in techelet that turns gold as the word is typed; the Blot's eyes are part of its body mesh** — Reads clearly in both themes, and keeps each Blot to a few draw calls inside the medium budget
+
+**Manual steps**
+
+1. **Try a wave fight on your computer** (⬜ open)
+
+   The cloud machine has no graphics card, so the fight was checked at about 2 frames per second. On your own computer open the live link, add #/range to the end of the address, click Calm and then Easy under Wave fight, and type the words on the Blots' shields. Then try Steady and Swift. Tell me if it is fun, too easy or too hard.
+
+   Prompt for Claude in Chrome:
+
+   ```text
+   Open the live Otiyot website in my browser (the Vercel address of the project shlomyeisenberg-lang/Otiyot; if you do not know it, open https://vercel.com/dashboard, open the project named otiyot and use its production address; if asked to sign in, stop and hand control back to me). Steps: 1) Add #/range to the end of the address and press Enter. 2) If the welcome steps appear, type the name Test, press Enter, then click Next twice, then go to the #/range address again. 3) Wait about 5 seconds until the 3D scene appears. 4) In the Wave fight group click Calm, then Easy. 5) Type the words shown on the paper strip, pressing the key the keyboard picture lights up, with a space after each word, until a results card appears. 6) Read the rank letter and the numbers on the card. 7) Read frames per second in the small box in the top corner. Stop and hand control back to me for sign-in, passwords, 2FA, CAPTCHAs, payment and creating an account; never type a secret yourself. When done, report the rank, the numbers on the results card, the frames per second, and anything that looked broken.
+   ```
+
+**To do**
+
+- [ ] Play-test by a person: the fights were tuned by measurement and screenshots, not by playing at full speed; pace and spawn gaps per difficulty may need tuning (all in src/game/difficulty.ts and LEVELS in src/game/levels.ts)
+- [ ] Glyphs, ink and XP go into the wallet with progression and the shop (T33); Steady Hand is wired as a hook and turned on there
+- [ ] Each action scene (Meadow, Cliffs and later) uses BlotField and WaveFight with its own look; bosses build on this in T16
+
+**Notes**
+
+Learned-letters test: tests/unit/game-combat.test.ts plays whole fights for every level and difficulty on both tracks in Hebrew and English at 0, 2, 6, 14 and 40 lessons, and checks every shield word against the profile's learned keys; the e2e test checks every word shown in a real fight. Draw calls stay under 150 on medium with five Blots on the field.
 
 ### ⬜ T12 · Story system, title screen and intro
 
@@ -663,7 +726,17 @@ _Not started._
 
 ## Feature ideas
 
-_No ideas yet._
+### 💡 Blot varieties (from T11)
+
+**Status:** idea · **Model:** Fable 5.2 · **Effort:** High
+
+Fast small Blots, armoured Blots whose shield needs two words, and splitting Blots would give each region its own enemies and make waves more varied
+
+Build prompt:
+
+```text
+Otiyot project — GitHub repo shlomyeisenberg-lang/Otiyot. Task: Blot varieties (branch: idea-blot-varieties). Goal: add three Blot kinds to the combat kit: swift (small, fast, short word), armoured (shield of two words typed in a row) and splitting (breaks into two small Blots with short words). 1. Read CLAUDE.md, docs/ARCHITECTURE.md (section 7e), docs/DESIGN.md, docs/GAME_DESIGN.md (Combat) and only the T11 entry of docs/progress.json. 2. Start from the latest main and create the branch idea-blot-varieties. 3. Work from start to finish without stopping for my approval; make sensible decisions and record them. 4. Extend src/game/combat.ts (kinds in the wave plans, driven by the seed and the difficulty) and src/game/blots.ts (a distinct look for each kind), keep words to learned letters only and add unit tests for it, check it in the test range Wave fight mode with screenshots. 5. Run pnpm lint, typecheck, test and build, update docs/progress.json (feature_ideas status built, and a notes line) and run node scripts/render-progress.mjs, push, open a pull request, wait for the checks, merge it into main yourself and delete the branch.
+```
 
 ## Notes
 

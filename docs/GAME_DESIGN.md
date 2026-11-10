@@ -72,7 +72,12 @@ The game adapts to where the player is in their course. The active profile's les
 
 ## Combat
 
-Each enemy (a **Blot**, a patch of the Fading given shape) carries a word shield; typing it breaks the shield and restores what the Blot was hiding. Bosses have 3–4 phases, each changing the text type (single words → sentences → punctuated passage → a sudden shift, e.g. Hebrew to English or mirrored order), with a cinematic transition: hit-stop, camera push-in, palette shift, new music section.
+Each enemy (a **Blot**, a patch of the Fading given shape) carries a word shield; typing it breaks the shield and restores what the Blot was hiding.
+
+- **Targeting.** Blots on the field always start with different letters. The first letter you type locks onto the Blot whose shield starts with it (a gold ring turns under it); with no choice made, the nearest Blot is the word shown. Every letter fires an ink bolt from the quill and cracks the shield; the finished word shatters it, the Blot bursts into ink drops and color returns to the ground where it stood.
+- **Waves.** Blots come in waves from the front in patterns (arc, pincer, stream, scatter, pairs) set by a seed; later waves are bigger and end with a large, slow Blot with a long word. A Blot that reaches the scribe smudges him (the streak drops) and is thrown back; on Calm they stop close by and wait.
+- **Combo.** Errors break the streak softly: it falls to the start of a lower tier, not to zero (Steady Hand absorbs errors outright). Higher tiers hit harder, with bigger effects and more music.
+- **Results.** Rank S/A/B/C from accuracy first (98 / 94 / 88), speed only between S and A; XP, glyphs (accuracy) and ink (streak). Bosses have 3–4 phases, each changing the text type (single words → sentences → punctuated passage → a sudden shift, e.g. Hebrew to English or mirrored order), with a cinematic transition: hit-stop, camera push-in, palette shift, new music section.
 
 ## Modes
 

@@ -144,7 +144,7 @@ Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Fable 5.2 
 - **Done when** Each theme is distinct and pleasant for 10 minutes, stems audibly build with the combo, and volumes work.
 - **User must have ready** Nothing.
 
-### [ ] T11 · Combat, combo and difficulty kit
+### [x] T11 · Combat, combo and difficulty kit
 - **Branch** `t11-combat-kit`
 - **Model** Fable 5.2 · **Effort** High
 - **Goal** Word-shield enemies and the combo system shared by all action scenes.

@@ -626,6 +626,104 @@
   color: var(--ink-soft);
 }
 
+/* ---- the wave fight's results card ----------------------------------------------------------- */
+
+.range__results {
+  position: absolute;
+  inset-block-start: var(--sp-3);
+  inset-inline: 0;
+  z-index: 4;
+  display: grid;
+  gap: var(--sp-3);
+  margin-inline: auto;
+  inline-size: min(38rem, calc(100% - var(--sp-4)));
+  max-block-size: calc(100% - var(--sp-5));
+  overflow-y: auto;
+  padding: var(--sp-4) var(--sp-5);
+  border: var(--border-w) solid var(--gold);
+  border-radius: var(--radius-3);
+  background: var(--surface);
+  box-shadow:
+    var(--shadow-3),
+    0 0 0 var(--sp-1) var(--gold-soft);
+  animation: rise-in var(--t-panel) var(--ease);
+}
+.range__results[hidden] {
+  display: none;
+}
+.range__results-head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+}
+.range__results-head .rank {
+  flex: none;
+  animation: rank-stamp var(--t-cinematic) var(--ease) both;
+}
+.range__results-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-28);
+  color: var(--gold-deep);
+}
+.range__results-sub {
+  margin: 0;
+  color: var(--ink-soft);
+}
+.range__results-stats,
+.range__results-earned {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(6.5rem, 1fr));
+  gap: var(--sp-2);
+}
+.range__results .stat {
+  padding: var(--sp-2) var(--sp-3);
+}
+.range__results .stat__value {
+  font-size: var(--fs-28);
+}
+.range__results-earned {
+  padding-block-start: var(--sp-3);
+  border-block-start: var(--border-w) solid var(--line);
+}
+.range__results-note {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: var(--fs-14);
+}
+.range__results-actions {
+  display: flex;
+  justify-content: center;
+}
+@keyframes rank-stamp {
+  0% {
+    transform: scale(2.4) rotate(-12deg);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(0.92) rotate(3deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) rotate(0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .range__results-head .rank {
+    animation: none;
+  }
+}
+[data-motion='reduce'] .range__results-head .rank {
+  animation: none;
+}
+.range__row .btn[aria-disabled='true'] {
+  opacity: 0.55;
+}
+.range__row .btn[data-suggested='true']::after {
+  content: '\2605';
+  color: var(--gold);
+}
+
 /* narrow screens: a smaller strip; the keyboard shrinks to fit */
 @media (max-width: 40rem) {
   .hud {

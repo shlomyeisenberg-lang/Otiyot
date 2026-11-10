@@ -3,7 +3,9 @@
 // judged key and finished word to the scene manager, so scenes only react (ARCHITECTURE 2:
 // "a scene never reads the keyboard"). Every screen that runs a scene uses it.
 
-import type { Finger, LayoutId, Metrics, TypedKey } from '../core';
+import { resolveTypedChar, type Finger, type LayoutId, type Metrics, type TypedKey } from '../core';
+import type { ComboPolicy } from '../game/combo';
+import type { Targeting } from '../game/combat';
 import type { TypingView } from '../engine/scene';
 import { HintCoach, type CoachTip } from '../game/hints';
 import {
@@ -43,6 +45,16 @@ const FINGER_KEY: Readonly<Record<Finger, MessageKey>> = {
   th: 'finger.th',
 };
 
+/** Per-run choices that differ from the profile's settings (difficulty, combat). */
+export interface RunOptions {
+  /** Overrides settings.hardcore (Sofer's Trial fails on the first error). */
+  hardcore?: boolean;
+  /** Soft combo breaks and Steady Hand. */
+  combo?: ComboPolicy;
+  /** Combat: the first letter typed picks the enemy to lock onto. */
+  targeting?: Targeting;
+}
+
 const STATS_EVERY_MS = 250;
 const NO_LETTERS: readonly string[] = [];
 const NO_STATES: readonly LetterState[] = [];
@@ -60,6 +72,7 @@ export class PlayController {
   onEnd: ((end: RunEnd) => void) | null = null;
 
   private driver: TypingDriver | null = null;
+  private targeting: Targeting | null = null;
   private coach = new HintCoach();
   private lastStats = -Infinity;
 
@@ -125,17 +138,25 @@ export class PlayController {
   }
 
   /** Starts a run: a whole lesson ('once') or endless words from the source. */
-  begin(source: WordSource, mode: DriverOptions['mode'], layout: LayoutId = this.layout): void {
+  begin(
+    source: WordSource,
+    mode: DriverOptions['mode'],
+    layout: LayoutId = this.layout,
+    run: RunOptions = {},
+  ): void {
     this.layout = layout;
     this.guide.setLayout(layout);
     this.coach = new HintCoach();
+    this.targeting = run.targeting ?? null;
     this.driver = new TypingDriver(source, {
       layout,
       mode,
       backspace: this.settings.backspace,
-      hardcore: this.settings.hardcore,
+      hardcore: run.hardcore ?? this.settings.hardcore,
       niqqud: this.settings.niqqud,
+      combo: run.combo,
     });
+    this.autoTarget();
     this.hud.setCombo(0);
     this.hud.setStats(0, 100);
     this.hud.setProgress(mode === 'once' ? 0 : -1);
@@ -153,7 +174,17 @@ export class PlayController {
       this.guide.show(d.guide());
       return true;
     }
-    const r = d.press({ code: ev.code, key: ev.key, shift: ev.shiftKey }, now);
+    const input = { code: ev.code, key: ev.key, shift: ev.shiftKey };
+    // Combat: before the first letter of a word, that letter picks the enemy to lock onto.
+    if (this.targeting && d.atWordStart && ev.key.length === 1) {
+      const ch = resolveTypedChar(input, d.letters[0] ?? '', this.layout, null).char;
+      const pick = ch && ch !== ' ' ? this.targeting.pick(ch) : null;
+      if (pick && pick.word !== d.word) {
+        d.retarget(pick.word, pick.lookahead);
+        this.showWord();
+      }
+    }
+    const r = d.press(input, now);
     if (!r.key) {
       // Blocked until the mistake is fixed: a nudge toward Backspace, nothing else.
       if (d.mustFix && ev.key.length === 1) {
@@ -189,8 +220,10 @@ export class PlayController {
       });
       return true;
     }
-    if (r.word) this.showWord();
-    else {
+    if (r.word) {
+      this.autoTarget();
+      this.showWord();
+    } else {
       this.hud.setStates(d.states);
       this.guide.show(d.guide());
     }
@@ -206,6 +239,22 @@ export class PlayController {
     this.hud.setStats(d.wpm(now), d.accuracy());
   }
 
+  /**
+   * Combat: the field changed (an enemy appeared or left). Before the first letter of a word,
+   * make sure the word belongs to an enemy that is there, else take the nearest one.
+   */
+  retarget(): void {
+    if (this.autoTarget()) this.showWord();
+  }
+
+  /** Sets the streak from outside (a Blot reached the scribe). */
+  setCombo(combo: number): void {
+    const d = this.driver;
+    if (!d) return;
+    d.setCombo(combo);
+    this.hud.setCombo(d.combo);
+  }
+
   setGuideMode(mode: GuideMode): void {
     this.guide.mode = mode;
   }
@@ -217,6 +266,17 @@ export class PlayController {
     this.onJudged = null;
     this.onWord = null;
     this.onEnd = null;
+    this.targeting = null;
+  }
+
+  private autoTarget(): boolean {
+    const d = this.driver;
+    const tg = this.targeting;
+    if (!d || !tg || d.ended || !d.atWordStart) return false;
+    const want = tg.auto(d.word);
+    if (!want) return false;
+    if (want.word === d.word && want.lookahead === d.lookahead) return false;
+    return d.retarget(want.word, want.lookahead);
   }
 
   private showWord(): void {

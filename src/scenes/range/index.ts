@@ -45,6 +45,8 @@ import {
   WorldText,
 } from '../../engine';
 import { tierIntensity } from '../../audio/composer';
+import { BlotField } from '../../game/blots';
+import type { CombatListener, WaveFight } from '../../game/combat';
 import { TypingFeedback } from '../../game/feedback';
 import { SKY, TINT } from './palette';
 
@@ -71,6 +73,11 @@ const DAIS_TOP = 0.3;
 const SWEEP_STAGES = [15, 30, 52] as const;
 
 const UP = new Vector3(0, 1, 0);
+/** Wave fights: Blots come from beyond the standing stones, straight ahead of the camera. */
+const FIGHT_FACING = Math.PI + 0.25;
+const FIGHT_RADIUS = 16;
+const FIGHT_DIR_X = Math.sin(FIGHT_FACING);
+const FIGHT_DIR_Z = Math.cos(FIGHT_FACING);
 
 /** Rolling ground outside the plaza, flat inside it. */
 function terrain(x: number, z: number): number {
@@ -102,6 +109,12 @@ export class RangeScene implements GameScene {
   private child!: Character;
   private text!: WorldText;
   private feedback!: TypingFeedback;
+  private field!: BlotField;
+  private fight: WaveFight | null = null;
+  private readonly lockAt = new Vector3();
+  private readonly camAt = new Vector3();
+  private readonly camLook = new Vector3();
+  private readonly lookBias = new Vector3();
   private shownLetters: readonly string[] | null = null;
   private rail!: CatmullRomCurve3;
   private readonly colliders: Box3[] = [];
@@ -489,6 +502,15 @@ export class RangeScene implements GameScene {
       techelet: this.techelet,
     });
 
+    // --- Wave fights (the combat kit's sandbox).
+    this.field = new BlotField(ctx, {
+      center: this.scribe.root.position,
+      facing: FIGHT_FACING,
+      radius: FIGHT_RADIUS,
+      groundAt: ground,
+      muzzle: (out) => this.scribe.quillTip.getWorldPosition(out),
+    });
+
     // --- Camera.
     this.onQuality(ctx.quality);
 
@@ -543,9 +565,85 @@ export class RangeScene implements GameScene {
     return this.text.style;
   }
 
+  /** True while a wave fight runs. */
+  get fighting(): boolean {
+    return this.fight !== null;
+  }
+
+  /**
+   * Starts a wave fight (the combat kit's sandbox): the word above the dais gives way to the
+   * Blots' shields, the world forgets its color, and the camera looks out over the arena.
+   * `relay` hears every combat event after the scene has shown it.
+   */
+  startFight(fight: WaveFight, relay: CombatListener): void {
+    this.fight = fight;
+    this.field.attach(fight);
+    this.field.relay = relay;
+    this.text.root.visible = false;
+    this.walker.root.visible = false;
+    this.stage = 0;
+    this.ctx.materials.clearSweeps();
+    this.ctx.materials.restoreAll(0, 1.2);
+    this.ctx.audio.music('boss');
+    this.ctx.audio.section('phase1');
+    this.ctx.audio.intensity(0);
+    this.heardTier = 0;
+    this.setCamera('follow');
+  }
+
+  private fightCamera(): void {
+    const o = this.scribe.root.position;
+    const sway = Math.sin(this.time * 0.23) * 0.6;
+    this.camAt.set(
+      o.x - FIGHT_DIR_X * 6.8 + FIGHT_DIR_Z * (1.1 + sway),
+      o.y + 5.6,
+      o.z - FIGHT_DIR_Z * 6.8 - FIGHT_DIR_X * (1.1 + sway),
+    );
+    // Aimed low and near, so the field of Blots sits in the upper half of the screen, clear of
+    // the paper strip and the keyboard guide.
+    this.camLook.set(
+      o.x + FIGHT_DIR_X * 5 + this.lookBias.x,
+      o.y + 0.1,
+      o.z + FIGHT_DIR_Z * 5 + this.lookBias.z,
+    );
+    this.ctx.rig.fixed(this.camAt, this.camLook);
+  }
+
+  /** Ends the wave fight and goes back to the plain range. */
+  stopFight(): void {
+    if (!this.fight) return;
+    this.fight = null;
+    this.field.attach(null);
+    this.field.relay = null;
+    this.text.root.visible = true;
+    this.walker.root.visible = true;
+    this.scribe.root.rotation.y = 0;
+    this.ctx.audio.music('meadow');
+    this.setCamera(this.cameraMode);
+  }
+
+  /** The whole field is clear: the color floods back. */
+  celebrate(): void {
+    const o = this.scribe.root.position;
+    this.ctx.materials.restoreAll(1, 2.4);
+    this.ctx.vfx.shockwave(o.x, 0.4, o.z, 60, this.gold, 2);
+    this.ctx.vfx.burst(this.fountain, o.x, DAIS_TOP + 2, o.z, 0, 1, 0);
+    this.scribe.play('cheer');
+    this.elder.play('cheer');
+    this.child.play('cheer');
+    this.ctx.audio.play('success');
+  }
+
   setCamera(mode: CameraMode): void {
     const rig = this.ctx.rig;
     this.cameraMode = mode;
+    if (this.fight && mode === 'follow') {
+      // High over the scribe's shoulder, looking out over the arena the Blots come from.
+      this.lookBias.set(0, 0, 0);
+      this.fightCamera();
+      rig.cut();
+      return;
+    }
     if (mode === 'rail') rig.rail(this.rail, { lookAt: this.scribe.root, stiffness: 3 });
     else if (mode === 'cockpit') rig.cockpit(this.walker.root, { seat: this.seat, sway: 0.5 });
     else
@@ -554,6 +652,10 @@ export class RangeScene implements GameScene {
 
   onKey(ev: TypedKey): void {
     const typing = this.ctx.typing;
+    if (this.fight) {
+      this.fightKey(ev);
+      return;
+    }
     if (!ev.correct) {
       // Errors are brief and soft: a stumble and a blink of grey, never a block.
       this.text.miss();
@@ -582,7 +684,37 @@ export class RangeScene implements GameScene {
     this.ctx.audio.intensity(tierIntensity(tier));
   }
 
+  private fightKey(ev: TypedKey): void {
+    const typing = this.ctx.typing;
+    const fight = this.fight as WaveFight;
+    this.field.tier = typing.tier;
+    if (!ev.correct) {
+      this.field.miss();
+      this.feedback.wrong();
+      this.ctx.audio.play('error');
+      this.hearTier(typing.tier);
+      return;
+    }
+    if (ev.kind !== 'char') return;
+    if (ev.expected === ' ') {
+      this.ctx.audio.play('space');
+      return;
+    }
+    fight.letter(typing.word, ev.index);
+    const at = this.field.letterPosition(typing.word, ev.index, this.v);
+    if (at) this.feedback.correct(at.x, at.y, at.z, 0.9, typing.tier);
+    this.scribe.play('write');
+    this.ctx.audio.play('key', typing.combo, ev.expected);
+    this.hearTier(typing.tier);
+  }
+
   onWord(word: string, perfect: boolean): void {
+    if (this.fight) {
+      this.fight.wordDone(word, perfect);
+      this.ctx.audio.play(perfect ? 'perfect' : 'word');
+      if (this.ctx.typing.tier >= 2) this.child.play('cheer');
+      return;
+    }
     const { vfx } = this.ctx;
     const o = this.scribe.root.position;
     if (this.stage < SWEEP_STAGES.length) {
@@ -669,6 +801,7 @@ export class RangeScene implements GameScene {
   update(dt: number): void {
     this.time += dt;
     const { vfx } = this.ctx;
+    this.fight?.update(dt);
 
     // The walker circles the plaza: walk, run, rest.
     const cycle = this.time % 15;
@@ -677,10 +810,10 @@ export class RangeScene implements GameScene {
     this.walkerAngle += (this.walkerSpeed / 7.4) * dt;
     const wx = Math.cos(this.walkerAngle) * 7.4;
     const wz = Math.sin(this.walkerAngle) * 7.4;
-    this.walker.root.position.set(wx, ground(wx, wz), wz);
+    this.walker.root.position.set(wx, ground(wx, wz) - (this.fight ? 40 : 0), wz);
     this.walker.root.rotation.y = -this.walkerAngle;
     this.walker.speed = this.walkerSpeed;
-    if (this.walkerSpeed > 3.5 && (this.moteTimer += dt) > 0.12) {
+    if (!this.fight && this.walkerSpeed > 3.5 && (this.moteTimer += dt) > 0.12) {
       this.moteTimer = 0;
       vfx.burst(this.dust, wx, ground(wx, wz) + 0.1, wz, 0, 1, 0, true);
     }
@@ -742,6 +875,34 @@ export class RangeScene implements GameScene {
   frame(dt: number): void {
     // Slow orbit in follow mode; a gentle glide along the rail.
     const rig = this.ctx.rig;
+    if (this.fight) {
+      const typing = this.ctx.typing;
+      this.field.tier = typing.tier;
+      this.field.frame(dt, typing.word, typing.states);
+      this.feedback.frame(dt);
+      // The scribe turns to the Blot he is writing at; the camera sways a little with him.
+      const s = this.scribe.root;
+      let want = FIGHT_FACING;
+      if (this.field.lockedPosition(this.lockAt)) {
+        want = Math.atan2(this.lockAt.x - s.position.x, this.lockAt.z - s.position.z);
+      }
+      let d = (want - s.rotation.y) % (Math.PI * 2);
+      if (d > Math.PI) d -= Math.PI * 2;
+      else if (d < -Math.PI) d += Math.PI * 2;
+      s.rotation.y += d * Math.min(1, dt * 8);
+      if (this.cameraMode === 'follow') {
+        // The view leans a little toward the Blot being written at.
+        const k = Math.min(1, dt * 2.5);
+        if (this.field.lockedPosition(this.lockAt)) {
+          this.lockAt.sub(s.position).multiplyScalar(0.22);
+          this.lookBias.lerp(this.lockAt, k);
+        } else {
+          this.lookBias.multiplyScalar(1 - k);
+        }
+        this.fightCamera();
+      }
+      return;
+    }
     if (this.cameraMode === 'follow') rig.orbit = Math.PI + 0.7 + 0.5 * Math.sin(this.time * 0.16);
     else if (this.cameraMode === 'rail') rig.railT = 0.5 - 0.5 * Math.cos(this.time * 0.11);
 
@@ -768,6 +929,8 @@ export class RangeScene implements GameScene {
       this.ctx.atmosphere.removeBlob(c.root);
       c.dispose();
     }
+    this.field?.dispose();
+    this.fight = null;
     this.text?.dispose();
     this.feedback?.dispose();
     this.shownLetters = null;
