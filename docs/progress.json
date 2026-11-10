@@ -221,15 +221,40 @@
       "notes": "Frequency tiers use pack order and the classic top-word list only; there is no corpus-based ranking."
     },
     "T06": {
-      "status": "pending",
+      "status": "in_progress",
       "finished": "",
       "pr": "",
-      "summary": "",
-      "changes": [],
-      "decisions": [],
+      "summary": "The adaptive engine is now pure logic in src/learn/adaptive.ts: it learns per-key, per-finger and per-letter-pair skill, picks weak keys and transitions, schedules spaced reviews, keeps difficulty near the 92 to 96 percent accuracy band, and builds drills deterministically from a seed. TextSource now fills weak keys and difficulty from the player's profile automatically.",
+      "changes": [
+        "src/learn/adaptive.ts: charMastery, pairMastery, skillState, recordKeystroke, recordRetentionCheck, weakCharacters, weakBigrams, topErrorPairs, fingerSkills, dueToday, recordChallenge, difficultyParams, generateCharDrill, generateBigramDrill, generateErrorDrill, generateWordDrill, buildMicroLesson, unlockGate, adaptiveOptions",
+        "src/learn/source.ts: contextFor takes weak keys, weak transitions and difficulty from the adaptive engine unless the caller supplies them",
+        "src/learn/index.ts: exports the adaptive module",
+        "tests/unit/learn-adaptive.test.ts: 30 tests (mastery, weak keys, bounded over-sampling of weak keys, determinism, review dates, due list, retention checks, difficulty controller, unlock gate, micro lesson, finger skills)",
+        "docs/ARCHITECTURE.md (adaptive section), CHANGELOG.md, docs/ROADMAP.md ticked"
+      ],
+      "decisions": [
+        {
+          "decision": "Spaced-repetition and challenge state is stored inside profile.srs as plain JSON, with no save schema change",
+          "why": "profile.srs was reserved for this task and is already an open JSON record, so no migration is needed and old saves keep working"
+        },
+        {
+          "decision": "Dropped the plugin's slow-common-words and chunk drills; word drills use the T05 library weights instead",
+          "why": "The library already weights words toward weak keys; keeping two word pickers would duplicate logic"
+        },
+        {
+          "decision": "Weak-key share in drills is clamped to 15-50 percent",
+          "why": "Keeps the drill feeling like natural typing while still over-sampling weak keys, as the done-when test requires"
+        },
+        {
+          "decision": "The unlock gate only blocks on keys that have at least 3 attempts and score under 70",
+          "why": "A new player with no data must not be stalled"
+        }
+      ],
       "manual_steps": [],
-      "todo": [],
-      "notes": ""
+      "todo": [
+        "Scenes and Practice mode (later tasks) must call recordKeystroke per key and save the returned keys and srs; the engine does not touch the save itself"
+      ],
+      "notes": "Hebrew words in labels are not needed here: challengeLabel returns a code (guarded, growing, challenging, advanced) that the UI maps to locale strings later."
     },
     "T07": {
       "status": "pending",

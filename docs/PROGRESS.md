@@ -7,7 +7,7 @@ _Last updated 2026-11-10. This page is generated from `docs/progress.json`; to c
 ## Summary
 
 - ✅ **5** of **39** tasks done
-- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 34 pending
+- 🛠️ 1 in progress · ⛔ 0 blocked · ⬜ 33 pending
 - ⬜ **1** manual step waiting for you
 - 💡 0 feature ideas open
 
@@ -38,7 +38,7 @@ Work done before or outside the numbered tasks.
 - ✅ T03 · Saves and profiles — 2026-11-10 · [PR #4](https://github.com/shlomyeisenberg-lang/Otiyot/pull/4)
 - ✅ T04 · The two lesson tracks — 2026-11-10 · [PR #6](https://github.com/shlomyeisenberg-lang/Otiyot/pull/6)
 - ✅ T05 · Word and sentence library — 2026-11-10 · [PR #8](https://github.com/shlomyeisenberg-lang/Otiyot/pull/8)
-- ⬜ T06 · Adaptive engine and spaced repetition
+- 🛠️ T06 · Adaptive engine and spaced repetition
 - ⬜ T07 · Design system and UI shell
 - ⬜ T08 · 3D engine kit
 - ⬜ T09 · 3D keyboard, finger guide, HUD and typing feedback
@@ -243,11 +243,34 @@ A built-in library of over 4,000 Hebrew and 4,200 English words in themed packs 
 
 Frequency tiers use pack order and the classic top-word list only; there is no corpus-based ranking.
 
-### ⬜ T06 · Adaptive engine and spaced repetition
+### 🛠️ T06 · Adaptive engine and spaced repetition
 
-**Status:** Pending
+**Status:** In progress
 
-_Not started._
+The adaptive engine is now pure logic in src/learn/adaptive.ts: it learns per-key, per-finger and per-letter-pair skill, picks weak keys and transitions, schedules spaced reviews, keeps difficulty near the 92 to 96 percent accuracy band, and builds drills deterministically from a seed. TextSource now fills weak keys and difficulty from the player's profile automatically.
+
+**What changed**
+
+- src/learn/adaptive.ts: charMastery, pairMastery, skillState, recordKeystroke, recordRetentionCheck, weakCharacters, weakBigrams, topErrorPairs, fingerSkills, dueToday, recordChallenge, difficultyParams, generateCharDrill, generateBigramDrill, generateErrorDrill, generateWordDrill, buildMicroLesson, unlockGate, adaptiveOptions
+- src/learn/source.ts: contextFor takes weak keys, weak transitions and difficulty from the adaptive engine unless the caller supplies them
+- src/learn/index.ts: exports the adaptive module
+- tests/unit/learn-adaptive.test.ts: 30 tests (mastery, weak keys, bounded over-sampling of weak keys, determinism, review dates, due list, retention checks, difficulty controller, unlock gate, micro lesson, finger skills)
+- docs/ARCHITECTURE.md (adaptive section), CHANGELOG.md, docs/ROADMAP.md ticked
+
+**Decisions**
+
+- **Spaced-repetition and challenge state is stored inside profile.srs as plain JSON, with no save schema change** — profile.srs was reserved for this task and is already an open JSON record, so no migration is needed and old saves keep working
+- **Dropped the plugin's slow-common-words and chunk drills; word drills use the T05 library weights instead** — The library already weights words toward weak keys; keeping two word pickers would duplicate logic
+- **Weak-key share in drills is clamped to 15-50 percent** — Keeps the drill feeling like natural typing while still over-sampling weak keys, as the done-when test requires
+- **The unlock gate only blocks on keys that have at least 3 attempts and score under 70** — A new player with no data must not be stalled
+
+**To do**
+
+- [ ] Scenes and Practice mode (later tasks) must call recordKeystroke per key and save the returned keys and srs; the engine does not touch the save itself
+
+**Notes**
+
+Hebrew words in labels are not needed here: challengeLabel returns a code (guarded, growing, challenging, advanced) that the UI maps to locale strings later.
 
 ### ⬜ T07 · Design system and UI shell
 
