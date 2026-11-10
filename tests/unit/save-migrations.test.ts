@@ -1,0 +1,111 @@
+import { describe, expect, it } from 'vitest';
+import {
+  CURRENT_VERSION,
+  migrate,
+  normalizeSave,
+  normalizeProfile,
+  SaveTooNewError,
+  SaveUnreadableError,
+  createProfile,
+  type Migration,
+} from '../../src/save';
+import { counter } from './save-helpers';
+
+describe('migrations', () => {
+  it('migrates a bare unversioned profile (v0) to the current version', () => {
+    const old = { id: 'a', name: 'Dov', lang: 'en', settings: { musicVolume: 0.2 } };
+    const m = migrate(old);
+    expect(m.version).toBe(CURRENT_VERSION);
+    const save = normalizeSave(m, CURRENT_VERSION, counter(), 1000);
+    expect(save?.profiles).toHaveLength(1);
+    expect(save?.profiles[0]?.name).toBe('Dov');
+    expect(save?.profiles[0]?.layout).toBe('en');
+    expect(save?.profiles[0]?.settings.musicVolume).toBe(0.2);
+    expect(save?.activeProfileId).toBe('a');
+  });
+
+  it('migrates an unversioned multi-profile save and keeps the active profile', () => {
+    const old = {
+      profiles: [
+        { id: 'a', name: 'A' },
+        { id: 'b', name: 'B', lang: 'en' },
+      ],
+      active: 'b',
+    };
+    const save = normalizeSave(migrate(old), CURRENT_VERSION, counter(), 0);
+    expect(save?.profiles.map((p) => p.id)).toEqual(['a', 'b']);
+    expect(save?.activeProfileId).toBe('b');
+    expect(save?.profiles[1]?.layout).toBe('en');
+  });
+
+  it('runs a chain of migrations in order', () => {
+    const chain: Record<number, Migration> = {
+      0: (r) => ({ ...r, a: 1 }),
+      1: (r) => ({ ...r, b: (r.a as number) + 1 }),
+      2: (r) => ({ ...r, c: (r.b as number) * 10 }),
+    };
+    const m = migrate({}, chain, 3);
+    expect(m).toMatchObject({ a: 1, b: 2, c: 20, version: 3 });
+    // starting midway only runs the later steps
+    expect(migrate({ version: 2, b: 5 }, chain, 3)).toMatchObject({ c: 50, version: 3 });
+  });
+
+  it('refuses saves from a newer version and non-objects', () => {
+    expect(() => migrate({ version: CURRENT_VERSION + 1 })).toThrow(SaveTooNewError);
+    expect(() => migrate('nope')).toThrow(SaveUnreadableError);
+    expect(() => migrate([])).toThrow(SaveUnreadableError);
+    expect(() => migrate({ version: 0 }, {}, 1)).toThrow(SaveUnreadableError);
+  });
+});
+
+describe('normalisation', () => {
+  it('repairs garbage fields instead of crashing', () => {
+    const p = normalizeProfile(
+      {
+        id: 7,
+        name: '   ',
+        track: 9,
+        layout: 'fr',
+        settings: { musicVolume: 5, backspace: 'x', hardcore: 'yes' },
+        keys: { a: { hits: -3, misses: 'x', ease: 99 }, b: 'bad' },
+        history: [{ wpm: 'fast' }, 4],
+        arcade: { score: NaN, list: [1, undefined] },
+      },
+      'fallback',
+      50,
+    );
+    expect(p.id).toBe('fallback');
+    expect(p.name).toBe('Player');
+    expect(p.track).toBe(1);
+    expect(p.layout).toBe('he');
+    expect(p.settings.musicVolume).toBe(1);
+    expect(p.settings.backspace).toBe('allowed');
+    expect(p.settings.hardcore).toBe(false);
+    expect(p.keys.a).toMatchObject({ hits: 0, misses: 0, ease: 5 });
+    expect(p.keys.b).toBeUndefined();
+    expect(p.history).toHaveLength(1);
+    expect(p.arcade).toEqual({ score: null, list: [1, null] });
+  });
+
+  it('gives duplicate ids new ids and falls back to the first profile as active', () => {
+    const s = normalizeSave(
+      { profiles: [{ id: 'x' }, { id: 'x' }], activeProfileId: 'gone' },
+      1,
+      counter('n'),
+      0,
+    );
+    expect(new Set(s?.profiles.map((p) => p.id)).size).toBe(2);
+    expect(s?.activeProfileId).toBe('x');
+  });
+
+  it('adds a profile when none exist and rejects non-objects', () => {
+    expect(normalizeSave({ profiles: [] }, 1, counter(), 0)?.profiles).toHaveLength(1);
+    expect(normalizeSave(5, 1, counter(), 0)).toBeNull();
+  });
+
+  it('caps history length', () => {
+    const p = createProfile('a', 'A', 0);
+    const history = Array.from({ length: 600 }, (_, i) => ({ at: i, wpm: 1 }));
+    expect(normalizeProfile({ ...p, history }, 'z', 0).history).toHaveLength(500);
+  });
+});

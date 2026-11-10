@@ -72,7 +72,7 @@ No accounts. Multiple local **profiles**; each has its own settings, skill model
 
 ## 4. Data model (save file, versioned)
 
-`Save { version, profiles[], activeProfileId }`. `Profile { id, name, avatar, settings, track: 1|2, layout: 'he'|'en', lessons{ [track]: progress }, keys{ [char]: KeyStat }, srs, story{ scene ranks, flags }, wallet{ glyphs, ink }, unlocks, cosmetics, history[] (sessions), arcade (opaque blob owned by the legacy games) }`. `KeyStat { hits, misses, avgMs, lastSeen, ease, due, confusions{} }`. Every schema change adds a migration in `src/save/migrations.ts` with a unit test. Typed text itself is never stored, only statistics.
+`Save { version, profiles[], activeProfileId, meta { legacyChecked } }`. `Profile { id, name, avatar, settings, track: 1|2, layout: 'he'|'en', lessons{ [track]: progress }, keys{ [char]: KeyStat }, srs, story{ scene ranks, flags }, wallet{ glyphs, ink }, unlocks, cosmetics, history[] (sessions), arcade (opaque blob owned by the legacy games), createdAt }`. `KeyStat { hits, misses, avgMs, lastSeen, ease, due, confusions{} }`. Every schema change adds a migration in `src/save/migrations.ts` with a unit test. Typed text itself is never stored, only statistics.
 
 ## 5. Lesson tracks
 
