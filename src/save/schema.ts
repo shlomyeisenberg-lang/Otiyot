@@ -49,6 +49,16 @@ export interface HistoryEntry {
   chars: number;
 }
 
+export interface CustomList {
+  name: string;
+  language: LayoutId;
+  words: string[];
+}
+
+export const MAX_CUSTOM_LISTS = 20;
+export const MAX_CUSTOM_WORDS = 2000;
+export const MAX_CUSTOM_WORD_LENGTH = 24;
+
 export interface Profile {
   id: string;
   name: string;
@@ -67,6 +77,8 @@ export interface Profile {
   history: HistoryEntry[];
   /** Opaque blob owned by the legacy arcade games. */
   arcade: JsonValue;
+  /** The player's own word lists (typed in or imported from plain text). Words only, no typed history. */
+  customLists: Record<string, CustomList>;
   createdAt: number;
 }
 
@@ -115,6 +127,7 @@ export function createProfile(id: string, name: string, now: number): Profile {
     cosmetics: { owned: [], equipped: {} },
     history: [],
     arcade: null,
+    customLists: {},
     createdAt: now,
   };
 }
@@ -240,6 +253,20 @@ function normalizeHistory(raw: unknown): HistoryEntry[] {
   return out.slice(-MAX_HISTORY);
 }
 
+function normalizeCustomLists(raw: unknown): Record<string, CustomList> {
+  const out: Record<string, CustomList> = {};
+  if (!isRec(raw)) return out;
+  for (const [id, x] of Object.entries(raw)) {
+    if (Object.keys(out).length >= MAX_CUSTOM_LISTS) break;
+    if (!isRec(x)) continue;
+    const words = strList(x.words)
+      .filter((w) => w.length > 0 && w.length <= MAX_CUSTOM_WORD_LENGTH)
+      .slice(0, MAX_CUSTOM_WORDS);
+    out[id] = { name: cleanName(x.name), language: layoutOf(x.language, 'he'), words };
+  }
+  return out;
+}
+
 /** Turns anything into a valid Profile. `fallbackId` is used when the id is missing. */
 export function normalizeProfile(raw: unknown, fallbackId: string, now: number): Profile {
   const r = isRec(raw) ? raw : {};
@@ -269,6 +296,7 @@ export function normalizeProfile(raw: unknown, fallbackId: string, now: number):
     },
     history: normalizeHistory(r.history),
     arcade: toJson(r.arcade ?? null),
+    customLists: normalizeCustomLists(r.customLists),
   };
 }
 
