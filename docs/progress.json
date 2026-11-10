@@ -482,9 +482,9 @@
       "notes": "Try it on the live site at #/range: type the word on the paper strip and press space after each word."
     },
     "T10": {
-      "status": "in_progress",
-      "finished": "",
-      "pr": "",
+      "status": "done",
+      "finished": "2026-11-10",
+      "pr": "https://github.com/shlomyeisenberg-lang/Otiyot/pull/16",
       "summary": "The game now has sound, all made in code: five music themes that build layer by layer with your streak and always change on the beat, key clicks that climb the music's own scale, a soft knock for mistakes, menu sounds, place sounds that can come from a point in the world, four volume sliders and a sound room to hear everything.",
       "changes": [
         "src/audio/theory.ts: modes (freygish, minor, dorian, mi sheberach), scale degrees to notes, the pentatonic click ladder (two octaves up and back), seeded random numbers, volume curve",

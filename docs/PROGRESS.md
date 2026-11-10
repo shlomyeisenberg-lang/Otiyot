@@ -6,8 +6,8 @@ _Last updated 2026-11-10. This page is generated from `docs/progress.json`; to c
 
 ## Summary
 
-- ✅ **9** of **39** tasks done
-- 🛠️ 1 in progress · ⛔ 0 blocked · ⬜ 29 pending
+- ✅ **10** of **39** tasks done
+- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 29 pending
 - ⬜ **2** manual steps waiting for you
 - 💡 0 feature ideas open
 
@@ -53,7 +53,7 @@ Work done before or outside the numbered tasks.
 - ✅ T07 · Design system and UI shell — 2026-11-10 · [PR #12](https://github.com/shlomyeisenberg-lang/Otiyot/pull/12)
 - ✅ T08 · 3D engine kit — 2026-11-10 · [PR #14](https://github.com/shlomyeisenberg-lang/Otiyot/pull/14)
 - ✅ T09 · 3D keyboard, finger guide, HUD and typing feedback — 2026-11-10 · [PR #15](https://github.com/shlomyeisenberg-lang/Otiyot/pull/15)
-- 🛠️ T10 · Audio engine and first music themes
+- ✅ T10 · Audio engine and first music themes — 2026-11-10 · [PR #16](https://github.com/shlomyeisenberg-lang/Otiyot/pull/16)
 - ⬜ T11 · Combat, combo and difficulty kit
 - ⬜ T12 · Story system, title screen and intro
 - ⬜ T13 · Hub: the House of the Scribe
@@ -439,9 +439,9 @@ Typing now feels alive: a paper strip shows the word letter by letter with the n
 
 Try it on the live site at #/range: type the word on the paper strip and press space after each word.
 
-### 🛠️ T10 · Audio engine and first music themes
+### ✅ T10 · Audio engine and first music themes
 
-**Status:** In progress
+**Status:** Done · **Finished:** 2026-11-10 · **Pull request:** [PR #16](https://github.com/shlomyeisenberg-lang/Otiyot/pull/16)
 
 The game now has sound, all made in code: five music themes that build layer by layer with your streak and always change on the beat, key clicks that climb the music's own scale, a soft knock for mistakes, menu sounds, place sounds that can come from a point in the world, four volume sliders and a sound room to hear everything.
 
