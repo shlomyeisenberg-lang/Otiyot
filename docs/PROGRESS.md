@@ -6,8 +6,8 @@ _Last updated 2026-11-10. This page is generated from `docs/progress.json`; to c
 
 ## Summary
 
-- ✅ **1** of **39** tasks done
-- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 38 pending
+- ✅ **2** of **39** tasks done
+- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 37 pending
 - ⬜ **1** manual step waiting for you
 - 💡 0 feature ideas open
 
@@ -34,7 +34,7 @@ Work done before or outside the numbered tasks.
 ## Task overview
 
 - ✅ T01 · Project setup, CI and plugin packer — 2026-11-10 · [PR #2](https://github.com/shlomyeisenberg-lang/Otiyot/pull/2)
-- ⬜ T02 · Typing core
+- ✅ T02 · Typing core — 2026-11-10 · [PR #3](https://github.com/shlomyeisenberg-lang/Otiyot/pull/3)
 - ⬜ T03 · Saves and profiles
 - ⬜ T04 · The two lesson tracks
 - ⬜ T05 · Word and sentence library
@@ -117,11 +117,30 @@ The project now builds as a website and as an Otzaria plugin file, shows a place
 
 No game code yet; the boot screen is a placeholder until T07/T12.
 
-### ⬜ T02 · Typing core
+### ✅ T02 · Typing core
 
-**Status:** Pending
+**Status:** Done · **Finished:** 2026-11-10 · **Pull request:** [PR #3](https://github.com/shlomyeisenberg-lang/Otiyot/pull/3)
 
-_Not started._
+The typing engine every scene and mode will use now exists as pure logic: keyboard layouts for Hebrew and English, a session that judges each key, and scoring with per-key, per-finger and habit hints.
+
+**What changed**
+
+- src/core/layouts.ts: Hebrew (Israeli) and English (QWERTY) layouts by KeyboardEvent.code with finger, hand, row, shift layer, final letters, niqqud helpers, key lookup by character and text normaliser
+- src/core/session.ts: TypingSession (judged TypedKey out, errors never block, backspace policy allowed/disabled/mustFix, hardcore flag, niqqud ignore/required, works whatever the OS keyboard language is)
+- src/core/metrics.ts: gross and net WPM, accuracy, consistency, WPM timeline, rolling WPM, per-key and per-finger stats, confusion pairs, wrong-finger / home-row-drift / slow-key hints
+- tests/unit/core-layouts.test.ts and tests/unit/core-session.test.ts: 46 new tests incl. recorded Hebrew and English sessions and mixed Hebrew/English lines
+- docs/ROADMAP.md: T02 ticked
+
+**Decisions**
+
+- **The session takes the time as an argument instead of reading a clock** — Keeps core pure and makes recorded-session tests exact
+- **Kept the reference shift layer (( on Shift+9 for Hebrew) and the swapped < > ; added mirrored brackets and backslash** — Port behaviour from 4.2.0; brackets were missing there
+- **Niqqud marks can be typed in any order and a letter typed while marks are owed counts as a missed mark** — Errors must never block the player
+- **Net WPM = gross WPM minus mistakes per minute, as in the 4.2.0 engine** — Keeps scores comparable with the old plugin
+
+**Notes**
+
+Timing-based hints use simple thresholds; T06 (adaptive engine) may tune them.
 
 ### ⬜ T03 · Saves and profiles
 
