@@ -6,8 +6,8 @@ _Last updated 2026-11-10. This page is generated from `docs/progress.json`; to c
 
 ## Summary
 
-- ✅ **0** of **39** tasks done
-- 🛠️ 1 in progress · ⛔ 0 blocked · ⬜ 38 pending
+- ✅ **1** of **39** tasks done
+- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 38 pending
 - ⬜ **1** manual step waiting for you
 - 💡 0 feature ideas open
 
@@ -33,7 +33,7 @@ Work done before or outside the numbered tasks.
 
 ## Task overview
 
-- 🛠️ T01 · Project setup, CI and plugin packer — 2026-11-10
+- ✅ T01 · Project setup, CI and plugin packer — 2026-11-10 · [PR #2](https://github.com/shlomyeisenberg-lang/Otiyot/pull/2)
 - ⬜ T02 · Typing core
 - ⬜ T03 · Saves and profiles
 - ⬜ T04 · The two lesson tracks
@@ -75,9 +75,9 @@ Work done before or outside the numbered tasks.
 
 ## Tasks
 
-### 🛠️ T01 · Project setup, CI and plugin packer
+### ✅ T01 · Project setup, CI and plugin packer
 
-**Status:** In progress · **Finished:** 2026-11-10
+**Status:** Done · **Finished:** 2026-11-10 · **Pull request:** [PR #2](https://github.com/shlomyeisenberg-lang/Otiyot/pull/2)
 
 The project now builds as a website and as an Otzaria plugin file, shows a placeholder Otiyot boot screen, and checks every pull request in CI.
 

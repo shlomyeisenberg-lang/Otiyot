@@ -9,9 +9,9 @@
   ],
   "tasks": {
     "T01": {
-      "status": "in_progress",
+      "status": "done",
       "finished": "2026-11-10",
-      "pr": "",
+      "pr": "https://github.com/shlomyeisenberg-lang/Otiyot/pull/2",
       "summary": "The project now builds as a website and as an Otzaria plugin file, shows a placeholder Otiyot boot screen, and checks every pull request in CI.",
       "changes": [
         "package.json, tsconfig.json (strict), vite.config.ts (relative base), pnpm lockfile",
