@@ -20,6 +20,7 @@ import type { RunRank } from './results';
 export const REGION_IDS = [
   'meadow',
   'cliffs',
+  'blot',
   'forge',
   'shuk',
   'rail',
@@ -53,21 +54,32 @@ export interface Region {
   /** Story act: 1, 2 or 3; 0 for free play (the Ladder). */
   act: 0 | 1 | 2 | 3;
   need: RegionNeed;
+  /**
+   * The story gate on top of the course: this region also waits for that one to be restored.
+   * Act Two opens once the Great Blot is beaten (T16), so the story never skips its first boss.
+   */
+  after?: RegionId;
 }
 
 export const REGIONS: readonly Region[] = [
   { id: 'meadow', act: 1, need: { kind: 'start' } },
   { id: 'cliffs', act: 1, need: { kind: 'letters', count: 12 } },
-  { id: 'forge', act: 2, need: { kind: 'keys', band: 'numbers', chars: '1234567890' } },
-  { id: 'shuk', act: 2, need: { kind: 'level', level: 2 } },
-  { id: 'rail', act: 2, need: { kind: 'level', level: 3 } },
-  { id: 'geniza', act: 2, need: { kind: 'level', level: 3 } },
-  { id: 'hermon', act: 2, need: { kind: 'level', level: 4 } },
-  { id: 'station', act: 2, need: { kind: 'level', level: 4 } },
-  { id: 'atbash', act: 2, need: { kind: 'level', level: 5 } },
-  { id: 'midbar', act: 2, need: { kind: 'level', level: 5 } },
-  { id: 'caves', act: 3, need: { kind: 'level', level: 6 } },
-  { id: 'arena', act: 3, need: { kind: 'level', level: 6 } },
+  { id: 'blot', act: 1, need: { kind: 'region', region: 'cliffs' } },
+  {
+    id: 'forge',
+    act: 2,
+    need: { kind: 'keys', band: 'numbers', chars: '1234567890' },
+    after: 'blot',
+  },
+  { id: 'shuk', act: 2, need: { kind: 'level', level: 2 }, after: 'blot' },
+  { id: 'rail', act: 2, need: { kind: 'level', level: 3 }, after: 'blot' },
+  { id: 'geniza', act: 2, need: { kind: 'level', level: 3 }, after: 'blot' },
+  { id: 'hermon', act: 2, need: { kind: 'level', level: 4 }, after: 'blot' },
+  { id: 'station', act: 2, need: { kind: 'level', level: 4 }, after: 'blot' },
+  { id: 'atbash', act: 2, need: { kind: 'level', level: 5 }, after: 'blot' },
+  { id: 'midbar', act: 2, need: { kind: 'level', level: 5 }, after: 'blot' },
+  { id: 'caves', act: 3, need: { kind: 'level', level: 6 }, after: 'blot' },
+  { id: 'arena', act: 3, need: { kind: 'level', level: 6 }, after: 'blot' },
   { id: 'scroll', act: 3, need: { kind: 'region', region: 'arena' } },
   { id: 'ladder', act: 0, need: { kind: 'letters', count: 10 } },
 ];
@@ -179,6 +191,8 @@ export interface RegionStatus {
   act: Region['act'];
   need: RegionNeed;
   open: boolean;
+  /** The course need is met but the story still waits for this region (null otherwise). */
+  waitsFor: RegionId | null;
   restored: boolean;
   rank: RunRank | null;
   /** For a locked region: what to learn first (null when no lesson teaches it yet). */
@@ -211,16 +225,19 @@ function suggestionFor(profile: Profile, id: RegionId, levels: readonly LevelId[
 export function regionStatuses(profile: Profile): RegionStatus[] {
   const levels = levelsFor(profile);
   return REGIONS.map((r) => {
-    const open = needMet(profile, r.need);
+    const course = needMet(profile, r.need);
+    const gate = r.after && !isRestored(profile, r.after) ? r.after : null;
+    const open = course && gate === null;
     const rank = rankFromNumber(profile.story.ranks[r.id]);
     return {
       id: r.id,
       act: r.act,
       need: r.need,
       open,
+      waitsFor: course ? gate : null,
       restored: rank !== null,
       rank,
-      learn: open ? null : learnPath(profile, r.need),
+      learn: course ? null : learnPath(profile, r.need),
       levels,
       suggested: suggestionFor(profile, r.id, levels),
     };

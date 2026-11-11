@@ -1,0 +1,140 @@
+/* The Silent Arena (T16): the Great Blot's health bar, the phase card and the victory's
+   letterbox. Shares the Meadow screen's layout (meadow.css) and the cutscene pieces (story.css).
+   Tokens only. */
+
+.arena__boss {
+  position: absolute;
+  /* Under the HUD's speed and accuracy pills. */
+  inset-block-start: calc(var(--sp-3) + 3.5rem);
+  inset-inline-start: var(--sp-4);
+  z-index: 4;
+  display: grid;
+  gap: var(--sp-1);
+  inline-size: min(26rem, calc(50% - 6rem));
+  padding: var(--sp-2) var(--sp-3);
+  border: var(--border-w) solid var(--line);
+  border-radius: var(--radius-2);
+  background: color-mix(in srgb, var(--surface) 90%, transparent);
+  box-shadow: var(--shadow-1);
+  transition: box-shadow var(--t-feedback) var(--ease);
+}
+.arena__boss[hidden] {
+  display: none;
+}
+.arena__boss[data-windup='high'] {
+  box-shadow:
+    var(--shadow-1),
+    0 0 0 var(--border-w) var(--err-fg);
+}
+.arena__boss-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-2);
+}
+.arena__name {
+  font-family: var(--font-display);
+  font-size: var(--fs-20);
+  font-weight: 700;
+  color: var(--ink);
+}
+.arena__phase {
+  font-size: var(--fs-14);
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+/* The bar: the Blot is the grey of the Fading; what you write back fills it with gold. */
+.arena__track {
+  position: relative;
+  block-size: var(--sp-3);
+  overflow: hidden;
+  border-radius: var(--radius-1);
+  background: repeating-linear-gradient(
+    90deg,
+    var(--fade) 0 var(--sp-2),
+    color-mix(in srgb, var(--fade) 80%, var(--ink)) var(--sp-2) calc(var(--sp-2) + 1px)
+  );
+}
+.arena__fill {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  inline-size: 0;
+  background: linear-gradient(90deg, var(--gold-deep), var(--gold));
+  box-shadow: 0 0 var(--sp-2) var(--gold-glow);
+  transition: inline-size var(--t-panel) var(--ease);
+}
+[dir='rtl'] .arena__fill {
+  background: linear-gradient(270deg, var(--gold-deep), var(--gold));
+}
+.arena__notch {
+  position: absolute;
+  inset-block: 0;
+  inline-size: 2px;
+  background: var(--ink);
+  opacity: 0.55;
+}
+.arena__notch[data-passed='true'] {
+  background: var(--surface);
+}
+.arena__boss[data-weak='true'] .arena__name {
+  color: var(--gold-deep);
+  text-shadow: 0 0 var(--sp-2) var(--gold-glow);
+}
+
+/* The phase card: a kicker, the phase's name in gold, and one line on how to beat it. */
+.arena__card {
+  z-index: 3;
+}
+.arena__card[hidden] {
+  display: none;
+}
+.arena__card-inner {
+  display: grid;
+  justify-items: center;
+  gap: var(--sp-2);
+}
+.arena__card-kicker {
+  font-family: var(--font-display);
+  font-size: var(--fs-20);
+  color: var(--surface);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  animation: title-rise var(--t-cinematic) var(--ease) both;
+}
+.arena__card-how {
+  font-size: var(--fs-20);
+  color: var(--surface);
+  text-align: center;
+  padding-inline: var(--sp-4);
+  animation: title-rise var(--t-cinematic) var(--ease) 0.5s both;
+}
+[data-theme='dark'] .arena__card-kicker,
+[data-theme='dark'] .arena__card-how {
+  color: var(--ink);
+}
+.arena__card-how:empty {
+  display: none;
+}
+
+/* The victory cutscene: letterbox bars slide in; the dialogue box sits between them. */
+.arena[data-cinema='true'] .cutscene__bar {
+  transform: none;
+  z-index: 3;
+}
+.arena .cutscene__skip[hidden],
+.arena__story[hidden] {
+  display: none;
+}
+.arena__story {
+  max-inline-size: 46rem;
+  z-index: 5;
+}
+
+@media (max-width: 640px) {
+  .arena__boss {
+    inset-inline: var(--sp-3);
+    inline-size: auto;
+    inset-block-start: calc(var(--sp-3) + 4.5rem);
+  }
+}

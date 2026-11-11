@@ -109,7 +109,7 @@ export function soundScreen(ctx: AppContext): Screen {
     h('p', { class: 'sound__pad-hint', text: t.t('sound.typeHere') }),
   );
 
-  const phaseButtons = (['phase1', 'phase2', 'phase3'] as const).map((p, i) => {
+  const phaseButtons = (['phase1', 'phase2', 'phase3', 'phase4'] as const).map((p, i) => {
     const b = button({
       label: t.t('sound.phase', { n: i + 1 }),
       small: true,

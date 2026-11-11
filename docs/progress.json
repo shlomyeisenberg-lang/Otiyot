@@ -907,15 +907,64 @@
       "notes": "Built by the Sonnet runner, High effort, following the Meadow's pattern. Looked at in Chromium at 1280 and 375 wide, English and Hebrew, both themes. About 85 draw calls and 52k triangles on medium."
     },
     "T16": {
-      "status": "pending",
-      "finished": "",
-      "pr": "",
-      "summary": "",
-      "changes": [],
-      "decisions": [],
+      "status": "done",
+      "finished": "2026-11-11",
+      "pr": "https://github.com/shlomyeisenberg-lang/Otiyot/pull/27",
+      "summary": "The first boss, the Great Blot, can be fought in the Silent Arena once the Cliffs are restored: four phases (single words, sentences, a punctuated passage, and a mirrored twist), each with its own attack, weak points and look, cinematic transitions between them, checkpoints on gentler difficulties, and a victory cutscene that restores the arena and opens Act Two on the map.",
+      "changes": [
+        "src/game/boss.ts: the boss kit (phases as data, BossFight state: health as the share of text still unwritten, attack windup per group timed by difficulty, parries, landing attacks that drop the streak, weak points that stagger, phase transitions, failure on the Trial, checkpoints kept as story flags, mergeMetrics for one result across phases)",
+        "src/scenes/arena/plan.ts: the Great Blot as data (Spatter, Tendrils, Flood, Mirror) and planGreatBlot, built from levelWordSource so only learned keys; punctuation only when learned; Phase IV gives back Phase I words last first",
+        "src/scenes/arena/index.ts: the Silent Arena scene (stone theatre with lathe-turned seats, broken colonnade, gate pylons, paved orchestra in rings, hills with olives and cypresses; the Great Blot with a living ink skin rewritten each frame, eyes and brows on its skin, a gold seal for weak points, an ink pool; glob, tendril, flood ring and mirror-shard attacks; gold bolts from the quill; cinematic transitions with hit-stop, push-in, palette and grade shifts, a camera roll into the Mirror; victory cues and shots)",
+        "src/scenes/arena/palette.ts: a light for each phase and for the restored arena, in day and night themes",
+        "src/story/arena.ts: lines for Reb Ezra and Dyo in Hebrew and English, phase names, the victory cutscene BLOT_VICTORY and the card Act Two · The Road",
+        "src/ui/screens/arena.ts and src/ui/styles/arena.css: the arena screen (#/arena): health bar with phase notches, phase cards, options panel, streak carried between phases, checkpoint resume, the victory cutscene with letterbox and Skip, results card",
+        "src/game/regions.ts: new region blot (Act One, opens after the Cliffs); Act Two and Three regions wait for it (after: blot, RegionStatus.waitsFor); src/ui/screens/hub.ts says so on the map; src/scenes/hub/land.ts: a beacon spot for it",
+        "src/audio/themes.ts: boss theme section P4 (phase4) for the Mirror; src/ui/screens/sound.ts: a Boss phase 4 button in the sound room",
+        "src/ui/app.ts, src/ui/shell.ts, src/ui/playable.ts: the arena route and Play on the map",
+        "locales/en.json, locales/he.json: arena.* strings, region.blot, hub.need.after",
+        "tests/unit/boss.test.ts (22 tests: the kit, learned letters only in both layouts and tracks, winnable on every difficulty, Calm never lands, checkpoints, the cutscene, content filter on every line); tests/unit/hub.test.ts updated for the Act Two gate; tests/e2e/arena.spec.ts (a whole fight from the map, the cutscene, the save, a checkpoint resume with Esc skip, the phone layout); tests/e2e/hub.spec.ts updated for 14 regions",
+        "docs/ARCHITECTURE.md section 7j, docs/GAME_DESIGN.md (the Great Blot), docs/DESIGN.md (boss bar, phase card), CHANGELOG.md, ROADMAP tick"
+      ],
+      "decisions": [
+        {
+          "decision": "The Great Blot is its own region (blot, Act One) that opens once the Cliffs are restored, fought in the Silent Arena shell; the later Arena region (T26) stays as it was.",
+          "why": "The roadmap makes the first boss the end of the Phase 1 slice (title, hub, two scenes, boss), while the Arena region opens only at course level 6 and T26 adds three more bosses there. A separate region gives the first boss its own rank and beacon without opening the Blank Scroll early."
+        },
+        {
+          "decision": "\"Unlocks Phase 2 scenes\" is a story gate: Act Two and Three regions keep their course need and also wait for the Great Blot (after: blot); the map says \"First defeat the Great Blot\".",
+          "why": "The story should not skip its first boss, but the course still decides when each scene opens. A player who beats the Blot loses nothing; the Blot is beatable on Calm by anyone who reached it."
+        },
+        {
+          "decision": "Health is the share of the fight text still unwritten, and attacks never fail the player (they drop the streak); only the Sofer’s Trial fails, on the first error.",
+          "why": "Guarantees the fight is winnable on every difficulty with no soft-lock, matches GAME_DESIGN (only hardcore modes fail), and keeps the pressure honest: stalling costs streak, not progress."
+        },
+        {
+          "decision": "Attack timing per difficulty is a gentle typing pace (Steady 9, Swift 15, Fierce 22, Trial 16 WPM plus a grace of 2.6 to 3.6 s per group); on Calm the attack creeps in and waits.",
+          "why": "An attack should land only when the player stops or slows a lot, never because a beginner is a beginner."
+        },
+        {
+          "decision": "The twist in Phase IV is an order twist: the words swallowed in Phase I come back last first, while the world turns inside out (ink sky, pale Blot, a camera roll). No layout switch.",
+          "why": "A Hebrew to English switch would ask for keys the player has not learned on the other layout, which the content rules forbid; the mirror keeps it learned-letters-only and still feels sudden."
+        },
+        {
+          "decision": "Checkpoints are kept on Calm, Steady and Swift as story flags (boss:blot:2..4) and resume automatically, with a card saying so; \"Start the fight again\" and a victory forget them.",
+          "why": "The roadmap asks for checkpoints on lower difficulties; flags fit the save without a schema change or migration."
+        },
+        {
+          "decision": "The fight is one typing run per phase; the streak is carried between phases, and the results merge the per-phase numbers (mergeMetrics).",
+          "why": "The typing driver ends a run at its text; one run per phase lets the transition pause the quill cleanly while the result still counts the whole fight."
+        },
+        {
+          "decision": "Visual review: after the first full run, the camera was moved behind and to the right of the stage so the scribe stands lower-left clear of the paper strip, the Blot was made larger with an ink pool, the eyes were put on its moving skin (they were being swallowed), the orchestra became real rings of slabs, the health bar moved under the speed pills, and the word banner hides during transitions and the victory.",
+          "why": "Xhigh effort: play it, critique it, improve it before merging. Screenshots of every phase showed those problems."
+        }
+      ],
       "manual_steps": [],
-      "todo": [],
-      "notes": ""
+      "todo": [
+        "The victory and transitions use the shared effects (no new sounds); a dedicated boss roar and a victory sting could come with the polish pass (T34).",
+        "Act Two regions have no scenes yet (T17 onward); until then the map shows them as open but still being written once the Blot is beaten."
+      ],
+      "notes": "Merged after the local checks passed (lint, typecheck, 397 unit tests, build) and tests/e2e/arena.spec.ts passed on desktop and phone in the sandbox."
     },
     "T17": {
       "status": "pending",
@@ -1216,6 +1265,15 @@
       "effort": "Low",
       "status": "idea",
       "prompt": "Otiyot project — GitHub repo shlomyeisenberg-lang/Otiyot. Idea: wandering ibex (branch: idea-ibex-walk). Work without stopping for approval. Read CLAUDE.md, docs/ARCHITECTURE.md (sections 7b, 7i), docs/DESIGN.md and only your own needs in docs/progress.json. Goal: in src/scenes/cliffs/index.ts make the ibex walk slowly along their ledge and look toward a waterfall when it starts, with no allocations in update(). Build it, add a unit or smoke assertion, run pnpm lint, typecheck, test and build, update docs/progress.json, open a pull request, merge it into main and delete the branch."
+    },
+    {
+      "from": "T16",
+      "title": "The Blot remembers",
+      "why": "A rematch could feel personal: the Great Blot could build Phase IV from the words the player actually stumbled on in the fight (still learned letters only), so the mirror gives back exactly what was hard.",
+      "model": "Sonnet 5.5",
+      "effort": "Medium",
+      "status": "idea",
+      "prompt": "Otiyot project — GitHub repo shlomyeisenberg-lang/Otiyot. Idea: the Blot remembers (branch: idea-blot-remembers). Work without stopping for approval. Read CLAUDE.md, docs/ARCHITECTURE.md (sections 7e and 7j), docs/DESIGN.md and only your own needs in docs/progress.json (read just the T16 entry with node -e). Goal: in src/ui/screens/arena.ts collect the words of Phases I–III that were typed with a mistake, and when the fight reaches Phase IV rebuild its words from them (most-missed first, at most the planned count, filled with Phase I words last first if there are too few). Keep the planning pure: add a function in src/scenes/arena/plan.ts that takes the plan and the missed words and returns the new Phase IV, with unit tests in tests/unit/boss.test.ts, including that every character is a learned key. Run pnpm lint, pnpm typecheck, pnpm test and pnpm build until they pass, add a line to CHANGELOG.md, update docs/progress.json (append a note and set this idea to built) and run node scripts/render-progress.mjs, commit both files, push, open a pull request into main, wait for the checks, squash-merge it yourself and delete the branch."
     }
   ],
   "notes": [
@@ -1223,6 +1281,11 @@
       "date": "2026-11-11",
       "from": "T12",
       "text": "Launch now opens #/title. Screens that need Esc for themselves implement Screen.onEscape. Cutscenes: write beats in src/story, stage them in a scene with onBeat and named shots, host them like src/ui/screens/intro.ts."
+    },
+    {
+      "date": "2026-11-11",
+      "from": "T16",
+      "text": "Act Two and Three regions now also wait for the Great Blot (Region.after in src/game/regions.ts). Scene tasks for those regions should restore blot in their test profiles (story.ranks.blot) so their region is open."
     }
   ]
 }

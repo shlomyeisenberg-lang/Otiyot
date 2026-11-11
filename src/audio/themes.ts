@@ -218,7 +218,8 @@ export const THEMES: Readonly<Record<ThemeId, ThemeSpec>> = {
     brightness: 0.65,
     level: 0.85,
   },
-  // Boss: C freygish at full drive, taiko and cello ostinato. Three phases, the last one higher.
+  // Boss: C freygish at full drive, taiko and cello ostinato. Four phases: each climbs, and the
+  // fourth (the mirror) turns the tune over.
   boss: {
     id: 'boss',
     nameKey: 'sound.theme.boss',
@@ -247,8 +248,18 @@ export const THEMES: Readonly<Record<ThemeId, ThemeSpec>> = {
         transpose: 1,
         drums: { base: 'storm', full: 'storm' },
       },
+      // The mirror (T16): the tune turned over, a minor third up, the drums thinned to a heartbeat
+      // that fills back in with the streak.
+      P4: {
+        bars: 8,
+        chords: [1, 0, 6, 0, 1, 3, 1, 0],
+        register: 3,
+        density: 0.6,
+        transpose: 3,
+        drums: { base: 'base', full: 'storm' },
+      },
     },
-    phases: { phase1: ['P1'], phase2: ['P2'], phase3: ['P3'] },
+    phases: { phase1: ['P1'], phase2: ['P2'], phase3: ['P3'], phase4: ['P4'] },
     voices: { drone: 'pad', pulse: 'cello', melody: 'strings', counter: 'bell' },
     kit: 'taiko',
     pulse: [0, 0, 3, 0, 0, 3, 0, 2, 0, 0, 3, 0, 1, 0, 2, 0],

@@ -7,3 +7,4 @@ export * from './types';
 export * from './hub';
 export * from './meadow';
 export * from './cliffs';
+export * from './arena';

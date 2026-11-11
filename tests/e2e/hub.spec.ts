@@ -158,7 +158,7 @@ test('the hub gains color as regions are restored', async ({ page }) => {
   );
   const h = await hub(page);
   expect(h.litBeacons).toBe(3);
-  expect(h.restored).toBeCloseTo(3 / 13);
+  expect(h.restored).toBeCloseTo(3 / 14);
   // The new restorations are celebrated once, then remembered.
   const flags = await page.evaluate(
     () => JSON.parse(localStorage.getItem('otiyot_save') ?? '{}').profiles[0].story.flags,
