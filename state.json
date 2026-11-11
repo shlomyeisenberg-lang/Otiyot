@@ -1,7 +1,5 @@
 {
-  "claims": {
-    "T14": { "at": "2026-11-11T08:53:05Z", "runner": "Otiyot Fable builder" }
-  },
+  "claims": {},
   "attempts": {
     "T01": 1,
     "T02": 1,
