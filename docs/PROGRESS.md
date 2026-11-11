@@ -6,8 +6,8 @@ _Last updated 2026-11-11. This page is generated from `docs/progress.json`; to c
 
 ## Summary
 
-- ✅ **14** of **39** tasks done
-- 🛠️ 1 in progress · ⛔ 0 blocked · ⬜ 24 pending
+- ✅ **15** of **39** tasks done
+- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 24 pending
 - ⬜ **3** manual steps waiting for you
 - 💡 5 feature ideas open
 
@@ -71,7 +71,7 @@ Work done before or outside the numbered tasks.
 - ✅ T12 · Story system, title screen and intro — 2026-11-11 · [PR #18](https://github.com/shlomyeisenberg-lang/Otiyot/pull/18)
 - ✅ T13 · Hub: the House of the Scribe — 2026-11-11 · [PR #23](https://github.com/shlomyeisenberg-lang/Otiyot/pull/23)
 - ✅ T14 · Scene: Home Row Meadow — 2026-11-11 · [PR #25](https://github.com/shlomyeisenberg-lang/Otiyot/pull/25)
-- 🛠️ T15 · Scene: Cliffs of Ein Gedi — 2026-11-11
+- ✅ T15 · Scene: Cliffs of Ein Gedi — 2026-11-11 · [PR #26](https://github.com/shlomyeisenberg-lang/Otiyot/pull/26)
 - ⬜ T16 · Boss kit and the first boss
 - ⬜ T17 · Scene: The Gematria Forge
 - ⬜ T18 · Scene: The Night Shuk
@@ -699,9 +699,9 @@ The Home Row Meadow can be played from the map: a grey spring valley with a gard
 
 Built by the Fable runner, High effort. Looked at in Chromium at 1280 and 375 wide, English and Hebrew, both themes, and recomposed three times (camera, garden placement, results card). About 87 draw calls and 99k triangles on medium.
 
-### 🛠️ T15 · Scene: Cliffs of Ein Gedi
+### ✅ T15 · Scene: Cliffs of Ein Gedi
 
-**Status:** In progress · **Finished:** 2026-11-11
+**Status:** Done · **Finished:** 2026-11-11 · **Pull request:** [PR #26](https://github.com/shlomyeisenberg-lang/Otiyot/pull/26)
 
 The Cliffs of Ein Gedi can be played from the map: a grey desert canyon where every word is a stepping stone, top-row words make the scribe reach up to a higher stone and bottom-row words down to a lower one, color sweeps ahead of him, a waterfall restarts at the end of each quarter and the last word restores the whole canyon with a rank.
 
@@ -724,7 +724,6 @@ The Cliffs of Ein Gedi can be played from the map: a grey desert canyon where ev
 - **Reb Ezra waits on the summit slab from the start instead of walking with the scribe.** — It gives the stepping stones a visible goal and saves a second character animation.
 - **The Cliffs scene imports the birds from src/scenes/meadow/flyers.ts and the screen reuses the meadow__ CSS classes.** — Keeps the change small; moving shared code can be done in the polish pass.
 - **The camera follows with a half-turn orbit (the follow camera looks toward +z by default) from 17 units back and 9.5 up, aimed slightly below the scribe.** — The first try looked back at the scribe; this keeps him in the upper middle, clear of the banner and the keyboard.
-- **Merged on the strength of passing local checks if GitHub checks did not report in time (see notes).** — Instruction for unattended runs.
 
 **To do**
 

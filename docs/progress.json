@@ -858,9 +858,9 @@
       "notes": "Built by the Fable runner, High effort. Looked at in Chromium at 1280 and 375 wide, English and Hebrew, both themes, and recomposed three times (camera, garden placement, results card). About 87 draw calls and 99k triangles on medium."
     },
     "T15": {
-      "status": "in_progress",
+      "status": "done",
       "finished": "2026-11-11",
-      "pr": "",
+      "pr": "https://github.com/shlomyeisenberg-lang/Otiyot/pull/26",
       "summary": "The Cliffs of Ein Gedi can be played from the map: a grey desert canyon where every word is a stepping stone, top-row words make the scribe reach up to a higher stone and bottom-row words down to a lower one, color sweeps ahead of him, a waterfall restarts at the end of each quarter and the last word restores the whole canyon with a rank.",
       "changes": [
         "src/scenes/cliffs/index.ts: the Cliffs scene (canyon terrain with banded sandstone walls and a river, instanced stone pillars at the planned heights, summit slab with Reb Ezra, the apprentice hopping stone to stone with Dyo, a follow camera that looks up or down with the reach, four instanced waterfalls that start in turn, ibex on the ledges, acacias, reeds, boulders, birds, dust and heat motes, a gold beacon ring on the next stone, the finale)",
@@ -896,10 +896,6 @@
         {
           "decision": "The camera follows with a half-turn orbit (the follow camera looks toward +z by default) from 17 units back and 9.5 up, aimed slightly below the scribe.",
           "why": "The first try looked back at the scribe; this keeps him in the upper middle, clear of the banner and the keyboard."
-        },
-        {
-          "decision": "Merged on the strength of passing local checks if GitHub checks did not report in time (see notes).",
-          "why": "Instruction for unattended runs."
         }
       ],
       "manual_steps": [],
