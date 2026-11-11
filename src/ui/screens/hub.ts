@@ -376,6 +376,7 @@ export function hubScreen(ctx: AppContext): Screen {
   }
 
   function needText(st: RegionStatus): string {
+    if (st.waitsFor) return t.t('hub.need.after', { region: regionName(st.waitsFor) });
     const n = st.need;
     switch (n.kind) {
       case 'keys':

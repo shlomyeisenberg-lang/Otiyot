@@ -133,6 +133,7 @@ function faceColor(p: Float32Array, at: number, out: Float32Array): void {
 export const BEACON_SPOTS: readonly (readonly [number, number])[] = [
   [8, -27],
   [22, -33],
+  [34, -36],
   [-7, -39],
   [35, -45],
   [14, -51],

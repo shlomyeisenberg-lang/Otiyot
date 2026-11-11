@@ -208,7 +208,7 @@ Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Fable 5.2 
 - **Done when** The scene is playable start to finish from the hub at 60 fps on medium, feels different from every other scene, and its smoke test passes.
 - **User must have ready** Nothing.
 
-### [ ] T16 · Boss kit and the first boss
+### [x] T16 · Boss kit and the first boss
 - **Branch** `t16-boss-kit`
 - **Model** Fable 5.2 · **Effort** Xhigh
 - **Goal** The multi-phase boss framework and a first boss that is the dramatic peak of the slice.

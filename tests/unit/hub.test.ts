@@ -166,10 +166,25 @@ describe('regions: the map follows the course', () => {
     const st = regionStatuses(p);
     const open = new Set(st.filter((s) => s.open).map((s) => s.id));
     expect(open.has('cliffs')).toBe(true);
-    expect(open.has('shuk')).toBe(true);
     expect(open.has('ladder')).toBe(true);
     expect(open.has('scroll')).toBe(false);
     expect(st[0]?.levels).toEqual(['easy', 'standard', 'hard']);
+    // The course has reached the Shuk, but Act Two waits for the Great Blot (T16).
+    const shuk = st.find((s) => s.id === 'shuk');
+    expect(shuk?.open).toBe(false);
+    expect(shuk?.waitsFor).toBe('blot');
+    expect(shuk?.learn).toBeNull();
+    recordRegionRank(p, 'blot', 'B');
+    expect(regionStatuses(p).find((s) => s.id === 'shuk')?.open).toBe(true);
+  });
+
+  it('the Great Blot opens once the Cliffs are restored', () => {
+    const p = pass(player(), 45);
+    expect(regionStatuses(p).find((s) => s.id === 'blot')?.open).toBe(false);
+    recordRegionRank(p, 'cliffs', 'C');
+    const blot = regionStatuses(p).find((s) => s.id === 'blot');
+    expect(blot?.open).toBe(true);
+    expect(blot?.act).toBe(1);
   });
 
   it('the Blank Scroll waits for the Arena', () => {
@@ -202,6 +217,7 @@ describe('regions: the map follows the course', () => {
   it('"continue the story" leads to the first open region not yet restored', () => {
     const p = pass(player(), 45);
     recordRegionRank(p, 'meadow', 'A');
+    recordRegionRank(p, 'blot', 'A');
     const st = regionStatuses(p);
     expect(nextRegion(st, new Set<RegionId>())?.id).toBe('cliffs');
     expect(nextRegion(st, new Set<RegionId>(['shuk']))?.id).toBe('shuk');
