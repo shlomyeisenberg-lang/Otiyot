@@ -1025,15 +1025,54 @@
       "notes": "Built by the Sonnet runner, High effort, following the Cliffs and Meadow pattern. Looked at in Chromium at 1280 wide, light theme, three moments of a run. The CI state file on the auto-run-state branch could not be written through the proxy; the pushed branch served as the claim."
     },
     "T18": {
-      "status": "pending",
-      "finished": "",
-      "pr": "",
-      "summary": "",
-      "changes": [],
-      "decisions": [],
+      "status": "done",
+      "finished": "2026-11-11",
+      "pr": "https://github.com/shlomyeisenberg-lang/Otiyot/pull/29",
+      "summary": "The Night Shuk can be played from the map (Level 2 of the course, after the Great Blot): a lantern-lit market square after dark where every stall is one trade, a learned word with a learned punctuation mark on its tail, and the marks are the coins. Clean deals open the stalls, three in a row win a haggle, four big lanterns light as you go and the last trade restores the market.",
+      "changes": [
+        "src/scenes/shuk/plan.ts: the run as pure data (trades of a learned word plus a learned mark, usable marks per level, coins, haggle streak, purse, chapters, lanterns by quarter)",
+        "src/scenes/shuk/index.ts: the Shuk scene (cobbled square with carpet, ring of lit houses with domes and minarets, moon, stalls with striped awnings, sign boards, stall lanterns, three merchants, big lanterns, coins flying to the purse, haggle flash, lantern ash, finale)",
+        "src/scenes/shuk/palette.ts: night and blue-hour palettes and the market colors",
+        "src/audio/themes.ts: the \"shuk\" music theme (G minor, kanun, clarinet, frame drum, swing); locales sound.theme.shuk and sound.mood.shuk",
+        "src/story/shuk.ts: lines for Reb Ezra and Dyo in Hebrew and English",
+        "src/ui/screens/shuk.ts: the Shuk screen (#/shuk) built like the Forge screen, with chapter and coin chip, level and difficulty panel and results card with rank, coins and haggles",
+        "src/ui/app.ts, src/ui/shell.ts, src/ui/playable.ts: the shuk route; the Shuk now has a Play button on the hub map when open",
+        "locales/en.json, locales/he.json: shuk.* strings",
+        "tests/unit/shuk.test.ts (learned keys only with every mark set, coins, haggle, lanterns, stall layout, region and route, story lines) and tests/e2e/shuk.spec.ts (a whole run from the map, restart and Esc); tests/e2e/sound.spec.ts lists the new theme",
+        "docs/ARCHITECTURE.md section 7k, CHANGELOG.md, ROADMAP tick"
+      ],
+      "decisions": [
+        {
+          "decision": "A trade is a learned word with at most one learned mark on its tail, and the coins come from the marks.",
+          "why": "It makes punctuation the currency as the roadmap says, while every typed key stays one the player has learned."
+        },
+        {
+          "decision": "With no mark learned the run is plain words (one coin each).",
+          "why": "The Shuk opens by course level, not by symbol lessons (none exist yet), so it must always be completable."
+        },
+        {
+          "decision": "Three clean deals in a row win a haggle that doubles the mark coins; a slip only breaks the streak.",
+          "why": "Gives the scene its own feel without timers or failure; rank still comes from the host's accuracy and speed."
+        },
+        {
+          "decision": "Used the kanun as the melody voice and a swung frame-drum groove.",
+          "why": "The audio test requires every theme to have its own melody voice and tempo; this keeps the market busy and distinct from the Forge."
+        },
+        {
+          "decision": "The scene shows three merchants who stand behind the open stall and the next two, instead of one per stall.",
+          "why": "Keeps the character count and draw calls low while the market still feels crowded."
+        },
+        {
+          "decision": "Ran the smoke test in this sandbox with a local Playwright config pointing at the installed Chromium; the config was not committed.",
+          "why": "The sandbox browser build differs from the version Playwright expects."
+        }
+      ],
       "manual_steps": [],
-      "todo": [],
-      "notes": ""
+      "todo": [
+        "Symbol and punctuation lessons are still missing, so the Shuk opens by course level (ROADMAP \"Later\").",
+        "Merchants cheer from the stall they just left; a polish pass (T34) can retime that."
+      ],
+      "notes": "Compared against the Meadow with Playwright screenshots; the Shuk keeps the Meadow's layout, HUD and restoration feel with its own night palette, mechanic and music."
     },
     "T19": {
       "status": "pending",
