@@ -755,6 +755,7 @@ The first boss, the Great Blot, can be fought in the Silent Arena once the Cliff
 - locales/en.json, locales/he.json: arena.* strings, region.blot, hub.need.after
 - tests/unit/boss.test.ts (22 tests: the kit, learned letters only in both layouts and tracks, winnable on every difficulty, Calm never lands, checkpoints, the cutscene, content filter on every line); tests/unit/hub.test.ts updated for the Act Two gate; tests/e2e/arena.spec.ts (a whole fight from the map, the cutscene, the save, a checkpoint resume with Esc skip, the phone layout); tests/e2e/hub.spec.ts updated for 14 regions
 - docs/ARCHITECTURE.md section 7j, docs/GAME_DESIGN.md (the Great Blot), docs/DESIGN.md (boss bar, phase card), CHANGELOG.md, ROADMAP tick
+- .github/workflows/ci.yml: job timeout 30 minutes
 
 **Decisions**
 
@@ -766,15 +767,17 @@ The first boss, the Great Blot, can be fought in the Silent Arena once the Cliff
 - **Checkpoints are kept on Calm, Steady and Swift as story flags (boss:blot:2..4) and resume automatically, with a card saying so; "Start the fight again" and a victory forget them.** — The roadmap asks for checkpoints on lower difficulties; flags fit the save without a schema change or migration.
 - **The fight is one typing run per phase; the streak is carried between phases, and the results merge the per-phase numbers (mergeMetrics).** — The typing driver ends a run at its text; one run per phase lets the transition pause the quill cleanly while the result still counts the whole fight.
 - **Visual review: after the first full run, the camera was moved behind and to the right of the stage so the scribe stands lower-left clear of the paper strip, the Blot was made larger with an ink pool, the eyes were put on its moving skin (they were being swallowed), the orchestra became real rings of slabs, the health bar moved under the speed pills, and the word banner hides during transitions and the victory.** — Xhigh effort: play it, critique it, improve it before merging. Screenshots of every phase showed those problems.
+- **Raised the CI job limit from 20 to 30 minutes and made the arena smoke test lighter (one small probe read per key).** — The end-to-end suite grows with every scene; with the full four-phase fight added, a re-run of CI was cancelled at the 20-minute limit while still passing tests.
 
 **To do**
 
 - [ ] The victory and transitions use the shared effects (no new sounds); a dedicated boss roar and a victory sting could come with the polish pass (T34).
 - [ ] Act Two regions have no scenes yet (T17 onward); until then the map shows them as open but still being written once the Blot is beaten.
+- [ ] tests/e2e/cliffs.spec.ts can fail by chance: its words are random and a run may have no bottom-row word, so expect(reaches).toContain("down") fails. Seed the run in the test (or relax the check).
 
 **Notes**
 
-Merged after the local checks passed (lint, typecheck, 397 unit tests, build) and tests/e2e/arena.spec.ts passed on desktop and phone in the sandbox.
+Local checks passed (lint, typecheck, 397 unit tests, build) and tests/e2e/arena.spec.ts passed in the sandbox. The first CI run failed only in tests/e2e/cliffs.spec.ts, which expects a down-reach from random words (flaky, unrelated to this task; see todo).
 
 ### ⬜ T17 · Scene: The Gematria Forge
 

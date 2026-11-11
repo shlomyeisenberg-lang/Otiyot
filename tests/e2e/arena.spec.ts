@@ -93,13 +93,14 @@ const waitReady = (page: Page): Promise<unknown> =>
     { timeout: 120_000 },
   );
 
-async function pressGuide(page: Page): Promise<void> {
-  const p = await arena(page);
-  if (!p.nextKey) throw new Error(`the guide shows no key (state ${p.state})`);
-  if (p.nextShift) await page.keyboard.down(p.nextShift);
-  await page.keyboard.press(p.nextKey);
-  if (p.nextShift) await page.keyboard.up(p.nextShift);
-}
+/** The key the finger guide shows now, and where the fight is (one light round trip). */
+const guide = (
+  page: Page,
+): Promise<{ key: string | null; shift: string | null; state: string; phase: number }> =>
+  page.evaluate(() => {
+    const a = (window as unknown as { __otiyotArena: Probe }).__otiyotArena;
+    return { key: a.nextKey, shift: a.nextShift, state: a.state, phase: a.phase };
+  });
 
 async function shot(page: Page, name: string): Promise<void> {
   if (SHOTS) await page.screenshot({ path: `${SHOTS}/${name}.png` });
@@ -107,15 +108,17 @@ async function shot(page: Page, name: string): Promise<void> {
 
 /** Types the current phase to its end, stepping the world a little as a player would. */
 async function typePhase(page: Page, label: string): Promise<void> {
-  const start = await arena(page);
-  const phase = start.phase;
+  const phase = (await guide(page)).phase;
   let presses = 0;
   for (;;) {
-    const p = await arena(page);
-    if (p.state !== 'fight' || p.phase !== phase) break;
-    await pressGuide(page);
+    const g = await guide(page);
+    if (g.state !== 'fight' || g.phase !== phase) break;
+    if (!g.key) throw new Error(`the guide shows no key (state ${g.state})`);
+    if (g.shift) await page.keyboard.down(g.shift);
+    await page.keyboard.press(g.key);
+    if (g.shift) await page.keyboard.up(g.shift);
     presses += 1;
-    if (presses % 6 === 0) await step(page, 0.25);
+    if (presses % 12 === 0) await step(page, 0.4);
     if (presses === 14) await shot(page, `${label}-fight`);
     if (presses > 400) throw new Error('the phase never ends');
   }
