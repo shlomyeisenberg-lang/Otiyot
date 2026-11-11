@@ -67,8 +67,16 @@ export interface ThemeSpec {
   level: number;
 }
 
-export type ThemeId = 'title' | 'hub' | 'meadow' | 'cliffs' | 'forge' | 'boss';
-export const THEME_IDS: readonly ThemeId[] = ['title', 'hub', 'meadow', 'cliffs', 'forge', 'boss'];
+export type ThemeId = 'title' | 'hub' | 'meadow' | 'cliffs' | 'forge' | 'shuk' | 'boss';
+export const THEME_IDS: readonly ThemeId[] = [
+  'title',
+  'hub',
+  'meadow',
+  'cliffs',
+  'forge',
+  'shuk',
+  'boss',
+];
 
 // Compound (6/8) cells: 6 steps per bar.
 const CELLS_6 = [
@@ -245,6 +253,35 @@ export const THEMES: Readonly<Record<ThemeId, ThemeSpec>> = {
     cadences: CAD_8,
     reverb: 0.3,
     brightness: 0.6,
+    level: 0.85,
+  },
+  // The Night Shuk: a swinging, chattering G minor groove in 4/4, kanun and clarinet over a frame
+  // drum, with a bell for every coin. Busy and warm, like merchants talking over each other.
+  shuk: {
+    id: 'shuk',
+    nameKey: 'sound.theme.shuk',
+    seed: 6029,
+    bpm: 118,
+    beats: 4,
+    sub: 2,
+    root: 67,
+    mode: 'minor',
+    swing: 0.18,
+    form: ['A', 'A', 'B', 'A', 'C'],
+    sections: {
+      A: { bars: 8, chords: [0, 0, 3, 3, 0, 0, 4, 0], register: 1, density: 0.6 },
+      B: { bars: 8, chords: [3, 3, 0, 0, 4, 4, 0, 0], register: 2, density: 0.75 },
+      C: { bars: 8, chords: [0, 4, 3, 4, 0, 3, 4, 0], register: 3, density: 0.5 },
+    },
+    voices: { drone: 'pad', pulse: 'oud', melody: 'kanun', counter: 'clarinet' },
+    kit: 'frame',
+    pulse: [0, 2, 1, 2, 0, 3, 1, 2],
+    counterOctave: 1,
+    drums: { base: 'D.kTD.kT', full: 'DkTkDkTS' },
+    cells: CELLS_8,
+    cadences: CAD_8,
+    reverb: 0.3,
+    brightness: 0.62,
     level: 0.85,
   },
   // Boss: C freygish at full drive, taiko and cello ostinato. Four phases: each climbs, and the

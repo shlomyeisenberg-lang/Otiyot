@@ -13,6 +13,7 @@ export type Route =
   | 'meadow'
   | 'cliffs'
   | 'forge'
+  | 'shuk'
   | 'arena'
   | 'menu'
   | 'welcome'
@@ -71,6 +72,7 @@ export const PARENT: Readonly<Record<Route, Route | null>> = {
   meadow: 'hub',
   cliffs: 'hub',
   forge: 'hub',
+  shuk: 'hub',
   arena: 'hub',
   menu: null,
   welcome: null,

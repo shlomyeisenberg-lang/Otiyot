@@ -1,5 +1,5 @@
 // Which regions have a scene to play, and where each one opens. Every scene task adds its
-// region here when its scene is merged (T14 the Meadow, T15 the Cliffs, T17 the Forge, T16 the Great Blot in the arena, ...); the hub's map
+// region here when its scene is merged (T14 the Meadow, T15 the Cliffs, T17 the Forge, T18 the Shuk, T16 the Great Blot in the arena, ...); the hub's map
 // shows the rest as "still being written". Also holds the lesson the hub asked for, so the
 // lesson screen knows what to open.
 
@@ -10,6 +10,7 @@ export const SCENE_ROUTES: Readonly<Partial<Record<RegionId, Route>>> = {
   meadow: 'meadow',
   cliffs: 'cliffs',
   forge: 'forge',
+  shuk: 'shuk',
   blot: 'arena',
 };
 
