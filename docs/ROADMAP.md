@@ -158,7 +158,7 @@ Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Fable 5.2 
 - **Done when** A sandbox wave fight in the test range is fun on all five difficulties and ends with a results screen.
 - **User must have ready** Nothing.
 
-### [ ] T12 · Story system, title screen and intro
+### [x] T12 · Story system, title screen and intro
 - **Branch** `t12-story-title`
 - **Model** Fable 5.2 · **Effort** High
 - **Goal** In-engine cutscenes and dialogue, the title screen, and the opening of the story.

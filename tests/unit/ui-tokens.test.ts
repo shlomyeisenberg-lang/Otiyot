@@ -59,7 +59,14 @@ describe('design tokens', () => {
   });
 
   it('no stylesheet other than tokens.css writes a raw color', () => {
-    for (const file of ['base.css', 'components.css', 'screens.css', 'engine.css', 'hud.css']) {
+    for (const file of [
+      'base.css',
+      'components.css',
+      'screens.css',
+      'engine.css',
+      'hud.css',
+      'story.css',
+    ]) {
       const text = readFileSync(new URL(`../../src/ui/styles/${file}`, import.meta.url), 'utf8');
       expect(text.match(/#[0-9a-fA-F]{3,8}\b|rgba?\(|hsla?\(/g) ?? [], file).toEqual([]);
     }
@@ -125,7 +132,8 @@ describe('theme', () => {
 
 describe('routes and chart maths', () => {
   it('reads routes from the hash and sends unknown ones to the menu', () => {
-    expect(parseRoute('')).toBe('menu');
+    expect(parseRoute('')).toBe('title');
+    expect(parseRoute('#/')).toBe('title');
     expect(parseRoute('#/players/new')).toBe('players/new');
     expect(parseRoute('#/settings/')).toBe('settings');
     expect(parseRoute('#track')).toBe('track');

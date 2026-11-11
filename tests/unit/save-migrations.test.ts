@@ -204,7 +204,7 @@ describe('normalisation', () => {
       meta: { legacyChecked: true, autoQuality: null },
     };
     const m = migrate(v5);
-    expect(m.version).toBe(6);
+    expect(m.version).toBe(CURRENT_VERSION);
     const save = normalizeSave(m, CURRENT_VERSION, counter(), 0);
     expect(save?.profiles[0]?.settings).toMatchObject({
       musicVolume: 0.2,
@@ -221,5 +221,36 @@ describe('normalisation', () => {
     const fixed = normalizeSave(bad, CURRENT_VERSION, counter(), 0)?.profiles[0]?.settings;
     expect(fixed?.voiceVolume).toBe(1);
     expect(fixed?.uiVolume).toBe(0.6);
+  });
+
+  it('v6 -> v7 adds the story settings: normal text speed, voices off', () => {
+    const v6 = {
+      version: 6,
+      profiles: [
+        { id: 'a', name: 'A', settings: { musicVolume: 0.2, voiceVolume: 0.5 } },
+        { id: 'b', name: 'B', settings: { textSpeed: 'fast' } },
+        { id: 'c', name: 'C' },
+      ],
+      activeProfileId: 'a',
+      meta: { legacyChecked: true, autoQuality: null },
+    };
+    const m = migrate(v6);
+    expect(m.version).toBe(7);
+    const save = normalizeSave(m, CURRENT_VERSION, counter(), 0);
+    expect(save?.profiles[0]?.settings).toMatchObject({
+      musicVolume: 0.2,
+      voiceVolume: 0.5,
+      textSpeed: 'normal',
+      storyVoices: false,
+    });
+    expect(save?.profiles[1]?.settings.textSpeed).toBe('fast');
+    expect(save?.profiles[2]?.settings.storyVoices).toBe(false);
+    const bad = {
+      version: 7,
+      profiles: [{ id: 'd', settings: { textSpeed: 'warp', storyVoices: 'yes' } }],
+    };
+    const fixed = normalizeSave(bad, CURRENT_VERSION, counter(), 0)?.profiles[0]?.settings;
+    expect(fixed?.textSpeed).toBe('normal');
+    expect(fixed?.storyVoices).toBe(false);
   });
 });

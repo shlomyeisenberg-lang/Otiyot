@@ -38,7 +38,7 @@ describe('load and round-trip', () => {
     const a = make();
     await a.m.load();
     a.m.update((p) => {
-      p.name = 'Miriam';
+      p.name = 'Moshe';
       p.track = 2;
       p.keys['ש'] = {
         hits: 5,

@@ -16,12 +16,14 @@ import { h, isTextEntry, s } from './dom';
 import { bdi, I18n, otherLang, type Lang } from './i18n';
 import { icon, type IconName } from './icons';
 import { layoutScreen } from './screens/layout';
+import { introScreen } from './screens/intro';
 import { mainMenuScreen } from './screens/mainMenu';
 import { openPauseMenu } from './screens/pause';
 import { playersScreen } from './screens/players';
 import { rangeScreen } from './screens/range';
 import { settingsScreen } from './screens/settings';
 import { soundScreen } from './screens/sound';
+import { titleScreen } from './screens/title';
 import { trackScreen } from './screens/track';
 import { wizardScreen } from './screens/wizard';
 import { applyTheme, nextTheme } from './theme';
@@ -96,6 +98,8 @@ export class Shell {
     this.win = o.win ?? window;
     this.needsWelcome = o.loaded.source === 'fresh' && !o.loaded.legacyImported;
     this.screens = {
+      title: (ctx) => titleScreen(ctx, this.needsWelcome),
+      intro: introScreen,
       menu: mainMenuScreen,
       welcome: (ctx) => wizardScreen(ctx, 'welcome', () => (this.needsWelcome = false)),
       players: playersScreen,
@@ -315,6 +319,10 @@ export class Shell {
       target instanceof HTMLSelectElement ||
       target instanceof HTMLInputElement;
     if (ev.key === 'Escape') {
+      if (this.screen?.onEscape?.()) {
+        ev.preventDefault();
+        return;
+      }
       if (PARENT[this.route]) {
         ev.preventDefault();
         this.back();

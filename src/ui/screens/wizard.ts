@@ -44,8 +44,10 @@ export function wizardScreen(
     });
     void ctx.saves.flush();
     onDone?.();
-    ctx.toast.show(t.t('wizard.created', { name: ctx.profile.name }), 'gold', 4200);
-    ctx.go('menu');
+    // A brand-new apprentice goes straight into the story's opening; others to the menu.
+    const story = mode === 'welcome' && !ctx.profile.story.flags.intro;
+    if (!story) ctx.toast.show(t.t('wizard.created', { name: ctx.profile.name }), 'gold', 4200);
+    ctx.go(story ? 'intro' : 'menu');
   };
 
   const next = (): void => {

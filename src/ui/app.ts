@@ -6,6 +6,8 @@ import type { ToastHost } from './components';
 import type { I18n, Lang } from './i18n';
 
 export type Route =
+  | 'title'
+  | 'intro'
   | 'menu'
   | 'welcome'
   | 'players'
@@ -46,6 +48,8 @@ export interface Screen {
   ownsMusic?: boolean;
   /** Fills the whole area under the top bar (3D views). */
   full?: boolean;
+  /** Esc pressed: return true when the screen used it (the intro skips) instead of going back. */
+  onEscape?(): boolean;
   /** Called when the screen is replaced: stop loops, free what was created. */
   dispose?(): void;
 }
@@ -54,6 +58,8 @@ export type ScreenFactory = (ctx: AppContext) => Screen;
 
 /** Where Esc / Back leads from each route (`null`: nowhere, this is the root). */
 export const PARENT: Readonly<Record<Route, Route | null>> = {
+  title: null,
+  intro: null,
   menu: null,
   welcome: null,
   players: 'menu',
@@ -69,8 +75,18 @@ export const PARENT: Readonly<Record<Route, Route | null>> = {
 
 const ROUTES = Object.keys(PARENT) as Route[];
 
-/** Reads a route from a location hash such as `#/players/new`. Unknown hashes go to the menu. */
+/**
+ * Where the story hands over when the intro ends and where "Continue" leads: the House of the
+ * Scribe. Until the hub exists (T13) that is the main menu.
+ */
+export const HUB: Route = 'menu';
+
+/**
+ * Reads a route from a location hash such as `#/players/new`. No hash (a fresh launch) opens the
+ * title; unknown hashes go to the menu.
+ */
 export function parseRoute(hash: string): Route {
   const path = hash.replace(/^#\/?/, '').replace(/\/$/, '');
+  if (path === '') return 'title';
   return ROUTES.find((r) => r === path) ?? 'menu';
 }

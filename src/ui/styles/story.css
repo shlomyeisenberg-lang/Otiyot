@@ -1,0 +1,237 @@
+/* The title screen and cutscenes (T12). Tokens only: no raw colors, sizes or shadows here. */
+
+/* ---------- Title ---------- */
+.titlescreen {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: var(--bg);
+}
+.titlescreen__view {
+  position: absolute;
+  inset: 0;
+}
+.titlescreen__front {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 0;
+  display: grid;
+  justify-items: center;
+  padding: var(--sp-4);
+  pointer-events: none;
+}
+.titlescreen__front > * {
+  pointer-events: auto;
+}
+.titlescreen__press {
+  font-family: var(--font-display);
+  font-size: var(--fs-20);
+  color: var(--gold);
+  text-shadow: 0 0 var(--sp-3) var(--gold-glow);
+  margin-block-end: var(--sp-6);
+  animation: title-breathe 2.4s var(--ease) infinite alternate;
+}
+.titlescreen__panel {
+  inline-size: min(100%, var(--column));
+  display: grid;
+  gap: var(--sp-2);
+  padding-block: var(--sp-4) var(--sp-3);
+  background: color-mix(in srgb, var(--surface) 90%, transparent);
+  backdrop-filter: blur(6px);
+  animation: title-rise var(--t-cinematic) var(--ease) both;
+}
+.titlescreen__panel .title__tagline {
+  text-align: center;
+  margin: 0;
+}
+.titlescreen__panel .menu__item {
+  animation: title-rise var(--t-cinematic) var(--ease) both;
+  animation-delay: calc(var(--i) * 70ms + 120ms);
+}
+/* Without 3D: the painted wordmark over the scored parchment. */
+.titlescreen__mark {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-start: 12%;
+}
+.titlescreen[data-flat='true'] .titlescreen__mark .title__mark {
+  animation: title-rise var(--t-cinematic) var(--ease) both;
+}
+@media (max-width: 480px) {
+  .titlescreen__panel .menu__hint,
+  .titlescreen__panel .title__tagline {
+    display: none;
+  }
+}
+@media (max-height: 560px) {
+  .titlescreen__panel {
+    padding-block: var(--sp-2);
+  }
+  .titlescreen__panel .title__tagline {
+    display: none;
+  }
+}
+
+@keyframes title-breathe {
+  from {
+    opacity: 0.45;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes title-rise {
+  from {
+    opacity: 0;
+    transform: translateY(var(--sp-5));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---------- Cutscene ---------- */
+.cutscene {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: var(--bg);
+}
+.cutscene__view {
+  position: absolute;
+  inset: 0;
+}
+/* Letterbox bars slide in once the scene plays. */
+.cutscene__bar {
+  position: absolute;
+  inset-inline: 0;
+  block-size: 9vh;
+  background: var(--ink);
+  pointer-events: none;
+  z-index: 1;
+  transition: transform var(--t-cinematic) var(--ease);
+}
+.cutscene__bar--top {
+  inset-block-start: 0;
+  transform: translateY(-100%);
+}
+.cutscene__bar--bottom {
+  inset-block-end: 0;
+  transform: translateY(100%);
+}
+[data-theme='dark'] .cutscene__bar {
+  background: var(--bg);
+}
+.cutscene[data-playing='true'] .cutscene__bar {
+  transform: none;
+}
+.cutscene[data-flat='true'] .cutscene__bar {
+  display: none;
+}
+.cutscene__skip {
+  position: absolute;
+  inset-block-start: var(--sp-3);
+  inset-inline-end: var(--sp-3);
+  z-index: 4;
+}
+.cutscene__skip .btn {
+  background: color-mix(in srgb, var(--surface) 80%, transparent);
+  gap: var(--sp-2);
+}
+.cutscene__loading {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-display);
+  font-size: var(--fs-20);
+  color: var(--ink-soft);
+  z-index: 2;
+}
+.cutscene__dialogue {
+  position: absolute;
+  inset-inline: var(--sp-4);
+  margin-inline: auto;
+  inset-block-end: calc(9vh + var(--sp-3));
+  z-index: 3;
+  cursor: pointer;
+  background: color-mix(in srgb, var(--surface) 94%, transparent);
+  animation: title-rise var(--t-panel) var(--ease) both;
+}
+.cutscene[data-flat='true'] .cutscene__dialogue {
+  inset-block-end: 30%;
+}
+.cutscene__card {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  z-index: 2;
+  background: radial-gradient(
+    closest-side,
+    color-mix(in srgb, var(--shade) 55%, transparent),
+    transparent
+  );
+  animation: title-breathe var(--t-cinematic) var(--ease) both;
+}
+.cutscene__card-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(var(--fs-28), 6vw, var(--fs-64));
+  color: var(--gold);
+  text-align: center;
+  padding-inline: var(--sp-4);
+  text-shadow:
+    0 0 var(--sp-5) var(--gold-glow),
+    0 2px 0 color-mix(in srgb, var(--shade) 50%, transparent);
+  animation: card-in 1.6s var(--ease) both;
+}
+@keyframes card-in {
+  from {
+    opacity: 0;
+    letter-spacing: 0.3em;
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    letter-spacing: 0.02em;
+    filter: none;
+  }
+}
+
+/* ---------- The dialogue box's typing line and portraits ---------- */
+.dialogue__rest {
+  visibility: hidden;
+}
+.dialogue[data-waiting='false'] .dialogue__next {
+  opacity: 0;
+}
+.dialogue[data-waiting='true'] .dialogue__next .keycap {
+  animation: title-breathe 0.9s var(--ease) infinite alternate;
+}
+.dialogue__next {
+  transition: opacity var(--t-feedback) var(--ease);
+}
+.dialogue__portrait[data-kind='drop'] {
+  color: var(--techelet);
+}
+.dialogue__portrait[data-kind='scroll'] {
+  color: var(--gold-deep);
+}
+.dialogue__portrait[data-kind='keeper'] {
+  color: var(--ink-soft);
+}
+@media (max-width: 480px) {
+  .cutscene__dialogue {
+    grid-template-columns: 1fr;
+    inset-inline: var(--sp-2);
+  }
+  .cutscene__dialogue .dialogue__portrait {
+    display: none;
+  }
+  .cutscene__dialogue .dialogue__text {
+    font-size: var(--fs-16);
+  }
+}

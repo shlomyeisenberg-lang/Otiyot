@@ -14,6 +14,8 @@ The letters are fading. Signs go blank, songs lose their words, people forget ea
 - **Act 2 — The Road.** You cross the land restoring region after region, racing Naftali, bargaining in the night market, diving to a sunken archive. You find scorched pages signed by one hand: the Keeper.
 - **Act 3 — The Keeper.** The Fading is not a monster. It is the work of the **Keeper of the Great Archive**, who lost his life's writing in a fire and concluded that what is never written can never be lost. He is erasing the land to spare it grief. In the Blank Scroll you do not destroy him; you type his lost words back, line by line, faster than he can erase them. He picks up a quill again.
 
+**The opening (built in T12).** Night in a quiet street. The narrator: every sign in the Land of Letters knows its own name; over the door of the House of the Scribe the lamp-sign "בית הסופר" has burned for forty years. A pale mist drifts in, the street drains to grey, and the sign's letters stutter and go out one by one: tonight, it forgot. Reb Ezra steps out ("Forty years, and that sign never once stammered"), names the Forgetting (one letter, then a word, then a whole street), and gives the apprentice his spare quill, which "writes only what your fingers truly know". The inkwell on the bench rattles and Dyo climbs out, asking about blotting paper. Ezra: "He also talks. A lot." The apprentice raises the quill and writes the sign's first letter back; color returns around the house, Dyo cheers ("only a few hundred thousand to go"), and Ezra: "A slow letter written well beats a fast one smudged. Come. We begin." Card: *Act One · The Quill*. Then the House of the Scribe.
+
 ## Characters
 
 | Character | Role | Voice |
@@ -40,7 +42,7 @@ Each has its own mechanic, palette, weather, time of day, music theme and enemie
 
 | # | Scene | Place and mood | Mechanic | Band |
 | --- | --- | --- | --- | --- |
-| 1 | **Title** | Letters of gold ink fall onto a blank parchment and form the title | Type your name to begin | — |
+| 1 | **Title** | Letters of gold ink fall onto a blank parchment and form the title | Any key; every choice is picked by typing its gold letter | — |
 | 2 | **House of the Scribe** (hub) | Stone house in the Jerusalem hills; desk, shelves, Game Room, shop, trophy shelf; day/night cycle | Walk by typing door words | — |
 | 3 | **Home Row Meadow** | Spring morning, anemones, grey grass regaining green | Guided tutorial: restore flowers letter by letter | Home row |
 | 4 | **Cliffs of Ein Gedi** | Desert canyon, waterfalls, ibex; golden afternoon | Stepping stones: reach up (top row) and down (bottom row) | Top and bottom rows |
