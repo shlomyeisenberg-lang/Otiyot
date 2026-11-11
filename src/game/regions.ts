@@ -113,6 +113,21 @@ function isRestored(profile: Profile, id: RegionId): boolean {
   return rankFromNumber(profile.story.ranks[id]) !== null;
 }
 
+/** The save flag the number-row lessons set (a later task) when the digits are learned. */
+export const NUMBER_ROW_FLAG = 'numberRow';
+export const DIGITS = '1234567890';
+
+/**
+ * The keys a profile may be asked to type in a scene that needs a key band: the keys of its
+ * lessons, plus the whole number row once the player has learned it (no lesson teaches the
+ * digits yet, so the save flag is how the Forge opens). Pure.
+ */
+export function sceneKeysOf(profile: Profile): Set<string> {
+  const keys = knownKeysOf(profile);
+  if (profile.story.flags[NUMBER_ROW_FLAG] === true) for (const d of DIGITS) keys.add(d);
+  return keys;
+}
+
 /** True when the need is met by this profile right now. */
 export function needMet(profile: Profile, need: RegionNeed): boolean {
   switch (need.kind) {
@@ -123,7 +138,7 @@ export function needMet(profile: Profile, need: RegionNeed): boolean {
     case 'level':
       return activeLevelOf(getProgress(profile).completed) >= need.level;
     case 'keys': {
-      const keys = knownKeysOf(profile);
+      const keys = sceneKeysOf(profile);
       return [...need.chars].every((c) => keys.has(c));
     }
     case 'region':

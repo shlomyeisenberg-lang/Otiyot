@@ -63,7 +63,7 @@ test('every theme makes clean sound, and layers add to it', async ({ page }, inf
       return { peak, rms: Math.sqrt(sum / d.length), bad };
     };
     const out: Record<string, { low: number; high: number; peak: number; bad: number }> = {};
-    for (const id of ['title', 'hub', 'meadow', 'cliffs', 'boss'] as const) {
+    for (const id of ['title', 'hub', 'meadow', 'cliffs', 'forge', 'boss'] as const) {
       const low = measure(await p.render(id, 8, 0, 16000));
       const high = measure(await p.render(id, 8, 1, 16000));
       out[id] = {

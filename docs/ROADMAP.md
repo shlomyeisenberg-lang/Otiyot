@@ -222,7 +222,7 @@ Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Fable 5.2 
 
 ## Phase 2 · The world
 
-### [ ] T17 · Scene: The Gematria Forge
+### [x] T17 · Scene: The Gematria Forge
 - **Branch** `t17-forge`
 - **Model** Sonnet 5.5 · **Effort** High
 - **Goal** Build the "The Gematria Forge" scene as a distinct, beautiful, exciting 3D level whose mechanic is: typing numbers (and letter values) keeps the furnace temperature in the safe band while the smith forges letters
