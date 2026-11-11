@@ -6,8 +6,8 @@ _Last updated 2026-11-11. This page is generated from `docs/progress.json`; to c
 
 ## Summary
 
-- ✅ **16** of **39** tasks done
-- 🛠️ 1 in progress · ⛔ 0 blocked · ⬜ 22 pending
+- ✅ **17** of **39** tasks done
+- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 22 pending
 - ⬜ **3** manual steps waiting for you
 - 💡 6 feature ideas open
 
@@ -73,7 +73,7 @@ Work done before or outside the numbered tasks.
 - ✅ T14 · Scene: Home Row Meadow — 2026-11-11 · [PR #25](https://github.com/shlomyeisenberg-lang/Otiyot/pull/25)
 - ✅ T15 · Scene: Cliffs of Ein Gedi — 2026-11-11 · [PR #26](https://github.com/shlomyeisenberg-lang/Otiyot/pull/26)
 - ✅ T16 · Boss kit and the first boss — 2026-11-11 · [PR #27](https://github.com/shlomyeisenberg-lang/Otiyot/pull/27)
-- 🛠️ T17 · Scene: The Gematria Forge — 2026-11-11
+- ✅ T17 · Scene: The Gematria Forge — 2026-11-11 · [PR #28](https://github.com/shlomyeisenberg-lang/Otiyot/pull/28)
 - ⬜ T18 · Scene: The Night Shuk
 - ⬜ T19 · Scene: The Jaffa Line
 - ⬜ T20 · Scene: The Sunken Geniza
@@ -779,9 +779,9 @@ The first boss, the Great Blot, can be fought in the Silent Arena once the Cliff
 
 Local checks passed (lint, typecheck, 397 unit tests, build) and tests/e2e/arena.spec.ts passed in the sandbox. The first CI run failed only in tests/e2e/cliffs.spec.ts, which expects a down-reach from random words (flaky, unrelated to this task; see todo).
 
-### 🛠️ T17 · Scene: The Gematria Forge
+### ✅ T17 · Scene: The Gematria Forge
 
-**Status:** In progress · **Finished:** 2026-11-11
+**Status:** Done · **Finished:** 2026-11-11 · **Pull request:** [PR #28](https://github.com/shlomyeisenberg-lang/Otiyot/pull/28)
 
 The Gematria Forge can be played from the map once the number row is learned and the Great Blot is beaten: a smithy inside a hill where every number you type is the gematria value of a letter, and a furnace temperature gauge with a safe band decides whether the smith forges it bright, dull or scorched. Four lamps light along the rack as the run goes on and the last number restores the whole cave.
 

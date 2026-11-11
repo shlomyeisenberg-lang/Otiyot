@@ -973,9 +973,9 @@
       "notes": "Local checks passed (lint, typecheck, 397 unit tests, build) and tests/e2e/arena.spec.ts passed in the sandbox. The first CI run failed only in tests/e2e/cliffs.spec.ts, which expects a down-reach from random words (flaky, unrelated to this task; see todo)."
     },
     "T17": {
-      "status": "in_progress",
+      "status": "done",
       "finished": "2026-11-11",
-      "pr": "",
+      "pr": "https://github.com/shlomyeisenberg-lang/Otiyot/pull/28",
       "summary": "The Gematria Forge can be played from the map once the number row is learned and the Great Blot is beaten: a smithy inside a hill where every number you type is the gematria value of a letter, and a furnace temperature gauge with a safe band decides whether the smith forges it bright, dull or scorched. Four lamps light along the rack as the run goes on and the last number restores the whole cave.",
       "changes": [
         "src/scenes/forge/plan.ts: the run and the furnace as pure data and functions (letters and gematria values for Hebrew and English, numbers from learned digits only, three chapters, stoke / flare / cool, temper against the safe band, lamps by quarter)",
