@@ -2,7 +2,7 @@
 
 One task = one chat = one branch = one pull request, merged into main by that chat.
 
-Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Fable 5.2 builds everything that needs taste and skill (visuals, 3D, game feel, story, music); Sonnet 5.5 builds mechanical tasks (setup, ports, saves, tests, packaging).
+Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Opus 5.5 builds the few tasks that need real taste and skill; Fable 5.2 builds only the story and cutscenes task (T35); Sonnet 5.5 builds everything else.
 
 ## Phase 0 · Foundation (logic, no visuals)
 
@@ -91,7 +91,7 @@ Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Fable 5.2 
 
 ### [x] T07 · Design system and UI shell
 - **Branch** `t07-design-system`
-- **Model** Fable 5.2 · **Effort** High
+- **Model** Opus 5.5 · **Effort** High
 - **Goal** Turn DESIGN.md into real tokens, fonts and components, with Hebrew RTL and English LTR, and the menu shell.
 - **Scope**
   - Load the frontend-design skill first
@@ -105,7 +105,7 @@ Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Fable 5.2 
 
 ### [x] T08 · 3D engine kit
 - **Branch** `t08-engine-kit`
-- **Model** Fable 5.2 · **Effort** Xhigh
+- **Model** Opus 5.5 · **Effort** Xhigh
 - **Goal** The reusable 3D foundation every scene is built on, tuned for integrated graphics.
 - **Scope**
   - Renderer, resize, fixed-step loop, quality presets with first-run benchmark (ARCHITECTURE section 7)
@@ -120,7 +120,7 @@ Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Fable 5.2 
 
 ### [x] T09 · 3D keyboard, finger guide, HUD and typing feedback
 - **Branch** `t09-keyboard-hud`
-- **Model** Fable 5.2 · **Effort** High
+- **Model** Opus 5.5 · **Effort** High
 - **Goal** The moment-to-moment feel of typing: what the player sees and feels on every key.
 - **Scope**
   - 3D on-screen keyboard for both layouts: next key glows, finger color coding, pressed-key animation, hideable; optional animated hands
@@ -133,7 +133,7 @@ Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Fable 5.2 
 
 ### [x] T10 · Audio engine and first music themes
 - **Branch** `t10-audio`
-- **Model** Fable 5.2 · **Effort** High
+- **Model** Opus 5.5 · **Effort** High
 - **Goal** Procedural sound that makes typing feel musical.
 - **Scope**
   - Web Audio mixer with music / effects / voice / UI volumes
@@ -146,7 +146,7 @@ Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Fable 5.2 
 
 ### [x] T11 · Combat, combo and difficulty kit
 - **Branch** `t11-combat-kit`
-- **Model** Fable 5.2 · **Effort** High
+- **Model** Opus 5.5 · **Effort** High
 - **Goal** Word-shield enemies and the combo system shared by all action scenes.
 - **Scope**
   - src/game: Blot enemies with word shields (targeting by first letter, lock-on, shield break VFX, restoration burst)
@@ -160,7 +160,7 @@ Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Fable 5.2 
 
 ### [x] T12 · Story system, title screen and intro
 - **Branch** `t12-story-title`
-- **Model** Fable 5.2 · **Effort** High
+- **Model** Opus 5.5 · **Effort** High
 - **Goal** In-engine cutscenes and dialogue, the title screen, and the opening of the story.
 - **Scope**
   - Cutscene player: timed camera shots, character actions, text and VFX cues from data; skippable
@@ -174,7 +174,7 @@ Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Fable 5.2 
 
 ### [x] T13 · Hub: the House of the Scribe
 - **Branch** `t13-hub`
-- **Model** Fable 5.2 · **Effort** High
+- **Model** Opus 5.5 · **Effort** High
 - **Goal** A living home base that works as the game's menu.
 - **Scope**
   - Handcrafted interior + courtyard with day/night cycle and view over the hills
@@ -187,7 +187,7 @@ Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Fable 5.2 
 
 ### [ ] T14 · Scene: Home Row Meadow
 - **Branch** `t14-meadow`
-- **Model** Fable 5.2 · **Effort** High
+- **Model** Opus 5.5 · **Effort** High
 - **Goal** Build the "Home Row Meadow" scene as a distinct, beautiful, exciting 3D level whose mechanic is: a gentle guided tutorial where typing home-row letters restores flowers, grass and birdsong; Reb Ezra teaches hand placement through play in the first five minutes; skippable
 - **Scope**
   - New folder src/scenes/meadow/ implementing GameScene
@@ -199,7 +199,7 @@ Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Fable 5.2 
 
 ### [ ] T15 · Scene: Cliffs of Ein Gedi
 - **Branch** `t15-cliffs`
-- **Model** Fable 5.2 · **Effort** High
+- **Model** Sonnet 5.5 · **Effort** High
 - **Goal** Build the "Cliffs of Ein Gedi" scene as a distinct, beautiful, exciting 3D level whose mechanic is: stepping stones over a canyon where top-row words make the scribe reach up and bottom-row words reach down; waterfalls restart as sections are restored
 - **Scope**
   - New folder src/scenes/cliffs/ implementing GameScene
@@ -210,7 +210,7 @@ Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Fable 5.2 
 
 ### [ ] T16 · Boss kit and the first boss
 - **Branch** `t16-boss-kit`
-- **Model** Fable 5.2 · **Effort** Xhigh
+- **Model** Opus 5.5 · **Effort** Xhigh
 - **Goal** The multi-phase boss framework and a first boss that is the dramatic peak of the slice.
 - **Scope**
   - Boss framework: 3–4 phases as data (text type per phase, attack patterns, weak points), cinematic transitions (hit-stop, push-in, palette shift, music section change), health as an erased-to-restored bar
@@ -224,7 +224,7 @@ Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Fable 5.2 
 
 ### [ ] T17 · Scene: The Gematria Forge
 - **Branch** `t17-forge`
-- **Model** Fable 5.2 · **Effort** High
+- **Model** Sonnet 5.5 · **Effort** High
 - **Goal** Build the "The Gematria Forge" scene as a distinct, beautiful, exciting 3D level whose mechanic is: typing numbers (and letter values) keeps the furnace temperature in the safe band while the smith forges letters
 - **Scope**
   - New folder src/scenes/forge/ implementing GameScene
@@ -235,7 +235,7 @@ Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Fable 5.2 
 
 ### [ ] T18 · Scene: The Night Shuk
 - **Branch** `t18-shuk`
-- **Model** Fable 5.2 · **Effort** High
+- **Model** Sonnet 5.5 · **Effort** High
 - **Goal** Build the "The Night Shuk" scene as a distinct, beautiful, exciting 3D level whose mechanic is: punctuation is currency: fast-talking merchants throw prices and haggles full of symbols, and typing them wins the trade
 - **Scope**
   - New folder src/scenes/shuk/ implementing GameScene
@@ -246,7 +246,7 @@ Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Fable 5.2 
 
 ### [ ] T19 · Scene: The Jaffa Line
 - **Branch** `t19-rail`
-- **Model** Fable 5.2 · **Effort** High
+- **Model** Sonnet 5.5 · **Effort** High
 - **Goal** Build the "The Jaffa Line" scene as a distinct, beautiful, exciting 3D level whose mechanic is: a rail race against Naftali where typing sustains boost and combo streaks carry the train through bends
 - **Scope**
   - New folder src/scenes/rail/ implementing GameScene
@@ -258,7 +258,7 @@ Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Fable 5.2 
 
 ### [ ] T20 · Scene: The Sunken Geniza
 - **Branch** `t20-geniza`
-- **Model** Fable 5.2 · **Effort** High
+- **Model** Sonnet 5.5 · **Effort** High
 - **Goal** Build the "The Sunken Geniza" scene as a distinct, beautiful, exciting 3D level whose mechanic is: typing in rhythm with the tide: steady pace opens currents and lifts pages, bursts stir silt; rewards consistency
 - **Scope**
   - New folder src/scenes/geniza/ implementing GameScene
@@ -269,7 +269,7 @@ Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Fable 5.2 
 
 ### [ ] T21 · Scene: Wings over Hermon
 - **Branch** `t21-hermon`
-- **Model** Fable 5.2 · **Effort** High
+- **Model** Sonnet 5.5 · **Effort** High
 - **Goal** Build the "Wings over Hermon" scene as a distinct, beautiful, exciting 3D level whose mechanic is: a storm flight in cockpit view where words fall like hail and must be finished before they land; lightning reveals the next word
 - **Scope**
   - New folder src/scenes/hermon/ implementing GameScene
@@ -280,7 +280,7 @@ Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Fable 5.2 
 
 ### [ ] T22 · Scene: The Star Station
 - **Branch** `t22-station`
-- **Model** Fable 5.2 · **Effort** High
+- **Model** Sonnet 5.5 · **Effort** High
 - **Goal** Build the "The Star Station" scene as a distinct, beautiful, exciting 3D level whose mechanic is: zero gravity: sentences fire thrusters to drift between modules and turrets to clear debris
 - **Scope**
   - New folder src/scenes/station/ implementing GameScene
@@ -291,7 +291,7 @@ Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Fable 5.2 
 
 ### [ ] T23 · Scene: Atbash City
 - **Branch** `t23-atbash`
-- **Model** Fable 5.2 · **Effort** High
+- **Model** Sonnet 5.5 · **Effort** High
 - **Goal** Build the "Atbash City" scene as a distinct, beautiful, exciting 3D level whose mechanic is: timed cipher puzzles (atbash decoding, sequence memory) while patrol drones pass; type the code before the patrol returns
 - **Scope**
   - New folder src/scenes/atbash/ implementing GameScene
@@ -302,7 +302,7 @@ Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Fable 5.2 
 
 ### [ ] T24 · Scene: The Long Midbar
 - **Branch** `t24-midbar`
-- **Model** Fable 5.2 · **Effort** High
+- **Model** Sonnet 5.5 · **Effort** High
 - **Goal** Build the "The Long Midbar" scene as a distinct, beautiful, exciting 3D level whose mechanic is: survival crossing: sentences keep the caravan moving toward the oasis while sandstorms cut visibility and shorten the lookahead
 - **Scope**
   - New folder src/scenes/midbar/ implementing GameScene
@@ -313,7 +313,7 @@ Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Fable 5.2 
 
 ### [ ] T25 · Scene: The Lantern Caves
 - **Branch** `t25-caves`
-- **Model** Fable 5.2 · **Effort** High
+- **Model** Sonnet 5.5 · **Effort** High
 - **Goal** Build the "The Lantern Caves" scene as a distinct, beautiful, exciting 3D level whose mechanic is: tense stealth: accurate typing keeps the lantern lit; shadows creep closer on stumbles and retreat on clean streaks
 - **Scope**
   - New folder src/scenes/caves/ implementing GameScene
@@ -325,7 +325,7 @@ Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Fable 5.2 
 
 ### [ ] T26 · The Silent Arena: remaining bosses
 - **Branch** `t26-arena-bosses`
-- **Model** Fable 5.2 · **Effort** High
+- **Model** Sonnet 5.5 · **Effort** High
 - **Goal** Three more multi-phase bosses in the arena, each testing a different skill.
 - **Scope**
   - Boss of Speed (bursts), Boss of Precision (errors heal it), Boss of Endurance (long passage, shifting tides) using the boss kit
@@ -336,7 +336,7 @@ Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Fable 5.2 
 
 ### [ ] T27 · The Blank Scroll and the Keeper
 - **Branch** `t27-final`
-- **Model** Fable 5.2 · **Effort** Xhigh
+- **Model** Opus 5.5 · **Effort** Xhigh
 - **Goal** The final sequence combining every mechanic, the Keeper fight, and the ending.
 - **Scope**
   - A run through short sections reusing each region's mechanic on white parchment that inks in as you go
@@ -348,7 +348,7 @@ Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Fable 5.2 
 
 ### [ ] T28 · Scene: The Ladder (endless)
 - **Branch** `t28-ladder`
-- **Model** Fable 5.2 · **Effort** Medium
+- **Model** Sonnet 5.5 · **Effort** Medium
 - **Goal** Build the "The Ladder (endless)" scene as a distinct, beautiful, exciting 3D level whose mechanic is: an endless climb where each floor is a short random challenge drawn from all mechanics, with modifiers and a high-score table
 - **Scope**
   - New folder src/scenes/ladder/ implementing GameScene
@@ -410,7 +410,7 @@ Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Fable 5.2 
 
 ### [ ] T33 · Progression, abilities, shop and cosmetics
 - **Branch** `t33-progression`
-- **Model** Fable 5.2 · **Effort** Medium
+- **Model** Sonnet 5.5 · **Effort** Medium
 - **Goal** A light, readable progression that makes the player want one more run.
 - **Scope**
   - XP and levels; glyphs and ink; small skill tree; abilities (Echo, Steady Hand, Second Wind and 3 more) wired into the combat kit
@@ -424,7 +424,7 @@ Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Fable 5.2 
 
 ### [ ] T34 · Art, lighting, VFX and music pass
 - **Branch** `t34-polish-pass`
-- **Model** Fable 5.2 · **Effort** Xhigh
+- **Model** Opus 5.5 · **Effort** Xhigh
 - **Goal** Raise every scene to the same top standard.
 - **Scope**
   - Play every scene; fix weak composition, lighting, readability and pacing using the playtest checklist in GAME_DESIGN
