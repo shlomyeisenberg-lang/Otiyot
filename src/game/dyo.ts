@@ -52,6 +52,8 @@ export class Dyo {
   private landSquash = 0;
   private blinkIn = 2.2;
   private yawTarget = 0;
+  private landFaceX = NaN;
+  private landFaceZ = NaN;
 
   constructor(kit: MaterialKit, c: DyoColors) {
     const ink: MeshLambertMaterial = this.tracker.track(
@@ -100,8 +102,18 @@ export class Dyo {
     this.root.add(this.body);
   }
 
-  /** Jumps to a point in a little arc. */
-  hop(x: number, y: number, z: number, height = 0.6, seconds = 0.5): void {
+  /** Jumps to a point in a little arc, then (optionally) turns to face another point. */
+  hop(
+    x: number,
+    y: number,
+    z: number,
+    height = 0.6,
+    seconds = 0.5,
+    faceX = NaN,
+    faceZ = NaN,
+  ): void {
+    this.landFaceX = faceX;
+    this.landFaceZ = faceZ;
     const p = this.root.position;
     this.from.x = p.x;
     this.from.y = p.y;
@@ -143,6 +155,7 @@ export class Dyo {
       if (k >= 1) {
         this.hopT = -1;
         this.landSquash = 1;
+        if (!Number.isNaN(this.landFaceX)) this.face(this.landFaceX, this.landFaceZ);
       }
     } else if (this.cheers > 0) {
       this.cheerT += dt * 3.2;

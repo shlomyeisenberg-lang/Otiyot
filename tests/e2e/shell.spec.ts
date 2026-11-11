@@ -5,7 +5,7 @@ const SAVE = {
   profiles: [
     {
       id: 'a',
-      name: 'דבורה',
+      name: 'דוד',
       settings: { uiLanguage: 'he', theme: 'light' },
       track: 1,
       layout: 'he',
@@ -39,12 +39,18 @@ test('first run: a new player picks a name, a keyboard and a track', async ({ pa
   const errors = watchErrors(page);
   await page.goto('/');
 
-  // Step 1: Hebrew by default, right to left. Switch to English from the top bar.
+  // The title comes first: Hebrew by default, right to left. Switch to English from the top bar.
   await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
   await page.locator('[data-action="language"]').click();
   await expect(page.locator('html')).toHaveAttribute('dir', 'ltr');
+  // Any key brings the choices; a brand-new player can only begin (or open the settings).
+  await page.keyboard.press('Shift');
+  await expect(page.getByRole('menuitem', { name: /Begin the story/ })).toBeVisible();
+  await page.keyboard.press('Enter');
+
+  // Step 1: the name.
   await expect(page.getByRole('heading', { name: 'What shall we call you?' })).toBeVisible();
-  await page.getByLabel('Your name').fill('Miriam');
+  await page.getByLabel('Your name').fill('Moshe');
   await page.keyboard.press('Enter');
 
   // Step 2: keyboard, picked by typing its gold letter.
@@ -65,8 +71,13 @@ test('first run: a new player picks a name, a keyboard and a track', async ({ pa
   await page.getByRole('radio', { name: /Words from the start/ }).click();
   await page.locator('[data-action="next"]').click();
 
+  // The story opens; Esc skips it and hands over to the main menu.
+  await expect(page.getByTestId('intro')).toBeVisible();
+  await page.waitForFunction(() => window.__otiyotIntro?.ready === true);
+  await page.keyboard.press('Escape');
+
   // Main menu greets the new player and shows the choices.
-  await expect(page.getByText(/Shalom, .Miriam./)).toBeVisible();
+  await expect(page.getByText(/Shalom, .Moshe./)).toBeVisible();
   await expect(page.getByRole('menuitem', { name: /Lesson track/ })).toContainText(
     'Words from the start',
   );
@@ -75,14 +86,14 @@ test('first run: a new player picks a name, a keyboard and a track', async ({ pa
 
   // It is saved: a reload goes straight to the menu with the same player.
   await page.reload();
-  await expect(page.getByText(/Shalom, .Miriam./)).toBeVisible();
+  await expect(page.getByText(/Shalom, .Moshe./)).toBeVisible();
   expect(errors).toEqual([]);
 });
 
 test('menus answer to typed letters, arrows, Enter and Esc in Hebrew', async ({ page }) => {
   const errors = watchErrors(page);
   await seed(page);
-  await page.goto('/');
+  await page.goto('/#/menu');
   await expect(page.getByRole('heading', { name: 'אותיות' })).toBeVisible();
   await expectNoSidewaysScroll(page);
 

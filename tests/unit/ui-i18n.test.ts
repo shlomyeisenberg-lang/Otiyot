@@ -54,7 +54,7 @@ describe('i18n', () => {
   });
 
   it('finds the direction of mixed text from its first strong character', () => {
-    expect(textDir('דבורה')).toBe('rtl');
+    expect(textDir('דוד')).toBe('rtl');
     expect(textDir('Eli')).toBe('ltr');
     expect(textDir('123 אבג abc')).toBe('rtl');
     expect(textDir('42 abc אבג')).toBe('ltr');

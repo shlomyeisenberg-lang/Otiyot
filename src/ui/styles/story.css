@@ -57,6 +57,12 @@
 .titlescreen[data-flat='true'] .titlescreen__mark .title__mark {
   animation: title-rise var(--t-cinematic) var(--ease) both;
 }
+@media (max-width: 480px) {
+  .titlescreen__panel .menu__hint,
+  .titlescreen__panel .title__tagline {
+    display: none;
+  }
+}
 @media (max-height: 560px) {
   .titlescreen__panel {
     padding-block: var(--sp-2);
@@ -101,7 +107,7 @@
   position: absolute;
   inset-inline: 0;
   block-size: 9vh;
-  background: var(--shade);
+  background: var(--ink);
   pointer-events: none;
   z-index: 1;
   transition: transform var(--t-cinematic) var(--ease);
@@ -113,6 +119,9 @@
 .cutscene__bar--bottom {
   inset-block-end: 0;
   transform: translateY(100%);
+}
+[data-theme='dark'] .cutscene__bar {
+  background: var(--bg);
 }
 .cutscene[data-playing='true'] .cutscene__bar {
   transform: none;
@@ -160,6 +169,12 @@
   place-items: center;
   pointer-events: none;
   z-index: 2;
+  background: radial-gradient(
+    closest-side,
+    color-mix(in srgb, var(--shade) 55%, transparent),
+    transparent
+  );
+  animation: title-breathe var(--t-cinematic) var(--ease) both;
 }
 .cutscene__card-title {
   font-family: var(--font-display);

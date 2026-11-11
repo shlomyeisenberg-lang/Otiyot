@@ -217,7 +217,7 @@ export function introScreen(ctx: AppContext): Screen {
       return false;
     },
     onEscape() {
-      if (probe.ready) finish(true);
+      finish(true);
       return true;
     },
     focus() {

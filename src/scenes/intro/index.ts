@@ -76,10 +76,10 @@ export const SHOTS: Readonly<Record<string, Shot>> = {
   },
   'two-shot': { from: [4.6, 1.9, 6.4], to: [4.1, 1.8, 5.9], look: [0.3, 1.45, 2.4] },
   'ezra-close': { from: [2.2, 1.85, 4.4], to: [1.9, 1.8, 4.1], look: [-0.8, 1.6, 1.9] },
-  quill: { from: [0.5, 1.6, 4.9], to: [0.25, 1.45, 4.4], look: [0.35, 1.3, 2.5] },
+  quill: { from: [1.5, 1.6, 5.6], to: [1.2, 1.5, 5.2], look: [0.3, 1.35, 2.5] },
   apprentice: { from: [-2.1, 1.85, 0.7], to: [-1.8, 1.8, 1.0], look: [1.5, 1.5, 3.2] },
   bench: { from: [4.7, 1.25, 3.3], to: [4.3, 1.1, 2.9], look: [3.0, 0.8, 1.0] },
-  dyo: { from: [3.7, 0.95, 2.7], to: [3.45, 0.88, 2.45], look: [2.65, 0.85, 1.05] },
+  dyo: { from: [4.3, 1.3, 3.7], to: [4.0, 1.2, 3.35], look: [2.6, 0.8, 1.15] },
   'dyo-apprentice': { from: [4.0, 1.3, 5.4], to: [3.6, 1.35, 5.1], look: [1.9, 0.9, 3.0] },
   'sign-wide': { from: [3.5, 1.8, 7.2], to: [2.7, 2.0, 6.7], look: [0, 2.9, 0.3] },
   'crane-up': { from: [2, 2.4, 8], to: [7, 17, 27], look: [0, 2.6, 0], lookTo: [0, 0.5, -6] },
@@ -87,8 +87,8 @@ export const SHOTS: Readonly<Record<string, Shot>> = {
 
 const SIGN_Y = 3.32;
 const SIGN_Z = 0.36;
-const LETTER = 0.5;
-const ADVANCE = 0.42;
+const LETTER = 0.64;
+const ADVANCE = 0.41;
 const EZRA_IN = new Vector3(0, 0, -1.2);
 const EZRA_SPOT = new Vector3(-0.8, 0, 1.9);
 const APPRENTICE_SPOT = new Vector3(1.5, 0, 3.2);
@@ -407,12 +407,14 @@ export class IntroScene implements GameScene {
     }
   }
 
-  /** Jumps to the end state (used when the intro is skipped, before handing over). */
+  /** Every letter that is not written back yet is forgotten. */
   settle(): void {
     for (const l of this.letters) l.life = l.back ? 1 : 0;
   }
 
   update(dt: number): void {
+    // The cutscene's clock runs with the world's, so cues and lines never drift apart.
+    this.player?.update(dt);
     this.time += dt;
     this.cueT += dt;
     const vfx = this.ctx.vfx;
@@ -439,7 +441,7 @@ export class IntroScene implements GameScene {
     const doorWant = this.cue === 'ezra-out' || this.doorOpen > 0.5 ? 1 : 0;
     this.doorOpen += (doorWant - this.doorOpen) * Math.min(1, dt * 2.2);
     this.door.rotation.y = this.doorOpen * 1.75;
-    this.spillMat.opacity = this.doorOpen * 0.55;
+    this.spillMat.opacity = this.doorOpen * 0.3;
 
     // The Forgetting: each letter flickers, greys and is gone.
     if (this.cue === 'fading') {
@@ -513,8 +515,8 @@ export class IntroScene implements GameScene {
   }
 
   frame(dt: number): void {
+    void dt;
     const p = this.player;
-    p?.update(dt);
     // The camera: the beat's shot, eased along the beat.
     const s = this.shot;
     if (s && p) {
@@ -567,6 +569,8 @@ export class IntroScene implements GameScene {
 
   private startCue(cue: string): void {
     const { vfx, audio, materials } = this.ctx;
+    // Whatever the fading had not finished is gone by the time anything else happens.
+    if (this.cue === 'fading') this.settle();
     this.cue = cue;
     this.cueT = 0;
     switch (cue) {
@@ -607,13 +611,13 @@ export class IntroScene implements GameScene {
       case 'dyo-pops':
         this.dyo.root.visible = true;
         this.dyoOut = true;
-        this.dyo.hop(2.55, BENCH_TOP, 1.15, 0.7, 0.6);
+        this.dyo.hop(2.55, BENCH_TOP, 1.15, 0.7, 0.6, 4.2, 3.6);
         vfx.burst(this.splash, INKWELL.x, INKWELL.y + 0.3, INKWELL.z, 0, 1, 0, true);
         audio.playAt('space', INKWELL.x, INKWELL.y, INKWELL.z);
         this.appYaw = Math.atan2(2.55 - APPRENTICE_SPOT.x, 1.15 - APPRENTICE_SPOT.z);
         break;
       case 'dyo-hops':
-        this.dyo.hop(2.15, 0, 2.75, 0.8, 0.6);
+        this.dyo.hop(2.15, 0, 2.75, 0.8, 0.6, APPRENTICE_SPOT.x, APPRENTICE_SPOT.z);
         this.appYaw = Math.atan2(2.15 - APPRENTICE_SPOT.x, 2.75 - APPRENTICE_SPOT.z);
         break;
       case 'dyo-looks':

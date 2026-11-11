@@ -36,9 +36,9 @@ export const TITLE_NAME = 'אותיות';
 export const TITLE_LATIN = 'OTIYOT';
 
 const HE_SIZE = 3.1;
-const HE_ADVANCE = 2.5;
+const HE_ADVANCE = 1.9;
 const LA_SIZE = 1.05;
-const LA_ADVANCE = 1.18;
+const LA_ADVANCE = 0.92;
 const LA_Z = 3.1;
 const DROP_FROM = 17;
 const GRAVITY = 42;
@@ -85,7 +85,7 @@ interface Drifter {
 /** A flat-ish sheet that curls up a little at its short ends. */
 function sheetHeight(x: number, z: number): number {
   const curl = smoothstep(SHEET_W * 0.36, SHEET_W * 0.5, Math.abs(x));
-  return 0.02 + Math.sin(x * 0.45 + z * 0.2) * 0.05 + Math.cos(z * 0.6) * 0.03 + curl * curl * 0.9;
+  return 0.02 + Math.sin(x * 0.45 + z * 0.2) * 0.05 + Math.cos(z * 0.6) * 0.03 + curl * curl * 0.4;
 }
 
 export class TitleScene implements GameScene {
@@ -103,10 +103,10 @@ export class TitleScene implements GameScene {
   private readonly drifters: Drifter[] = [];
   private flight!: CatmullRomCurve3;
   private readonly lookFrom = new Vector3(-6, 0.6, 0);
-  private readonly lookTo = new Vector3(0, 1.45, 0);
+  private readonly lookTo = new Vector3(0, -0.9, 3.4);
   private readonly cam = new Vector3();
   private readonly look = new Vector3();
-  private readonly finalCam = new Vector3(0, 6.6, 15.4);
+  private readonly finalCam = new Vector3(0, 7.4, 16.2);
   private time = 0;
   private readyAt = Infinity;
   private flame!: Mesh;
@@ -134,8 +134,8 @@ export class TitleScene implements GameScene {
     ctx.atmosphere.setShadowRange(26);
     ctx.post.setGrade(
       ctx.theme === 'dark'
-        ? { exposure: 1.15, bloom: 1.35, vignette: 0.55, godRays: 0.5, saturation: 1.05 }
-        : { bloom: 1.2, vignette: 0.48, godRays: 0.45 },
+        ? { exposure: 1.2, bloom: 1.4, vignette: 0.52, godRays: 0.4, saturation: 1.0 }
+        : { exposure: 1.2, bloom: 1.3, vignette: 0.45, godRays: 0.35, saturation: 1.0 },
     );
     // The page starts forgotten; each landing letter sweeps color back around itself.
     ctx.materials.restoreAll(0, 0);
@@ -500,7 +500,11 @@ export class TitleScene implements GameScene {
     // Narrow screens (phones) need the camera further back to fit the whole name.
     const aspect = this.ctx.engine.camera.aspect || 1.6;
     const back = Math.min(2.6, Math.max(1, 1.55 / aspect));
-    if (back > 1) this.cam.sub(this.look).multiplyScalar(back).add(this.look);
+    if (back > 1) {
+      this.cam.sub(this.look).multiplyScalar(back).add(this.look);
+      // Tall screens: the choices take the lower half, so the name rises into the upper one.
+      this.look.y -= (back - 1) * 3.2 * k;
+    }
     // After the flight, a slow breathing drift.
     if (u >= 1 && !this.reducedMotion) {
       this.cam.x += Math.sin(this.time * 0.21) * 0.9;

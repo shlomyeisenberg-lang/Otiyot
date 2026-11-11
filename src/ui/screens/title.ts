@@ -85,7 +85,7 @@ export function titleScreen(ctx: AppContext, fresh: boolean): Screen {
     hint: t.t('menu.settingsHint'),
     onChoose: () => ctx.go('settings'),
   });
-  const list = menu(items, { label: t.t('title.menuLabel') });
+  const list = menu(items, { label: t.t('title.menuLabel'), compact: true });
 
   const view = h('div', { class: 'titlescreen__view' });
   const heading = h('h1', { class: 'sr-only', text: t.t('app.name') });
@@ -116,6 +116,8 @@ export function titleScreen(ctx: AppContext, fresh: boolean): Screen {
   let stage: Stage3d | null = null;
   let disposed = false;
   let ready = false;
+  /** A key came before the scene was loaded: finish as soon as it is. */
+  let hurried = shownOnce;
 
   const showMenu = (): void => {
     if (ready || disposed) return;
@@ -131,8 +133,8 @@ export function titleScreen(ctx: AppContext, fresh: boolean): Screen {
   /** Skips the falling letters: everything lands at once and the menu appears. */
   const hurry = (): void => {
     if (ready) return;
+    hurried = true;
     if (scene) scene.finish();
-    else showMenu();
   };
 
   const boot = async (): Promise<void> => {
@@ -146,11 +148,9 @@ export function titleScreen(ctx: AppContext, fresh: boolean): Screen {
       probe.landed = s.landed;
       showMenu();
     };
-    scene = s;
     try {
       stage = await mountScene(ctx, view, s, 5779);
     } catch {
-      scene = null;
       probe.failed = true;
       painted.hidden = false;
       el.dataset.flat = 'true';
@@ -163,7 +163,8 @@ export function titleScreen(ctx: AppContext, fresh: boolean): Screen {
       stage.dispose();
       return;
     }
-    if (shownOnce) s.finish();
+    scene = s;
+    if (hurried) s.finish();
   };
   void boot();
 
