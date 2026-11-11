@@ -1,0 +1,411 @@
+/* The House of the Scribe and the lesson screen (T13). Tokens only: no raw colors, sizes or
+   shadows here. */
+
+/* ---------- Hub ---------- */
+.hub {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: var(--bg);
+}
+.hub__view {
+  position: absolute;
+  inset: 0;
+}
+.hub__loading {
+  position: absolute;
+  inset-block-start: 40%;
+  inset-inline: 0;
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: var(--fs-20);
+  color: var(--ink-soft);
+}
+
+/* Station names float under their door-word banners. */
+.hub__tags {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  direction: ltr;
+}
+.hub__tag {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  translate: -50% var(--sp-6);
+  padding: 0 var(--sp-2);
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--surface) 82%, transparent);
+  color: var(--ink);
+  font-size: var(--fs-12);
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: var(--shadow-1);
+  transition: opacity var(--t-panel) var(--ease);
+  will-change: transform;
+}
+.hub__tag[data-soon='true'] {
+  color: var(--ink-soft);
+  outline: var(--border-w) dashed var(--fade);
+}
+.hub[data-flat='true'] .hub__tags {
+  display: none;
+}
+
+/* What Reb Ezra or Dyo says: top of the screen, out of the way of the stations. */
+.hub__speech {
+  position: absolute;
+  inset-block-start: var(--sp-3);
+  inset-inline-start: var(--sp-4);
+  max-inline-size: min(calc(100% - 2 * var(--sp-4)), 30rem);
+  padding: var(--sp-3);
+  gap: var(--sp-3);
+  z-index: 4;
+  cursor: pointer;
+  background: color-mix(in srgb, var(--surface) 94%, transparent);
+  animation: title-rise var(--t-panel) var(--ease) both;
+}
+
+/* The row of stations at the bottom: click, or type the word. */
+.hub__front {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 0;
+  z-index: 3;
+  display: grid;
+  justify-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-3) var(--sp-4);
+  pointer-events: none;
+  background: linear-gradient(to top, color-mix(in srgb, var(--bg) 70%, transparent), transparent);
+}
+.hub__front > * {
+  pointer-events: auto;
+}
+.hub__typed {
+  min-block-size: 1.4em;
+  margin: 0;
+  font-family: var(--font-typing);
+  font-size: var(--fs-28);
+  letter-spacing: var(--typing-spacing);
+  color: var(--gold);
+  text-shadow: 0 0 var(--sp-2) var(--gold-glow);
+}
+.hub__typed[data-miss='true'] {
+  color: var(--err-fg);
+  animation: hub-shake var(--t-feedback) var(--ease);
+}
+.hub__rail {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--sp-2);
+  max-inline-size: var(--column-wide);
+}
+.hub__door {
+  display: grid;
+  justify-items: center;
+  gap: var(--sp-1);
+  padding: var(--sp-2) var(--sp-3);
+  border: var(--border-w) solid var(--line);
+  border-radius: var(--radius-2);
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  color: var(--ink);
+  font: inherit;
+  cursor: pointer;
+  box-shadow: var(--shadow-1);
+  transition:
+    transform var(--t-feedback) var(--ease),
+    opacity var(--t-feedback) var(--ease),
+    border-color var(--t-feedback) var(--ease);
+}
+.hub__door:hover {
+  border-color: var(--gold);
+  transform: translateY(calc(var(--sp-1) * -0.5));
+}
+.hub__door:focus-visible {
+  outline: var(--focus-w) solid var(--techelet);
+  outline-offset: 2px;
+}
+.hub__door[data-soon='true'] {
+  border-style: dashed;
+  border-color: var(--fade);
+}
+.hub__door[data-match='no'] {
+  opacity: 0.45;
+}
+.hub__door[data-match='yes'] {
+  border-color: var(--gold);
+}
+.hub__door-name {
+  font-size: var(--fs-12);
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+.hub__door-word {
+  font-family: var(--font-typing);
+  font-size: var(--fs-20);
+  letter-spacing: var(--typing-spacing);
+  line-height: 1.1;
+}
+.hub__door-letter[data-state='ok'] {
+  color: var(--gold);
+}
+.hub__door-letter[data-state='next'] {
+  color: var(--techelet);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+.hub__hint {
+  margin: 0;
+  font-size: var(--fs-12);
+  color: var(--ink-soft);
+}
+.hub[data-flat='true'] .hub__front {
+  inset-block: auto 0;
+  background: none;
+}
+@media (max-width: 640px) {
+  .hub__door {
+    padding: var(--sp-1) var(--sp-2);
+  }
+  .hub__door-word {
+    font-size: var(--fs-16);
+  }
+  .hub__hint,
+  .hub__tags {
+    display: none;
+  }
+  .hub__speech .dialogue__portrait {
+    display: none;
+  }
+}
+
+@keyframes hub-shake {
+  25% {
+    transform: translateX(calc(var(--sp-1) * -1));
+  }
+  75% {
+    transform: translateX(var(--sp-1));
+  }
+}
+
+/* ---------- The map (the desk) ---------- */
+.modal--wide .modal__sheet {
+  inline-size: min(100%, var(--column-wide));
+}
+.hub-map {
+  display: grid;
+  gap: var(--sp-3);
+  text-align: start;
+}
+.hub-map__lead {
+  margin: 0;
+  text-align: center;
+  color: var(--ink-soft);
+}
+.hub-map__top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-3);
+}
+.hub-map__next {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-20);
+  color: var(--ink);
+}
+.hub-map__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+  gap: var(--sp-3);
+  max-block-size: 58vh;
+  overflow-y: auto;
+  padding: var(--sp-1);
+}
+.hub-map__region {
+  display: grid;
+  align-content: start;
+  gap: var(--sp-2);
+  padding: var(--sp-3);
+  border: var(--border-w) solid var(--line);
+  border-radius: var(--radius-2);
+  background: var(--surface);
+}
+.hub-map__region[data-state='restored'] {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 var(--border-w) var(--gold-soft);
+}
+.hub-map__region[data-state='locked'] {
+  border-style: dashed;
+  border-color: var(--fade);
+  background: var(--surface-2);
+}
+.hub-map__region[data-state='locked'] .hub-map__name {
+  color: var(--ink-soft);
+}
+.hub-map__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+}
+.hub-map__name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-16);
+  color: var(--ink);
+}
+.hub-map__place,
+.hub-map__note {
+  margin: 0;
+  font-size: var(--fs-14);
+  color: var(--ink-soft);
+}
+.hub-map__levels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1);
+}
+.hub-map__level {
+  padding: 0 var(--sp-2);
+  border-radius: var(--radius-pill);
+  border: var(--border-w) solid var(--line);
+  font-size: var(--fs-12);
+  color: var(--ink);
+}
+.hub-map__level[data-open='false'] {
+  color: var(--ink-soft);
+  border-style: dashed;
+  border-color: var(--fade);
+}
+.hub-map__level[data-suggested='true'] {
+  border-color: var(--gold);
+  background: var(--gold-soft);
+}
+.hub-map__level[data-suggested='true']::before {
+  content: '★ ';
+  color: var(--gold-deep);
+}
+
+/* ---------- Trophy shelf ---------- */
+.hub-trophies {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+  gap: var(--sp-2);
+  margin: var(--sp-3) 0 0;
+  padding: 0;
+  list-style: none;
+  text-align: start;
+}
+.hub-trophy {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-3);
+  border: var(--border-w) dashed var(--fade);
+  border-radius: var(--radius-1);
+  color: var(--ink-soft);
+}
+.hub-trophy[data-restored='true'] {
+  border: var(--border-w) solid var(--gold);
+  color: var(--ink);
+}
+.hub-trophy__none {
+  font-size: var(--fs-12);
+}
+.hub-soon {
+  display: grid;
+  justify-items: center;
+  gap: var(--sp-3);
+}
+
+/* ---------- Lesson ---------- */
+.lesson {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.lesson__head {
+  position: absolute;
+  inset-block-start: calc(var(--sp-8) + var(--sp-6));
+  inset-inline: var(--sp-4);
+  z-index: 3;
+  margin-inline: auto;
+  max-inline-size: var(--column);
+  text-align: center;
+}
+.lesson__kicker {
+  margin: 0;
+  font-size: var(--fs-12);
+  color: var(--ink-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.lesson__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-20);
+  color: var(--ink);
+}
+.lesson__tip {
+  margin: var(--sp-1) 0 0;
+  font-size: var(--fs-14);
+  color: var(--ink-soft);
+}
+.lesson__view {
+  position: absolute;
+  inset: 0;
+}
+.lesson__done {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-4);
+  background: color-mix(in srgb, var(--surface) 94%, transparent);
+  text-align: center;
+  animation: fade-in var(--t-panel) var(--ease);
+}
+.lesson__done > * {
+  max-inline-size: var(--column);
+}
+.lesson__done-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-40);
+  color: var(--ink);
+}
+.lesson__stats {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--sp-3);
+}
+.lesson__new {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  margin: 0;
+  color: var(--ink);
+}
+.lesson__note {
+  margin: 0;
+  color: var(--ink-soft);
+}
+.lesson__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--sp-3);
+}

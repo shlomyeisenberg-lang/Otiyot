@@ -52,7 +52,7 @@ export function titleScreen(ctx: AppContext, fresh: boolean): Screen {
         id: 'continue',
         label: t.t('title.menu'),
         hint: t.t('title.menuHint', { name: p.name }),
-        onChoose: () => ctx.go(HUB),
+        onChoose: () => ctx.go('menu'),
       },
     );
   } else {

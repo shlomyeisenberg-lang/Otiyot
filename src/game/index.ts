@@ -10,3 +10,5 @@ export * from './levels';
 export * from './combat';
 export * from './results';
 export * from './blots';
+export * from './regions';
+export * from './doors';
