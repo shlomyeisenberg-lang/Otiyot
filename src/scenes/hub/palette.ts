@@ -1,12 +1,12 @@
 // The hub's own palette (T13): the House of the Scribe in the Jerusalem hills, through a whole
-// day. Four keyframes (dawn, day, dusk, night) that the scene blends by the hour; warm limestone
+// day. Keyframes (dawn, day, dusk, night) that the scene blends by the hour; warm limestone
 // and cedar inside, olive and terrace greens outside, distant ridges going blue in the haze.
 
 import type { ScenePalette } from '../../engine';
 
 export type Sky = Omit<ScenePalette, 'fade' | 'ink'>;
 
-/** Keyframes by hour of the day (0..24); the scene blends between neighbours. */
+/** Keyframes by hour (0..24), blended between neighbours. Night holds from 21:30 to midnight. */
 export const DAY: readonly { hour: number; sky: Sky; warm: number; stars: number }[] = [
   {
     hour: 0,
@@ -86,6 +86,26 @@ export const DAY: readonly { hour: number; sky: Sky; warm: number; stars: number
       fogBase: -6,
       fogFalloff: 0.09,
       inscatter: 0.8,
+    },
+  },
+  {
+    hour: 21.5,
+    warm: 1,
+    stars: 1,
+    sky: {
+      skyTop: 0x070b22,
+      skyHorizon: 0x2c2c58,
+      sun: 0xaabcff,
+      sunIntensity: 1.25,
+      sunFrom: [-0.5, 0.75, 0.42],
+      fillSky: 0x5a68b8,
+      fillGround: 0x2e2a40,
+      fillIntensity: 1.9,
+      fog: 0x1e2244,
+      fogDensity: 0.0075,
+      fogBase: -6,
+      fogFalloff: 0.07,
+      inscatter: 0.35,
     },
   },
 ];
