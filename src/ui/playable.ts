@@ -6,7 +6,9 @@
 import type { RegionId } from '../game/regions';
 import type { Route } from './app';
 
-export const SCENE_ROUTES: Readonly<Partial<Record<RegionId, Route>>> = {};
+export const SCENE_ROUTES: Readonly<Partial<Record<RegionId, Route>>> = {
+  meadow: 'meadow',
+};
 
 export function playableRegions(): ReadonlySet<RegionId> {
   return new Set(Object.keys(SCENE_ROUTES) as RegionId[]);

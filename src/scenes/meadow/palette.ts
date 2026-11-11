@@ -50,8 +50,8 @@ export const TINT = {
   path: 0xdcc9a0,
   hillFar: 0x7fa08a,
   // Grass blades.
-  bladeRoot: 0x3f7f34,
-  bladeTip: 0xc4e070,
+  bladeRoot: 0x5d9a3c,
+  bladeTip: 0xd2ea84,
   // The home-row garden.
   soil: 0x5a3d28,
   soilWet: 0x3f2a1c,

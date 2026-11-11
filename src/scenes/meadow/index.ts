@@ -50,7 +50,6 @@ import {
   type ColorToken,
   type GameScene,
   type QualityPreset,
-  type RunConfig,
   type SceneContext,
   type Trail,
   type TypedKey,
@@ -94,17 +93,21 @@ const FINGER_TOKEN: Readonly<Record<Finger, ColorToken>> = {
 };
 
 // --- The lay of the land.
-const GARDEN_Z = -2.2;
-const PLOT_RADIUS = 4.7;
+/** The middle of the garden (the green spreads from here), and the centre of the beds' arc. */
+const GARDEN_Z = -5.4;
+const ARC_Z = -1.4;
+const PLOT_RADIUS = 5.3;
 const PLOT_ANGLES = [-50, -37, -24, -11, 11, 24, 37, 50] as const;
-const PLOT_SIZE = 0.5;
+const PLOT_SIZE = 0.58;
 const PLOT_FLOWERS = 6;
+/** How far behind its bed a letter stone stands. */
+const STONE_OUT = 0.95;
 const MEADOW_FLOWERS = 640;
 const GRASS = 3400;
 const TREE_X = -10;
 const TREE_Z = -31;
-const WORD_Y = 3.35;
-const WORD_Z = -4.6;
+const WORD_Y = 2.95;
+const WORD_Z = -7.6;
 const LETTER_SIZE = 1.0;
 const BLOOM_SECONDS = 0.6;
 const MAX_BLOOMING = 128;
@@ -116,21 +119,22 @@ const UP = new Vector3(0, 1, 0);
 
 /** The camera's place on its rail and the point it looks at, per chapter. */
 const VIEW: Readonly<Record<ChapterId | 'finale', { t: number; look: readonly number[] }>> = {
-  hands: { t: 0.04, look: [0.2, 1.75, -3.6] },
-  look: { t: 0.4, look: [-1.2, 2.0, -7] },
-  flow: { t: 0.72, look: [-2.6, 2.3, -10] },
+  hands: { t: 0.02, look: [0, 0.3, -3.6] },
+  look: { t: 0.38, look: [-0.6, 1.9, -9] },
+  flow: { t: 0.7, look: [-2, 2.6, -13] },
   finale: { t: 1, look: [-6, 4.6, -20] },
 };
 
 function terrain(x: number, z: number): number {
   const d = Math.hypot(x, z);
-  let h = Math.sin(x * 0.045 + 1.3) * Math.cos(z * 0.05 - 0.4) * 1.7 + Math.sin(x * 0.11 + z * 0.07) * 0.5;
-  // Level ground for the garden.
-  h *= smoothstep(7, 26, d);
-  // The almond tree's hill.
+  // Rolling ground, and the almond tree's hill.
+  let h =
+    Math.sin(x * 0.045 + 1.3) * Math.cos(z * 0.05 - 0.4) * 1.7 + Math.sin(x * 0.11 + z * 0.07) * 0.5;
   const hx = x - TREE_X;
   const hz = z - TREE_Z;
   h += 5.2 * Math.exp(-(hx * hx + hz * hz) / 360);
+  // Level ground for the garden and the people standing by it.
+  h *= smoothstep(8.5, 27, Math.hypot(x, z - GARDEN_Z + 2.5));
   // The valley's rim: far ridges all around.
   const a = Math.atan2(z, x);
   h += smoothstep(72, 135, d) * (13 + 6 * Math.sin(a * 3 + 0.7) + 3 * Math.sin(a * 7 + 2));
@@ -429,7 +433,7 @@ export class MeadowScene implements GameScene {
         colors: [TINT.butterflyA, TINT.butterflyB, TINT.butterflyC, TINT.butterflyD],
         size: 0.2,
         centerX: 0,
-        centerZ: GARDEN_Z - 3,
+        centerZ: GARDEN_Z - 1,
         roam: [1.2, 6.5],
         height: [0.7, 2.1],
         groundAt: terrain,
@@ -450,8 +454,8 @@ export class MeadowScene implements GameScene {
       height: 0.92,
       seed: 2,
     });
-    this.apprentice.root.position.set(0, 0, 0.9);
-    this.apprentice.root.rotation.y = Math.PI;
+    this.apprentice.root.position.set(-4.7, 0, 0.9);
+    this.apprentice.root.rotation.y = Math.atan2(4.7, -6.3);
     this.ezra = new Character(kit, {
       robe: TINT.ezraRobe,
       hem: TINT.ezraHem,
@@ -464,8 +468,8 @@ export class MeadowScene implements GameScene {
       height: 1.02,
       seed: 6,
     });
-    this.ezra.root.position.set(-4.6, 0, 0.2);
-    this.ezra.root.rotation.y = Math.atan2(4.2, -2.6);
+    this.ezra.root.position.set(5, 0, 0.3);
+    this.ezra.root.rotation.y = Math.atan2(-5, -5.7);
     this.dyo = new Dyo(kit, {
       body: TINT.dyo,
       shine: TINT.dyoShine,
@@ -473,8 +477,8 @@ export class MeadowScene implements GameScene {
       pupil: TINT.ink,
     });
     this.dyo.root.scale.setScalar(0.62);
-    this.dyo.root.position.set(1.5, 0, -0.6);
-    this.dyo.face(0, GARDEN_Z - 3);
+    this.dyo.root.position.set(-3.2, 0, -0.6);
+    this.dyo.face(0, GARDEN_Z);
     root.add(this.apprentice.root, this.ezra.root, this.dyo.root);
     ctx.atmosphere.addBlob(this.apprentice.root, 0.5);
     ctx.atmosphere.addBlob(this.ezra.root, 0.55);
@@ -507,10 +511,10 @@ export class MeadowScene implements GameScene {
     // --- Camera: one slow rail from over the apprentice's shoulder up to the whole valley.
     this.rail = new CatmullRomCurve3(
       [
-        new Vector3(2.5, 3.5, 8.6),
-        new Vector3(4.4, 4.6, 10.4),
-        new Vector3(3.4, 6.2, 13),
-        new Vector3(-1.5, 8.4, 16),
+        new Vector3(0.3, 6.7, 9.4),
+        new Vector3(1.6, 6.9, 11.6),
+        new Vector3(0.6, 7.2, 14),
+        new Vector3(-2, 9, 17),
         new Vector3(-4, 12.5, 21),
       ],
       false,
@@ -593,7 +597,7 @@ export class MeadowScene implements GameScene {
       if (this.inGarden(x, z, 0.75) || (z > 1 && Math.abs(x) < 1.3)) continue;
       p.set(x, terrain(x, z) - 0.02, z);
       q.setFromAxisAngle(UP, r.range(0, Math.PI));
-      const size = r.range(0.34, 0.7) * (1 + d * 0.022);
+      const size = r.range(0.3, 0.6) * (1 + d * 0.009);
       s.set(size * r.range(0.9, 1.5), size, size * r.range(0.9, 1.5));
       c.setHSL(0.24 + r.signed() * 0.035, 0.25, r.range(0.82, 1));
       grass.add(p, q, s, c.getHex());
@@ -629,7 +633,7 @@ export class MeadowScene implements GameScene {
       const plot = this.setup.plots[i];
       const a = ((PLOT_ANGLES[i] as number) * Math.PI) / 180;
       const x = Math.sin(a) * PLOT_RADIUS;
-      const z = GARDEN_Z - Math.cos(a) * PLOT_RADIUS + PLOT_RADIUS * 0.72;
+      const z = ARC_Z - Math.cos(a) * PLOT_RADIUS;
       this.plotX[i] = x;
       this.plotZ[i] = z;
       const color = this.ctx.color(FINGER_TOKEN[plot?.finger ?? 'li']);
@@ -643,19 +647,19 @@ export class MeadowScene implements GameScene {
       soil.add(p.set(x, 0.035, z), q, s, TINT.soil);
       // A small standing stone behind each bed carries its letter.
       q.setFromAxisAngle(UP, -a);
-      const bx = x + Math.sin(a) * 0.82;
-      const bz = z - Math.cos(a) * 0.82;
-      stones.add(p.set(bx, 0.3, bz), q, s.set(1, 1, 1), i % 2 ? TINT.stone : TINT.stoneDark);
+      const bx = x + Math.sin(a) * STONE_OUT;
+      const bz = z - Math.cos(a) * STONE_OUT;
+      stones.add(p.set(bx, 0.35, bz), q, s.set(1, 1, 1), i % 2 ? TINT.stone : TINT.stoneDark);
       if (plot?.bump) {
         q.identity();
-        studs.add(p.set(bx, 0.66, bz), q, s.setScalar(1), 0xffffff);
+        studs.add(p.set(bx, 0.76, bz), q, s.setScalar(1), 0xffffff);
       }
     }
     const rimGeo = tracker.track(new TorusGeometry(PLOT_SIZE, 0.085, 5, 14).rotateX(Math.PI / 2));
     const rimMesh = rims.build(rimGeo, tracker.track(kit.surface({ restore: false, lift: 0.3 })));
     const soilGeo = tracker.track(new CylinderGeometry(PLOT_SIZE, PLOT_SIZE, 0.07, 14));
     const soilMesh = soil.build(soilGeo, tracker.track(kit.surface({ restore: false })));
-    const stoneGeo = tracker.track(new CylinderGeometry(0.26, 0.32, 0.6, 6).scale(1, 1, 0.55));
+    const stoneGeo = tracker.track(new CylinderGeometry(0.3, 0.36, 0.7, 6).scale(1, 1, 0.55));
     const stoneMesh = stones.build(stoneGeo, tracker.track(kit.surface({ restore: false, lift: 0.1 })));
     const studGeo = tracker.track(new SphereGeometry(0.07, 8, 6));
     const studMesh = studs.build(studGeo, tracker.track(kit.ink(this.gold, 2.4)));
@@ -724,7 +728,7 @@ export class MeadowScene implements GameScene {
     let i = 0;
     for (let b = 0; b < 8; b++) {
       for (let k = 0; k < PLOT_FLOWERS; k++) {
-        const ring = k === 0 ? 0 : 0.29;
+        const ring = k === 0 ? 0 : 0.34;
         const a = (k / (PLOT_FLOWERS - 1)) * Math.PI * 2 + b;
         place(
           i++,
@@ -941,7 +945,7 @@ export class MeadowScene implements GameScene {
 
   // ---- a run --------------------------------------------------------------------------------
 
-  start(_run: RunConfig): void {
+  start(): void {
     this.reset();
   }
 
@@ -1210,7 +1214,7 @@ export class MeadowScene implements GameScene {
     // Pollen in the light where the color is back; petals from the almond tree once it blooms.
     if (this.wordsDone > 0 && (this.moteTimer -= dt) <= 0) {
       this.moteTimer = this.finished ? 0.08 : 0.3;
-      vfx.burst(this.motes, 0, 2.6, GARDEN_Z - 3);
+      vfx.burst(this.motes, 0, 2.6, GARDEN_Z - 1);
     }
     if (this.treeReached && (this.petalTimer -= dt) <= 0) {
       this.petalTimer = this.finished ? 0.16 : 0.7;
@@ -1260,9 +1264,9 @@ export class MeadowScene implements GameScene {
       this.plotGlow[i] = glow;
       this.plotFlash[i] = flash;
       const a = ((PLOT_ANGLES[i] as number) * Math.PI) / 180;
-      const x = (this.plotX[i] as number) + Math.sin(a) * 0.82;
-      const z = (this.plotZ[i] as number) - Math.cos(a) * 0.82;
-      const y = 1.02 + glow * (0.16 + 0.05 * Math.sin(this.time * 6)) + flash * 0.12;
+      const x = (this.plotX[i] as number) + Math.sin(a) * STONE_OUT;
+      const z = (this.plotZ[i] as number) - Math.cos(a) * STONE_OUT;
+      const y = 1.2 + glow * (0.18 + 0.05 * Math.sin(this.time * 6)) + flash * 0.12;
       this.col.setHex(this.paper).lerp(this.col2.setHex(this.techelet), glow);
       this.col.lerp(this.col2.setHex(this.gold), flash);
       this.letters.set(
@@ -1271,7 +1275,7 @@ export class MeadowScene implements GameScene {
         x,
         y,
         z,
-        0.6 + glow * 0.16 + flash * 0.1,
+        0.88 + glow * 0.2 + flash * 0.12,
         this.col.getHex(),
         1 + glow * 1.5 + flash * 1.8,
       );

@@ -1,0 +1,225 @@
+/* The Home Row Meadow screen (T14): the 3D view with the HUD over it, a chapter chip at the top,
+   what Reb Ezra says under it, the level and difficulty panel, and the results card. Tokens only. */
+
+.meadow {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--bg);
+}
+.meadow__view {
+  position: relative;
+  flex: 1;
+  min-block-size: 0;
+}
+.meadow__loading {
+  position: absolute;
+  inset-block-start: 40%;
+  inset-inline: 0;
+  z-index: 5;
+  margin: 0;
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: var(--fs-20);
+  color: var(--ink-soft);
+}
+.meadow__loading[hidden] {
+  display: none;
+}
+
+/* ---- the chapter chip, the level pill and the skip button ------------------------------------ */
+
+.meadow__top {
+  position: absolute;
+  inset-block-start: var(--sp-3);
+  inset-inline-end: var(--sp-4);
+  z-index: 4;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row-reverse;
+  align-items: center;
+  gap: var(--sp-2);
+  max-inline-size: calc(50% - 5rem);
+}
+.meadow__chip {
+  position: relative;
+  display: grid;
+  gap: 0 var(--sp-2);
+  grid-template-columns: auto auto;
+  align-items: baseline;
+  padding: var(--sp-2) var(--sp-3) calc(var(--sp-2) + var(--sp-1));
+  overflow: hidden;
+  border: var(--border-w) solid var(--line);
+  border-radius: var(--radius-2);
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  box-shadow: var(--shadow-1);
+}
+.meadow__chapter {
+  font-family: var(--font-display);
+  font-size: var(--fs-20);
+  color: var(--gold-deep);
+}
+.meadow__count {
+  font-size: var(--fs-14);
+  color: var(--ink-soft);
+  font-variant-numeric: tabular-nums;
+}
+.meadow__bar {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 0;
+  block-size: var(--sp-1);
+  background: var(--fade);
+}
+.meadow__bar > span {
+  display: block;
+  block-size: 100%;
+  inline-size: 0;
+  background: var(--gold);
+  transition: inline-size var(--t-panel) var(--ease);
+}
+.meadow__top .btn {
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+}
+.meadow__skip[hidden] {
+  display: none;
+}
+
+/* ---- what Reb Ezra or Dyo says ---------------------------------------------------------------- */
+
+.meadow__speech {
+  position: absolute;
+  inset-block-start: calc(var(--sp-3) + 4.25rem);
+  inset-inline-end: var(--sp-4);
+  max-inline-size: min(calc(100% - 2 * var(--sp-4)), 25rem);
+  padding: var(--sp-3);
+  gap: var(--sp-3);
+  z-index: 4;
+  cursor: pointer;
+  background: color-mix(in srgb, var(--surface) 94%, transparent);
+  animation: title-rise var(--t-panel) var(--ease) both;
+}
+.meadow__speech[hidden] {
+  display: none;
+}
+.meadow__speech .dialogue__next {
+  display: none;
+}
+
+/* ---- level and difficulty ---------------------------------------------------------------------- */
+
+.meadow__options {
+  position: absolute;
+  inset-block-start: calc(var(--sp-3) + 3.5rem);
+  inset-inline-end: var(--sp-4);
+  z-index: 6;
+  display: grid;
+  gap: var(--sp-3);
+  inline-size: min(30rem, calc(100% - 2 * var(--sp-4)));
+  max-block-size: calc(100% - 5rem);
+  overflow-y: auto;
+  padding: var(--sp-4);
+  border: var(--border-w) solid var(--line);
+  border-radius: var(--radius-3);
+  background: var(--surface);
+  box-shadow: var(--shadow-3);
+}
+.meadow__options[hidden] {
+  display: none;
+}
+.meadow__options-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-20);
+  color: var(--gold-deep);
+}
+.meadow__chooser {
+  display: grid;
+  gap: var(--sp-2);
+  padding-block-start: var(--sp-3);
+  border-block-start: var(--border-w) solid var(--line);
+}
+.meadow__options .meadow__chooser {
+  padding-block-start: 0;
+  border-block-start: 0;
+}
+.meadow__group {
+  display: grid;
+  gap: var(--sp-1);
+}
+.meadow__label {
+  margin: 0;
+  font-family: var(--font-ui);
+  font-size: var(--fs-12);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.meadow__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1);
+}
+.meadow__row .btn[aria-pressed='true'] {
+  border-color: var(--gold);
+  background: var(--gold-soft);
+  color: var(--ink);
+}
+.meadow__row .btn[data-suggested='true']::after {
+  content: '★';
+  margin-inline-start: var(--sp-1);
+  color: var(--gold-deep);
+}
+.meadow__results {
+  margin-inline: var(--sp-4) auto;
+  inline-size: min(27rem, calc(100% - 2 * var(--sp-4)));
+  gap: var(--sp-2);
+  padding: var(--sp-3) var(--sp-4);
+}
+.meadow__results .range__results-stats,
+.meadow__results .range__results-earned {
+  grid-template-columns: repeat(auto-fit, minmax(5.5rem, 1fr));
+}
+.meadow__results .stat__value {
+  font-size: var(--fs-20);
+}
+.meadow__results .meadow__group {
+  grid-template-columns: 4.5rem 1fr;
+  align-items: center;
+}
+.meadow__actions {
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+}
+
+@media (max-width: 640px) {
+  .meadow__top {
+    inset-inline-end: var(--sp-2);
+    max-inline-size: calc(100% - 2 * var(--sp-2));
+  }
+  .meadow__chip {
+    padding: var(--sp-1) var(--sp-2) var(--sp-2);
+  }
+  .meadow__chapter {
+    font-size: var(--fs-16);
+  }
+  .meadow__speech {
+    inset-inline: var(--sp-2);
+    inset-block-start: calc(var(--sp-3) + 6.5rem);
+    padding: var(--sp-2);
+  }
+  .meadow__speech .dialogue__portrait {
+    display: none;
+  }
+  .meadow__results {
+    margin-inline: auto;
+    inline-size: calc(100% - 2 * var(--sp-2));
+  }
+  .meadow__options {
+    inset-inline-end: var(--sp-2);
+    inline-size: calc(100% - 2 * var(--sp-2));
+  }
+}
