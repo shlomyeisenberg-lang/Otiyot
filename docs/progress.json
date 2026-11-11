@@ -20,6 +20,11 @@
       "date": "2026-11-10",
       "what": "Three builders: Opus (T13, T14, T16, T34), Fable (T27, T35 story-heavy only), Sonnet (everything else). Builders pass the baton to the owner of the next task.",
       "where": "docs/auto-run/TASK-PROMPTS.md"
+    },
+    {
+      "date": "2026-11-10",
+      "what": "Owners changed by the owner: Fable builds T14 (Meadow), T16 (boss kit), T27 (final fight) and T34 (polish pass); Opus finishes T13 (hub, already running); Sonnet builds everything else including T35.",
+      "where": "docs/auto-run/TASK-PROMPTS.md, docs/ROADMAP.md"
     }
   ],
   "tasks": {

@@ -2,7 +2,7 @@
 
 One task = one chat = one branch = one pull request, merged into main by that chat.
 
-Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Opus 5.5 builds the few tasks that need real taste and skill; Fable 5.2 builds only the story and cutscenes task (T35); Sonnet 5.5 builds everything else.
+Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Fable 5.2 builds the tasks that need the most taste and skill (T14 Meadow, T16 boss kit, T27 final fight, T34 polish pass); Opus 5.5 finishes T13 (the hub, already running); Sonnet 5.5 builds everything else.
 
 ## Phase 0 · Foundation (logic, no visuals)
 
@@ -187,7 +187,7 @@ Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Opus 5.5 b
 
 ### [ ] T14 · Scene: Home Row Meadow
 - **Branch** `t14-meadow`
-- **Model** Opus 5.5 · **Effort** High
+- **Model** Fable 5.2 · **Effort** High
 - **Goal** Build the "Home Row Meadow" scene as a distinct, beautiful, exciting 3D level whose mechanic is: a gentle guided tutorial where typing home-row letters restores flowers, grass and birdsong; Reb Ezra teaches hand placement through play in the first five minutes; skippable
 - **Scope**
   - New folder src/scenes/meadow/ implementing GameScene
@@ -210,7 +210,7 @@ Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Opus 5.5 b
 
 ### [ ] T16 · Boss kit and the first boss
 - **Branch** `t16-boss-kit`
-- **Model** Opus 5.5 · **Effort** Xhigh
+- **Model** Fable 5.2 · **Effort** Xhigh
 - **Goal** The multi-phase boss framework and a first boss that is the dramatic peak of the slice.
 - **Scope**
   - Boss framework: 3–4 phases as data (text type per phase, attack patterns, weak points), cinematic transitions (hit-stop, push-in, palette shift, music section change), health as an erased-to-restored bar
@@ -336,7 +336,7 @@ Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Opus 5.5 b
 
 ### [ ] T27 · The Blank Scroll and the Keeper
 - **Branch** `t27-final`
-- **Model** Opus 5.5 · **Effort** Xhigh
+- **Model** Fable 5.2 · **Effort** Xhigh
 - **Goal** The final sequence combining every mechanic, the Keeper fight, and the ending.
 - **Scope**
   - A run through short sections reusing each region's mechanic on white parchment that inks in as you go
@@ -424,7 +424,7 @@ Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Opus 5.5 b
 
 ### [ ] T34 · Art, lighting, VFX and music pass
 - **Branch** `t34-polish-pass`
-- **Model** Opus 5.5 · **Effort** Xhigh
+- **Model** Fable 5.2 · **Effort** Xhigh
 - **Goal** Raise every scene to the same top standard.
 - **Scope**
   - Play every scene; fix weak composition, lighting, readability and pacing using the playtest checklist in GAME_DESIGN
@@ -436,7 +436,7 @@ Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Opus 5.5 b
 
 ### [ ] T35 · Full story: cutscenes and voice
 - **Branch** `t35-story-full`
-- **Model** Fable 5.2 · **Effort** High
+- **Model** Sonnet 5.5 · **Effort** High
 - **Goal** The complete three-act arc told through cutscenes, banter and the journal.
 - **Scope**
   - Cutscenes at each region's start and restoration, Naftali's arc, the Keeper's scorched pages, Dyo's running jokes

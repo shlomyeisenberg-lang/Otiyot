@@ -53,6 +53,7 @@ Work done before or outside the numbered tasks.
 - **2026-11-10** — Owner rules added: no women or sexual content anywhere; text uses only learned letters; scene levels follow learning progress. Content filter (src/learn/content.ts) applied to word packs, sentences and lesson texts. (docs/ARCHITECTURE.md section 8, docs/GAME_DESIGN.md, CLAUDE.md, src/learn/content.ts)
 - **2026-11-10** — Cost change: Fable now builds only T13 (hub), T14 (Meadow, sets the pattern for all scenes), T16 (boss kit), T27 (final) and T34 (polish pass); everything else is Sonnet. CI trimmed (skip docs-only changes, cancel superseded runs). Builders chain into the next task automatically. (docs/auto-run/TASK-PROMPTS.md, .github/workflows/ci.yml)
 - **2026-11-10** — Three builders: Opus (T13, T14, T16, T34), Fable (T27, T35 story-heavy only), Sonnet (everything else). Builders pass the baton to the owner of the next task. (docs/auto-run/TASK-PROMPTS.md)
+- **2026-11-10** — Owners changed by the owner: Fable builds T14 (Meadow), T16 (boss kit), T27 (final fight) and T34 (polish pass); Opus finishes T13 (hub, already running); Sonnet builds everything else including T35. (docs/auto-run/TASK-PROMPTS.md, docs/ROADMAP.md)
 
 ## Task overview
 

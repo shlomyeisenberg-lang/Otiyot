@@ -4,7 +4,7 @@ Three scheduled tasks build this list while nobody watches: **"Otiyot Opus build
 
 **Rules for every task (from the owner):** (1) No women and nothing sexy anywhere: every human character is male, nothing suggestive in visuals, text, jokes or word lists. (2) Text to type uses only letters the player has already learned in their lesson track, and every scene has levels (Easy / Standard / Hard) built from that learned set and unlocked by course progress. Details: CLAUDE.md, ARCHITECTURE section 8, GAME_DESIGN 'Levels follow your learning'.
 
-Owner rule: Opus builds everything that needs real taste and skill (hub, the Meadow that sets the pattern for all scenes, boss kit, the final Keeper fight, polish pass). Fable builds only the full story and cutscenes (T35). Sonnet builds everything else: scenes that copy the Meadow's pattern, ports of existing code, saves, tests, packaging.
+Owner rule: Fable builds the tasks that need the most taste and skill: the Home Row Meadow that sets the pattern for all scenes (T14), the boss kit (T16), the final Keeper fight (T27) and the polish pass (T34). Opus finishes T13, the hub, which was already running when owners changed. Sonnet builds everything else: scenes that copy the Meadow's pattern, ports of existing code, saves, tests, packaging, the full story text (T35).
 
 Effort guide: Low = quick and direct · Medium = normal care · High = think the design through before building, test edge cases · Xhigh = plan, build, then play it and critique it yourself and improve at least once before merging.
 
@@ -23,9 +23,9 @@ Effort guide: Low = quick and direct · Medium = normal care · High = think the
 | T11 | Opus | High | `t11-combat-kit` | Combat, combo and difficulty kit |
 | T12 | Opus | High | `t12-story-title` | Story system, title screen and intro |
 | T13 | Opus | High | `t13-hub` | Hub: the House of the Scribe |
-| T14 | Opus | High | `t14-meadow` | Scene: Home Row Meadow |
+| T14 | Fable | High | `t14-meadow` | Scene: Home Row Meadow |
 | T15 | Sonnet | High | `t15-cliffs` | Scene: Cliffs of Ein Gedi |
-| T16 | Opus | Xhigh | `t16-boss-kit` | Boss kit and the first boss |
+| T16 | Fable | Xhigh | `t16-boss-kit` | Boss kit and the first boss |
 | T17 | Sonnet | High | `t17-forge` | Scene: The Gematria Forge |
 | T18 | Sonnet | High | `t18-shuk` | Scene: The Night Shuk |
 | T19 | Sonnet | High | `t19-rail` | Scene: The Jaffa Line |
@@ -36,15 +36,15 @@ Effort guide: Low = quick and direct · Medium = normal care · High = think the
 | T24 | Sonnet | High | `t24-midbar` | Scene: The Long Midbar |
 | T25 | Sonnet | High | `t25-caves` | Scene: The Lantern Caves |
 | T26 | Sonnet | High | `t26-arena-bosses` | The Silent Arena: remaining bosses |
-| T27 | Opus | Xhigh | `t27-final` | The Blank Scroll and the Keeper |
+| T27 | Fable | Xhigh | `t27-final` | The Blank Scroll and the Keeper |
 | T28 | Sonnet | Medium | `t28-ladder` | Scene: The Ladder (endless) |
 | T29 | Sonnet | High | `t29-arcade-classics` | Arcade: host and the 3D classics |
 | T30 | Sonnet | Medium | `t30-arcade-newgen` | Arcade: new-generation and quick games |
 | T31 | Sonnet | Medium | `t31-modes` | Modes: Practice, Time Attack, Survival, Daily |
 | T32 | Sonnet | Medium | `t32-dashboard-journal` | Statistics dashboard and journal |
 | T33 | Sonnet | Medium | `t33-progression` | Progression, abilities, shop and cosmetics |
-| T34 | Opus | Xhigh | `t34-polish-pass` | Art, lighting, VFX and music pass |
-| T35 | Fable | High | `t35-story-full` | Full story: cutscenes and voice |
+| T34 | Fable | Xhigh | `t34-polish-pass` | Art, lighting, VFX and music pass |
+| T35 | Sonnet | High | `t35-story-full` | Full story: cutscenes and voice |
 | T36 | Sonnet | Medium | `t36-settings-a11y` | Settings, accessibility and health |
 | T37 | Sonnet | Medium | `t37-ghosts` | Ghosts and local leaderboards |
 | T38 | Sonnet | High | `t38-perf-tests` | Performance pass and full smoke tests |
@@ -273,7 +273,7 @@ Goal: A living home base that works as the game's menu.
 
 ## T14 · Scene: Home Row Meadow
 
-Owner: **Opus** · Effort: **High** · Branch: `t14-meadow`
+Owner: **Fable** · Effort: **High** · Branch: `t14-meadow`
 
 Done when: The scene is playable start to finish from the hub at 60 fps on medium, feels different from every other scene, and its smoke test passes.
 
@@ -309,7 +309,7 @@ Goal: Build the "Cliffs of Ein Gedi" scene as a distinct, beautiful, exciting 3D
 
 ## T16 · Boss kit and the first boss
 
-Owner: **Opus** · Effort: **Xhigh** · Branch: `t16-boss-kit`
+Owner: **Fable** · Effort: **Xhigh** · Branch: `t16-boss-kit`
 
 Done when: The boss fight is winnable on every difficulty, each phase feels different, and transitions are cinematic. Phase 1 slice is complete: title → hub → two scenes → boss → save/load.
 
@@ -516,7 +516,7 @@ Goal: Three more multi-phase bosses in the arena, each testing a different skill
 
 ## T27 · The Blank Scroll and the Keeper
 
-Owner: **Opus** · Effort: **Xhigh** · Branch: `t27-final`
+Owner: **Fable** · Effort: **Xhigh** · Branch: `t27-final`
 
 Done when: The game can be finished from a fresh profile; the ending lands emotionally; no soft-locks.
 
@@ -637,7 +637,7 @@ Goal: A light, readable progression that makes the player want one more run.
 
 ## T34 · Art, lighting, VFX and music pass
 
-Owner: **Opus** · Effort: **Xhigh** · Branch: `t34-polish-pass`
+Owner: **Fable** · Effort: **Xhigh** · Branch: `t34-polish-pass`
 
 Done when: No scene feels like homework or looks unfinished; checklist recorded per scene in the progress log.
 
@@ -654,7 +654,7 @@ Goal: Raise every scene to the same top standard.
 
 ## T35 · Full story: cutscenes and voice
 
-Owner: **Fable** · Effort: **High** · Branch: `t35-story-full`
+Owner: **Sonnet** · Effort: **High** · Branch: `t35-story-full`
 
 Done when: A full playthrough tells a coherent, moving story in both languages.
 
