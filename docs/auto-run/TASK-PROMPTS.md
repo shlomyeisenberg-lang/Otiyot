@@ -1,10 +1,10 @@
 # Otiyot — task prompts for the scheduled builders
 
-Two scheduled tasks build this list while nobody watches: **"Otiyot Fable builder"** and **"Otiyot Sonnet builder"**. They work strictly in the order below. Each builds only the tasks whose OWNER is its own model, and waits while the earliest unfinished task belongs to the other.
+Three scheduled tasks build this list while nobody watches: **"Otiyot Opus builder"**, **"Otiyot Sonnet builder"** and **"Otiyot Fable builder"**. They work strictly in the order below. Each builds only the tasks whose OWNER is its own model, and passes the baton to the owner of the next task when it finishes.
 
 **Rules for every task (from the owner):** (1) No women and nothing sexy anywhere: every human character is male, nothing suggestive in visuals, text, jokes or word lists. (2) Text to type uses only letters the player has already learned in their lesson track, and every scene has levels (Easy / Standard / Hard) built from that learned set and unlocked by course progress. Details: CLAUDE.md, ARCHITECTURE section 8, GAME_DESIGN 'Levels follow your learning'.
 
-Owner rule: anything that needs taste or skill (visual design, 3D scenes, game feel, story, music, bosses) is Fable's. Mechanical work (setup, ports of existing code, saves, tests, packaging) is Sonnet's.
+Owner rule: Opus builds the few tasks that need real taste and skill (hub, the Meadow that sets the pattern for all scenes, boss kit, polish pass). Fable builds only the story-heavy tasks (the final Keeper fight and the full story and cutscenes). Sonnet builds everything else: scenes that copy the Meadow's pattern, ports of existing code, saves, tests, packaging.
 
 Effort guide: Low = quick and direct · Medium = normal care · High = think the design through before building, test edge cases · Xhigh = plan, build, then play it and critique it yourself and improve at least once before merging.
 
@@ -16,16 +16,16 @@ Effort guide: Low = quick and direct · Medium = normal care · High = think the
 | T04 | Sonnet | Medium | `t04-lesson-tracks` | The two lesson tracks |
 | T05 | Sonnet | Medium | `t05-word-library` | Word and sentence library |
 | T06 | Sonnet | High | `t06-adaptive` | Adaptive engine and spaced repetition |
-| T07 | Fable | High | `t07-design-system` | Design system and UI shell |
-| T08 | Fable | Xhigh | `t08-engine-kit` | 3D engine kit |
-| T09 | Fable | High | `t09-keyboard-hud` | 3D keyboard, finger guide, HUD and typing feedback |
-| T10 | Fable | High | `t10-audio` | Audio engine and first music themes |
-| T11 | Fable | High | `t11-combat-kit` | Combat, combo and difficulty kit |
-| T12 | Fable | High | `t12-story-title` | Story system, title screen and intro |
-| T13 | Fable | High | `t13-hub` | Hub: the House of the Scribe |
-| T14 | Fable | High | `t14-meadow` | Scene: Home Row Meadow |
+| T07 | Opus | High | `t07-design-system` | Design system and UI shell |
+| T08 | Opus | Xhigh | `t08-engine-kit` | 3D engine kit |
+| T09 | Opus | High | `t09-keyboard-hud` | 3D keyboard, finger guide, HUD and typing feedback |
+| T10 | Opus | High | `t10-audio` | Audio engine and first music themes |
+| T11 | Opus | High | `t11-combat-kit` | Combat, combo and difficulty kit |
+| T12 | Opus | High | `t12-story-title` | Story system, title screen and intro |
+| T13 | Opus | High | `t13-hub` | Hub: the House of the Scribe |
+| T14 | Opus | High | `t14-meadow` | Scene: Home Row Meadow |
 | T15 | Sonnet | High | `t15-cliffs` | Scene: Cliffs of Ein Gedi |
-| T16 | Fable | Xhigh | `t16-boss-kit` | Boss kit and the first boss |
+| T16 | Opus | Xhigh | `t16-boss-kit` | Boss kit and the first boss |
 | T17 | Sonnet | High | `t17-forge` | Scene: The Gematria Forge |
 | T18 | Sonnet | High | `t18-shuk` | Scene: The Night Shuk |
 | T19 | Sonnet | High | `t19-rail` | Scene: The Jaffa Line |
@@ -43,8 +43,8 @@ Effort guide: Low = quick and direct · Medium = normal care · High = think the
 | T31 | Sonnet | Medium | `t31-modes` | Modes: Practice, Time Attack, Survival, Daily |
 | T32 | Sonnet | Medium | `t32-dashboard-journal` | Statistics dashboard and journal |
 | T33 | Sonnet | Medium | `t33-progression` | Progression, abilities, shop and cosmetics |
-| T34 | Fable | Xhigh | `t34-polish-pass` | Art, lighting, VFX and music pass |
-| T35 | Sonnet | High | `t35-story-full` | Full story: cutscenes and voice |
+| T34 | Opus | Xhigh | `t34-polish-pass` | Art, lighting, VFX and music pass |
+| T35 | Fable | High | `t35-story-full` | Full story: cutscenes and voice |
 | T36 | Sonnet | Medium | `t36-settings-a11y` | Settings, accessibility and health |
 | T37 | Sonnet | Medium | `t37-ghosts` | Ghosts and local leaderboards |
 | T38 | Sonnet | High | `t38-perf-tests` | Performance pass and full smoke tests |
@@ -154,7 +154,7 @@ Goal: Drills that lean on the player's weak keys while keeping flow, with schedu
 
 ## T07 · Design system and UI shell
 
-Owner: **Fable** · Effort: **High** · Branch: `t07-design-system`
+Owner: **Opus** · Effort: **High** · Branch: `t07-design-system`
 
 Done when: Menus are beautiful and usable in both languages and themes at 1366×768 and 375px; a new profile can be created with a track and layout.
 
@@ -171,7 +171,7 @@ Goal: Turn DESIGN.md into real tokens, fonts and components, with Hebrew RTL and
 
 ## T08 · 3D engine kit
 
-Owner: **Fable** · Effort: **Xhigh** · Branch: `t08-engine-kit`
+Owner: **Opus** · Effort: **Xhigh** · Branch: `t08-engine-kit`
 
 Done when: The test range runs at 60 fps on medium, shows every effect and animation, and leaves zero leaked GPU objects after dispose (test).
 
@@ -188,7 +188,7 @@ Goal: The reusable 3D foundation every scene is built on, tuned for integrated g
 
 ## T09 · 3D keyboard, finger guide, HUD and typing feedback
 
-Owner: **Fable** · Effort: **High** · Branch: `t09-keyboard-hud`
+Owner: **Opus** · Effort: **High** · Branch: `t09-keyboard-hud`
 
 Done when: In the test range a full lesson can be typed in Hebrew and English with satisfying feedback, correct RTL, and the finger guide always showing the next key (also right after an error).
 
@@ -205,7 +205,7 @@ Goal: The moment-to-moment feel of typing: what the player sees and feels on eve
 
 ## T10 · Audio engine and first music themes
 
-Owner: **Fable** · Effort: **High** · Branch: `t10-audio`
+Owner: **Opus** · Effort: **High** · Branch: `t10-audio`
 
 Done when: Each theme is distinct and pleasant for 10 minutes, stems audibly build with the combo, and volumes work.
 
@@ -222,7 +222,7 @@ Goal: Procedural sound that makes typing feel musical.
 
 ## T11 · Combat, combo and difficulty kit
 
-Owner: **Fable** · Effort: **High** · Branch: `t11-combat-kit`
+Owner: **Opus** · Effort: **High** · Branch: `t11-combat-kit`
 
 Done when: A sandbox wave fight in the test range is fun on all five difficulties and ends with a results screen.
 
@@ -239,7 +239,7 @@ Goal: Word-shield enemies and the combo system shared by all action scenes.
 
 ## T12 · Story system, title screen and intro
 
-Owner: **Fable** · Effort: **High** · Branch: `t12-story-title`
+Owner: **Opus** · Effort: **High** · Branch: `t12-story-title`
 
 Done when: From launch: title → new game → intro cutscene plays, can be skipped, and hands over to the hub.
 
@@ -256,7 +256,7 @@ Goal: In-engine cutscenes and dialogue, the title screen, and the opening of the
 
 ## T13 · Hub: the House of the Scribe
 
-Owner: **Fable** · Effort: **High** · Branch: `t13-hub`
+Owner: **Opus** · Effort: **High** · Branch: `t13-hub`
 
 Done when: The player can walk the hub by typing, start any unlocked scene, and the hub visibly gains color as regions are restored.
 
@@ -273,7 +273,7 @@ Goal: A living home base that works as the game's menu.
 
 ## T14 · Scene: Home Row Meadow
 
-Owner: **Fable** · Effort: **High** · Branch: `t14-meadow`
+Owner: **Opus** · Effort: **High** · Branch: `t14-meadow`
 
 Done when: The scene is playable start to finish from the hub at 60 fps on medium, feels different from every other scene, and its smoke test passes.
 
@@ -309,7 +309,7 @@ Goal: Build the "Cliffs of Ein Gedi" scene as a distinct, beautiful, exciting 3D
 
 ## T16 · Boss kit and the first boss
 
-Owner: **Fable** · Effort: **Xhigh** · Branch: `t16-boss-kit`
+Owner: **Opus** · Effort: **Xhigh** · Branch: `t16-boss-kit`
 
 Done when: The boss fight is winnable on every difficulty, each phase feels different, and transitions are cinematic. Phase 1 slice is complete: title → hub → two scenes → boss → save/load.
 
@@ -637,7 +637,7 @@ Goal: A light, readable progression that makes the player want one more run.
 
 ## T34 · Art, lighting, VFX and music pass
 
-Owner: **Fable** · Effort: **Xhigh** · Branch: `t34-polish-pass`
+Owner: **Opus** · Effort: **Xhigh** · Branch: `t34-polish-pass`
 
 Done when: No scene feels like homework or looks unfinished; checklist recorded per scene in the progress log.
 
@@ -654,7 +654,7 @@ Goal: Raise every scene to the same top standard.
 
 ## T35 · Full story: cutscenes and voice
 
-Owner: **Sonnet** · Effort: **High** · Branch: `t35-story-full`
+Owner: **Fable** · Effort: **High** · Branch: `t35-story-full`
 
 Done when: A full playthrough tells a coherent, moving story in both languages.
 
