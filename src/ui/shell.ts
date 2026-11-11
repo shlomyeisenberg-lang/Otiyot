@@ -17,6 +17,7 @@ import { bdi, I18n, otherLang, type Lang } from './i18n';
 import { icon, type IconName } from './icons';
 import { layoutScreen } from './screens/layout';
 import { hubScreen } from './screens/hub';
+import { cliffsScreen } from './screens/cliffs';
 import { meadowScreen } from './screens/meadow';
 import { introScreen } from './screens/intro';
 import { lessonScreen } from './screens/lesson';
@@ -106,6 +107,7 @@ export class Shell {
       hub: hubScreen,
       lesson: lessonScreen,
       meadow: meadowScreen,
+      cliffs: cliffsScreen,
       menu: mainMenuScreen,
       welcome: (ctx) => wizardScreen(ctx, 'welcome', () => (this.needsWelcome = false)),
       players: playersScreen,

@@ -8,6 +8,7 @@ import type { Route } from './app';
 
 export const SCENE_ROUTES: Readonly<Partial<Record<RegionId, Route>>> = {
   meadow: 'meadow',
+  cliffs: 'cliffs',
 };
 
 export function playableRegions(): ReadonlySet<RegionId> {

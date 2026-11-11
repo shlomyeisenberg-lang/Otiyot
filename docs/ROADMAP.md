@@ -197,7 +197,7 @@ Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Fable 5.2 
 - **Done when** The scene is playable start to finish from the hub at 60 fps on medium, feels different from every other scene, and its smoke test passes.
 - **User must have ready** Nothing.
 
-### [ ] T15 · Scene: Cliffs of Ein Gedi
+### [x] T15 · Scene: Cliffs of Ein Gedi
 - **Branch** `t15-cliffs`
 - **Model** Sonnet 5.5 · **Effort** High
 - **Goal** Build the "Cliffs of Ein Gedi" scene as a distinct, beautiful, exciting 3D level whose mechanic is: stepping stones over a canyon where top-row words make the scribe reach up and bottom-row words reach down; waterfalls restart as sections are restored
