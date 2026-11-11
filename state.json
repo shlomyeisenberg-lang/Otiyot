@@ -1,10 +1,5 @@
 {
-  "claims": {
-    "T13": {
-      "at": "2026-11-11T01:48:42.221Z",
-      "runner": "Otiyot Opus builder"
-    }
-  },
+  "claims": {},
   "attempts": {
     "T01": 1,
     "T02": 1,
@@ -21,12 +16,6 @@
     "T13": 2
   },
   "skipped": {},
-  "last_failure": {
-    "T13": {
-      "at": "2026-11-11T01:45:40.611Z",
-      "runner": "Otiyot Fable builder",
-      "reason": "Owner moved T13 from Fable to Opus (PRs #20-#22) while this run was building it. Finished work is on branch t13-hub, PR #23 (lint, typecheck, unit tests, build and e2e pass locally), not merged: left for the Opus builder to review and merge."
-    }
-  },
+  "last_failure": {},
   "final_email_sent": false
 }
