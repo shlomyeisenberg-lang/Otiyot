@@ -2,14 +2,14 @@
 
 # Otiyot — Progress
 
-_Last updated 2026-11-10. This page is generated from `docs/progress.json`; to change it, edit the JSON and run `node scripts/render-progress.mjs`._
+_Last updated 2026-11-11. This page is generated from `docs/progress.json`; to change it, edit the JSON and run `node scripts/render-progress.mjs`._
 
 ## Summary
 
-- ✅ **11** of **39** tasks done
-- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 28 pending
+- ✅ **12** of **39** tasks done
+- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 27 pending
 - ⬜ **3** manual steps waiting for you
-- 💡 1 feature idea open
+- 💡 2 feature ideas open
 
 ## Waiting for me
 
@@ -65,7 +65,7 @@ Work done before or outside the numbered tasks.
 - ✅ T09 · 3D keyboard, finger guide, HUD and typing feedback — 2026-11-10 · [PR #15](https://github.com/shlomyeisenberg-lang/Otiyot/pull/15)
 - ✅ T10 · Audio engine and first music themes — 2026-11-10 · [PR #16](https://github.com/shlomyeisenberg-lang/Otiyot/pull/16)
 - ✅ T11 · Combat, combo and difficulty kit — 2026-11-10 · [PR #17](https://github.com/shlomyeisenberg-lang/Otiyot/pull/17)
-- ⬜ T12 · Story system, title screen and intro
+- ✅ T12 · Story system, title screen and intro — 2026-11-11 · [PR #18](https://github.com/shlomyeisenberg-lang/Otiyot/pull/18)
 - ⬜ T13 · Hub: the House of the Scribe
 - ⬜ T14 · Scene: Home Row Meadow
 - ⬜ T15 · Scene: Cliffs of Ein Gedi
@@ -556,11 +556,55 @@ The first enemies and the combat rules every action scene will share: Blots floa
 
 Learned-letters test: tests/unit/game-combat.test.ts plays whole fights for every level and difficulty on both tracks in Hebrew and English at 0, 2, 6, 14 and 40 lessons, and checks every shield word against the profile's learned keys; the e2e test checks every word shown in a real fight. Draw calls stay under 150 on medium with five Blots on the field.
 
-### ⬜ T12 · Story system, title screen and intro
+### ✅ T12 · Story system, title screen and intro
 
-**Status:** Pending
+**Status:** Done · **Finished:** 2026-11-11 · **Pull request:** [PR #18](https://github.com/shlomyeisenberg-lang/Otiyot/pull/18)
 
-_Not started._
+The game now opens like a story: a 3D title where gold-ink letters fall onto a grey parchment and spell the name, then the opening of Act 1 in the engine (the lamp-sign goes blank, Reb Ezra gives the quill, Dyo climbs out of the inkwell), with a dialogue box, skipping, and a hand-over to the main menu until the hub exists.
+
+**What changed**
+
+- src/story/types.ts, cast.ts, player.ts, intro.ts, index.ts: cutscene data (beats with named shots, cues, actions and he/en lines), the cast (names, portraits, optional voices; the apprentice is silent), four male apprentice looks chosen by profile.avatar, the pure CutscenePlayer (letter-by-letter reveal by text speed with breaths after punctuation, waits for the player, advance, skip, events) and the Act 1 opening script
+- src/scenes/title: the title scene: a forgotten (grey) parchment on a desk in a dark blue room with an inkwell, quill and candle; gold letters fall with trails, land with ink splashes, sparks and a shockwave and sweep color back; אותיות then OTIYOT; camera fly-in across the page; grey drifting letters turn gold once the name is whole; a glint runs across the name; finish() jumps to the end
+- src/scenes/intro: the intro scene: a night street with neighbors, cypresses and stars, the House of the Scribe with door, lit windows, lanterns and the lamp-sign; the Forgetting greys the street and the sign letters stutter out one by one; Ezra walks out of the opening door; the spare quill floats into the apprentice's hand on a gold ribbon; Dyo pops out of the inkwell; the first letter is written back and color returns around the house; 14 named camera shots
+- src/game/dyo.ts: Dyo the ink drop for any scene (breathes, blinks, hops with squash and stretch, cheers, faces things)
+- src/ui/screens/title.ts: the title screen (route #/title, the launch screen): press any key, then a compact menu: Begin the story, Main menu or Continue, Watch the opening again, Players, Settings; painted wordmark fallback without 3D; runs the animation once per visit
+- src/ui/screens/intro.ts: the intro screen (route #/intro): letterbox bars, dialogue box, Skip with Esc, act card, Enter/Space/click to continue; sets story.flags.intro and hands over to HUB; plays as words over the parchment without 3D
+- src/ui/stage3d.ts: mountScene, the small 3D host shared by the title and the intro
+- src/ui/voice.ts: StoryVoice, optional spoken lines with the device's own (local) voices, pitch and pace per character
+- src/ui/components/feedback.ts: the dialogue box gains portraits per speaker (elder, drop, scroll, courier, keeper, apprentice), reveal(count) and setWaiting
+- src/ui/styles/story.css: title screen, cutscene, letterbox, act card and dialogue typing styles (tokens only)
+- src/ui/app.ts and shell.ts: routes title and intro, empty hash opens the title, HUB constant (the main menu until T13), Screen.onEscape so the intro can take Esc
+- src/ui/screens/wizard.ts: a brand-new player's welcome now goes straight into the intro
+- src/ui/screens/settings.ts: Story text speed (Display) and Read story lines aloud (Sound)
+- src/save/schema.ts and migrations.ts: save v7 adds settings.textSpeed (normal) and settings.storyVoices (off), with a migration test
+- locales/he.json, en.json: title, intro and new settings strings
+- tests/unit/story.test.ts: reveal, advance, skip, the whole intro played through, script checks in both languages, content filter on every line, the cast and looks
+- tests/e2e/story.spec.ts: title, begin, a line types out and advances, Esc skips to the menu, the flag is remembered, no GPU leaks; settings rows
+- tests/e2e/shell.spec.ts: first run now goes title, welcome, intro (skipped), menu; women's names in test fixtures replaced with men's (content rules)
+- docs: ARCHITECTURE 7f Story and save v7, DESIGN story components, GAME_DESIGN the opening and the title row, ROADMAP T12 ticked, CHANGELOG
+
+**Decisions**
+
+- **Launch (no hash) opens the 3D title; a brand-new save begins through the welcome steps and then the intro** — The roadmap asks for title, new game, intro from launch; the welcome is where the apprentice gets his name before the story starts
+- **The intro hands over to the main menu through a HUB constant** — The House of the Scribe is T13; it only has to change HUB in src/ui/app.ts
+- **Story text speed and spoken lines are new settings (save v7); voices are off by default and use only on-device voices** — The scope asks for adjustable text speed and optional voices; on-device only keeps the no-network rule
+- **Lines live in src/story (he and en side by side), not in the locale files** — The task says scripts in src/story; keeping both languages together keeps them in step and testable
+- **The cutscene clock runs in the scene's fixed update** — Cues, line timing and camera stay in step even on slow machines
+- **Title is a parchment on a desk in a dark blue room; the intro is a night street** — Warm page against cool dark makes the gold ink and the restored color glow; the night makes the lamp-sign the hero
+- **Four male apprentice looks defined and chosen by profile.avatar; no picker yet** — The content rule is enforced in data now; a picker belongs with cosmetics or the welcome (see feature idea)
+- **Women's names in old test fixtures (Devorah, Miriam) changed to men's names** — Content rules: no women anywhere, tests included
+- **Any key or click skips the title animation, and it plays once per visit** — Players who launch often should not wait
+- **The shared notes list in progress.json was an empty string; turned it into a list to append to** — The schema says notes is a list
+
+**To do**
+
+- [ ] T13: point HUB in src/ui/app.ts at the House of the Scribe so the intro and Continue lead there
+- [ ] T35: more cutscenes with this system, and optional recorded voices
+
+**Notes**
+
+The intro has no typing, so the learned-letters rule does not apply to it; the title menu is chosen by typing each item's gold letter as in all menus.
 
 ### ⬜ T13 · Hub: the House of the Scribe
 
@@ -738,6 +782,18 @@ Build prompt:
 Otiyot project — GitHub repo shlomyeisenberg-lang/Otiyot. Task: Blot varieties (branch: idea-blot-varieties). Goal: add three Blot kinds to the combat kit: swift (small, fast, short word), armoured (shield of two words typed in a row) and splitting (breaks into two small Blots with short words). 1. Read CLAUDE.md, docs/ARCHITECTURE.md (section 7e), docs/DESIGN.md, docs/GAME_DESIGN.md (Combat) and only the T11 entry of docs/progress.json. 2. Start from the latest main and create the branch idea-blot-varieties. 3. Work from start to finish without stopping for my approval; make sensible decisions and record them. 4. Extend src/game/combat.ts (kinds in the wave plans, driven by the seed and the difficulty) and src/game/blots.ts (a distinct look for each kind), keep words to learned letters only and add unit tests for it, check it in the test range Wave fight mode with screenshots. 5. Run pnpm lint, typecheck, test and build, update docs/progress.json (feature_ideas status built, and a notes line) and run node scripts/render-progress.mjs, push, open a pull request, wait for the checks, merge it into main yourself and delete the branch.
 ```
 
+### 💡 Choose your apprentice's look (from T12)
+
+**Status:** idea · **Model:** Sonnet 5.5 · **Effort:** Medium
+
+Lets the player pick one of the four male apprentice looks (robe, trim, cap, hat or turban) in the welcome and in Players, so the intro shows his own apprentice
+
+Build prompt:
+
+```text
+Otiyot project — GitHub repo shlomyeisenberg-lang/Otiyot. Task: apprentice look picker (branch: idea-apprentice-look). Goal: let the player choose his apprentice's look from APPRENTICE_LOOKS in src/story/cast.ts (all male apprentices, ARCHITECTURE section 8), saved in profile.avatar. 1. Read CLAUDE.md, docs/ARCHITECTURE.md, docs/DESIGN.md and the T12 entry in docs/progress.json. 2. Start from the latest main and create the branch idea-apprentice-look. 3. Work from start to finish without stopping for my approval; record important decisions. 4. Add a fourth welcome step and a Players action that show the looks as choice cards with a small portrait drawn in code (tokens only, he and en strings, logical CSS), chosen by click, arrows or typed letter; the intro (src/scenes/intro) already uses apprenticeLook(profile.avatar). Unit-test the choice, add a Playwright check, run pnpm lint, typecheck, test and build, update docs and docs/progress.json (this idea's status to built) and run node scripts/render-progress.mjs, push, open a pull request, wait for CI, merge it into main yourself and delete the branch.
+```
+
 ## Notes
 
-_No notes yet._
+- **2026-11-11** (T12) — Launch now opens #/title. Screens that need Esc for themselves implement Screen.onEscape. Cutscenes: write beats in src/story, stage them in a scene with onBeat and named shots, host them like src/ui/screens/intro.ts.
