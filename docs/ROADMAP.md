@@ -172,7 +172,7 @@ Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Fable 5.2 
 - **Done when** From launch: title → new game → intro cutscene plays, can be skipped, and hands over to the hub.
 - **User must have ready** Nothing.
 
-### [ ] T13 · Hub: the House of the Scribe
+### [x] T13 · Hub: the House of the Scribe
 - **Branch** `t13-hub`
 - **Model** Opus 5.5 · **Effort** High
 - **Goal** A living home base that works as the game's menu.
@@ -498,6 +498,7 @@ Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Fable 5.2 
 
 ## Later (ideas found while building, not scheduled)
 
+- Number-row and symbol lessons in both tracks (found in T13): no lesson teaches the digits, so the Gematria Forge stays locked on the map ("learn the number row first"); the Night Shuk is opened by reaching Level 2 instead of by its own symbol lessons.
 - Online duels (same text, deterministic seed, server check) and global leaderboards through Supabase; anonymous names, never typed content. Needs accounts and a server.
 - Standalone Windows .exe build (wrap the web build).
 - Yiddish typing track.

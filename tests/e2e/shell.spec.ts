@@ -71,9 +71,12 @@ test('first run: a new player picks a name, a keyboard and a track', async ({ pa
   await page.getByRole('radio', { name: /Words from the start/ }).click();
   await page.locator('[data-action="next"]').click();
 
-  // The story opens; Esc skips it and hands over to the main menu.
+  // The story opens; Esc skips it and hands over to the House of the Scribe, and Esc there
+  // leads to the main menu.
   await expect(page.getByTestId('intro')).toBeVisible();
   await page.waitForFunction(() => window.__otiyotIntro?.ready === true);
+  await page.keyboard.press('Escape');
+  await expect(page.getByTestId('hub')).toBeVisible();
   await page.keyboard.press('Escape');
 
   // Main menu greets the new player and shows the choices.
@@ -114,9 +117,11 @@ test('menus answer to typed letters, arrows, Enter and Esc in Hebrew', async ({ 
   await page.keyboard.press('Escape');
   await expect(page.getByRole('heading', { name: 'אותיות' })).toBeVisible();
 
-  // Arrows and Enter: focus starts on the first item that can be chosen, "שחקנים" (players).
+  // Arrows and Enter: focus starts on the first item, "בית הסופר" (the house); the next one
+  // down is "שחקנים" (players).
   await page.keyboard.press('ArrowDown');
   await page.keyboard.press('ArrowUp');
+  await page.keyboard.press('ArrowDown');
   await page.keyboard.press('Enter');
   await expect(page.getByRole('heading', { name: 'שחקנים' })).toBeVisible();
 

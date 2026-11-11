@@ -2,14 +2,14 @@
 
 # Otiyot — Progress
 
-_Last updated 2026-11-10. This page is generated from `docs/progress.json`; to change it, edit the JSON and run `node scripts/render-progress.mjs`._
+_Last updated 2026-11-11. This page is generated from `docs/progress.json`; to change it, edit the JSON and run `node scripts/render-progress.mjs`._
 
 ## Summary
 
-- ✅ **12** of **39** tasks done
-- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 27 pending
+- ✅ **13** of **39** tasks done
+- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 26 pending
 - ⬜ **3** manual steps waiting for you
-- 💡 2 feature ideas open
+- 💡 3 feature ideas open
 
 ## Waiting for me
 
@@ -69,7 +69,7 @@ Work done before or outside the numbered tasks.
 - ✅ T10 · Audio engine and first music themes — 2026-11-10 · [PR #16](https://github.com/shlomyeisenberg-lang/Otiyot/pull/16)
 - ✅ T11 · Combat, combo and difficulty kit — 2026-11-10 · [PR #17](https://github.com/shlomyeisenberg-lang/Otiyot/pull/17)
 - ✅ T12 · Story system, title screen and intro — 2026-11-11 · [PR #18](https://github.com/shlomyeisenberg-lang/Otiyot/pull/18)
-- ⬜ T13 · Hub: the House of the Scribe
+- ✅ T13 · Hub: the House of the Scribe — 2026-11-11 · [PR #23](https://github.com/shlomyeisenberg-lang/Otiyot/pull/23)
 - ⬜ T14 · Scene: Home Row Meadow
 - ⬜ T15 · Scene: Cliffs of Ein Gedi
 - ⬜ T16 · Boss kit and the first boss
@@ -609,11 +609,57 @@ The game now opens like a story: a 3D title where gold-ink letters fall onto a g
 
 The intro has no typing, so the learned-letters rule does not apply to it; the title menu is chosen by typing each item's gold letter as in all menus.
 
-### ⬜ T13 · Hub: the House of the Scribe
+### ✅ T13 · Hub: the House of the Scribe
 
-**Status:** Pending
+**Status:** Done · **Finished:** 2026-11-11 · **Pull request:** [PR #23](https://github.com/shlomyeisenberg-lang/Otiyot/pull/23)
 
-_Not started._
+The House of the Scribe is built: a 3D home in the Jerusalem hills that works as the game menu, walked by typing short door words made only of learned letters, with a map of the land, a lesson screen that finally lets the course be played, and color that spreads over the hills as regions are restored. Built by the Fable runner, then reviewed, finished and merged by the Opus builder.
+
+**What changed**
+
+- src/scenes/hub (index.ts, build.ts, land.ts, palette.ts): the hub scene. A cut-away limestone house (arched walls, desk with Reb Ezra writing on his stool, ink shop and trophy shelves with one medallion per region, lectern with the journal, the Game Room cedar door with a SOON sign, rug, lamps), a courtyard (flagstones, low wall, pergola with lanterns, olive tree, well, anemone pots, the practice slate chalked with the learned letters, the brass-bound tool chest, cypresses), and a terraced valley with far ridges, olive and cypress trees, a hillside village, a beacon per region on a winding road and the Ladder tower
+- Hub day and night: four palette keyframes (dawn, day, dusk, night held from 21:30) blended from the device's local hour, one whole day in 12 real minutes; lamps warm the room at night; stars, fireflies, dust motes; birds by day, crickets by night, the desk lamp's fire and wind
+- Hub color: the house is never greyed; a sweep of color around it reaches 22 units plus 240 times the share restored, the rest of the land is restored by the same share; regions restored since the last visit light their beacon one by one (up to three) with a gold burst and a sweep, then the circle rolls out to its new edge; restored beacons burn gold, open ones glow blue, locked ones are ash
+- Hub people: the apprentice (the profile's look) walks to a station on a path through the arch and around the desk with the camera leaning after him; Dyo hops after him and about; Reb Ezra writes and turns to the apprentice at the desk; Naftali (male courier) leans on the courtyard wall once the Jaffa Line is restored
+- src/game/doors.ts: doorWords (prefix-free door words from learned letters only: real library words first with different first letters, else short strings of learned letters, four letters for a player who knows two) and DoorPicker (narrows letter by letter, misses, backspace, done)
+- src/game/regions.ts: the 14 regions with what opens each (start, learned letters, course level, number row, another region), regionStatuses (open, restored, rank, levels, suggested level from that region's runs, learnPath to the lesson that opens it), restoredShare, nextRegion, recordRegionRank, rankNumber/rankFromNumber, regionMode
+- src/story/hub.ts: short context lines for Reb Ezra, Dyo and Naftali in Hebrew and English (first visit, morning, day, evening, night, a restoration, the next region, locked, all done, idle, Naftali, soon, desk), fillLine, hubLine, partOfDay
+- src/ui/screens/hub.ts: the hub screen (route #/hub): door words, typed keys judged by physical key, banner name tags projected each frame, a row of station buttons at the bottom (mouse, screen readers, and the whole hub without 3D), a line from a character on arrival, the desk map modal (all regions: status, rank seal, place, Easy/Standard/Hard with the suggested one starred, what to learn first with a button to that lesson, Play when the scene exists, Continue the story, next lesson), the trophy shelf modal, opening-soon panels for the ink shop, journal and Game Room, the practice slate opens the lesson screen, the tool chest opens settings; a test probe with step()
+- src/ui/screens/lesson.ts: the lesson screen (route #/lesson): one lesson of the active track with the paper strip, keyboard guide and hint coach; records every key into the adaptive engine, the lesson result into the track progress (90% passes and opens the next lesson and new keys), and a statistics-only history entry lesson:<id>; results sheet with accuracy, speed, best streak and new keys; Enter for the next lesson or a retry
+- src/ui/playable.ts: SCENE_ROUTES (empty until scenes exist; each scene task adds its region) and the lesson the hub asks for (wantLesson)
+- src/ui/app.ts and shell.ts: routes hub and lesson; HUB is now the hub (intro and title Continue hand over to it); Esc in the hub goes to the main menu; the lesson goes back to the hub
+- src/ui/screens/mainMenu.ts: the first item is now The House of the Scribe (was a disabled Journey); title.ts: the Main menu choice before the intro goes to the menu
+- src/ui/styles/hub.css: hub, map, trophies and lesson styles (tokens only)
+- locales/en.json and he.json: hub, map, region names and places, lesson strings
+- tests/unit/hub.test.ts (door words learned letters only, prefix-free, picker, regions follow the course, learn path, ranks, share, next region, suggested level, lines keep the content rules) and tests/e2e/hub.spec.ts (walk by typing, map, a lesson typed by the guide and saved, no GPU leak, restored hub with beacons and trophies); story.spec and shell.spec now expect the hub after the intro
+- docs: ARCHITECTURE (routes, save notes, section 7g), DESIGN (hub components), GAME_DESIGN (the House of the Scribe), ROADMAP (T13 ticked, number-row lessons under Later), CHANGELOG
+- Opus builder review: merged latest main, fixed the Hebrew menu e2e test (the first menu item is now the journey, so one arrow down reaches Players), re-ran all checks and looked at the hub in Chromium (fresh, partly and fully restored, phone width)
+- src/engine/transition.ts: the ink transition clamps its progress, so a frame stamped before its start never draws a negative radius (it raised console errors in the hub e2e on CI)
+- Took in the title fix from open PR #19 (a key on the title shows the choices at once), because the first-run e2e failed twice in a row on CI for this branch
+
+**Decisions**
+
+- **Door words are built from learned letters only, even for a brand-new player (four-letter strings of f and j, or כ and ח)** — The learned-letters rule covers all text to type, and the hub is typed; words get real as soon as the library can spell them
+- **Door words are prefix-free and judged letter by letter instead of locking a target on the first letter** — With two learned letters, first letters cannot be unique; prefix-free words make the full word decide
+- **Added a lesson screen (#/lesson) for the practice slate and the map's "learn it first"** — The scope asks for a jump to the lesson, and nothing in the app could play or record a lesson yet; Practice modes (T31) can build on it
+- **Regions open by the course: Meadow at start, Cliffs at 12 letters, Ladder at 10, Shuk at Level 2, Jaffa Line and Geniza at Level 3, Hermon and Star Station at 4, Atbash and Midbar at 5, Caves and Arena at 6, the Forge at the number row, the Blank Scroll after the Arena** — Follows each scene's band in GAME_DESIGN with what the two tracks actually teach
+- **Ranks are stored in story.ranks as numbers C=1, B=2, A=3, S=4; hub celebration memory in story.flags (hub, hub:<region>)** — Fits the existing save shape, so no migration is needed
+- **Shop, Journal and Game Room show "opening soon" panels (and the Game Room an in-world SOON sign)** — Their content is built by T29-T33; no gameplay placeholders
+- **The day turns from the local hour, one whole day in 12 real minutes** — The house feels alive while staying in step with the player's own time of day
+- **Handed the finished branch to the Opus builder instead of merging** — The owner moved T13 from Fable to Opus (PRs #20-#22) while this run was building it; this runner only merges its own tasks
+- **Opus builder merged the Fable-built branch after review instead of rebuilding the hub** — The work met the done-when (walk by typing, start unlocked regions, color returns with restoration), all local checks passed, and rebuilding would waste the budget
+- **Cherry-picked the title fix from PR #19 into this branch instead of waiting for it** — The first-run test failed on CI twice with the slower hub build; #19 is the known fix and has passed CI. #19 can be closed or merged afterwards (same change)
+
+**To do**
+
+- [ ] Each scene task adds its region to SCENE_ROUTES in src/ui/playable.ts so the map shows Play and Continue the story
+- [ ] Scenes should call recordRegionRank and write history mode regionMode(id, level, difficulty) when a run ends
+- [ ] The ink shop (T33), journal (T32) and Game Room (T29/T30) open when their tasks are merged; the Game Room sign and the soon panels then go
+- [ ] No lesson in either track teaches the number row, so the Gematria Forge stays locked; see ROADMAP Later
+
+**Notes**
+
+Checked in Chromium at 1280x720 and 375x700, light and dark, English and Hebrew, morning, afternoon, evening and night, fresh and partly restored saves.
 
 ### ⬜ T14 · Scene: Home Row Meadow
 
@@ -795,6 +841,18 @@ Build prompt:
 
 ```text
 Otiyot project — GitHub repo shlomyeisenberg-lang/Otiyot. Task: apprentice look picker (branch: idea-apprentice-look). Goal: let the player choose his apprentice's look from APPRENTICE_LOOKS in src/story/cast.ts (all male apprentices, ARCHITECTURE section 8), saved in profile.avatar. 1. Read CLAUDE.md, docs/ARCHITECTURE.md, docs/DESIGN.md and the T12 entry in docs/progress.json. 2. Start from the latest main and create the branch idea-apprentice-look. 3. Work from start to finish without stopping for my approval; record important decisions. 4. Add a fourth welcome step and a Players action that show the looks as choice cards with a small portrait drawn in code (tokens only, he and en strings, logical CSS), chosen by click, arrows or typed letter; the intro (src/scenes/intro) already uses apprenticeLook(profile.avatar). Unit-test the choice, add a Playwright check, run pnpm lint, typecheck, test and build, update docs and docs/progress.json (this idea's status to built) and run node scripts/render-progress.mjs, push, open a pull request, wait for CI, merge it into main yourself and delete the branch.
+```
+
+### 💡 Number row and symbol lessons (from T13)
+
+**Status:** idea · **Model:** Sonnet 5.5 · **Effort:** Medium
+
+Neither track teaches the digits, so the Gematria Forge can never open; the Night Shuk opens by course level instead of its own symbol lessons
+
+Build prompt:
+
+```text
+Otiyot project — GitHub repo shlomyeisenberg-lang/Otiyot. Task: number row and symbol lessons (branch: idea-number-row). Work from start to finish without stopping for approval. 1. Read CLAUDE.md, docs/ARCHITECTURE.md, docs/DESIGN.md, docs/GAME_DESIGN.md and your entry in docs/progress.json (read only T13 and the feature idea). 2. Start from the latest main and create the branch idea-number-row. 3. Add lessons to both lesson tracks (src/learn/track.ts, text1.ts, text2.ts) in Hebrew and English that teach the number row (1-0) and the common symbols, after Level 1, so knownKeysOf includes them once passed; keep learned-letters-only and the content rules (ARCHITECTURE section 8). 4. In src/game/regions.ts let the Forge open when the digits are learned (it already asks for them) and point learnPath at the new lessons; give the Night Shuk a keys need for the symbols. 5. Unit tests for the new lessons and for the Forge opening; run pnpm lint, typecheck, test and build. 6. Update docs (ARCHITECTURE sections 5 and 7g, GAME_DESIGN), add your entry to docs/progress.json, run node scripts/render-progress.mjs, push, open a pull request, wait for CI, squash-merge it into main and delete the branch.
 ```
 
 ## Notes

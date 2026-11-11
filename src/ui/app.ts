@@ -8,6 +8,8 @@ import type { I18n, Lang } from './i18n';
 export type Route =
   | 'title'
   | 'intro'
+  | 'hub'
+  | 'lesson'
   | 'menu'
   | 'welcome'
   | 'players'
@@ -60,6 +62,8 @@ export type ScreenFactory = (ctx: AppContext) => Screen;
 export const PARENT: Readonly<Record<Route, Route | null>> = {
   title: null,
   intro: null,
+  hub: 'menu',
+  lesson: 'hub',
   menu: null,
   welcome: null,
   players: 'menu',
@@ -75,11 +79,8 @@ export const PARENT: Readonly<Record<Route, Route | null>> = {
 
 const ROUTES = Object.keys(PARENT) as Route[];
 
-/**
- * Where the story hands over when the intro ends and where "Continue" leads: the House of the
- * Scribe. Until the hub exists (T13) that is the main menu.
- */
-export const HUB: Route = 'menu';
+/** Where the story hands over when the intro ends and where "Continue" leads: the House of the Scribe. */
+export const HUB: Route = 'hub';
 
 /**
  * Reads a route from a location hash such as `#/players/new`. No hash (a fresh launch) opens the

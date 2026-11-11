@@ -52,7 +52,7 @@ export function titleScreen(ctx: AppContext, fresh: boolean): Screen {
         id: 'continue',
         label: t.t('title.menu'),
         hint: t.t('title.menuHint', { name: p.name }),
-        onChoose: () => ctx.go(HUB),
+        onChoose: () => ctx.go('menu'),
       },
     );
   } else {
@@ -134,7 +134,10 @@ export function titleScreen(ctx: AppContext, fresh: boolean): Screen {
   const hurry = (): void => {
     if (ready) return;
     hurried = true;
+    // The choices come at once, even while the 3D page is still loading behind them; the
+    // letters then land all together as soon as it is ready.
     if (scene) scene.finish();
+    else showMenu();
   };
 
   const boot = async (): Promise<void> => {

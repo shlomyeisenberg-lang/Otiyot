@@ -1,7 +1,7 @@
 // Main menu: the wordmark, a greeting, and the big typed-or-clicked choices.
 
 import type { AppContext, Screen } from '../app';
-import { menu, panel, status, type MenuItem } from '../components';
+import { menu, panel, type MenuItem } from '../components';
 import { h } from '../dom';
 import { keysHint } from './frame';
 import { layoutName, trackName } from './names';
@@ -25,9 +25,7 @@ export function mainMenuScreen(ctx: AppContext): Screen {
       id: 'journey',
       label: t.t('menu.journey'),
       hint: t.t('menu.journeyHint'),
-      disabled: true,
-      end: status(t.t('common.soon')),
-      onChoose: () => undefined,
+      onChoose: () => ctx.go('hub'),
     },
     {
       id: 'players',

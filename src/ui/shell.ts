@@ -16,7 +16,9 @@ import { h, isTextEntry, s } from './dom';
 import { bdi, I18n, otherLang, type Lang } from './i18n';
 import { icon, type IconName } from './icons';
 import { layoutScreen } from './screens/layout';
+import { hubScreen } from './screens/hub';
 import { introScreen } from './screens/intro';
+import { lessonScreen } from './screens/lesson';
 import { mainMenuScreen } from './screens/mainMenu';
 import { openPauseMenu } from './screens/pause';
 import { playersScreen } from './screens/players';
@@ -100,6 +102,8 @@ export class Shell {
     this.screens = {
       title: (ctx) => titleScreen(ctx, this.needsWelcome),
       intro: introScreen,
+      hub: hubScreen,
+      lesson: lessonScreen,
       menu: mainMenuScreen,
       welcome: (ctx) => wizardScreen(ctx, 'welcome', () => (this.needsWelcome = false)),
       players: playersScreen,

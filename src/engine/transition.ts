@@ -105,7 +105,8 @@ export class InkWipe {
     }
     if (hole) g.globalCompositeOperation = 'destination-out';
     // Ease: fast at first, slowing as it nears the edges.
-    const e = 1 - Math.pow(1 - p, 2.2);
+    // p is clamped: a frame stamped before the start would give a negative radius.
+    const e = 1 - Math.pow(1 - Math.min(1, Math.max(0, p)), 2.2);
     const max = Math.hypot(w, h) * 0.62;
     const r = e * max;
     const cx = w / 2;
@@ -129,7 +130,7 @@ export class InkWipe {
     for (let i = 0; i < DROPS; i++) {
       const a = this.drops[i * 3] as number;
       const d = (this.drops[i * 3 + 1] as number) * r;
-      const s = (this.drops[i * 3 + 2] as number) * max * (0.4 + e);
+      const s = Math.max(0, (this.drops[i * 3 + 2] as number) * max * (0.4 + e));
       g.beginPath();
       g.arc(cx + Math.cos(a) * d, cy + Math.sin(a) * d, s, 0, Math.PI * 2);
       g.fill();
