@@ -7,9 +7,9 @@ _Last updated 2026-11-11. This page is generated from `docs/progress.json`; to c
 ## Summary
 
 - ✅ **13** of **39** tasks done
-- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 26 pending
+- 🛠️ 1 in progress · ⛔ 0 blocked · ⬜ 25 pending
 - ⬜ **3** manual steps waiting for you
-- 💡 3 feature ideas open
+- 💡 4 feature ideas open
 
 ## Waiting for me
 
@@ -70,7 +70,7 @@ Work done before or outside the numbered tasks.
 - ✅ T11 · Combat, combo and difficulty kit — 2026-11-10 · [PR #17](https://github.com/shlomyeisenberg-lang/Otiyot/pull/17)
 - ✅ T12 · Story system, title screen and intro — 2026-11-11 · [PR #18](https://github.com/shlomyeisenberg-lang/Otiyot/pull/18)
 - ✅ T13 · Hub: the House of the Scribe — 2026-11-11 · [PR #23](https://github.com/shlomyeisenberg-lang/Otiyot/pull/23)
-- ⬜ T14 · Scene: Home Row Meadow
+- 🛠️ T14 · Scene: Home Row Meadow
 - ⬜ T15 · Scene: Cliffs of Ein Gedi
 - ⬜ T16 · Boss kit and the first boss
 - ⬜ T17 · Scene: The Gematria Forge
@@ -661,11 +661,42 @@ The House of the Scribe is built: a 3D home in the Jerusalem hills that works as
 
 Checked in Chromium at 1280x720 and 375x700, light and dark, English and Hebrew, morning, afternoon, evening and night, fresh and partly restored saves.
 
-### ⬜ T14 · Scene: Home Row Meadow
+### 🛠️ T14 · Scene: Home Row Meadow
 
-**Status:** Pending
+**Status:** In progress
 
-_Not started._
+The Home Row Meadow can be played from the map: a grey spring valley with a garden of eight beds laid out like the home-row keys, where Reb Ezra teaches hand placement, every right letter opens an anemone, every word spreads the green, and the last word restores the whole valley with a rank.
+
+**What changed**
+
+- src/scenes/meadow/index.ts: the Meadow scene (valley, home-row garden of eight finger-colored beds with letter stones, 688 instanced anemones that open letter by letter, green that spreads in rings word by word, mist of the Fading lifting, almond trees, cypresses, clouds, Reb Ezra, the apprentice, Dyo hopping to the bed just typed, a camera rail with one stop per chapter, the finale)
+- src/scenes/meadow/plan.ts: the run as pure data (Reb Ezra's lesson, then the Look ahead and Keep the streak chapters; only learned letters; how many flowers, how far the green, when the birds return)
+- src/scenes/meadow/flyers.ts: birds and butterflies (two draw calls each); src/scenes/meadow/palette.ts: spring morning and blue-hour palettes
+- src/story/meadow.ts: lines for Reb Ezra and Dyo in Hebrew and English (arriving, the hands lesson, lookahead, the streak, a slip, the first bird, the almond tree, the end)
+- src/ui/screens/meadow.ts and src/ui/styles/meadow.css: the Meadow screen (#/meadow): chapter chip with progress, speech box, Skip the lesson (Esc), Level and difficulty panel, results card with rank, numbers, rewards and the way back to the house
+- src/ui/app.ts, src/ui/shell.ts, src/ui/playable.ts: the meadow route; the Meadow now has a Play button on the hub's map and Continue the story leads to it
+- locales/en.json, locales/he.json: meadow.* strings
+- tests/unit/meadow.test.ts (12 tests, including learned-letters-only for both tracks and languages) and tests/e2e/meadow.spec.ts (a whole run from the hub's map by following the finger guide, rank saved, no GPU leak; skipping the lesson)
+- docs/ARCHITECTURE.md section 7h (the pattern for a scene), CHANGELOG.md, ROADMAP tick
+
+**Decisions**
+
+- **No timers and no attacking enemies in the Meadow, on any difficulty. The grey itself is the opponent and lifts as mist.** — The roadmap says 'No timers' and this is the tutorial; a new typist must never be rushed here. Difficulty still matters: longer words, a costlier slip, a faster speed for rank S, and Sofer's Trial ends at the first slip.
+- **The garden is eight beds in the physical order of the home-row keys, colored by finger, with a gap between the hands and gold studs on the two index beds. Only learned letters are written on the stones.** — Hand placement is taught by the picture itself, and a letter that was not learned yet is never shown.
+- **Flowers are always in color (red on grey); the ground turns green in rings from one centre, one ring per word.** — Red anemones on a grey field is the strongest picture of restoration letter by letter, and rings with one centre fit the engine's six sweep slots without flicker.
+- **Reb Ezra's lesson runs on the first visit, Esc skips it, and afterwards it is a choice in the Level and difficulty panel.** — The task asks for a skippable tutorial; a returning player should go straight to the words.
+- **A failed Sofer's Trial does not restore the Meadow; every run writes a statistics-only history entry scene:meadow:<level>:<difficulty>; rewards are shown but not added to a wallet.** — Same rules as the wave fights (T11); the wallet arrives with T33.
+- **Enter on the results card goes back to the house after the first restoration, and plays again on later runs.** — The first time, the story continues at home where the beacon lights; later the player is here to practise.
+- **The chapter chip and the speech box sit on the far side from the HUD's speed and accuracy, and under them on a narrow screen.** — They overlapped the HUD readouts in the first screenshots.
+
+**To do**
+
+- [ ] Reb Ezra's lines are not read aloud by the optional voice setting yet (T35 owns voice).
+- [ ] The HUD's paper strip and keyboard stay on screen behind the results card.
+
+**Notes**
+
+Built by the Fable runner, High effort. Looked at in Chromium at 1280 and 375 wide, English and Hebrew, both themes, and recomposed three times (camera, garden placement, results card). About 87 draw calls and 99k triangles on medium.
 
 ### ⬜ T15 · Scene: Cliffs of Ein Gedi
 
@@ -853,6 +884,18 @@ Build prompt:
 
 ```text
 Otiyot project — GitHub repo shlomyeisenberg-lang/Otiyot. Task: number row and symbol lessons (branch: idea-number-row). Work from start to finish without stopping for approval. 1. Read CLAUDE.md, docs/ARCHITECTURE.md, docs/DESIGN.md, docs/GAME_DESIGN.md and your entry in docs/progress.json (read only T13 and the feature idea). 2. Start from the latest main and create the branch idea-number-row. 3. Add lessons to both lesson tracks (src/learn/track.ts, text1.ts, text2.ts) in Hebrew and English that teach the number row (1-0) and the common symbols, after Level 1, so knownKeysOf includes them once passed; keep learned-letters-only and the content rules (ARCHITECTURE section 8). 4. In src/game/regions.ts let the Forge open when the digits are learned (it already asks for them) and point learnPath at the new lessons; give the Night Shuk a keys need for the symbols. 5. Unit tests for the new lessons and for the Forge opening; run pnpm lint, typecheck, test and build. 6. Update docs (ARCHITECTURE sections 5 and 7g, GAME_DESIGN), add your entry to docs/progress.json, run node scripts/render-progress.mjs, push, open a pull request, wait for CI, squash-merge it into main and delete the branch.
+```
+
+### 💡 Photo mode for restored regions (from T14)
+
+**Status:** idea · **Model:** Sonnet 5.5 · **Effort:** Low
+
+The restored Meadow is the prettiest thing in the game so far; a key that hides the HUD and lets the camera ride its rail gives players something to show others.
+
+Build prompt:
+
+```text
+Otiyot project — GitHub repo shlomyeisenberg-lang/Otiyot. Idea: photo mode (branch: idea-photo-mode). Work without stopping for approval. Read CLAUDE.md, docs/ARCHITECTURE.md (sections 7b, 7c, 7h), docs/DESIGN.md and only your own needs in docs/progress.json. Goal: on the results card of the Home Row Meadow (src/ui/screens/meadow.ts) add a 'Look around' button that hides the HUD, the keyboard guide and the card, lets the camera glide slowly along the scene's rail (add a small method on MeadowScene), and returns on any key or click. Strings in both locales, tokens only, works with reduce motion (a still view). Add a unit or Playwright check that the HUD is hidden and comes back. Run pnpm lint, typecheck, test and build. Update docs/progress.json (feature_ideas status built) and run node scripts/render-progress.mjs, commit both, open a pull request, wait for checks, squash-merge it into main and delete the branch.
 ```
 
 ## Notes

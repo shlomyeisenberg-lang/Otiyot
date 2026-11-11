@@ -181,7 +181,7 @@
 }
 .meadow__results .range__results-stats,
 .meadow__results .range__results-earned {
-  grid-template-columns: repeat(auto-fit, minmax(5.5rem, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(4.6rem, 1fr));
 }
 .meadow__results .stat__value {
   font-size: var(--fs-20);
@@ -196,7 +196,9 @@
 }
 
 @media (max-width: 640px) {
+  /* Under the HUD's own readouts, which fill the top of a narrow screen. */
   .meadow__top {
+    inset-block-start: 4.75rem;
     inset-inline-end: var(--sp-2);
     max-inline-size: calc(100% - 2 * var(--sp-2));
   }
@@ -208,7 +210,7 @@
   }
   .meadow__speech {
     inset-inline: var(--sp-2);
-    inset-block-start: calc(var(--sp-3) + 6.5rem);
+    inset-block-start: 8.25rem;
     padding: var(--sp-2);
   }
   .meadow__speech .dialogue__portrait {

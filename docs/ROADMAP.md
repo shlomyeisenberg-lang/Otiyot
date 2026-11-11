@@ -185,7 +185,7 @@ Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Fable 5.2 
 - **Done when** The player can walk the hub by typing, start any unlocked scene, and the hub visibly gains color as regions are restored.
 - **User must have ready** Nothing.
 
-### [ ] T14 · Scene: Home Row Meadow
+### [x] T14 · Scene: Home Row Meadow
 - **Branch** `t14-meadow`
 - **Model** Fable 5.2 · **Effort** High
 - **Goal** Build the "Home Row Meadow" scene as a distinct, beautiful, exciting 3D level whose mechanic is: a gentle guided tutorial where typing home-row letters restores flowers, grass and birdsong; Reb Ezra teaches hand placement through play in the first five minutes; skippable
