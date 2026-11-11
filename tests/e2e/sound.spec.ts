@@ -45,7 +45,7 @@ const status = (page: Page): Promise<Status> =>
 test('every theme makes clean sound, and layers add to it', async ({ page }, info) => {
   test.skip(info.project.name === 'phone', 'Rendering is the same on every screen size');
   await open(page, '/#/sound');
-  await expect(page.locator('.sound__theme')).toHaveCount(5);
+  await expect(page.locator('.sound__theme')).toHaveCount(7);
   const results = await page.evaluate(async () => {
     const p = window.__otiyotSound;
     if (!p) throw new Error('no sound room');
@@ -63,7 +63,7 @@ test('every theme makes clean sound, and layers add to it', async ({ page }, inf
       return { peak, rms: Math.sqrt(sum / d.length), bad };
     };
     const out: Record<string, { low: number; high: number; peak: number; bad: number }> = {};
-    for (const id of ['title', 'hub', 'meadow', 'cliffs', 'forge', 'boss'] as const) {
+    for (const id of ['title', 'hub', 'meadow', 'cliffs', 'forge', 'shuk', 'boss'] as const) {
       const low = measure(await p.render(id, 8, 0, 16000));
       const high = measure(await p.render(id, 8, 1, 16000));
       out[id] = {
@@ -141,5 +141,5 @@ test('settings save all four volumes and open the sound room', async ({ page }) 
   expect((await saved()).voiceVolume).toBeCloseTo(0.9);
   await page.getByRole('button', { name: 'Open the sound room' }).click();
   await expect(page).toHaveURL(/#\/sound$/);
-  await expect(page.locator('.sound__theme')).toHaveCount(5);
+  await expect(page.locator('.sound__theme')).toHaveCount(7);
 });

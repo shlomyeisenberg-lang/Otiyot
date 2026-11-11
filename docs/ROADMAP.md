@@ -233,7 +233,7 @@ Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Fable 5.2 
 - **Done when** The scene is playable start to finish from the hub at 60 fps on medium, feels different from every other scene, and its smoke test passes.
 - **User must have ready** Nothing.
 
-### [ ] T18 · Scene: The Night Shuk
+### [x] T18 · Scene: The Night Shuk
 - **Branch** `t18-shuk`
 - **Model** Sonnet 5.5 · **Effort** High
 - **Goal** Build the "The Night Shuk" scene as a distinct, beautiful, exciting 3D level whose mechanic is: punctuation is currency: fast-talking merchants throw prices and haggles full of symbols, and typing them wins the trade
