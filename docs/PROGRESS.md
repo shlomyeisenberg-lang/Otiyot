@@ -2,7 +2,7 @@
 
 # Otiyot — Progress
 
-_Last updated 2026-11-11. This page is generated from `docs/progress.json`; to change it, edit the JSON and run `node scripts/render-progress.mjs`._
+_Last updated 2026-11-10. This page is generated from `docs/progress.json`; to change it, edit the JSON and run `node scripts/render-progress.mjs`._
 
 ## Summary
 
@@ -51,6 +51,7 @@ Work done before or outside the numbered tasks.
 
 - **2026-11-09** — Planning docs: ARCHITECTURE, GAME_DESIGN, DESIGN, ROADMAP (39 tasks), CLAUDE.md, playbook, progress log. Original plugins 3.3.0 and 4.2.0 added under reference/. (docs/)
 - **2026-11-10** — Owner rules added: no women or sexual content anywhere; text uses only learned letters; scene levels follow learning progress. Content filter (src/learn/content.ts) applied to word packs, sentences and lesson texts. (docs/ARCHITECTURE.md section 8, docs/GAME_DESIGN.md, CLAUDE.md, src/learn/content.ts)
+- **2026-11-10** — Cost change: Fable now builds only T13 (hub), T14 (Meadow, sets the pattern for all scenes), T16 (boss kit), T27 (final) and T34 (polish pass); everything else is Sonnet. CI trimmed (skip docs-only changes, cancel superseded runs). Builders chain into the next task automatically. (docs/auto-run/TASK-PROMPTS.md, .github/workflows/ci.yml)
 
 ## Task overview
 
