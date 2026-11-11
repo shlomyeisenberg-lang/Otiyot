@@ -6,8 +6,8 @@ _Last updated 2026-11-11. This page is generated from `docs/progress.json`; to c
 
 ## Summary
 
-- ✅ **13** of **39** tasks done
-- 🛠️ 1 in progress · ⛔ 0 blocked · ⬜ 25 pending
+- ✅ **14** of **39** tasks done
+- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 25 pending
 - ⬜ **3** manual steps waiting for you
 - 💡 4 feature ideas open
 
@@ -70,7 +70,7 @@ Work done before or outside the numbered tasks.
 - ✅ T11 · Combat, combo and difficulty kit — 2026-11-10 · [PR #17](https://github.com/shlomyeisenberg-lang/Otiyot/pull/17)
 - ✅ T12 · Story system, title screen and intro — 2026-11-11 · [PR #18](https://github.com/shlomyeisenberg-lang/Otiyot/pull/18)
 - ✅ T13 · Hub: the House of the Scribe — 2026-11-11 · [PR #23](https://github.com/shlomyeisenberg-lang/Otiyot/pull/23)
-- 🛠️ T14 · Scene: Home Row Meadow
+- ✅ T14 · Scene: Home Row Meadow — 2026-11-11 · [PR #25](https://github.com/shlomyeisenberg-lang/Otiyot/pull/25)
 - ⬜ T15 · Scene: Cliffs of Ein Gedi
 - ⬜ T16 · Boss kit and the first boss
 - ⬜ T17 · Scene: The Gematria Forge
@@ -661,9 +661,9 @@ The House of the Scribe is built: a 3D home in the Jerusalem hills that works as
 
 Checked in Chromium at 1280x720 and 375x700, light and dark, English and Hebrew, morning, afternoon, evening and night, fresh and partly restored saves.
 
-### 🛠️ T14 · Scene: Home Row Meadow
+### ✅ T14 · Scene: Home Row Meadow
 
-**Status:** In progress
+**Status:** Done · **Finished:** 2026-11-11 · **Pull request:** [PR #25](https://github.com/shlomyeisenberg-lang/Otiyot/pull/25)
 
 The Home Row Meadow can be played from the map: a grey spring valley with a garden of eight beds laid out like the home-row keys, where Reb Ezra teaches hand placement, every right letter opens an anemone, every word spreads the green, and the last word restores the whole valley with a rank.
 

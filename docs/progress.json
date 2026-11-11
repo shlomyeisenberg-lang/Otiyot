@@ -801,9 +801,9 @@
       "notes": "Checked in Chromium at 1280x720 and 375x700, light and dark, English and Hebrew, morning, afternoon, evening and night, fresh and partly restored saves."
     },
     "T14": {
-      "status": "in_progress",
-      "finished": "",
-      "pr": "",
+      "status": "done",
+      "finished": "2026-11-11",
+      "pr": "https://github.com/shlomyeisenberg-lang/Otiyot/pull/25",
       "summary": "The Home Row Meadow can be played from the map: a grey spring valley with a garden of eight beds laid out like the home-row keys, where Reb Ezra teaches hand placement, every right letter opens an anemone, every word spreads the green, and the last word restores the whole valley with a rank.",
       "changes": [
         "src/scenes/meadow/index.ts: the Meadow scene (valley, home-row garden of eight finger-colored beds with letter stones, 688 instanced anemones that open letter by letter, green that spreads in rings word by word, mist of the Fading lifting, almond trees, cypresses, clouds, Reb Ezra, the apprentice, Dyo hopping to the bed just typed, a camera rail with one stop per chapter, the finale)",
