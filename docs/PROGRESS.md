@@ -7,7 +7,7 @@ _Last updated 2026-11-11. This page is generated from `docs/progress.json`; to c
 ## Summary
 
 - ✅ **16** of **39** tasks done
-- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 23 pending
+- 🛠️ 1 in progress · ⛔ 0 blocked · ⬜ 22 pending
 - ⬜ **3** manual steps waiting for you
 - 💡 6 feature ideas open
 
@@ -73,7 +73,7 @@ Work done before or outside the numbered tasks.
 - ✅ T14 · Scene: Home Row Meadow — 2026-11-11 · [PR #25](https://github.com/shlomyeisenberg-lang/Otiyot/pull/25)
 - ✅ T15 · Scene: Cliffs of Ein Gedi — 2026-11-11 · [PR #26](https://github.com/shlomyeisenberg-lang/Otiyot/pull/26)
 - ✅ T16 · Boss kit and the first boss — 2026-11-11 · [PR #27](https://github.com/shlomyeisenberg-lang/Otiyot/pull/27)
-- ⬜ T17 · Scene: The Gematria Forge
+- 🛠️ T17 · Scene: The Gematria Forge — 2026-11-11
 - ⬜ T18 · Scene: The Night Shuk
 - ⬜ T19 · Scene: The Jaffa Line
 - ⬜ T20 · Scene: The Sunken Geniza
@@ -779,11 +779,44 @@ The first boss, the Great Blot, can be fought in the Silent Arena once the Cliff
 
 Local checks passed (lint, typecheck, 397 unit tests, build) and tests/e2e/arena.spec.ts passed in the sandbox. The first CI run failed only in tests/e2e/cliffs.spec.ts, which expects a down-reach from random words (flaky, unrelated to this task; see todo).
 
-### ⬜ T17 · Scene: The Gematria Forge
+### 🛠️ T17 · Scene: The Gematria Forge
 
-**Status:** Pending
+**Status:** In progress · **Finished:** 2026-11-11
 
-_Not started._
+The Gematria Forge can be played from the map once the number row is learned and the Great Blot is beaten: a smithy inside a hill where every number you type is the gematria value of a letter, and a furnace temperature gauge with a safe band decides whether the smith forges it bright, dull or scorched. Four lamps light along the rack as the run goes on and the last number restores the whole cave.
+
+**What changed**
+
+- src/scenes/forge/plan.ts: the run and the furnace as pure data and functions (letters and gematria values for Hebrew and English, numbers from learned digits only, three chapters, stoke / flare / cool, temper against the safe band, lamps by quarter)
+- src/scenes/forge/index.ts: the Forge scene (round cave with an open dome, brick furnace with a temperature-driven mouth and point light, anvil, smith, apprentice, Reb Ezra and Dyo, temperature gauge with a green band and glowing needle, rack of grey letters that are forged and fly into place, four lamps, embers, smoke, sparks, finale)
+- src/scenes/forge/palette.ts: evening and night palettes and the colors of fire, iron and rock
+- src/audio/themes.ts: the 'forge' music theme (D freygish, oud, cello, bells, taiko); locales sound.theme.forge and sound.mood.forge
+- src/story/forge.ts: lines for Reb Ezra and Dyo in Hebrew and English (arrive, the fire, a cold or hot furnace, a bright letter, a slip, lamps, the end)
+- src/ui/screens/forge.ts: the Forge screen (#/forge) built like the Cliffs screen, with the chapter and fire chip, level and difficulty panel and results card with rank, numbers and rewards
+- src/ui/app.ts, src/ui/shell.ts, src/ui/playable.ts: the forge route; the Forge now has a Play button on the hub's map when open
+- src/game/regions.ts: sceneKeysOf and the numberRow save flag, so the Forge can open before the number-row lessons exist
+- locales/en.json, locales/he.json: forge.* strings
+- tests/unit/forge.test.ts (gematria values, learned digits only in both layouts, the furnace and its steady pace, lamps, rack positions, region and route, story lines) and tests/e2e/forge.spec.ts (a whole run from the hub's map, cooling, restart and Esc, and the shut Forge); tests/e2e/sound.spec.ts lists the new theme
+- docs/ARCHITECTURE.md section 7j, CHANGELOG.md, ROADMAP tick
+
+**Decisions**
+
+- **Each number is the gematria value of a letter, shown as a blank letter on the smith's rack that the number forges.** — It is the mechanic the roadmap names (numbers and letter values) and every digit string stays spelled with learned digits only.
+- **The furnace cools by a share of its heat per second, with a rate per level, instead of a fixed amount.** — Every steady typing speed then settles at one temperature, so the safe band is reachable on every level; a fixed cooling would leave the fire stuck wherever it started.
+- **A fire that is too low or too high only dulls or scorches a letter; it never ends the run, and it does not cool before the first key.** — The roadmap asks for no soft-locks and a run completable on every difficulty. Rank still comes from the host's accuracy and speed.
+- **Added the save flag story.flags.numberRow (sceneKeysOf) that counts the digits as learned.** — No lesson teaches the digits yet, so the Forge could never open or be tested. The future number-row lessons set the flag; the map and the screen both read it.
+- **The smith is a silent man, and Reb Ezra and Dyo speak.** — The cast has no smith; adding a speaker needs a portrait, which belongs to the story task.
+- **Music melody on bells so the theme stays distinct from the other five.** — A test requires every theme to have its own melody instrument.
+
+**To do**
+
+- [ ] Number-row lessons that set the numberRow flag so a normal player can open the Forge (ROADMAP Later).
+- [ ] Polish pass (T34): the rack plates are too dark to see, the cave walls are plain low-poly, the dome and its window need a light shaft, the smith only repeats the write animation, and the color sweep looks dithered mid-way.
+- [ ] Reb Ezra's lines are not read aloud by the optional voice setting yet (T35 owns voice).
+
+**Notes**
+
+Built by the Sonnet runner, High effort, following the Cliffs and Meadow pattern. Looked at in Chromium at 1280 wide, light theme, three moments of a run. The CI state file on the auto-run-state branch could not be written through the proxy; the pushed branch served as the claim.
 
 ### ⬜ T18 · Scene: The Night Shuk
 

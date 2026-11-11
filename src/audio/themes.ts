@@ -67,8 +67,8 @@ export interface ThemeSpec {
   level: number;
 }
 
-export type ThemeId = 'title' | 'hub' | 'meadow' | 'cliffs' | 'boss';
-export const THEME_IDS: readonly ThemeId[] = ['title', 'hub', 'meadow', 'cliffs', 'boss'];
+export type ThemeId = 'title' | 'hub' | 'meadow' | 'cliffs' | 'forge' | 'boss';
+export const THEME_IDS: readonly ThemeId[] = ['title', 'hub', 'meadow', 'cliffs', 'forge', 'boss'];
 
 // Compound (6/8) cells: 6 steps per bar.
 const CELLS_6 = [
@@ -216,6 +216,35 @@ export const THEMES: Readonly<Record<ThemeId, ThemeSpec>> = {
     cadences: CAD_6,
     reverb: 0.42,
     brightness: 0.65,
+    level: 0.85,
+  },
+  // The Gematria Forge: a hammering D phrygian-dominant groove in 4/4, taiko on the anvil beat,
+  // oud and cello under a lead of bells. It starts low and slow, then the fire catches.
+  forge: {
+    id: 'forge',
+    nameKey: 'sound.theme.forge',
+    seed: 5173,
+    bpm: 104,
+    beats: 4,
+    sub: 2,
+    root: 62,
+    mode: 'freygish',
+    swing: 0,
+    form: ['A', 'B', 'A', 'C'],
+    sections: {
+      A: { bars: 8, chords: [0, 0, 1, 0, 0, 0, 6, 1], register: 1, density: 0.5 },
+      B: { bars: 8, chords: [3, 3, 0, 0, 6, 6, 1, 0], register: 2, density: 0.65 },
+      C: { bars: 8, chords: [0, 1, 0, 1, 3, 6, 1, 0], register: 3, density: 0.8 },
+    },
+    voices: { drone: 'pad', pulse: 'oud', melody: 'bell', counter: 'cello' },
+    kit: 'taiko',
+    pulse: [0, 2, 1, 2, 0, 3, 1, 2],
+    counterOctave: -1,
+    drums: { base: 'D..D..D.', full: 'DkTDkTDS' },
+    cells: CELLS_8,
+    cadences: CAD_8,
+    reverb: 0.3,
+    brightness: 0.6,
     level: 0.85,
   },
   // Boss: C freygish at full drive, taiko and cello ostinato. Four phases: each climbs, and the
