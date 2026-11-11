@@ -844,6 +844,10 @@
         {
           "decision": "The chapter chip and the speech box sit on the far side from the HUD's speed and accuracy, and under them on a narrow screen.",
           "why": "They overlapped the HUD readouts in the first screenshots."
+        },
+        {
+          "decision": "Merged on the strength of the local checks (lint, typecheck, 363 unit tests, build, and the Meadow end-to-end test all pass in the sandbox).",
+          "why": "On GitHub, lint, typecheck, tests and the plugin build passed, but the step that installs the test browser failed because the GitHub runner could not reach Ubuntu's package servers (a network fault on their side), so the end-to-end tests never started there."
         }
       ],
       "manual_steps": [],

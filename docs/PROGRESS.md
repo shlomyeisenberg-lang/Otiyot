@@ -688,6 +688,7 @@ The Home Row Meadow can be played from the map: a grey spring valley with a gard
 - **A failed Sofer's Trial does not restore the Meadow; every run writes a statistics-only history entry scene:meadow:<level>:<difficulty>; rewards are shown but not added to a wallet.** — Same rules as the wave fights (T11); the wallet arrives with T33.
 - **Enter on the results card goes back to the house after the first restoration, and plays again on later runs.** — The first time, the story continues at home where the beacon lights; later the player is here to practise.
 - **The chapter chip and the speech box sit on the far side from the HUD's speed and accuracy, and under them on a narrow screen.** — They overlapped the HUD readouts in the first screenshots.
+- **Merged on the strength of the local checks (lint, typecheck, 363 unit tests, build, and the Meadow end-to-end test all pass in the sandbox).** — On GitHub, lint, typecheck, tests and the plugin build passed, but the step that installs the test browser failed because the GitHub runner could not reach Ubuntu's package servers (a network fault on their side), so the end-to-end tests never started there.
 
 **To do**
 
