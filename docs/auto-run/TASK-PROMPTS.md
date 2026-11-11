@@ -4,7 +4,7 @@ Three scheduled tasks build this list while nobody watches: **"Otiyot Opus build
 
 **Rules for every task (from the owner):** (1) No women and nothing sexy anywhere: every human character is male, nothing suggestive in visuals, text, jokes or word lists. (2) Text to type uses only letters the player has already learned in their lesson track, and every scene has levels (Easy / Standard / Hard) built from that learned set and unlocked by course progress. Details: CLAUDE.md, ARCHITECTURE section 8, GAME_DESIGN 'Levels follow your learning'.
 
-Owner rule: Opus builds the few tasks that need real taste and skill (hub, the Meadow that sets the pattern for all scenes, boss kit, polish pass). Fable builds only the story-heavy tasks (the final Keeper fight and the full story and cutscenes). Sonnet builds everything else: scenes that copy the Meadow's pattern, ports of existing code, saves, tests, packaging.
+Owner rule: Opus builds everything that needs real taste and skill (hub, the Meadow that sets the pattern for all scenes, boss kit, the final Keeper fight, polish pass). Fable builds only the full story and cutscenes (T35). Sonnet builds everything else: scenes that copy the Meadow's pattern, ports of existing code, saves, tests, packaging.
 
 Effort guide: Low = quick and direct · Medium = normal care · High = think the design through before building, test edge cases · Xhigh = plan, build, then play it and critique it yourself and improve at least once before merging.
 
@@ -36,7 +36,7 @@ Effort guide: Low = quick and direct · Medium = normal care · High = think the
 | T24 | Sonnet | High | `t24-midbar` | Scene: The Long Midbar |
 | T25 | Sonnet | High | `t25-caves` | Scene: The Lantern Caves |
 | T26 | Sonnet | High | `t26-arena-bosses` | The Silent Arena: remaining bosses |
-| T27 | Fable | Xhigh | `t27-final` | The Blank Scroll and the Keeper |
+| T27 | Opus | Xhigh | `t27-final` | The Blank Scroll and the Keeper |
 | T28 | Sonnet | Medium | `t28-ladder` | Scene: The Ladder (endless) |
 | T29 | Sonnet | High | `t29-arcade-classics` | Arcade: host and the 3D classics |
 | T30 | Sonnet | Medium | `t30-arcade-newgen` | Arcade: new-generation and quick games |
@@ -516,7 +516,7 @@ Goal: Three more multi-phase bosses in the arena, each testing a different skill
 
 ## T27 · The Blank Scroll and the Keeper
 
-Owner: **Fable** · Effort: **Xhigh** · Branch: `t27-final`
+Owner: **Opus** · Effort: **Xhigh** · Branch: `t27-final`
 
 Done when: The game can be finished from a fresh profile; the ending lands emotionally; no soft-locks.
 
