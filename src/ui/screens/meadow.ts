@@ -128,7 +128,11 @@ export function meadowScreen(ctx: AppContext): Screen {
     'aria-label': t.t('meadow.options'),
     hidden: true,
   });
-  const results = h('div', { class: 'range__results meadow__results', hidden: true, role: 'dialog' });
+  const results = h('div', {
+    class: 'range__results meadow__results',
+    hidden: true,
+    role: 'dialog',
+  });
   const speech = dialogueBox({
     speaker: '',
     text: '',
@@ -178,6 +182,14 @@ export function meadowScreen(ctx: AppContext): Screen {
     sceneLeak: 0,
     step: (seconds) => engine?.simulate(seconds),
   };
+  // What the meadow shows is read live from the scene, so a test that steps the world sees it.
+  Object.defineProperties(probe, {
+    bloomed: { get: () => scene?.bloomed ?? 0, enumerable: true },
+    flowers: { get: () => scene?.flowerCount ?? 0, enumerable: true },
+    green: { get: () => scene?.greenReach ?? 0, enumerable: true },
+    birds: { get: () => scene?.birdsOut ?? 0, enumerable: true },
+    restored: { get: () => scene?.restored ?? false, enumerable: true },
+  });
   window.__otiyotMeadow = probe;
 
   let engine: Engine | null = null;
@@ -237,11 +249,6 @@ export function meadowScreen(ctx: AppContext): Screen {
     const next = d?.guide() ?? null;
     probe.nextKey = next?.code ?? null;
     probe.nextShift = next?.shift ?? null;
-    probe.bloomed = scene?.bloomed ?? 0;
-    probe.flowers = scene?.flowerCount ?? 0;
-    probe.green = scene?.greenReach ?? 0;
-    probe.birds = scene?.birdsOut ?? 0;
-    probe.restored = scene?.restored ?? false;
     chipTitle.textContent = t.t(`meadow.chapter.${chapter}` as MessageKey);
     chipCount.textContent =
       chapter === 'finale'
@@ -420,9 +427,14 @@ export function meadowScreen(ctx: AppContext): Screen {
     h(
       'div',
       { class: 'range__results-actions' },
-      button({ label: t.t('meadow.options.restart'), variant: 'primary', onClick: () => startRun() }),
+      button({
+        label: t.t('meadow.options.restart'),
+        variant: 'primary',
+        onClick: () => startRun(),
+      }),
     ),
   );
+  mark();
   function toggleOptions(): void {
     if (!probe.ready) return;
     options.hidden = !options.hidden;

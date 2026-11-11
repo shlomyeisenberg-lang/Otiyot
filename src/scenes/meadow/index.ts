@@ -129,7 +129,8 @@ function terrain(x: number, z: number): number {
   const d = Math.hypot(x, z);
   // Rolling ground, and the almond tree's hill.
   let h =
-    Math.sin(x * 0.045 + 1.3) * Math.cos(z * 0.05 - 0.4) * 1.7 + Math.sin(x * 0.11 + z * 0.07) * 0.5;
+    Math.sin(x * 0.045 + 1.3) * Math.cos(z * 0.05 - 0.4) * 1.7 +
+    Math.sin(x * 0.11 + z * 0.07) * 0.5;
   const hx = x - TREE_X;
   const hz = z - TREE_Z;
   h += 5.2 * Math.exp(-(hx * hx + hz * hz) / 360);
@@ -252,6 +253,7 @@ export class MeadowScene implements GameScene {
   private time = 0;
   private finaleT = -1;
   private petalTimer = 0;
+  private bedTimer = 0;
   private moteTimer = 0;
 
   private rail!: CatmullRomCurve3;
@@ -522,7 +524,11 @@ export class MeadowScene implements GameScene {
       0.5,
     );
     const first = VIEW.hands;
-    this.lookAt.position.set(first.look[0] as number, first.look[1] as number, first.look[2] as number);
+    this.lookAt.position.set(
+      first.look[0] as number,
+      first.look[1] as number,
+      first.look[2] as number,
+    );
     root.add(this.lookAt);
     this.railT = first.t;
     ctx.rig.railT = first.t;
@@ -550,7 +556,10 @@ export class MeadowScene implements GameScene {
       // Turned earth under the garden, a pale path leading back to the house.
       a.lerp(b.setHex(TINT.earth), (1 - smoothstep(5.2, 8.2, d + r.signed() * 0.8)) * 0.85);
       if (z > 0.5 && Math.abs(x) < 2.6) {
-        a.lerp(b.setHex(TINT.path), (1 - smoothstep(0.8, 2.6, Math.abs(x) + r.signed() * 0.5)) * 0.8);
+        a.lerp(
+          b.setHex(TINT.path),
+          (1 - smoothstep(0.8, 2.6, Math.abs(x) + r.signed() * 0.5)) * 0.8,
+        );
       }
       // The far ridges go blue-green in the haze.
       a.lerp(b.setHex(TINT.hillFar), smoothstep(70, 140, Math.hypot(x, z)) * 0.75);
@@ -660,7 +669,10 @@ export class MeadowScene implements GameScene {
     const soilGeo = tracker.track(new CylinderGeometry(PLOT_SIZE, PLOT_SIZE, 0.07, 14));
     const soilMesh = soil.build(soilGeo, tracker.track(kit.surface({ restore: false })));
     const stoneGeo = tracker.track(new CylinderGeometry(0.3, 0.36, 0.7, 6).scale(1, 1, 0.55));
-    const stoneMesh = stones.build(stoneGeo, tracker.track(kit.surface({ restore: false, lift: 0.1 })));
+    const stoneMesh = stones.build(
+      stoneGeo,
+      tracker.track(kit.surface({ restore: false, lift: 0.1 })),
+    );
     const studGeo = tracker.track(new SphereGeometry(0.07, 8, 6));
     const studMesh = studs.build(studGeo, tracker.track(kit.ink(this.gold, 2.4)));
     for (const mesh of [rimMesh, soilMesh, stoneMesh, studMesh]) {
@@ -685,7 +697,9 @@ export class MeadowScene implements GameScene {
       painted(new IcosahedronGeometry(0.085, 0).translate(0, 1.03, 0), TINT.heart),
     ]);
     // The cup of petals: an open cone, wide end up.
-    const petalGeo = new ConeGeometry(0.33, 0.24, 6, 1, true).rotateX(Math.PI).translate(0, 1.06, 0);
+    const petalGeo = new ConeGeometry(0.33, 0.24, 6, 1, true)
+      .rotateX(Math.PI)
+      .translate(0, 1.06, 0);
     const stemMat = tracker.track(kit.surface({ vertexColors: true, restore: false, lift: 0.15 }));
     const petalMat = tracker.track(kit.surface({ restore: false, lift: 0.4, side: DoubleSide }));
     this.stems = new InstancedMesh(tracker.track(stemGeo), stemMat, n);
@@ -811,7 +825,13 @@ export class MeadowScene implements GameScene {
           .addScaledVector(side, r.range(0.6, 0.95))
           .addScaledVector(UP, r.range(0.15, 0.5))
           .normalize();
-        grow(tip.clone().addScaledVector(dir, -len * 0.12), next, len * r.range(0.62, 0.74), rad * 0.58, depth - 1);
+        grow(
+          tip.clone().addScaledVector(dir, -len * 0.12),
+          next,
+          len * r.range(0.62, 0.74),
+          rad * 0.58,
+          depth - 1,
+        );
       }
     };
     const tree = (x: number, z: number, scale: number): void => {
@@ -918,7 +938,11 @@ export class MeadowScene implements GameScene {
       for (let k = 0; k < 4; k++) {
         q.identity();
         puffs.add(
-          p.set(cx + (k - 1.5) * big * 0.9 + r.signed() * 2, cy + r.signed() * 1.5, cz + r.signed() * 4),
+          p.set(
+            cx + (k - 1.5) * big * 0.9 + r.signed() * 2,
+            cy + r.signed() * 1.5,
+            cz + r.signed() * 4,
+          ),
           q,
           s.set(big * r.range(0.8, 1.2), big * r.range(0.32, 0.5), big * r.range(0.7, 1)),
           TINT.cloud,
@@ -1223,9 +1247,22 @@ export class MeadowScene implements GameScene {
     if (this.finaleT >= 0) {
       const before = this.finaleT;
       this.finaleT += dt;
+      // The whole garden flowers, bed by bed: also the beds whose letters are still to come.
+      if ((this.bedTimer -= dt) <= 0) {
+        this.bedTimer = 0.05;
+        for (let b = 0; b < 8; b++) {
+          const n = this.plotOpen[b] as number;
+          if (n >= PLOT_FLOWERS) continue;
+          this.plotOpen[b] = n + 1;
+          this.bloom(b * PLOT_FLOWERS + n);
+          break;
+        }
+      }
       // Two more fountains as the color rolls out.
-      if (before < 0.7 && this.finaleT >= 0.7) vfx.burst(this.fountain, -3, 1.4, GARDEN_Z - 5, 0, 1, 0);
-      if (before < 1.4 && this.finaleT >= 1.4) vfx.burst(this.fountain, 3, 1.4, GARDEN_Z - 9, 0, 1, 0);
+      if (before < 0.7 && this.finaleT >= 0.7)
+        vfx.burst(this.fountain, -3, 1.4, GARDEN_Z - 5, 0, 1, 0);
+      if (before < 1.4 && this.finaleT >= 1.4)
+        vfx.burst(this.fountain, 3, 1.4, GARDEN_Z - 9, 0, 1, 0);
     }
   }
 

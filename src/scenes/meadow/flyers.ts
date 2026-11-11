@@ -105,7 +105,8 @@ export class Flyers {
     for (let i = 0; i < n; i++) {
       this.radius[i] = rng.range(o.roam[0], o.roam[1]);
       this.height[i] = rng.range(o.height[0], o.height[1]);
-      this.speed[i] = (bird ? rng.range(5.5, 8) : rng.range(0.55, 1.1)) * (rng.next() < 0.5 ? -1 : 1);
+      this.speed[i] =
+        (bird ? rng.range(5.5, 8) : rng.range(0.55, 1.1)) * (rng.next() < 0.5 ? -1 : 1);
       this.phase[i] = rng.range(0, Math.PI * 2);
       this.flap[i] = bird ? rng.range(7, 10) : rng.range(13, 19);
       this.cx[i] = o.centerX + (bird ? rng.signed() * 8 : rng.signed() * o.roam[1]);
@@ -119,7 +120,9 @@ export class Flyers {
     parent.add(tracker.track(this.wings));
     if (bird) {
       const geo = new OctahedronGeometry(1, 0).scale(0.13, 0.11, 0.42);
-      const mat = tracker.track(kit.surface({ color: o.body ?? 0x333333, restore: false, lift: 0.2 }));
+      const mat = tracker.track(
+        kit.surface({ color: o.body ?? 0x333333, restore: false, lift: 0.2 }),
+      );
       this.bodies = new InstancedMesh(tracker.track(geo), mat, n);
       this.bodies.frustumCulled = false;
       kit.caster(this.bodies, false);
@@ -175,11 +178,14 @@ export class Flyers {
         // A wide circle, rising and dipping a little.
         const a = ph + (t * sp) / r;
         const dir = sp > 0 ? 1 : -1;
-        p.set((this.cx[i] as number) + Math.cos(a) * r, 0, (this.cz[i] as number) + Math.sin(a) * r);
+        p.set(
+          (this.cx[i] as number) + Math.cos(a) * r,
+          0,
+          (this.cz[i] as number) + Math.sin(a) * r,
+        );
         vx = -Math.sin(a) * dir;
         vz = Math.cos(a) * dir;
-        p.y =
-          o.groundAt(p.x, p.z) * 0.5 + (this.height[i] as number) + Math.sin(a * 3 + ph) * 1.4;
+        p.y = o.groundAt(p.x, p.z) * 0.5 + (this.height[i] as number) + Math.sin(a * 3 + ph) * 1.4;
         // Birds arrive from above and beyond.
         p.y += (1 - shown) * 14;
         bank = -0.35 * dir;
@@ -187,7 +193,11 @@ export class Flyers {
         // A wandering loop near its own spot.
         const a = t * sp + ph;
         const b = t * sp * 1.31 + ph * 2;
-        p.set((this.cx[i] as number) + Math.sin(a) * r, 0, (this.cz[i] as number) + Math.cos(b) * r);
+        p.set(
+          (this.cx[i] as number) + Math.sin(a) * r,
+          0,
+          (this.cz[i] as number) + Math.cos(b) * r,
+        );
         vx = Math.cos(a) * sp;
         vz = -Math.sin(b) * sp * 1.31;
         p.y =

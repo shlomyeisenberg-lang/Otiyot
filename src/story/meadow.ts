@@ -84,11 +84,7 @@ export const MEADOW_LINES: Readonly<Record<MeadowMoment, readonly Line[]>> = {
     ),
   ],
   combo: [
-    L(
-      'dyo',
-      'עשר ברצף! תראה, הדיו נהיה תכלת!',
-      'Ten in a row! Look, the ink is turning blue!',
-    ),
+    L('dyo', 'עשר ברצף! תראה, הדיו נהיה תכלת!', 'Ten in a row! Look, the ink is turning blue!'),
   ],
   birds: [
     L(
@@ -104,9 +100,7 @@ export const MEADOW_LINES: Readonly<Record<MeadowMoment, readonly Line[]>> = {
       'The birds remember their song. Your fingers will remember too.',
     ),
   ],
-  tree: [
-    L('ezra', 'השקדייה. היא תמיד פורחת ראשונה.', 'The almond tree. It always blooms first.'),
-  ],
+  tree: [L('ezra', 'השקדייה. היא תמיד פורחת ראשונה.', 'The almond tree. It always blooms first.')],
   skip: [
     L(
       'dyo',
