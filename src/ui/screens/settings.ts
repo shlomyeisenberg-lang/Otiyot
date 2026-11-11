@@ -2,7 +2,8 @@
 // add their own rows here (T36 fills in the rest of accessibility and health).
 
 import type { BackspacePolicy, NiqqudMode } from '../../core';
-import type { KeyboardGuideMode, Settings, ThemeChoice } from '../../save';
+import type { KeyboardGuideMode, Settings, TextSpeed, ThemeChoice } from '../../save';
+import { TEXT_SPEEDS } from '../../story';
 import type { AppContext, Screen } from '../app';
 import { button, field, select, slider, tabs, toggle } from '../components';
 import { h } from '../dom';
@@ -58,6 +59,12 @@ export function settingsScreen(ctx: AppContext): Screen {
       (v) => ctx.updateSettings({ theme: v }),
     );
     theme.dataset.setting = 'theme';
+    const speed = select<TextSpeed>(
+      TEXT_SPEEDS.map((v) => ({ value: v, label: t.t(`settings.textSpeed.${v}`) })),
+      cur().textSpeed,
+      (v) => ctx.updateSettings({ textSpeed: v }),
+    );
+    speed.dataset.setting = 'textSpeed';
     return h(
       'div',
       {},
@@ -68,6 +75,7 @@ export function settingsScreen(ctx: AppContext): Screen {
       switchRow('largeText', 'settings.largeText', 'settings.largeTextHint'),
       switchRow('dyslexiaFont', 'settings.dyslexia', 'settings.dyslexiaHint'),
       switchRow('reducedMotion', 'settings.reducedMotion', 'settings.reducedMotionHint'),
+      field({ label: t.t('settings.textSpeed'), hint: t.t('settings.textSpeedHint') }, speed),
     );
   };
 
@@ -79,6 +87,7 @@ export function settingsScreen(ctx: AppContext): Screen {
       volumeRow('sfxVolume', 'settings.sfx'),
       volumeRow('voiceVolume', 'settings.voice'),
       volumeRow('uiVolume', 'settings.ui'),
+      switchRow('storyVoices', 'settings.storyVoices', 'settings.storyVoicesHint'),
       h(
         'div',
         { class: 'page__actions' },

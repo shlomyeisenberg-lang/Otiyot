@@ -33,7 +33,13 @@ export interface Settings {
   quality: QualityChoice;
   /** The keyboard guide under the play view (v5, T09): keys, keys with hands, or hidden. */
   keyboardGuide: KeyboardGuideMode;
+  /** How fast story lines appear (v7, T12). */
+  textSpeed: TextSpeed;
+  /** Read story lines aloud with the device's own voices (v7, T12). Off by default. */
+  storyVoices: boolean;
 }
+
+export type TextSpeed = 'slow' | 'normal' | 'fast' | 'instant';
 
 export type KeyboardGuideMode = 'keys' | 'hands' | 'off';
 
@@ -137,6 +143,8 @@ export function defaultSettings(): Settings {
     dyslexiaFont: false,
     quality: 'auto',
     keyboardGuide: 'keys',
+    textSpeed: 'normal',
+    storyVoices: false,
   };
 }
 
@@ -245,6 +253,14 @@ function normalizeSettings(raw: unknown): Settings {
       r.keyboardGuide === 'keys' || r.keyboardGuide === 'hands' || r.keyboardGuide === 'off'
         ? r.keyboardGuide
         : d.keyboardGuide,
+    textSpeed:
+      r.textSpeed === 'slow' ||
+      r.textSpeed === 'normal' ||
+      r.textSpeed === 'fast' ||
+      r.textSpeed === 'instant'
+        ? r.textSpeed
+        : d.textSpeed,
+    storyVoices: r.storyVoices === true,
   };
 }
 
