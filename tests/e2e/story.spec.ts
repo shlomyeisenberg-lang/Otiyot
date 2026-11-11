@@ -37,9 +37,13 @@ test('launch: title, then the opening plays, can be skipped, and hands over', as
   await page.keyboard.press('Shift');
   const begin = page.getByRole('menuitem', { name: /Begin the story/ });
   await expect(begin).toBeVisible();
-  const title = await page.evaluate(() => window.__otiyotTitle);
-  expect(title?.ready).toBe(true);
-  if (!title?.failed) expect(title?.landed).toBe(12);
+  expect(await page.evaluate(() => window.__otiyotTitle?.ready)).toBe(true);
+  // Behind the choices, every letter lands as soon as the 3D page is loaded.
+  await page.waitForFunction(
+    () => window.__otiyotTitle?.failed === true || window.__otiyotTitle?.landed === 12,
+    null,
+    { timeout: 60_000 },
+  );
   await begin.click();
 
   // The opening: lines type themselves out; Enter shows the rest, then moves on.
