@@ -634,6 +634,8 @@ The House of the Scribe is built: a 3D home in the Jerusalem hills that works as
 - tests/unit/hub.test.ts (door words learned letters only, prefix-free, picker, regions follow the course, learn path, ranks, share, next region, suggested level, lines keep the content rules) and tests/e2e/hub.spec.ts (walk by typing, map, a lesson typed by the guide and saved, no GPU leak, restored hub with beacons and trophies); story.spec and shell.spec now expect the hub after the intro
 - docs: ARCHITECTURE (routes, save notes, section 7g), DESIGN (hub components), GAME_DESIGN (the House of the Scribe), ROADMAP (T13 ticked, number-row lessons under Later), CHANGELOG
 - Opus builder review: merged latest main, fixed the Hebrew menu e2e test (the first menu item is now the journey, so one arrow down reaches Players), re-ran all checks and looked at the hub in Chromium (fresh, partly and fully restored, phone width)
+- src/engine/transition.ts: the ink transition clamps its progress, so a frame stamped before its start never draws a negative radius (it raised console errors in the hub e2e on CI)
+- Took in the title fix from open PR #19 (a key on the title shows the choices at once), because the first-run e2e failed twice in a row on CI for this branch
 
 **Decisions**
 
@@ -646,6 +648,7 @@ The House of the Scribe is built: a 3D home in the Jerusalem hills that works as
 - **The day turns from the local hour, one whole day in 12 real minutes** — The house feels alive while staying in step with the player's own time of day
 - **Handed the finished branch to the Opus builder instead of merging** — The owner moved T13 from Fable to Opus (PRs #20-#22) while this run was building it; this runner only merges its own tasks
 - **Opus builder merged the Fable-built branch after review instead of rebuilding the hub** — The work met the done-when (walk by typing, start unlocked regions, color returns with restoration), all local checks passed, and rebuilding would waste the budget
+- **Cherry-picked the title fix from PR #19 into this branch instead of waiting for it** — The first-run test failed on CI twice with the slower hub build; #19 is the known fix and has passed CI. #19 can be closed or merged afterwards (same change)
 
 **To do**
 

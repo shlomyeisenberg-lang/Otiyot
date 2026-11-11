@@ -745,7 +745,9 @@
         "locales/en.json and he.json: hub, map, region names and places, lesson strings",
         "tests/unit/hub.test.ts (door words learned letters only, prefix-free, picker, regions follow the course, learn path, ranks, share, next region, suggested level, lines keep the content rules) and tests/e2e/hub.spec.ts (walk by typing, map, a lesson typed by the guide and saved, no GPU leak, restored hub with beacons and trophies); story.spec and shell.spec now expect the hub after the intro",
         "docs: ARCHITECTURE (routes, save notes, section 7g), DESIGN (hub components), GAME_DESIGN (the House of the Scribe), ROADMAP (T13 ticked, number-row lessons under Later), CHANGELOG",
-        "Opus builder review: merged latest main, fixed the Hebrew menu e2e test (the first menu item is now the journey, so one arrow down reaches Players), re-ran all checks and looked at the hub in Chromium (fresh, partly and fully restored, phone width)"
+        "Opus builder review: merged latest main, fixed the Hebrew menu e2e test (the first menu item is now the journey, so one arrow down reaches Players), re-ran all checks and looked at the hub in Chromium (fresh, partly and fully restored, phone width)",
+        "src/engine/transition.ts: the ink transition clamps its progress, so a frame stamped before its start never draws a negative radius (it raised console errors in the hub e2e on CI)",
+        "Took in the title fix from open PR #19 (a key on the title shows the choices at once), because the first-run e2e failed twice in a row on CI for this branch"
       ],
       "decisions": [
         {
@@ -783,6 +785,10 @@
         {
           "decision": "Opus builder merged the Fable-built branch after review instead of rebuilding the hub",
           "why": "The work met the done-when (walk by typing, start unlocked regions, color returns with restoration), all local checks passed, and rebuilding would waste the budget"
+        },
+        {
+          "decision": "Cherry-picked the title fix from PR #19 into this branch instead of waiting for it",
+          "why": "The first-run test failed on CI twice with the slower hub build; #19 is the known fix and has passed CI. #19 can be closed or merged afterwards (same change)"
         }
       ],
       "manual_steps": [],
