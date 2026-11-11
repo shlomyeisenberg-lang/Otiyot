@@ -7,9 +7,9 @@ _Last updated 2026-11-11. This page is generated from `docs/progress.json`; to c
 ## Summary
 
 - ✅ **14** of **39** tasks done
-- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 25 pending
+- 🛠️ 1 in progress · ⛔ 0 blocked · ⬜ 24 pending
 - ⬜ **3** manual steps waiting for you
-- 💡 4 feature ideas open
+- 💡 5 feature ideas open
 
 ## Waiting for me
 
@@ -71,7 +71,7 @@ Work done before or outside the numbered tasks.
 - ✅ T12 · Story system, title screen and intro — 2026-11-11 · [PR #18](https://github.com/shlomyeisenberg-lang/Otiyot/pull/18)
 - ✅ T13 · Hub: the House of the Scribe — 2026-11-11 · [PR #23](https://github.com/shlomyeisenberg-lang/Otiyot/pull/23)
 - ✅ T14 · Scene: Home Row Meadow — 2026-11-11 · [PR #25](https://github.com/shlomyeisenberg-lang/Otiyot/pull/25)
-- ⬜ T15 · Scene: Cliffs of Ein Gedi
+- 🛠️ T15 · Scene: Cliffs of Ein Gedi — 2026-11-11
 - ⬜ T16 · Boss kit and the first boss
 - ⬜ T17 · Scene: The Gematria Forge
 - ⬜ T18 · Scene: The Night Shuk
@@ -699,11 +699,42 @@ The Home Row Meadow can be played from the map: a grey spring valley with a gard
 
 Built by the Fable runner, High effort. Looked at in Chromium at 1280 and 375 wide, English and Hebrew, both themes, and recomposed three times (camera, garden placement, results card). About 87 draw calls and 99k triangles on medium.
 
-### ⬜ T15 · Scene: Cliffs of Ein Gedi
+### 🛠️ T15 · Scene: Cliffs of Ein Gedi
 
-**Status:** Pending
+**Status:** In progress · **Finished:** 2026-11-11
 
-_Not started._
+The Cliffs of Ein Gedi can be played from the map: a grey desert canyon where every word is a stepping stone, top-row words make the scribe reach up to a higher stone and bottom-row words down to a lower one, color sweeps ahead of him, a waterfall restarts at the end of each quarter and the last word restores the whole canyon with a rank.
+
+**What changed**
+
+- src/scenes/cliffs/index.ts: the Cliffs scene (canyon terrain with banded sandstone walls and a river, instanced stone pillars at the planned heights, summit slab with Reb Ezra, the apprentice hopping stone to stone with Dyo, a follow camera that looks up or down with the reach, four instanced waterfalls that start in turn, ibex on the ledges, acacias, reeds, boulders, birds, dust and heat motes, a gold beacon ring on the next stone, the finale)
+- src/scenes/cliffs/plan.ts: the run as pure data (rows of letters, reach up/down/level, stone heights, three chapters, waterfalls and ibex by progress; only learned letters); src/scenes/cliffs/palette.ts: golden afternoon and dusk palettes
+- src/story/cliffs.ts: lines for Reb Ezra and Dyo in Hebrew and English (arriving, the reach up and down, the canyon, the waterfalls, the ibex, a slip, the end)
+- src/ui/screens/cliffs.ts: the Cliffs screen (#/cliffs), built like the Meadow screen (chapter chip with reach, speech box, Level and difficulty panel, results card with rank, numbers, rewards and the way back to the house), reusing the meadow__ styles
+- src/ui/app.ts, src/ui/shell.ts, src/ui/playable.ts: the cliffs route; the Cliffs now have a Play button on the hub's map
+- locales/en.json, locales/he.json: cliffs.* strings
+- tests/unit/cliffs.test.ts (11 tests, including learned-letters-only for both tracks and languages) and tests/e2e/cliffs.spec.ts (a whole run from the hub's map by following the finger guide, reaching both up and down, all four falls, rank saved, no GPU leak; restart and Esc)
+- docs/ARCHITECTURE.md section 7i, CHANGELOG.md, ROADMAP tick
+
+**Decisions**
+
+- **Reach direction comes from the row most of a word's letters live on (top, bottom or level), and the stone height moves one step per word, clamped to a range.** — It makes the mechanic visible with any learned set: a player who has not learned the top or bottom row simply gets level steps, so a run can never become impossible.
+- **Four waterfalls and five ibex tied to quarters of the run, plus one ibex at the summit.** — The roadmap says waterfalls restart as sections are restored; whole quarters work for 12, 16 and 20 words.
+- **No timers and no attacking enemies, on any difficulty.** — Same reason as the Meadow: the grey is the opponent. Difficulty still changes word length, slip cost and the Sofer's Trial.
+- **Reb Ezra waits on the summit slab from the start instead of walking with the scribe.** — It gives the stepping stones a visible goal and saves a second character animation.
+- **The Cliffs scene imports the birds from src/scenes/meadow/flyers.ts and the screen reuses the meadow__ CSS classes.** — Keeps the change small; moving shared code can be done in the polish pass.
+- **The camera follows with a half-turn orbit (the follow camera looks toward +z by default) from 17 units back and 9.5 up, aimed slightly below the scribe.** — The first try looked back at the scribe; this keeps him in the upper middle, clear of the banner and the keyboard.
+- **Merged on the strength of passing local checks if GitHub checks did not report in time (see notes).** — Instruction for unattended runs.
+
+**To do**
+
+- [ ] Waterfall water is a set of sliding white streaks; a flowing-water shader would look better (polish pass T34).
+- [ ] Reb Ezra's lines are not read aloud by the optional voice setting yet (T35 owns voice).
+- [ ] The ibex stand still; a small idle animation would be nice.
+
+**Notes**
+
+Built by the Sonnet runner, High effort, following the Meadow's pattern. Looked at in Chromium at 1280 and 375 wide, English and Hebrew, both themes. About 85 draw calls and 52k triangles on medium.
 
 ### ⬜ T16 · Boss kit and the first boss
 
@@ -897,6 +928,18 @@ Build prompt:
 
 ```text
 Otiyot project — GitHub repo shlomyeisenberg-lang/Otiyot. Idea: photo mode (branch: idea-photo-mode). Work without stopping for approval. Read CLAUDE.md, docs/ARCHITECTURE.md (sections 7b, 7c, 7h), docs/DESIGN.md and only your own needs in docs/progress.json. Goal: on the results card of the Home Row Meadow (src/ui/screens/meadow.ts) add a 'Look around' button that hides the HUD, the keyboard guide and the card, lets the camera glide slowly along the scene's rail (add a small method on MeadowScene), and returns on any key or click. Strings in both locales, tokens only, works with reduce motion (a still view). Add a unit or Playwright check that the HUD is hidden and comes back. Run pnpm lint, typecheck, test and build. Update docs/progress.json (feature_ideas status built) and run node scripts/render-progress.mjs, commit both, open a pull request, wait for checks, squash-merge it into main and delete the branch.
+```
+
+### 💡 Ibex that walk the ledges (from T15)
+
+**Status:** idea · **Model:** Sonnet 5.5 · **Effort:** Low
+
+The ibex on the Cliffs stand still; a few that wander along the ledges and look up when a waterfall starts would make the canyon feel alive.
+
+Build prompt:
+
+```text
+Otiyot project — GitHub repo shlomyeisenberg-lang/Otiyot. Idea: wandering ibex (branch: idea-ibex-walk). Work without stopping for approval. Read CLAUDE.md, docs/ARCHITECTURE.md (sections 7b, 7i), docs/DESIGN.md and only your own needs in docs/progress.json. Goal: in src/scenes/cliffs/index.ts make the ibex walk slowly along their ledge and look toward a waterfall when it starts, with no allocations in update(). Build it, add a unit or smoke assertion, run pnpm lint, typecheck, test and build, update docs/progress.json, open a pull request, merge it into main and delete the branch.
 ```
 
 ## Notes
