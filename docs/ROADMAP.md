@@ -2,7 +2,7 @@
 
 One task = one chat = one branch = one pull request, merged into main by that chat.
 
-Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Opus 5.5 builds the few tasks that need real taste and skill; Fable 5.2 builds only the story-heavy tasks (T27 the final fight, T35 full story and cutscenes); Sonnet 5.5 builds everything else.
+Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Opus 5.5 builds the few tasks that need real taste and skill; Fable 5.2 builds only the story and cutscenes task (T35); Sonnet 5.5 builds everything else.
 
 ## Phase 0 · Foundation (logic, no visuals)
 
@@ -336,7 +336,7 @@ Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Opus 5.5 b
 
 ### [ ] T27 · The Blank Scroll and the Keeper
 - **Branch** `t27-final`
-- **Model** Fable 5.2 · **Effort** Xhigh
+- **Model** Opus 5.5 · **Effort** Xhigh
 - **Goal** The final sequence combining every mechanic, the Keeper fight, and the ending.
 - **Scope**
   - A run through short sections reusing each region's mechanic on white parchment that inks in as you go
