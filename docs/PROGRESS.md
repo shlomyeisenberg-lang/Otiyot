@@ -6,8 +6,8 @@ _Last updated 2026-11-11. This page is generated from `docs/progress.json`; to c
 
 ## Summary
 
-- ✅ **12** of **39** tasks done
-- 🛠️ 1 in progress · ⛔ 0 blocked · ⬜ 26 pending
+- ✅ **13** of **39** tasks done
+- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 26 pending
 - ⬜ **3** manual steps waiting for you
 - 💡 3 feature ideas open
 
@@ -69,7 +69,7 @@ Work done before or outside the numbered tasks.
 - ✅ T10 · Audio engine and first music themes — 2026-11-10 · [PR #16](https://github.com/shlomyeisenberg-lang/Otiyot/pull/16)
 - ✅ T11 · Combat, combo and difficulty kit — 2026-11-10 · [PR #17](https://github.com/shlomyeisenberg-lang/Otiyot/pull/17)
 - ✅ T12 · Story system, title screen and intro — 2026-11-11 · [PR #18](https://github.com/shlomyeisenberg-lang/Otiyot/pull/18)
-- 🛠️ T13 · Hub: the House of the Scribe — [PR #23](https://github.com/shlomyeisenberg-lang/Otiyot/pull/23)
+- ✅ T13 · Hub: the House of the Scribe — 2026-11-11 · [PR #23](https://github.com/shlomyeisenberg-lang/Otiyot/pull/23)
 - ⬜ T14 · Scene: Home Row Meadow
 - ⬜ T15 · Scene: Cliffs of Ein Gedi
 - ⬜ T16 · Boss kit and the first boss
@@ -609,11 +609,11 @@ The game now opens like a story: a 3D title where gold-ink letters fall onto a g
 
 The intro has no typing, so the learned-letters rule does not apply to it; the title menu is chosen by typing each item's gold letter as in all menus.
 
-### 🛠️ T13 · Hub: the House of the Scribe
+### ✅ T13 · Hub: the House of the Scribe
 
-**Status:** In progress · **Pull request:** [PR #23](https://github.com/shlomyeisenberg-lang/Otiyot/pull/23)
+**Status:** Done · **Finished:** 2026-11-11 · **Pull request:** [PR #23](https://github.com/shlomyeisenberg-lang/Otiyot/pull/23)
 
-The House of the Scribe is built: a 3D home in the Jerusalem hills that works as the game menu, walked by typing short door words made only of learned letters, with a map of the land, a lesson screen that finally lets the course be played, and color that spreads over the hills as regions are restored. Built by the Fable runner, then handed to the Opus builder because the owner moved T13 to Opus while it was being built; the pull request is ready for review and merge.
+The House of the Scribe is built: a 3D home in the Jerusalem hills that works as the game menu, walked by typing short door words made only of learned letters, with a map of the land, a lesson screen that finally lets the course be played, and color that spreads over the hills as regions are restored. Built by the Fable runner, then reviewed, finished and merged by the Opus builder.
 
 **What changed**
 
@@ -633,6 +633,7 @@ The House of the Scribe is built: a 3D home in the Jerusalem hills that works as
 - locales/en.json and he.json: hub, map, region names and places, lesson strings
 - tests/unit/hub.test.ts (door words learned letters only, prefix-free, picker, regions follow the course, learn path, ranks, share, next region, suggested level, lines keep the content rules) and tests/e2e/hub.spec.ts (walk by typing, map, a lesson typed by the guide and saved, no GPU leak, restored hub with beacons and trophies); story.spec and shell.spec now expect the hub after the intro
 - docs: ARCHITECTURE (routes, save notes, section 7g), DESIGN (hub components), GAME_DESIGN (the House of the Scribe), ROADMAP (T13 ticked, number-row lessons under Later), CHANGELOG
+- Opus builder review: merged latest main, fixed the Hebrew menu e2e test (the first menu item is now the journey, so one arrow down reaches Players), re-ran all checks and looked at the hub in Chromium (fresh, partly and fully restored, phone width)
 
 **Decisions**
 
@@ -644,10 +645,10 @@ The House of the Scribe is built: a 3D home in the Jerusalem hills that works as
 - **Shop, Journal and Game Room show "opening soon" panels (and the Game Room an in-world SOON sign)** — Their content is built by T29-T33; no gameplay placeholders
 - **The day turns from the local hour, one whole day in 12 real minutes** — The house feels alive while staying in step with the player's own time of day
 - **Handed the finished branch to the Opus builder instead of merging** — The owner moved T13 from Fable to Opus (PRs #20-#22) while this run was building it; this runner only merges its own tasks
+- **Opus builder merged the Fable-built branch after review instead of rebuilding the hub** — The work met the done-when (walk by typing, start unlocked regions, color returns with restoration), all local checks passed, and rebuilding would waste the budget
 
 **To do**
 
-- [ ] Opus builder: review PR #23 (rebased on main), check CI, then squash-merge it, set this entry to done and delete the branch
 - [ ] Each scene task adds its region to SCENE_ROUTES in src/ui/playable.ts so the map shows Play and Continue the story
 - [ ] Scenes should call recordRegionRank and write history mode regionMode(id, level, difficulty) when a run ends
 - [ ] The ink shop (T33), journal (T32) and Game Room (T29/T30) open when their tasks are merged; the Game Room sign and the soon panels then go
