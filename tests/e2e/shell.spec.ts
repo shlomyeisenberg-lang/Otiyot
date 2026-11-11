@@ -117,8 +117,8 @@ test('menus answer to typed letters, arrows, Enter and Esc in Hebrew', async ({ 
   await page.keyboard.press('Escape');
   await expect(page.getByRole('heading', { name: 'אותיות' })).toBeVisible();
 
-  // Arrows and Enter: focus starts on the first item, "המסע" (the journey); one step down is
-  // "שחקנים" (players).
+  // Arrows and Enter: focus starts on the first item, "בית הסופר" (the house); the next one
+  // down is "שחקנים" (players).
   await page.keyboard.press('ArrowDown');
   await page.keyboard.press('ArrowUp');
   await page.keyboard.press('ArrowDown');
