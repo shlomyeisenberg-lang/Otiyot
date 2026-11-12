@@ -6,8 +6,8 @@ _Last updated 2026-11-12. This page is generated from `docs/progress.json`; to c
 
 ## Summary
 
-- ✅ **18** of **39** tasks done
-- 🛠️ 1 in progress · ⛔ 0 blocked · ⬜ 20 pending
+- ✅ **19** of **39** tasks done
+- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 20 pending
 - ⬜ **3** manual steps waiting for you
 - 💡 6 feature ideas open
 
@@ -75,7 +75,7 @@ Work done before or outside the numbered tasks.
 - ✅ T16 · Boss kit and the first boss — 2026-11-11 · [PR #27](https://github.com/shlomyeisenberg-lang/Otiyot/pull/27)
 - ✅ T17 · Scene: The Gematria Forge — 2026-11-11 · [PR #28](https://github.com/shlomyeisenberg-lang/Otiyot/pull/28)
 - ✅ T18 · Scene: The Night Shuk — 2026-11-11 · [PR #29](https://github.com/shlomyeisenberg-lang/Otiyot/pull/29)
-- 🛠️ T19 · Scene: The Jaffa Line
+- ✅ T19 · Scene: The Jaffa Line — 2026-11-12 · [PR #30](https://github.com/shlomyeisenberg-lang/Otiyot/pull/30)
 - ⬜ T20 · Scene: The Sunken Geniza
 - ⬜ T21 · Scene: Wings over Hermon
 - ⬜ T22 · Scene: The Star Station
@@ -855,9 +855,9 @@ The Night Shuk can be played from the map (Level 2 of the course, after the Grea
 
 Compared against the Meadow with Playwright screenshots; the Shuk keeps the Meadow's layout, HUD and restoration feel with its own night palette, mechanic and music.
 
-### 🛠️ T19 · Scene: The Jaffa Line
+### ✅ T19 · Scene: The Jaffa Line
 
-**Status:** In progress
+**Status:** Done · **Finished:** 2026-11-12 · **Pull request:** [PR #30](https://github.com/shlomyeisenberg-lang/Otiyot/pull/30)
 
 The Jaffa Line can be played from the map (Level 3 of the course, after the Great Blot): a clockwork railway at dawn where every stretch of track is one learned word. Typing drives the train, clean words build boost, and boost carries the train through the bend after every third stretch and gains on Naftali, who races on the next track. Station lamps light as you go and the last stretch restores the line.
 

@@ -1075,9 +1075,9 @@
       "notes": "Compared against the Meadow with Playwright screenshots; the Shuk keeps the Meadow's layout, HUD and restoration feel with its own night palette, mechanic and music."
     },
     "T19": {
-      "status": "in_progress",
-      "finished": "",
-      "pr": "",
+      "status": "done",
+      "finished": "2026-11-12",
+      "pr": "https://github.com/shlomyeisenberg-lang/Otiyot/pull/30",
       "summary": "The Jaffa Line can be played from the map (Level 3 of the course, after the Great Blot): a clockwork railway at dawn where every stretch of track is one learned word. Typing drives the train, clean words build boost, and boost carries the train through the bend after every third stretch and gains on Naftali, who races on the next track. Station lamps light as you go and the last stretch restores the line.",
       "changes": [
         "src/scenes/rail/plan.ts: the run as pure data (stretches of one learned word, bends after every third, boost, carried bends, lead over Naftali, race result, chapters, lamps, color share)",
