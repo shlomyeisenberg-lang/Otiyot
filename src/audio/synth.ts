@@ -198,6 +198,27 @@ export class Synth {
         g.connect(dest);
         return;
       }
+      case 'ney': {
+        // The ney, the desert reed flute: a soft, hollow tone that slides up into each note, a
+        // wide slow vibrato, and a lot of breath running all through it.
+        const end = t + dur + 0.3;
+        const o = this.osc('sine', hz, t, end);
+        o.frequency.setValueAtTime(hz * 0.97, t);
+        o.frequency.exponentialRampToValueAtTime(hz, t + 0.09);
+        this.vib(o, 22, t + 0.12, Math.min(0.5, dur * 0.7));
+        const o3 = this.osc('sine', hz * 3, t, end);
+        const g3 = ctx.createGain();
+        g3.gain.value = 0.06;
+        const g = this.env(t, 0.13 * vel, 0.09, Math.max(0, dur - 0.1), 0.24);
+        o.connect(g);
+        o3.connect(g3).connect(g);
+        const b = this.noiseSrc(t, end, hz);
+        const bf = this.filter('bandpass', Math.min(7000, hz * 2), 2.5);
+        const bg = this.env(t, 0.035 * vel, 0.06, Math.max(0, dur - 0.1), 0.2);
+        b.connect(bf).connect(bg).connect(dest);
+        g.connect(dest);
+        return;
+      }
       case 'clarinet': {
         const end = t + dur + 0.25;
         const o = this.osc('square', hz, t, end);

@@ -1042,7 +1042,7 @@ export class MidbarScene implements GameScene {
       const geo = new PlaneGeometry(40, 12, 28, 8);
       const pos = geo.getAttribute('position');
       const col = new Float32Array(pos.count * 4);
-      const shade = 1 - layer * 0.14;
+      const shade = 0.74 - layer * 0.1;
       for (let i = 0; i < pos.count; i++) {
         const x = pos.getX(i);
         const y = pos.getY(i) + 6;
@@ -1089,7 +1089,7 @@ export class MidbarScene implements GameScene {
     geo.setAttribute('position', new Float32BufferAttribute(new Float32Array(SAND * 3), 3));
     this.sandMat = tracker.track(
       new PointsMaterial({
-        color: TINT.sandAir,
+        color: STORM[this.ctx.theme].skyHorizon,
         size: 0.09,
         transparent: true,
         opacity: 0.12,
@@ -1465,7 +1465,7 @@ export class MidbarScene implements GameScene {
       this.wallFade = Math.min(1, this.wallFade + dt * 1.2);
       this.wallBreak = Math.max(0, this.wallBreak - dt * 1.6);
       const near = 1 - Math.min(1, this.shownGust);
-      const k = this.wallFade * (1 - this.wallBreak) * (0.35 + near * 0.5);
+      const k = this.wallFade * (1 - this.wallBreak) * (0.45 + near * 0.55);
       for (let i = 0; i < this.wallMats.length; i++) {
         (this.wallMats[i] as MeshBasicMaterial).opacity = k * (i === 0 ? 0.85 : 0.6);
       }

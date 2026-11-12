@@ -435,7 +435,7 @@ describe('the Long Midbar on the map', () => {
     expect(playableRegions()).toContain('midbar');
     expect(THEME_IDS).toContain('midbar');
     expect(THEMES.midbar.id).toBe('midbar');
-    expect(THEMES.midbar.voices.melody).toBe('oud');
+    expect(THEMES.midbar.voices.melody).toBe('ney');
   });
 });
 

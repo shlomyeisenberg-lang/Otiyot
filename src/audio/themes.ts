@@ -21,7 +21,8 @@ export type Voice =
   | 'bell'
   | 'horn'
   | 'glass'
-  | 'pluck';
+  | 'pluck'
+  | 'ney';
 /** Drum kits; each plays the same pattern letters with its own sounds. */
 export type Kit = 'darbuka' | 'frame' | 'taiko' | 'brush';
 
@@ -466,8 +467,8 @@ export const THEMES: Readonly<Record<ThemeId, ThemeSpec>> = {
   },
 
   // The Long Midbar: a caravan in the sand. B freygish in a slow rocking 6/8 at 76 bpm, the
-  // sway of a camel's walk: an oud sings the road song, a kanun ripples the pulse like heat over
-  // the dunes, a cello holds the low road, and a frame drum keeps the camels' pace.
+  // sway of a camel's walk: a breathy ney (the desert reed flute, a new voice) sings the road
+  // song, an oud plucks the pulse, a cello holds the low road, and a frame drum keeps the pace.
   midbar: {
     id: 'midbar',
     nameKey: 'sound.theme.midbar',
@@ -484,7 +485,7 @@ export const THEMES: Readonly<Record<ThemeId, ThemeSpec>> = {
       B: { bars: 8, chords: [3, 3, 1, 1, 6, 6, 1, 0], register: 3, density: 0.6 },
       C: { bars: 8, chords: [5, 6, 1, 0, 3, 1, 6, 0], register: 4, density: 0.45 },
     },
-    voices: { drone: 'pad', pulse: 'kanun', melody: 'oud', counter: 'cello' },
+    voices: { drone: 'pad', pulse: 'oud', melody: 'ney', counter: 'cello' },
     kit: 'frame',
     pulse: [0, 2, 1, 3, 2, 1],
     counterOctave: -1,

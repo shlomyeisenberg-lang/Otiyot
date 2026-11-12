@@ -1554,7 +1554,7 @@
         "src/ui/styles/meadow.css: .hud[data-veil=storm] blurs the next word on the paper strip during a storm (no motion with reduce-motion)",
         "src/story/midbar.ts (+ src/story/index.ts): Reb Ezra and Dyo lines for every moment, Hebrew and English",
         "src/ui/app.ts, src/ui/shell.ts, src/ui/playable.ts: the midbar route, its screen and SCENE_ROUTES.midbar so the map opens it",
-        "src/audio/themes.ts: the midbar theme (B freygish, rocking 6/8 at 76 bpm, oud melody, kanun pulse, cello counter, frame drum)",
+        "src/audio/themes.ts: the midbar theme (B freygish, rocking 6/8 at 76 bpm, the new ney melody voice in src/audio/synth.ts, oud pulse, cello counter, frame drum)",
         "src/audio/ambience.ts: the sand ambience (a deep wind roar under a dry hiss)",
         "src/audio/sfx.ts: the gust and camel-bell effects",
         "locales/en.json, locales/he.json: midbar.* strings, the theme name and mood, the two new effect names",
