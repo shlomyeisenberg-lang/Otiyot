@@ -384,8 +384,8 @@ export class CavesScene implements GameScene {
     ctx.rig.groundAt = floorAt;
     ctx.post.setGrade(
       ctx.theme === 'dark'
-        ? { exposure: 1.25, saturation: 1.05, vignette: 0.62, godRays: 0.4, bloom: 1.45 }
-        : { exposure: 1.2, saturation: 1.08, vignette: 0.55, godRays: 0.4, bloom: 1.35 },
+        ? { exposure: 1.15, saturation: 0.98, vignette: 0.62, godRays: 0.4, bloom: 1.35 }
+        : { exposure: 1.1, saturation: 1, vignette: 0.55, godRays: 0.4, bloom: 1.25 },
     );
 
     this.puff = burstStyle({
@@ -509,8 +509,8 @@ export class CavesScene implements GameScene {
   private follow(): void {
     this.ctx.rig.follow(this.eye, {
       distance: 6.2,
-      height: 2.5,
-      lookHeight: 1.5,
+      height: 2.1,
+      lookHeight: 1.6,
       turnWith: 1,
       stiffness: 2.4,
     });
@@ -670,7 +670,7 @@ export class CavesScene implements GameScene {
       const ang = Math.PI / 2 + r.signed() * (hall ? 0.9 : 0.75);
       wallPoint(z, ang, this.v);
       this.v.y += 0.15;
-      const sz = r.range(0.6, 1.4) * (hall ? 2.2 : 1);
+      const sz = r.range(0.4, 1) * (hall ? 2.4 : 1);
       this.q.setFromAxisAngle(this.up, r.range(0, Math.PI * 2));
       this.s.set(sz, sz * r.range(0.8, 1.6), sz);
       mesh.setMatrixAt(k, this.m4.compose(this.v, this.q, this.s));
@@ -815,7 +815,7 @@ export class CavesScene implements GameScene {
     );
     this.hallFlameMat = tracker.track(kit.ink(TINT.flame, 0.001));
     this.hallFlames = new InstancedMesh(
-      tracker.track(new SphereGeometry(0.13, 8, 6).scale(0.7, 1.7, 0.7)),
+      tracker.track(new SphereGeometry(0.075, 8, 6).scale(0.7, 1.7, 0.7)),
       this.hallFlameMat,
       HALL_LAMPS,
     );
@@ -829,7 +829,7 @@ export class CavesScene implements GameScene {
       this.q.setFromAxisAngle(this.up, ang);
       this.s.set(1.3, 1.3, 1.3);
       lamps.setMatrixAt(k, this.m4.compose(this.v, this.q, this.s));
-      this.v.set(x + Math.sin(ang) * 0.38, y + 0.17, z + Math.cos(ang) * 0.38);
+      this.v.set(x + Math.sin(ang) * 0.42, y + 0.12, z + Math.cos(ang) * 0.42);
       this.hallFlames.setMatrixAt(k, this.m4.compose(this.v, this.q, this.s));
     }
     lamps.instanceMatrix.needsUpdate = true;
@@ -842,7 +842,7 @@ export class CavesScene implements GameScene {
       [-4, -2],
       [4, 3],
     ] as const) {
-      const l = new PointLight(TINT.flame, 0, 40, 1.2);
+      const l = new PointLight(TINT.hallLight, 0, 40, 1.2);
       l.position.set(cx + dx, 6.5, SPRING_Z + dz);
       root.add(l);
       this.hallLights.push(l);
@@ -898,7 +898,7 @@ export class CavesScene implements GameScene {
       tracker.track(kit.ink(TINT.flameCore, 3.2)),
     );
     this.lanternRoot.add(this.flameMesh);
-    this.lanternLight = new PointLight(TINT.lantern, 0, 20, 1.3);
+    this.lanternLight = new PointLight(TINT.lanternLight, 0, 20, 1.6);
     this.lanternLight.position.y = 0.05;
     this.lanternRoot.add(this.lanternLight);
     root.add(this.lanternRoot);
@@ -927,12 +927,12 @@ export class CavesScene implements GameScene {
       ]),
     );
     this.shadeMat = tracker.track(
-      kit.surface({ color: TINT.shadow, restore: false, transparent: true, opacity: 0.92 }),
+      kit.surface({ color: TINT.shadow, restore: false, transparent: true, opacity: 0.82 }),
     );
     const hazeGeo = tracker.track(new SphereGeometry(1, 12, 9).scale(0.95, 1.35, 0.85));
     this.hazeMat = tracker.track(kit.ink(TINT.shadowEdge, 1, BackSide));
     this.hazeMat.transparent = true;
-    this.hazeMat.opacity = 0.22;
+    this.hazeMat.opacity = 0.28;
     this.hazeMat.depthWrite = false;
     const eyeGeo = tracker.track(new SphereGeometry(0.075, 8, 6).scale(1.3, 0.75, 0.6));
     this.eyeMat = tracker.track(kit.ink(TINT.shadowEye, 1.1));
@@ -957,7 +957,7 @@ export class CavesScene implements GameScene {
       g.scale.setScalar(scale);
       root.add(g);
       // Spread around the apprentice, more in front and to the sides than behind.
-      const angle = (k / (SHADOWS - 1) - 0.5) * 4.6 + r.signed() * 0.12;
+      const angle = (k / (SHADOWS - 1) - 0.5) * 3.8 + r.signed() * 0.12;
       this.shades.push({
         root: g,
         eyes,
@@ -1278,7 +1278,7 @@ export class CavesScene implements GameScene {
     vfx.burst(this.fountain, sx, 0.5, SPRING_Z, 0, 1, 0);
     this.ctx.rig.pushIn(0.25, 0.6);
     // Pull back and look over the Hall: the lamps, the pillars, the spring, the apprentice.
-    this.ctx.rig.fixed(this.v.set(sx + 3.5, 6.2, RUN_LEN + 3), this.w.set(sx, 2.2, SPRING_Z + 1));
+    this.ctx.rig.fixed(this.v.set(sx - 6, 2.6, RUN_LEN + 6), this.w.set(sx + 1, 1.6, SPRING_Z + 2));
   }
 
   update(dt: number): void {
@@ -1344,7 +1344,7 @@ export class CavesScene implements GameScene {
       const before = this.finaleT;
       this.finaleT += dt;
       const k = Math.min(1, this.finaleT / 2.5);
-      this.hallFlameMat.color.setHex(TINT.flame).multiplyScalar(0.001 + k * 2.6);
+      this.hallFlameMat.color.setHex(TINT.flame).multiplyScalar(0.001 + k * 2);
       const fl = 0.9 + Math.sin(this.time * 9) * 0.1;
       for (const l of this.hallLights) l.intensity = k * (this.ctx.theme === 'dark' ? 70 : 55) * fl;
       this.springMat.emissiveIntensity = 0.1 + k * (0.55 + Math.sin(this.time * 2) * 0.08);
@@ -1361,8 +1361,8 @@ export class CavesScene implements GameScene {
 
     // --- The shadows melt away at the end.
     this.shadeFade = damp(this.shadeFade, this.finished ? 0 : 1, 1.4, dt);
-    this.shadeMat.opacity = 0.92 * this.shadeFade;
-    this.hazeMat.opacity = 0.22 * this.shadeFade;
+    this.shadeMat.opacity = 0.82 * this.shadeFade;
+    this.hazeMat.opacity = 0.28 * this.shadeFade;
     this.poseShadows(dt);
 
     if (this.air) this.air.move(this.lanternRoot.position.x, 2, this.lanternRoot.position.z + 6);
@@ -1399,7 +1399,7 @@ export class CavesScene implements GameScene {
     this.flicker = Math.sin(this.time * 17) * 0.04 + Math.sin(this.time * 7.3) * 0.05;
     const l = Math.max(0.05, this.shownLight);
     const boost = 1 + this.flareT * 0.8;
-    const base = this.ctx.theme === 'dark' ? 26 : 22;
+    const base = this.ctx.theme === 'dark' ? 20 : 17;
     this.lanternLight.intensity = base * (0.25 + 0.75 * l) * (1 + this.flicker * (1.6 - l)) * boost;
     this.lanternLight.distance = 6 + 18 * l + this.flareT * 6;
     this.glassMat.color.setHex(TINT.lantern).multiplyScalar(0.6 + 1.4 * l * boost);
