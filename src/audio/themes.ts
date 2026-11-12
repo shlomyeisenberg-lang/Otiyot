@@ -501,16 +501,17 @@ export const THEMES: Readonly<Record<ThemeId, ThemeSpec>> = {
   },
 
   // The Lantern Caves: tense, never frightening. E mi sheberach (restless, with its raised
-  // fourth) at a slow, careful 64 bpm in 4/4: a kalimba (a new voice, like drops in the dark)
+  // fourth) at a slow, careful 68 bpm in 2/4, tiptoeing in sixteenths: a kalimba (a new voice,
+  // like drops in the dark)
   // picks its way through the melody, a harp keeps a hushed pulse, a cello answers low, and
   // brushes on a frame drum tread softly. It brightens as the lamps are lit.
   caves: {
     id: 'caves',
     nameKey: 'sound.theme.caves',
     seed: 2525,
-    bpm: 64,
-    beats: 4,
-    sub: 2,
+    bpm: 68,
+    beats: 2,
+    sub: 4,
     root: 52,
     mode: 'misheberach',
     swing: 0.08,
