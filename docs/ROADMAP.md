@@ -263,7 +263,7 @@ Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Fable 5.2 
 
 One-pass review of Sonnet's T15; fix what is weak. Done when merged.
 
-### [ ] R16 · Review of T16
+### [x] R16 · Review of T16
 
 - **Branch** `review-t16`
 - **Model** Opus 5.5 · **Effort** Medium
