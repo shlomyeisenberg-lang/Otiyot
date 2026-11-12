@@ -6,10 +6,10 @@ _Last updated 2026-11-12. This page is generated from `docs/progress.json`; to c
 
 ## Summary
 
-- ✅ **19** of **44** tasks done
-- 🛠️ 1 in progress · ⛔ 0 blocked · ⬜ 24 pending
+- ✅ **20** of **44** tasks done
+- 🛠️ 1 in progress · ⛔ 0 blocked · ⬜ 23 pending
 - ⬜ **3** manual steps waiting for you
-- 💡 7 feature ideas open
+- 💡 8 feature ideas open
 
 ## Waiting for me
 
@@ -74,7 +74,7 @@ Work done before or outside the numbered tasks.
 - ✅ T13 · Hub: the House of the Scribe — 2026-11-11 · [PR #23](https://github.com/shlomyeisenberg-lang/Otiyot/pull/23)
 - ✅ T14 · Scene: Home Row Meadow — 2026-11-11 · [PR #25](https://github.com/shlomyeisenberg-lang/Otiyot/pull/25)
 - ✅ T15 · Scene: Cliffs of Ein Gedi — 2026-11-11 · [PR #26](https://github.com/shlomyeisenberg-lang/Otiyot/pull/26)
-- ⬜ R15
+- ✅ R15 — 2026-11-12 · [PR #34](https://github.com/shlomyeisenberg-lang/Otiyot/pull/34)
 - ✅ T16 · Boss kit and the first boss — 2026-11-11 · [PR #27](https://github.com/shlomyeisenberg-lang/Otiyot/pull/27)
 - ⬜ R16
 - ✅ T17 · Scene: The Gematria Forge — 2026-11-11 · [PR #28](https://github.com/shlomyeisenberg-lang/Otiyot/pull/28)
@@ -742,11 +742,34 @@ The Cliffs of Ein Gedi can be played from the map: a grey desert canyon where ev
 
 Built by the Sonnet runner, High effort, following the Meadow's pattern. Looked at in Chromium at 1280 and 375 wide, English and Hebrew, both themes. About 85 draw calls and 52k triangles on medium.
 
-### ⬜ R15
+### ✅ R15
 
-**Status:** Pending
+**Status:** Done · **Finished:** 2026-11-12 · **Pull request:** [PR #34](https://github.com/shlomyeisenberg-lang/Otiyot/pull/34)
 
-_Not started._
+Opus reviewed Sonnet's Cliffs of Ein Gedi (T15) and played it in English and Hebrew at desktop and phone width. The scene is solid and good-looking; one real gameplay flaw was fixed: in English the stones climbed to the top and then stayed flat, so 'reach up' stopped meaning anything.
+
+**What changed**
+
+- src/scenes/cliffs/plan.ts: planCliffs now draws 8 learned words for each stone and keeps the one whose reach fits the climb best (new reachCost): it turns the path back before the stones hit their height limit, avoids three same reaches in a row and favours the row used least, so top-row and bottom-row words are both practised and every reach visibly moves the stone.
+- tests/unit/cliffs.test.ts: new tests that a fluent player gets both reaches, at most one flat 'reach' per run, a balanced up/down count, and that reachCost scores bad steps as poor fits (English and Hebrew, all levels, 12 seeds).
+- tests/e2e/cliffs.spec.ts: the smoke test samples the scribe's height at every key instead of every 10th, so it no longer fails by chance on a gentle climb.
+- Review findings, no change needed: content rules (only Reb Ezra and Dyo speak, no women, nothing suggestive, no holy Names or pesukim), learned-letters-only text with its test, Easy/Standard/Hard levels, scene lifecycle (dispose, no allocations in update, no direct keyboard or save access), strings in he.json and en.json, RTL layout, 375px layout, tests.
+- CHANGELOG.md: one line for the steadier up-and-down climb.
+
+**Decisions**
+
+- **Fix the climb by choosing among several learned words instead of changing the height rules** — English words almost always contain a top-row vowel, so taking words in order gave runs like up,up,up,up,up and the stones sat flat at the ceiling. Picking the best-fitting of 8 learned words keeps the learned-letters rule untouched and changes nothing in the 3D scene.
+- **Allow at most one flat 'reach' per run rather than none** — With a small learned set sometimes every candidate word reaches the same way; forcing zero would need words the player has not learned.
+- **Left the waterfall streaks, phone dialogue size and art as they are** — They work and look fine; bigger art changes belong to the polish pass T34.
+- **Merged after 15 minutes with GitHub CI still running** — The task rules allow 15 minutes for CI; lint, typecheck, all 465 unit tests, the build and the Cliffs end-to-end test had already passed locally.
+
+**To do**
+
+- [ ] For a player who has only learned the home row, the Cliffs has only level stones and Reb Ezra's ledge line still talks about reaching up and down. A line for that case could be added in T35 (story).
+
+**Notes**
+
+Played start to finish in Chromium: English with the whole keyboard learned (Easy) and Hebrew with 8 lessons (home row only), at 1280x720 and 375 wide. No errors, results card and return to the house work.
 
 ### ✅ T16 · Boss kit and the first boss
 
@@ -1154,6 +1177,18 @@ Build prompt:
 
 ```text
 Otiyot project — GitHub repo shlomyeisenberg-lang/Otiyot. Idea: the Blot remembers (branch: idea-blot-remembers). Work without stopping for approval. Read CLAUDE.md, docs/ARCHITECTURE.md (sections 7e and 7j), docs/DESIGN.md and only your own needs in docs/progress.json (read just the T16 entry with node -e). Goal: in src/ui/screens/arena.ts collect the words of Phases I–III that were typed with a mistake, and when the fight reaches Phase IV rebuild its words from them (most-missed first, at most the planned count, filled with Phase I words last first if there are too few). Keep the planning pure: add a function in src/scenes/arena/plan.ts that takes the plan and the missed words and returns the new Phase IV, with unit tests in tests/unit/boss.test.ts, including that every character is a learned key. Run pnpm lint, pnpm typecheck, pnpm test and pnpm build until they pass, add a line to CHANGELOG.md, update docs/progress.json (append a note and set this idea to built) and run node scripts/render-progress.mjs, commit both files, push, open a pull request into main, wait for the checks, squash-merge it yourself and delete the branch.
+```
+
+### 💡 Cliffs: a rest ledge between sections (from R15)
+
+**Status:** idea · **Model:** Sonnet 5.5 · **Effort:** Medium
+
+A short pause on a wide ledge after each waterfall, where Dyo shows which finger reached up or down most often wrongly, would make the teaching more personal and break up the run.
+
+Build prompt:
+
+```text
+Otiyot project — GitHub repo shlomyeisenberg-lang/Otiyot. Build idea 'Cliffs rest ledge' on branch idea-cliffs-rest-ledge. Work without stopping for approval. Read CLAUDE.md, docs/ARCHITECTURE.md, docs/DESIGN.md, docs/GAME_DESIGN.md and only your own entry in docs/progress.json. In src/scenes/cliffs, after each waterfall starts, give the scribe a wide ledge to stand on for a few seconds while Dyo names the finger that slipped most on top-row or bottom-row keys in that section (from the typing stats, never the typed text), in he and en. No timers that punish, no new text to type outside the learned letters. Add unit tests for the 'weakest finger' logic and extend tests/e2e/cliffs.spec.ts. Run pnpm lint && pnpm typecheck && pnpm test && pnpm build, update CHANGELOG.md and docs/progress.json (add an entry for this idea and set its feature_ideas status to built), run node scripts/render-progress.mjs, push, open a pull request, merge it into main and delete the branch.
 ```
 
 ### 💡 The Geniza librarian (from T20)

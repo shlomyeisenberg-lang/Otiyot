@@ -103,18 +103,72 @@ export interface PlanOptions {
   words: { next(): string };
 }
 
+/** How many words are drawn from the source for each stone, to pick the best-fitting one. */
+export const CANDIDATES = 8;
+
+/**
+ * How well a word's reach fits the run so far (lower is better). It keeps the climb varied and
+ * playable: in English most words hold a top-row vowel, so taking words as they come made the
+ * scribe climb to the top and then stand still on flat stones (the "reach up" never showed).
+ * This turns the run back down before the stones reach their limit, avoids three of the same
+ * reach in a row, and favours the reach used least so far, so both rows get practised.
+ */
+export function reachCost(
+  r: Reach,
+  y: number,
+  recent: readonly Reach[],
+  used: Record<Reach, number>,
+): number {
+  const dy = r === 'up' ? STEP : r === 'down' ? -STEP : 0;
+  const ny = y + dy;
+  let cost = 0;
+  // A step that would push past the limits does not move the stone at all: avoid it strongly,
+  // and lean away from the edges before getting there.
+  if (ny > STONE_MAX + 1e-6 || ny < STONE_MIN - 1e-6) cost += 10;
+  else if (ny > STONE_MAX - STEP + 1e-6 || ny < STONE_MIN + STEP - 1e-6) cost += 2;
+  if (recent.length >= 2 && recent.at(-1) === r && recent.at(-2) === r) cost += 4;
+  cost += used[r] * 0.5;
+  return cost;
+}
+
 /** Lays out one run. Throws nothing: a word with an unlearned key is simply never taken. */
 export function planCliffs(o: PlanOptions): CliffsPlan {
   const allowed = (w: string): boolean => w.length > 0 && [...w].every((ch) => o.keys.has(ch));
   const count = WORDS_PER_LEVEL[o.level];
   const words: string[] = [];
+  const picked: Reach[] = [];
+  const used: Record<Reach, number> = { up: 0, level: 0, down: 0 };
+  let y = 0;
   let tries = 0;
-  while (words.length < count && tries < count * 14) {
-    tries += 1;
-    const w = o.words.next().trim();
-    // Never the same word twice in a row, and never a key that was not learned.
-    if (!allowed(w) || w === words.at(-1)) continue;
-    words.push(w);
+  const budget = count * 14 * CANDIDATES;
+  while (words.length < count && tries < budget) {
+    // Draw a few learned words and keep the one whose reach fits the climb best.
+    let best = '';
+    let bestReach: Reach = 'level';
+    let bestCost = Infinity;
+    let drawn = 0;
+    while (drawn < CANDIDATES && tries < budget) {
+      tries += 1;
+      const w = o.words.next().trim();
+      // Never the same word twice in a row, and never a key that was not learned.
+      if (!allowed(w) || w === words.at(-1)) continue;
+      drawn += 1;
+      const r = reachOf(o.layout, w);
+      const c = reachCost(r, y, picked, used) + (words.includes(w) ? 1 : 0);
+      if (c < bestCost) {
+        best = w;
+        bestReach = r;
+        bestCost = c;
+      }
+    }
+    if (!best) break;
+    words.push(best);
+    picked.push(bestReach);
+    used[bestReach] += 1;
+    y = Math.max(
+      STONE_MIN,
+      Math.min(STONE_MAX, y + (bestReach === 'up' ? STEP : bestReach === 'down' ? -STEP : 0)),
+    );
   }
   const reaches = words.map((w) => reachOf(o.layout, w));
   const chapters: Chapter[] = [];

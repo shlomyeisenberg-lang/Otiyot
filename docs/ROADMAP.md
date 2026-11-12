@@ -256,7 +256,7 @@ Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Fable 5.2 
 - **Done when** The scene is playable start to finish from the hub at 60 fps on medium, feels different from every other scene, and its smoke test passes.
 - **User must have ready** Nothing.
 
-### [ ] R15 · Review of T15
+### [x] R15 · Review of T15
 
 - **Branch** `review-t15`
 - **Model** Opus 5.5 · **Effort** Medium
