@@ -18,6 +18,7 @@ export type Route =
   | 'geniza'
   | 'hermon'
   | 'station'
+  | 'atbash'
   | 'arena'
   | 'menu'
   | 'welcome'
@@ -81,6 +82,7 @@ export const PARENT: Readonly<Record<Route, Route | null>> = {
   geniza: 'hub',
   hermon: 'hub',
   station: 'hub',
+  atbash: 'hub',
   arena: 'hub',
   menu: null,
   welcome: null,

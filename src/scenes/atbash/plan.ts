@@ -231,8 +231,7 @@ export function planAtbash(o: PlanOptions): AtbashPlan {
   const [lo, hi] = CIPHER_WORDS[o.level.id];
   const patterns = PATTERNS[o.level.id];
   const used = new Set<string>();
-  const pick = (r: number, n: number): number =>
-    Math.floor(Math.max(0, Math.min(0.999, r)) * n);
+  const pick = (r: number, n: number): number => Math.floor(Math.max(0, Math.min(0.999, r)) * n);
   const take = (avoid: string | undefined): string | null => {
     let fallback: string | null = null;
     for (let tries = 0; tries < 40; tries++) {
