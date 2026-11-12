@@ -140,6 +140,16 @@ export function raceWon(lead: number): boolean {
   return lead >= 0;
 }
 
+/**
+ * Where Naftali's train stops at the finish, in stretches from the start (the apprentice stops at
+ * total + 1.2). The winner is seen in front: a won race leaves Naftali 0.3 to 0.8 of a stretch
+ * behind, a lost one puts him up to 0.8 of a stretch ahead.
+ */
+export function rivalAtFinish(total: number, lead: number): number {
+  const gap = raceWon(lead) ? Math.max(0.3, Math.min(0.8, lead)) : Math.max(-0.8, lead);
+  return total + 1.2 - gap;
+}
+
 // ---- how the line answers -------------------------------------------------------------------
 
 /** Station lamps lit after so many stretches (0..SECTIONS; all at the end). */
