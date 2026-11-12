@@ -1981,8 +1981,9 @@ export class ArenaScene implements GameScene {
     this.blotMat.color.setHex(this.look.body).lerp(this.cA.setHex(this.look.turn), this.mirror);
     this.blotMat.emissiveIntensity =
       this.look.emissive +
-      (this.reel > 0 ? 0.8 : 0) +
-      this.shown * 0.3 +
+      // A trial's sheen is bright: its stun and windup glow are kept softer than the Blot's.
+      (this.reel > 0 ? (this.lookId === 'blot' ? 0.8 : 0.3) : 0) +
+      this.shown * (this.lookId === 'blot' ? 0.3 : 0.15) +
       this.healGlow * 1.6 -
       (resting ? 0.2 : 0);
     this.writeBlot();

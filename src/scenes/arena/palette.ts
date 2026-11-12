@@ -231,7 +231,7 @@ export const LOOKS: Readonly<Record<BossLookId, BossLook>> = {
   // The Storm Hawk: a thundercloud with a crest of lightning feathers; it throws sparks.
   storm: {
     body: 0x1b1f3a,
-    sheen: 0x8fd0ff,
+    sheen: 0x4f86c8,
     turn: 0x3a2a6a,
     eye: 0xfff3a0,
     pupil: 0x1b1f3a,
