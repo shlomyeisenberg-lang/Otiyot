@@ -2,7 +2,7 @@
 
 One task = one chat = one branch = one pull request, merged into main by that chat.
 
-Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Fable 5.2 builds the tasks that need the most taste and skill (T14 Meadow, T16 boss kit, T27 final fight, T34 polish pass); Opus 5.5 finishes T13 (the hub, already running); Sonnet 5.5 builds everything else.
+Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Fable 5.2 builds T14, T16, T27 and T34; Opus 5.5 builds the foundations, the remaining scenes (T20 to T26, T28) and T33; Sonnet 5.5 builds everything else.
 
 ## Phase 0 · Foundation (logic, no visuals)
 
@@ -258,7 +258,7 @@ Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Fable 5.2 
 
 ### [ ] T20 · Scene: The Sunken Geniza
 - **Branch** `t20-geniza`
-- **Model** Sonnet 5.5 · **Effort** High
+- **Model** Opus 5.5 · **Effort** High
 - **Goal** Build the "The Sunken Geniza" scene as a distinct, beautiful, exciting 3D level whose mechanic is: typing in rhythm with the tide: steady pace opens currents and lifts pages, bursts stir silt; rewards consistency
 - **Scope**
   - New folder src/scenes/geniza/ implementing GameScene
@@ -269,7 +269,7 @@ Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Fable 5.2 
 
 ### [ ] T21 · Scene: Wings over Hermon
 - **Branch** `t21-hermon`
-- **Model** Sonnet 5.5 · **Effort** High
+- **Model** Opus 5.5 · **Effort** High
 - **Goal** Build the "Wings over Hermon" scene as a distinct, beautiful, exciting 3D level whose mechanic is: a storm flight in cockpit view where words fall like hail and must be finished before they land; lightning reveals the next word
 - **Scope**
   - New folder src/scenes/hermon/ implementing GameScene
@@ -280,7 +280,7 @@ Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Fable 5.2 
 
 ### [ ] T22 · Scene: The Star Station
 - **Branch** `t22-station`
-- **Model** Sonnet 5.5 · **Effort** High
+- **Model** Opus 5.5 · **Effort** High
 - **Goal** Build the "The Star Station" scene as a distinct, beautiful, exciting 3D level whose mechanic is: zero gravity: sentences fire thrusters to drift between modules and turrets to clear debris
 - **Scope**
   - New folder src/scenes/station/ implementing GameScene
@@ -291,7 +291,7 @@ Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Fable 5.2 
 
 ### [ ] T23 · Scene: Atbash City
 - **Branch** `t23-atbash`
-- **Model** Sonnet 5.5 · **Effort** High
+- **Model** Opus 5.5 · **Effort** High
 - **Goal** Build the "Atbash City" scene as a distinct, beautiful, exciting 3D level whose mechanic is: timed cipher puzzles (atbash decoding, sequence memory) while patrol drones pass; type the code before the patrol returns
 - **Scope**
   - New folder src/scenes/atbash/ implementing GameScene
@@ -302,7 +302,7 @@ Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Fable 5.2 
 
 ### [ ] T24 · Scene: The Long Midbar
 - **Branch** `t24-midbar`
-- **Model** Sonnet 5.5 · **Effort** High
+- **Model** Opus 5.5 · **Effort** High
 - **Goal** Build the "The Long Midbar" scene as a distinct, beautiful, exciting 3D level whose mechanic is: survival crossing: sentences keep the caravan moving toward the oasis while sandstorms cut visibility and shorten the lookahead
 - **Scope**
   - New folder src/scenes/midbar/ implementing GameScene
@@ -313,7 +313,7 @@ Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Fable 5.2 
 
 ### [ ] T25 · Scene: The Lantern Caves
 - **Branch** `t25-caves`
-- **Model** Sonnet 5.5 · **Effort** High
+- **Model** Opus 5.5 · **Effort** High
 - **Goal** Build the "The Lantern Caves" scene as a distinct, beautiful, exciting 3D level whose mechanic is: tense stealth: accurate typing keeps the lantern lit; shadows creep closer on stumbles and retreat on clean streaks
 - **Scope**
   - New folder src/scenes/caves/ implementing GameScene
@@ -325,7 +325,7 @@ Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Fable 5.2 
 
 ### [ ] T26 · The Silent Arena: remaining bosses
 - **Branch** `t26-arena-bosses`
-- **Model** Sonnet 5.5 · **Effort** High
+- **Model** Opus 5.5 · **Effort** High
 - **Goal** Three more multi-phase bosses in the arena, each testing a different skill.
 - **Scope**
   - Boss of Speed (bursts), Boss of Precision (errors heal it), Boss of Endurance (long passage, shifting tides) using the boss kit
@@ -348,7 +348,7 @@ Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Fable 5.2 
 
 ### [ ] T28 · Scene: The Ladder (endless)
 - **Branch** `t28-ladder`
-- **Model** Sonnet 5.5 · **Effort** Medium
+- **Model** Opus 5.5 · **Effort** Medium
 - **Goal** Build the "The Ladder (endless)" scene as a distinct, beautiful, exciting 3D level whose mechanic is: an endless climb where each floor is a short random challenge drawn from all mechanics, with modifiers and a high-score table
 - **Scope**
   - New folder src/scenes/ladder/ implementing GameScene
@@ -410,7 +410,7 @@ Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Fable 5.2 
 
 ### [ ] T33 · Progression, abilities, shop and cosmetics
 - **Branch** `t33-progression`
-- **Model** Sonnet 5.5 · **Effort** Medium
+- **Model** Opus 5.5 · **Effort** Medium
 - **Goal** A light, readable progression that makes the player want one more run.
 - **Scope**
   - XP and levels; glyphs and ink; small skill tree; abilities (Echo, Steady Hand, Second Wind and 3 more) wired into the combat kit

@@ -2,7 +2,7 @@
 
 # Otiyot — Progress
 
-_Last updated 2026-11-12. This page is generated from `docs/progress.json`; to change it, edit the JSON and run `node scripts/render-progress.mjs`._
+_Last updated 2026-11-11. This page is generated from `docs/progress.json`; to change it, edit the JSON and run `node scripts/render-progress.mjs`._
 
 ## Summary
 
@@ -54,6 +54,7 @@ Work done before or outside the numbered tasks.
 - **2026-11-10** — Cost change: Fable now builds only T13 (hub), T14 (Meadow, sets the pattern for all scenes), T16 (boss kit), T27 (final) and T34 (polish pass); everything else is Sonnet. CI trimmed (skip docs-only changes, cancel superseded runs). Builders chain into the next task automatically. (docs/auto-run/TASK-PROMPTS.md, .github/workflows/ci.yml)
 - **2026-11-10** — Three builders: Opus (T13, T14, T16, T34), Fable (T27, T35 story-heavy only), Sonnet (everything else). Builders pass the baton to the owner of the next task. (docs/auto-run/TASK-PROMPTS.md)
 - **2026-11-10** — Owners changed by the owner: Fable builds T14 (Meadow), T16 (boss kit), T27 (final fight) and T34 (polish pass); Opus finishes T13 (hub, already running); Sonnet builds everything else including T35. (docs/auto-run/TASK-PROMPTS.md, docs/ROADMAP.md)
+- **2026-11-11** — Owners changed by the owner: tasks planned as Fable move to Opus (T20 to T26, T28, T33), except T14, T16, T27, T34 which stay Fable. Sonnet keeps what was Sonnet. Builders now push every 15 minutes with a docs/WIP-Txx.md note. (docs/auto-run/TASK-PROMPTS.md, docs/ROADMAP.md)
 
 ## Task overview
 
