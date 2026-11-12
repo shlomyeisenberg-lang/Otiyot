@@ -1240,9 +1240,9 @@
       "notes": "Checked with Playwright screenshots of start, middle, finale and results; before the fix the English run forged 1 bright letter of 8, after it 8 of 8 at a steady pace."
     },
     "R18": {
-      "status": "in_progress",
-      "finished": "",
-      "pr": "",
+      "status": "done",
+      "finished": "2026-11-12",
+      "pr": "https://github.com/shlomyeisenberg-lang/Otiyot/pull/39",
       "summary": "Opus reviewed Sonnet's Night Shuk (T18) and played it in both languages, light and dark, desktop and phone. The market is lovely and the trade-and-haggle idea works, but for most players it had no marks at all, because the learned punctuation dropped out of the learned keys at Level 3; that and a reversed Hebrew banner are fixed.",
       "changes": [
         "src/learn/text1.ts and src/learn/text2.ts: from Level 3 the learned keys are every letter plus the keys passed in Level 1 (the marks among them). Before, they were the letters only, so a player who had learned '.', ',' or ';' lost them on reaching Level 3 and the Shuk (which opens at Level 2) laid out stalls with no marks and no coins. Only keys the player really passed are added, so the learned-letters rule holds.",

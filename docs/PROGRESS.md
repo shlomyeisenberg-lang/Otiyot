@@ -6,8 +6,8 @@ _Last updated 2026-11-12. This page is generated from `docs/progress.json`; to c
 
 ## Summary
 
-- ✅ **23** of **44** tasks done
-- 🛠️ 1 in progress · ⛔ 0 blocked · ⬜ 20 pending
+- ✅ **24** of **44** tasks done
+- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 20 pending
 - ⬜ **3** manual steps waiting for you
 - 💡 10 feature ideas open
 
@@ -80,7 +80,7 @@ Work done before or outside the numbered tasks.
 - ✅ T17 · Scene: The Gematria Forge — 2026-11-11 · [PR #28](https://github.com/shlomyeisenberg-lang/Otiyot/pull/28)
 - ✅ R17 — 2026-11-12 · [PR #38](https://github.com/shlomyeisenberg-lang/Otiyot/pull/38)
 - ✅ T18 · Scene: The Night Shuk — 2026-11-11 · [PR #29](https://github.com/shlomyeisenberg-lang/Otiyot/pull/29)
-- 🛠️ R18
+- ✅ R18 — 2026-11-12 · [PR #39](https://github.com/shlomyeisenberg-lang/Otiyot/pull/39)
 - ✅ T19 · Scene: The Jaffa Line — 2026-11-12 · [PR #30](https://github.com/shlomyeisenberg-lang/Otiyot/pull/30)
 - ⬜ R19
 - ✅ T20 · Scene: The Sunken Geniza — 2026-11-12 · [PR #35](https://github.com/shlomyeisenberg-lang/Otiyot/pull/35)
@@ -950,9 +950,9 @@ The Night Shuk can be played from the map (Level 2 of the course, after the Grea
 
 Compared against the Meadow with Playwright screenshots; the Shuk keeps the Meadow's layout, HUD and restoration feel with its own night palette, mechanic and music.
 
-### 🛠️ R18
+### ✅ R18
 
-**Status:** In progress
+**Status:** Done · **Finished:** 2026-11-12 · **Pull request:** [PR #39](https://github.com/shlomyeisenberg-lang/Otiyot/pull/39)
 
 Opus reviewed Sonnet's Night Shuk (T18) and played it in both languages, light and dark, desktop and phone. The market is lovely and the trade-and-haggle idea works, but for most players it had no marks at all, because the learned punctuation dropped out of the learned keys at Level 3; that and a reversed Hebrew banner are fixed.
 
