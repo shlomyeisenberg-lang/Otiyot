@@ -16,7 +16,8 @@
 - Levels: easy 3 gates, standard 4, hard 5. Text only from learned words.
 
 ## Done so far
-- (nothing yet)
+- plan.ts + unit tests, palette, scene, screen, story, theme/ambience/sfx, locales, hub route, e2e smoke, look pass 1.
+- Run 2 (14:57Z): merged main; lint, typecheck, unit tests pass.
 
 ## Next
-- plan.ts + unit tests, palette, scene, screen, story, theme/ambience/sfx, locales, hub route, e2e.
+- build + e2e, screenshot compare with Meadow, polish; docs (ARCHITECTURE/GAME_DESIGN/CHANGELOG/ROADMAP), progress.json; PR, merge.
