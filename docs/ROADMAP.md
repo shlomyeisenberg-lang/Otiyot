@@ -291,7 +291,7 @@ One-pass review of Sonnet's T18; fix what is weak. Done when merged.
 
 One-pass review of Sonnet's T19; fix what is weak. Done when merged.
 
-### [ ] T20 · Scene: The Sunken Geniza
+### [x] T20 · Scene: The Sunken Geniza
 - **Branch** `t20-geniza`
 - **Model** Opus 5.5 · **Effort** High
 - **Goal** Build the "The Sunken Geniza" scene as a distinct, beautiful, exciting 3D level whose mechanic is: typing in rhythm with the tide: steady pace opens currents and lifts pages, bursts stir silt; rewards consistency
