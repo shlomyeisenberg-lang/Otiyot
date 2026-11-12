@@ -6,8 +6,8 @@ _Last updated 2026-11-12. This page is generated from `docs/progress.json`; to c
 
 ## Summary
 
-- ✅ **25** of **44** tasks done
-- 🛠️ 1 in progress · ⛔ 0 blocked · ⬜ 18 pending
+- ✅ **26** of **44** tasks done
+- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 18 pending
 - ⬜ **3** manual steps waiting for you
 - 💡 12 feature ideas open
 
@@ -84,7 +84,7 @@ Work done before or outside the numbered tasks.
 - ✅ T19 · Scene: The Jaffa Line — 2026-11-12 · [PR #30](https://github.com/shlomyeisenberg-lang/Otiyot/pull/30)
 - ✅ R19 — 2026-11-12 · [PR #40](https://github.com/shlomyeisenberg-lang/Otiyot/pull/40)
 - ✅ T20 · Scene: The Sunken Geniza — 2026-11-12 · [PR #35](https://github.com/shlomyeisenberg-lang/Otiyot/pull/35)
-- 🛠️ T21 · Scene: Wings over Hermon
+- ✅ T21 · Scene: Wings over Hermon — 2026-11-12 · [PR #41](https://github.com/shlomyeisenberg-lang/Otiyot/pull/41)
 - ⬜ T22 · Scene: The Star Station
 - ⬜ T23 · Scene: Atbash City
 - ⬜ T24 · Scene: The Long Midbar
@@ -1084,9 +1084,9 @@ The Sunken Geniza can be played from the map (Level 3 of the course, after the G
 
 Built by the Sonnet runner. The 60 fps check was not measured on a real device in this sandbox (software rendering); the scene follows the performance rules (instanced weed and pages, merged static geometry, no allocations in update()).
 
-### 🛠️ T21 · Scene: Wings over Hermon
+### ✅ T21 · Scene: Wings over Hermon
 
-**Status:** In progress
+**Status:** Done · **Finished:** 2026-11-12 · **Pull request:** [PR #41](https://github.com/shlomyeisenberg-lang/Otiyot/pull/41)
 
 Wings over Hermon can be played from the map (Level 4 of the course, after the Great Blot): the apprentice rides a great eagle through a thunderstorm up a green valley to Mount Hermon, seen from the rider's seat. Hailstones fall one at a time, each carrying a learned word; finishing the word before the stone reaches the eagle bursts it into gold rain that restores the valley, and only lightning shows the next word waiting in the cloud. The storm breaks as you go and ends in an evening rainbow over the snow of Hermon.
 

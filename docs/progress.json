@@ -1353,9 +1353,9 @@
       "notes": "Built by the Sonnet runner. The 60 fps check was not measured on a real device in this sandbox (software rendering); the scene follows the performance rules (instanced weed and pages, merged static geometry, no allocations in update())."
     },
     "T21": {
-      "status": "in_progress",
-      "finished": "",
-      "pr": "",
+      "status": "done",
+      "finished": "2026-11-12",
+      "pr": "https://github.com/shlomyeisenberg-lang/Otiyot/pull/41",
       "summary": "Wings over Hermon can be played from the map (Level 4 of the course, after the Great Blot): the apprentice rides a great eagle through a thunderstorm up a green valley to Mount Hermon, seen from the rider's seat. Hailstones fall one at a time, each carrying a learned word; finishing the word before the stone reaches the eagle bursts it into gold rain that restores the valley, and only lightning shows the next word waiting in the cloud. The storm breaks as you go and ends in an evening rainbow over the snow of Hermon.",
       "changes": [
         "src/scenes/hermon/plan.ts: the run as pure data (9/12/15 stones of one learned word, chapters gathering/heart/summit, capitals only when learned), the fall time per word (fallSeconds), the Hail stepper (waits for the first key, holds on Calm, strikes and is thrown back up slower), lightning gaps, how long the next word stays readable, storm, breaks in the clouds, color share, caught percent",
