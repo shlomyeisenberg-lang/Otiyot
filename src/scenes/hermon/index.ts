@@ -89,7 +89,9 @@ const TOP_Z = 30;
 const LAND_Z = 5.2;
 const LAND_Y = 1.3;
 /** Where the next stone waits inside the cloud (as a fall height above 1). */
-const NEXT_H = 1.32;
+const NEXT_H = 1.1;
+/** The next stone waits off to the side, this many times farther out than its lane. */
+const NEXT_SPREAD = 2.4;
 const LETTER_SIZE = 1.25;
 const NEXT_SIZE = 1.05;
 /** The rider's seat on the eagle (the cockpit camera). */
@@ -193,6 +195,7 @@ export class HermonScene implements GameScene {
   private nextShownH = NEXT_H + 0.5;
   private lane = 0;
   private nextLane = 0;
+  private laneShown = 0;
   private broken = 0;
   private struckThis = false;
 
@@ -630,17 +633,14 @@ export class HermonScene implements GameScene {
     this.cloudMat = tracker.track(
       kit.surface({
         color: TINT.cloud,
+        vertexColors: true,
         emissive: TINT.bolt,
         emissiveIntensity: 0,
         restore: false,
         lift: 0.35,
       }),
     );
-    this.ceiling = new InstancedMesh(
-      tracker.track(new IcosahedronGeometry(1, 1)),
-      this.cloudMat,
-      CEILING,
-    );
+    this.ceiling = new InstancedMesh(tracker.track(puff()), this.cloudMat, CEILING);
     for (let k = 0; k < CEILING; k++) {
       // x, y, z and a size; puffs over the valley part as the storm breaks.
       this.ceilingBase[k * 4] = r.range(-150, 150);
@@ -654,6 +654,7 @@ export class HermonScene implements GameScene {
     this.scudMat = tracker.track(
       kit.surface({
         color: TINT.cloudDark,
+        vertexColors: true,
         emissive: TINT.bolt,
         emissiveIntensity: 0,
         restore: false,
@@ -662,17 +663,13 @@ export class HermonScene implements GameScene {
         opacity: 0.85,
       }),
     );
-    this.scud = new InstancedMesh(tracker.track(new IcosahedronGeometry(1, 1)), this.scudMat, SCUD);
+    this.scud = new InstancedMesh(tracker.track(puff()), this.scudMat, SCUD);
     for (let k = 0; k < SCUD; k++) this.respawnScud(k, r.range(-10, 140));
     kit.caster(this.scud, false);
     root.add(this.scud);
 
     // The cloud the stones come out of: a dark knot of puffs that rides ahead with the eagle.
-    this.mouth = new InstancedMesh(
-      tracker.track(new IcosahedronGeometry(1, 1)),
-      this.cloudMat,
-      MOUTH,
-    );
+    this.mouth = new InstancedMesh(tracker.track(puff()), this.cloudMat, MOUTH);
     for (let k = 0; k < MOUTH; k++) {
       const a = (k / MOUTH) * Math.PI * 2;
       this.mouthOff[k * 4] = Math.cos(a) * r.range(5, 10);
@@ -999,6 +996,7 @@ export class HermonScene implements GameScene {
     this.chapter = plan.chapters[0]?.id ?? 'gathering';
     this.cur = 0;
     this.lane = this.pickLane(0);
+    this.laneShown = this.lane;
     this.nextLane = this.pickLane(this.lane);
     this.hail.start(plan.stones[0]?.fall ?? null);
     for (let k = 0; k < 2; k++) {
@@ -1136,6 +1134,7 @@ export class HermonScene implements GameScene {
       this.cur = 1 - this.cur;
       this.shownH = this.nextShownH;
       this.lane = this.nextLane;
+      this.laneShown = this.nextLane * NEXT_SPREAD;
       this.nextLane = this.pickLane(this.lane);
       this.nextShownH = NEXT_H + 0.6;
       this.hail.start(plan.stones[this.wordsDone]?.fall ?? null);
@@ -1169,7 +1168,7 @@ export class HermonScene implements GameScene {
     const e = this.eagle.position;
     if (bolt) {
       const side = r.next() < 0.5 ? -1 : 1;
-      bolt.position.set(e.x + side * r.range(25, 70), e.y + 26, e.z + r.range(70, 140));
+      bolt.position.set(e.x + side * r.range(16, 40), e.y + 24, e.z + r.range(45, 85));
       bolt.scale.setScalar(r.range(1.4, 2.2));
       bolt.visible = true;
       this.flashLight.position.set(
@@ -1264,7 +1263,8 @@ export class HermonScene implements GameScene {
     // --- The stones.
     const cur = this.stones[this.cur];
     if (cur && cur.visible) {
-      this.stoneAt(this.shownH, this.lane, cur.position);
+      this.laneShown = damp(this.laneShown, this.lane, 2.2, dt);
+      this.stoneAt(this.shownH, this.laneShown, cur.position);
       cur.rotation.x += dt * 0.6;
       cur.rotation.y += dt * 0.9;
       const near = 1 - Math.min(1, this.shownH);
@@ -1272,7 +1272,7 @@ export class HermonScene implements GameScene {
     }
     const next = this.stones[1 - this.cur];
     if (next && next.visible) {
-      this.stoneAt(this.nextShownH, this.nextLane, next.position);
+      this.stoneAt(this.nextShownH, this.nextLane * NEXT_SPREAD, next.position);
       next.rotation.y += dt * 0.4;
     }
 
@@ -1487,6 +1487,23 @@ export class HermonScene implements GameScene {
 }
 
 const NO_STATES: readonly never[] = [];
+
+/** A puff of cloud: lit and pale on top, dark and heavy underneath. */
+function puff(): BufferGeometry {
+  const g = new IcosahedronGeometry(1, 1).toNonIndexed();
+  const pos = g.getAttribute('position');
+  const colors = new Float32Array(pos.count * 3);
+  for (let i = 0; i < pos.count; i++) {
+    const y = pos.getY(i);
+    const k = 0.55 + 0.5 * Math.max(0, Math.min(1, (y + 1) / 2));
+    colors[i * 3] = k;
+    colors[i * 3 + 1] = k;
+    colors[i * 3 + 2] = k * 1.02;
+  }
+  g.setAttribute('color', new BufferAttribute(colors, 3));
+  g.deleteAttribute('uv');
+  return g;
+}
 
 /**
  * A feather (or a wing part): a box `length` long along +x from x = 0, narrowing to `taper` of

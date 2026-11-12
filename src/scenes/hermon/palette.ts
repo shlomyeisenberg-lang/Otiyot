@@ -88,8 +88,8 @@ export const TINT = {
   roof: 0xc8784a,
   wall: 0xe8dcc0,
   // The storm.
-  cloud: 0x6a6e7e,
-  cloudDark: 0x7c8090,
+  cloud: 0x8a8e9c,
+  cloudDark: 0x8e92a0,
   cloudClear: 0xfff2ea,
   rain: 0xc8d8f0,
   bolt: 0xe8f0ff,
@@ -104,7 +104,7 @@ export const TINT = {
   goldRain: 0xffe6a0,
   // The eagle.
   feather: 0x6e4c30,
-  featherDark: 0x40291a,
+  featherDark: 0x4a3426,
   featherTip: 0x24160c,
   covert: 0x9a7040,
   nape: 0xc8902e,
