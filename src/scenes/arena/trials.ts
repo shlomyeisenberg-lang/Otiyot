@@ -31,25 +31,98 @@ export const TRIALS: Readonly<Record<TrialId, BossDef>> = {
   storm: {
     id: 'trial-storm',
     phases: [
-      { id: 'p1', text: 'words', attack: 'spatter', music: 'storm1', grace: 1.4, pace: 1.3, rest: 1.8 },
-      { id: 'p2', text: 'words', attack: 'tendril', music: 'storm2', grace: 1.2, pace: 1.45, rest: 1.5 },
-      { id: 'p3', text: 'sentences', attack: 'spatter', music: 'storm3', grace: 1.4, pace: 1.6, rest: 1.3 },
+      {
+        id: 'p1',
+        text: 'words',
+        attack: 'spatter',
+        music: 'storm1',
+        grace: 1.4,
+        pace: 1.3,
+        rest: 1.8,
+      },
+      {
+        id: 'p2',
+        text: 'words',
+        attack: 'tendril',
+        music: 'storm2',
+        grace: 1.2,
+        pace: 1.45,
+        rest: 1.5,
+      },
+      {
+        id: 'p3',
+        text: 'sentences',
+        attack: 'spatter',
+        music: 'storm3',
+        grace: 1.4,
+        pace: 1.6,
+        rest: 1.3,
+      },
     ],
   },
   glass: {
     id: 'trial-glass',
     phases: [
-      { id: 'p1', text: 'words', attack: 'mirror', music: 'glass1', grace: 3.4, pace: 0.8, heal: 3 },
-      { id: 'p2', text: 'sentences', attack: 'spatter', music: 'glass2', grace: 3.6, pace: 0.8, heal: 4 },
-      { id: 'p3', text: 'passage', attack: 'mirror', music: 'glass3', grace: 3.8, pace: 0.85, heal: 5 },
+      {
+        id: 'p1',
+        text: 'words',
+        attack: 'mirror',
+        music: 'glass1',
+        grace: 3.4,
+        pace: 0.8,
+        heal: 3,
+      },
+      {
+        id: 'p2',
+        text: 'sentences',
+        attack: 'spatter',
+        music: 'glass2',
+        grace: 3.6,
+        pace: 0.8,
+        heal: 4,
+      },
+      {
+        id: 'p3',
+        text: 'passage',
+        attack: 'mirror',
+        music: 'glass3',
+        grace: 3.8,
+        pace: 0.85,
+        heal: 5,
+      },
     ],
   },
   tide: {
     id: 'trial-tide',
     phases: [
-      { id: 'p1', text: 'passage', attack: 'flood', music: 'tide1', grace: 3.2, tide: 0.45, tidePeriod: 8 },
-      { id: 'p2', text: 'sentences', attack: 'tendril', music: 'tide2', grace: 3, tide: 0.55, tidePeriod: 6 },
-      { id: 'p3', text: 'passage', attack: 'flood', music: 'tide3', grace: 3.4, pace: 1.05, tide: 0.65, tidePeriod: 7 },
+      {
+        id: 'p1',
+        text: 'passage',
+        attack: 'flood',
+        music: 'tide1',
+        grace: 3.2,
+        tide: 0.45,
+        tidePeriod: 8,
+      },
+      {
+        id: 'p2',
+        text: 'sentences',
+        attack: 'tendril',
+        music: 'tide2',
+        grace: 3,
+        tide: 0.55,
+        tidePeriod: 6,
+      },
+      {
+        id: 'p3',
+        text: 'passage',
+        attack: 'flood',
+        music: 'tide3',
+        grace: 3.4,
+        pace: 1.05,
+        tide: 0.65,
+        tidePeriod: 7,
+      },
     ],
   },
 };
@@ -200,7 +273,10 @@ export function planTrial(trial: TrialId, o: BlotInput): BossPlan {
       const a = bursts(o, avoid, z.bursts, z.burst);
       const b = bursts(o, avoid, z.bursts2, z.burst + 1);
       const c = sentences(o, avoid, z.stormSentences, 3, 4, 'last');
-      return { boss: id, phases: [built(def(trial, 0), a), built(def(trial, 1), b), built(def(trial, 2), c)] };
+      return {
+        boss: id,
+        phases: [built(def(trial, 0), a), built(def(trial, 1), b), built(def(trial, 2), c)],
+      };
     }
     case 'glass': {
       // I. Single words, every other one a weak point (a perfect word stuns the golem).
@@ -213,14 +289,20 @@ export function planTrial(trial: TrialId, o: BlotInput): BossPlan {
       // II. Sentences: the longest word is where the glass is thinnest. III. A passage.
       const b = sentences(o, avoid, z.glassSentences, 3, 4, 'longest');
       const c = passage(o, avoid, z.glassPassage, 3);
-      return { boss: id, phases: [built(def(trial, 0), a), built(def(trial, 1), b), built(def(trial, 2), c)] };
+      return {
+        boss: id,
+        phases: [built(def(trial, 0), a), built(def(trial, 1), b), built(def(trial, 2), c)],
+      };
     }
     case 'tide': {
       // I. A passage in long stretches. II. Sentences like waves. III. The long passage.
       const a = passage(o, avoid, z.tidePassage, 4);
       const b = sentences(o, avoid, z.tideSentences, 4, 5, 'last');
       const c = passage(o, avoid, z.tideLong, 5);
-      return { boss: id, phases: [built(def(trial, 0), a), built(def(trial, 1), b), built(def(trial, 2), c)] };
+      return {
+        boss: id,
+        phases: [built(def(trial, 0), a), built(def(trial, 1), b), built(def(trial, 2), c)],
+      };
     }
   }
 }
