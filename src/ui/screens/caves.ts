@@ -208,8 +208,8 @@ export function cavesScreen(ctx: AppContext): Screen {
     outs: { get: () => scene?.outs ?? 0, enumerable: true },
     lamps: { get: () => scene?.lamps ?? 0, enumerable: true },
     restored: { get: () => scene?.restored ?? false, enumerable: true },
-    ahead: { get: () => (over ? 0 : (scene?.ahead ?? 0)), enumerable: true },
-    veiled: { get: () => !over && probe.ready && (scene?.ahead ?? 1) === 0, enumerable: true },
+    ahead: { get: () => (over ? 0 : (scene?.aheadWords ?? 0)), enumerable: true },
+    veiled: { get: () => !over && probe.ready && (scene?.aheadWords ?? 1) === 0, enumerable: true },
   });
   window.__otiyotCaves = probe;
 
@@ -264,7 +264,11 @@ export function cavesScreen(ctx: AppContext): Screen {
   let lightShown: MessageKey = 'caves.light.bright';
   const lightKey = (): MessageKey => {
     const l = probe.light;
-    return l >= LOOK_FULL ? 'caves.light.bright' : l >= LOOK_DIM ? 'caves.light.dim' : 'caves.light.low';
+    return l >= LOOK_FULL
+      ? 'caves.light.bright'
+      : l >= LOOK_DIM
+        ? 'caves.light.dim'
+        : 'caves.light.low';
   };
 
   const sync = (): void => {

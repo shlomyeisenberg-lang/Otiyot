@@ -323,7 +323,8 @@ export function planCaves(o: PlanOptions): CavesPlan {
 
 /** The chamber a word index is in (the last once the run is over); -1 for an empty plan. */
 export function chamberAt(plan: CavesPlan, index: number): number {
-  for (let i = 0; i < plan.chambers.length; i++) if (index < (plan.chambers[i] as Chamber).to) return i;
+  for (let i = 0; i < plan.chambers.length; i++)
+    if (index < (plan.chambers[i] as Chamber).to) return i;
   return plan.chambers.length - 1;
 }
 
