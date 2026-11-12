@@ -109,7 +109,7 @@ const STORM_GRACE = 3;
 /** Seconds the camels kneel when a gust buffets them. */
 const KNEEL_S = 1.3;
 const LETTER_SIZE = 0.6;
-const AHEAD_SIZE = 0.48;
+const AHEAD_SIZE = 0.62;
 const AHEAD_CAP = 48;
 /** Sand blowing through the air, in a box that rides with the camera. */
 const SAND = 1600;
@@ -123,7 +123,7 @@ const OASIS_PALMS = 9;
 const POOL_AHEAD = 9;
 const POOL_R = 5.2;
 /** The camera looks at the caravan from behind and a little to the side. */
-const CAM_YAW = 0.42;
+const CAM_YAW = -0.5;
 
 /** The road's line across the desert: x for a given z. */
 export function roadX(z: number): number {
@@ -515,9 +515,9 @@ export class MidbarScene implements GameScene {
   /** The camera of a run: behind the caravan and a little to its side. */
   private follow(): void {
     this.ctx.rig.follow(this.eye, {
-      distance: 9.5,
-      height: 3.6,
-      lookHeight: 1.7,
+      distance: 11.5,
+      height: 4.8,
+      lookHeight: 1.9,
       turnWith: 1,
       stiffness: 2.2,
     });
@@ -1014,10 +1014,10 @@ export class MidbarScene implements GameScene {
     this.dyo.root.scale.setScalar(0.45);
     // A little scarf against the sand.
     const scarf = new Mesh(
-      tracker.track(new TorusGeometry(0.62, 0.16, 6, 14).rotateX(Math.PI / 2)),
-      tracker.track(kit.surface({ color: TINT.scarf, restore: false })),
+      tracker.track(new TorusGeometry(0.44, 0.15, 6, 14).rotateX(Math.PI / 2)),
+      tracker.track(kit.surface({ color: TINT.rugSaffron, restore: false })),
     );
-    scarf.position.y = 0.55;
+    scarf.position.y = 0.3;
     this.dyo.root.add(scarf);
     root.add(this.dyo.root);
 
@@ -1447,14 +1447,15 @@ export class MidbarScene implements GameScene {
     // --- The wall of sand: rolls in from the side with its gust, falls apart when it is beaten.
     if (this.wall.visible) {
       const yaw = roadYaw(this.leadZ);
-      const rx = Math.cos(yaw);
-      const rz = -Math.sin(yaw);
+      // The gusts come from the caravan's left, the side the camera looks across.
+      const rx = -Math.cos(yaw);
+      const rz = Math.sin(yaw);
       const d = GUST_NEAR + (GUST_FAR - GUST_NEAR) * Math.max(0, Math.min(1.3, this.shownGust));
       const lead = this.apprentice.root.position;
       const x = lead.x + rx * d + Math.sin(yaw) * 2;
       const z = lead.z + rz * d + Math.cos(yaw) * 2;
       this.wall.position.set(x, dunes(x, z) - 0.5, z);
-      this.wall.rotation.y = yaw - Math.PI / 2;
+      this.wall.rotation.y = yaw + Math.PI / 2;
       this.wallFade = Math.min(1, this.wallFade + dt * 1.2);
       this.wallBreak = Math.max(0, this.wallBreak - dt * 1.6);
       const near = 1 - Math.min(1, this.shownGust);
@@ -1601,7 +1602,7 @@ export class MidbarScene implements GameScene {
     this.rope.geometry.setDrawRange(0, this.camels.length * 2);
 
     // The camera's eye: the middle of the caravan, turned a little so we see it from the side.
-    const mz = z - 2.5;
+    const mz = z - 3.5;
     this.eye.position.set(roadX(mz), dunes(roadX(mz), mz), mz);
     this.eye.rotation.y = roadYaw(mz) + CAM_YAW;
   }
@@ -1660,10 +1661,10 @@ export class MidbarScene implements GameScene {
       this.ahead.root.visible = words.length > 0;
     }
     const dist = Math.min(13, Math.max(7, sightAt(this.storm) * 0.62));
-    const px = app.x + fx * dist + Math.cos(yaw) * 1.8;
-    const pz = app.z + fz * dist - Math.sin(yaw) * 1.8;
+    const px = app.x + fx * dist - Math.cos(yaw) * 1.8;
+    const pz = app.z + fz * dist + Math.sin(yaw) * 1.8;
     this.aheadPost.position.set(px, dunes(px, pz), pz);
-    this.aheadPost.rotation.y = yaw + 0.4;
+    this.aheadPost.rotation.y = yaw - 0.4;
     this.aheadPost.visible = !this.finished;
     this.ahead.anchor.set(px, this.aheadPost.position.y + 3.1, pz);
     if (this.finished) this.ahead.root.visible = false;
@@ -1687,7 +1688,7 @@ export class MidbarScene implements GameScene {
     }
     pos.needsUpdate = true;
     this.sandMat.opacity = 0.1 + this.storm * 0.75;
-    this.sandMat.size = 0.08 + this.storm * 0.07;
+    this.sandMat.size = 0.05 + this.storm * 0.04;
   }
 
   dispose(): void {
