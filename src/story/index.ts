@@ -10,3 +10,4 @@ export * from './cliffs';
 export * from './arena';
 export * from './forge';
 export * from './shuk';
+export * from './rail';

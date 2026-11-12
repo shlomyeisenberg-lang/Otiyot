@@ -67,7 +67,7 @@ export interface ThemeSpec {
   level: number;
 }
 
-export type ThemeId = 'title' | 'hub' | 'meadow' | 'cliffs' | 'forge' | 'shuk' | 'boss';
+export type ThemeId = 'title' | 'hub' | 'meadow' | 'cliffs' | 'forge' | 'shuk' | 'rail' | 'boss';
 export const THEME_IDS: readonly ThemeId[] = [
   'title',
   'hub',
@@ -75,6 +75,7 @@ export const THEME_IDS: readonly ThemeId[] = [
   'cliffs',
   'forge',
   'shuk',
+  'rail',
   'boss',
 ];
 
@@ -282,6 +283,35 @@ export const THEMES: Readonly<Record<ThemeId, ThemeSpec>> = {
     cadences: CAD_8,
     reverb: 0.3,
     brightness: 0.62,
+    level: 0.85,
+  },
+  // The Jaffa Line: a driving D dorian groove in 4/4, a chugging kanun like pistons under a bright
+  // harp melody and clarinet, brushes on the snare. It climbs in register as the line climbs to the hills.
+  rail: {
+    id: 'rail',
+    nameKey: 'sound.theme.rail',
+    seed: 7011,
+    bpm: 132,
+    beats: 4,
+    sub: 2,
+    root: 62,
+    mode: 'dorian',
+    swing: 0.06,
+    form: ['A', 'A', 'B', 'A', 'C'],
+    sections: {
+      A: { bars: 8, chords: [0, 0, 3, 3, 0, 0, 4, 0], register: 1, density: 0.55 },
+      B: { bars: 8, chords: [3, 3, 0, 0, 4, 4, 0, 0], register: 2, density: 0.7 },
+      C: { bars: 8, chords: [0, 4, 3, 4, 0, 3, 4, 0], register: 4, density: 0.8 },
+    },
+    voices: { drone: 'pad', pulse: 'kanun', melody: 'harp', counter: 'clarinet' },
+    kit: 'brush',
+    pulse: [0, 2, 1, 2, 0, 2, 3, 2],
+    counterOctave: 0,
+    drums: { base: 'D.kTD.kT', full: 'DkTkDkTS' },
+    cells: CELLS_8,
+    cadences: CAD_8,
+    reverb: 0.26,
+    brightness: 0.7,
     level: 0.85,
   },
   // Boss: C freygish at full drive, taiko and cello ostinato. Four phases: each climbs, and the

@@ -244,7 +244,7 @@ Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Fable 5.2 
 - **Done when** The scene is playable start to finish from the hub at 60 fps on medium, feels different from every other scene, and its smoke test passes.
 - **User must have ready** Nothing.
 
-### [ ] T19 · Scene: The Jaffa Line
+### [x] T19 · Scene: The Jaffa Line
 - **Branch** `t19-rail`
 - **Model** Sonnet 5.5 · **Effort** High
 - **Goal** Build the "The Jaffa Line" scene as a distinct, beautiful, exciting 3D level whose mechanic is: a rail race against Naftali where typing sustains boost and combo streaks carry the train through bends
