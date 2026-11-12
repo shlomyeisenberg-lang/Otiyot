@@ -256,6 +256,41 @@ Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Fable 5.2 
 - **Done when** The scene is playable start to finish from the hub at 60 fps on medium, feels different from every other scene, and its smoke test passes.
 - **User must have ready** Nothing.
 
+### [ ] R15 · Review of T15
+
+- **Branch** `review-t15`
+- **Model** Opus 5.5 · **Effort** Medium
+
+One-pass review of Sonnet's T15; fix what is weak. Done when merged.
+
+### [ ] R16 · Review of T16
+
+- **Branch** `review-t16`
+- **Model** Opus 5.5 · **Effort** Medium
+
+One-pass review of Sonnet's T16; fix what is weak. Done when merged.
+
+### [ ] R17 · Review of T17
+
+- **Branch** `review-t17`
+- **Model** Opus 5.5 · **Effort** Medium
+
+One-pass review of Sonnet's T17; fix what is weak. Done when merged.
+
+### [ ] R18 · Review of T18
+
+- **Branch** `review-t18`
+- **Model** Opus 5.5 · **Effort** Medium
+
+One-pass review of Sonnet's T18; fix what is weak. Done when merged.
+
+### [ ] R19 · Review of T19
+
+- **Branch** `review-t19`
+- **Model** Opus 5.5 · **Effort** Medium
+
+One-pass review of Sonnet's T19; fix what is weak. Done when merged.
+
 ### [ ] T20 · Scene: The Sunken Geniza
 - **Branch** `t20-geniza`
 - **Model** Opus 5.5 · **Effort** High
