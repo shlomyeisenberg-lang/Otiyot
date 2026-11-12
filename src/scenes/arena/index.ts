@@ -206,7 +206,7 @@ const GRADES: Readonly<Record<ArenaLight, Parameters<SceneContext['post']['setGr
   restored: { saturation: 1.14, contrast: 1.06, vignette: 0.34, godRays: 0.95, exposure: 1.03 },
 };
 
-/** The trials' grades (T26): the Storm Bird's charged dusk, the Golem's cold glare, the sea. */
+/** The trials' grades (T26): the Storm Hawk's charged dusk, the Golem's cold glare, the sea. */
 const TRIAL_GRADES: Readonly<
   Record<Exclude<BossLookId, 'blot'>, readonly Parameters<SceneContext['post']['setGrade']>[0][]>
 > = {
@@ -256,7 +256,7 @@ const TRIAL_GRADES: Readonly<
 };
 
 const LIGHT_OF: readonly ArenaLight[] = ['p1', 'p2', 'p3', 'p4'];
-/** Seconds between the Storm Bird's flashes of lightning over the theatre (at random). */
+/** Seconds between the Storm Hawk's flashes of lightning over the theatre (at random). */
 const STORM_FLASH: readonly [number, number] = [3.5, 7];
 
 export class ArenaScene implements GameScene {
@@ -1593,7 +1593,7 @@ export class ArenaScene implements GameScene {
       const face =
         smoothstep(0.62, 0.32, Math.abs(x)) * smoothstep(-0.25, 0.05, y) * smoothstep(0.2, 0.6, z);
       if (L.spikes > 0 && y > -0.1) {
-        // The Storm Bird's crest: lightning feathers on the crown and the back, crackling.
+        // The Storm Hawk's crest: lightning feathers on the crown and the back, crackling.
         const f = Math.max(0, Math.sin(9 * x + 2 * z) * Math.sin(7 * y + 1.3 + t * 0.6));
         r +=
           L.spikes * (0.22 + this.shown * 0.12 + phase * 0.04) * f * f * f * (1 - face) * (0.4 + y);
@@ -1876,7 +1876,7 @@ export class ArenaScene implements GameScene {
       sz * sty * (1 - squash),
       sz * stz * (1 + squash * 0.6),
     );
-    // The Storm Bird hovers over the stage; the others sit in their pool.
+    // The Storm Hawk hovers over the stage; the others sit in their pool.
     const hover = this.lookId === 'storm' ? 1.6 + Math.sin(this.time * 2.1) * 0.35 : 0;
     this.blot.position.y =
       sz * 0.7 * this.look.stretch[1] * (1 - squash) + Math.sin(this.time * 1.3) * 0.08 + hover;
@@ -1927,7 +1927,7 @@ export class ArenaScene implements GameScene {
 
     this.writeAttacks();
 
-    // The Storm Bird's sky: lightning now and then over the theatre while the fight is on.
+    // The Storm Hawk's sky: lightning now and then over the theatre while the fight is on.
     if (this.lookId === 'storm' && f?.state === 'fight' && !this.won) {
       this.flashTimer -= dt;
       if (this.flashTimer <= 0) {

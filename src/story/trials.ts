@@ -1,4 +1,4 @@
-// What is said in the Silent Arena's three trials (T26): the Storm Bird (speed), the Glass Golem
+// What is said in the Silent Arena's three trials (T26): the Storm Hawk (speed), the Glass Golem
 // (precision) and the Long Tide (endurance). Reb Ezra and Dyo call the phases from the stone
 // seats; each trial ends with a short victory cutscene. The bosses never speak: they are the
 // Fading given shape. Every speaker is male or Dyo (ARCHITECTURE section 8). Pure data.
@@ -17,13 +17,13 @@ export const TRIAL_LINES: Readonly<Record<TrialName, Readonly<Record<TrialMoment
   storm: {
     arrive: L(
       'ezra',
-      'ציפור הסערה. היא לא חזקה מהכתם, אבל היא מהירה ממנו. היא תוקפת במטחים: כתוב מהר, נשום כשהיא נחה, וכתוב מהר שוב.',
-      'The Storm Bird. It is not stronger than the blot, but it is faster. It strikes in bursts: write fast, breathe while it rests, then write fast again.',
+      'נץ הסערה. הוא לא חזק מהכתם, אבל הוא מהיר ממנו. הוא תוקף במטחים: כתוב מהר, נשום כשהוא נח, וכתוב מהר שוב.',
+      'The Storm Hawk. It is not stronger than the blot, but it is faster. It strikes in bursts: write fast, breathe while it rests, then write fast again.',
     ),
     returning: L(
       'dyo',
-      'הציפור חזרה לקן! הפעם אנחנו מוכנים לרעמים.',
-      'The bird is back on its perch! This time we are ready for the thunder.',
+      'הנץ חזר לקן! הפעם אנחנו מוכנים לרעמים.',
+      'The hawk is back on its perch! This time we are ready for the thunder.',
     ),
     p1: L(
       'dyo',
@@ -32,7 +32,7 @@ export const TRIAL_LINES: Readonly<Record<TrialName, Readonly<Record<TrialMoment
     ),
     p2: L(
       'ezra',
-      'עכשיו היא שולחת שרשרת ברקים. המטחים ארוכים יותר והקצב עולה. אל תחשוב על הזמן, חשוב על האצבעות.',
+      'עכשיו הוא שולח שרשרת ברקים. המטחים ארוכים יותר והקצב עולה. אל תחשוב על הזמן, חשוב על האצבעות.',
       'Now it sends chains of lightning. The bursts are longer and the pace climbs. Do not think about the clock; think about your fingers.',
     ),
     p3: L(
@@ -42,7 +42,7 @@ export const TRIAL_LINES: Readonly<Record<TrialName, Readonly<Record<TrialMoment
     ),
     special: L(
       'ezra',
-      'ראית? אחרי כל מטח היא נחה רגע. זה הזמן שלך לנשום.',
+      'ראית? אחרי כל מטח הוא נח רגע. זה הזמן שלך לנשום.',
       'Did you see? After every burst it rests a moment. That is your time to breathe.',
     ),
   },
@@ -64,7 +64,7 @@ export const TRIAL_LINES: Readonly<Record<TrialName, Readonly<Record<TrialMoment
     ),
     p2: L(
       'ezra',
-      'משפטים. המילה הארוכה במשפט היא המקום שבו הזכוכית הכי דקה.',
+      'משפטים. במילה הארוכה שבמשפט הזכוכית הכי דקה.',
       'Sentences. The longest word in a sentence is where the glass is thinnest.',
     ),
     p3: L(
@@ -81,7 +81,7 @@ export const TRIAL_LINES: Readonly<Record<TrialName, Readonly<Record<TrialMoment
   tide: {
     arrive: L(
       'ezra',
-      'הגאות הארוכה. היא לא ממהרת לשום מקום, וגם אתה לא צריך. זה מבחן של נשימה ארוכה.',
+      'הגל הארוך. הוא לא ממהר לשום מקום, וגם אתה לא צריך. זה מבחן של נשימה ארוכה.',
       'The Long Tide. It is in no hurry, and neither should you be. This is a test of a long breath.',
     ),
     returning: L(
@@ -106,7 +106,7 @@ export const TRIAL_LINES: Readonly<Record<TrialName, Readonly<Record<TrialMoment
     ),
     special: L(
       'dyo',
-      'הגאות עולה! הגל מאיץ. עוד קצת, והיא תרד שוב.',
+      'הגאות עולה! הגל מאיץ. עוד קצת, והים ירד שוב.',
       'High tide! The wave speeds up. A little more, and it will ebb again.',
     ),
   },
@@ -124,9 +124,9 @@ export function trialLine(
 
 /** The board's names and the transition cards' phase names. */
 export const TRIAL_NAMES: Readonly<Record<TrialName, Localized>> = {
-  storm: { he: 'ציפור הסערה', en: 'The Storm Bird' },
+  storm: { he: 'נץ הסערה', en: 'The Storm Hawk' },
   glass: { he: 'גולם הזכוכית', en: 'The Glass Golem' },
-  tide: { he: 'הגאות הארוכה', en: 'The Long Tide' },
+  tide: { he: 'הגל הארוך', en: 'The Long Tide' },
 };
 
 /** After the last trial: the arena is whole and the way to the Blank Scroll opens. */
@@ -157,10 +157,10 @@ function victory(trial: TrialName, title: Localized, said: Line, dyo: Line): Cut
 export const TRIAL_VICTORY: Readonly<Record<TrialName, Cutscene>> = {
   storm: victory(
     'storm',
-    { he: 'ציפור הסערה נמחקה', en: 'The Storm Bird is undone' },
+    { he: 'נץ הסערה נמחק', en: 'The Storm Hawk is undone' },
     L(
       'ezra',
-      'מהירות היא לא בהלה. ראיתי אותך: מהיר כשצריך, ושקט כשאפשר. זו מהירות של סופר.',
+      'מהירות זו לא בהלה. ראיתי אותך: מהיר כשצריך, ושקט כשאפשר. זו מהירות של סופר.',
       'Speed is not panic. I watched you: fast when you had to be, calm when you could be. That is a scribe’s speed.',
     ),
     L(
@@ -174,7 +174,7 @@ export const TRIAL_VICTORY: Readonly<Record<TrialName, Cutscene>> = {
     { he: 'גולם הזכוכית נמחק', en: 'The Glass Golem is undone' },
     L(
       'ezra',
-      'הזכוכית לא נשברה מכוח, היא נשברה מדיוק. יד נקייה חזקה מכל פטיש.',
+      'הזכוכית לא נשברה מכוח, אלא מדיוק. יד נקייה חזקה מכל פטיש.',
       'The glass did not break from force; it broke from care. A clean hand is stronger than any hammer.',
     ),
     L(
@@ -185,10 +185,10 @@ export const TRIAL_VICTORY: Readonly<Record<TrialName, Cutscene>> = {
   ),
   tide: victory(
     'tide',
-    { he: 'הגאות הארוכה נמחקה', en: 'The Long Tide is undone' },
+    { he: 'הגל הארוך נמחק', en: 'The Long Tide is undone' },
     L(
       'ezra',
-      'הים לא נגמר, אבל גם הנשימה שלך לא נגמרה. סבלנות היא כוח שקט.',
+      'הים לא נגמר, אבל גם הנשימה שלך לא נגמרה. סבלנות זה כוח שקט.',
       'The sea did not run out, but neither did your breath. Patience is a quiet strength.',
     ),
     L(

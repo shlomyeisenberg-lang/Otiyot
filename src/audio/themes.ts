@@ -574,7 +574,7 @@ export const THEMES: Readonly<Record<ThemeId, ThemeSpec>> = {
         drums: { base: 'base', full: 'storm' },
       },
       // The Arena's trials (T26): each boss has its own set of three sections.
-      // The Storm Bird (speed): a galloping kick, high and busy, climbing a step each phase.
+      // The Storm Hawk (speed): a galloping kick, high and busy, climbing a step each phase.
       S1: {
         bars: 8,
         chords: [0, 6, 0, 6, 3, 1, 0, 0],

@@ -2,7 +2,7 @@
 // Each one tests a different skill, and each is three phases long. Their phases as data, and the
 // plan of one fight from the player's learned letters (pure, unit-tested).
 //
-//   The Storm Bird (Speed)      — it strikes in bursts: short groups, attacks timed faster than
+//   The Storm Hawk (Speed)      — it strikes in bursts: short groups, attacks timed faster than
 //                                 any other fight, and a rest after every parried burst. Type
 //                                 fast, breathe, type fast again.
 //   The Glass Golem (Precision) — every slip mends a crack: errors heal it. The attacks are slow;

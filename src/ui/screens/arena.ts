@@ -789,7 +789,7 @@ export function bossScreen(ctx: AppContext, cfg: BossConfig): Screen {
     const f = fight;
     if (!f || over || f.state !== 'fight' || !options.hidden) return;
     handle(f.update(dt));
-    // A trial's own trick, named once: the Storm Bird's rest, the Long Tide's high water.
+    // A trial's own trick, named once: the Storm Hawk's rest, the Long Tide's high water.
     if (!specialSaid && f.parried > 0) {
       const storm = cfg.look === 'storm' && f.resting;
       const tide = cfg.look === 'tide' && f.tideNow > 0.92 && DIFFICULTIES[difficulty].timers;

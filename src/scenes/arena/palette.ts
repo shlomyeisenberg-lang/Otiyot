@@ -228,7 +228,7 @@ export const LOOKS: Readonly<Record<BossLookId, BossLook>> = {
     wobble: 1,
     emissive: 0.25,
   },
-  // The Storm Bird: a thundercloud with a crest of lightning feathers; it throws sparks.
+  // The Storm Hawk: a thundercloud with a crest of lightning feathers; it throws sparks.
   storm: {
     body: 0x1b1f3a,
     sheen: 0x8fd0ff,
