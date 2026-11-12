@@ -6,8 +6,8 @@ _Last updated 2026-11-12. This page is generated from `docs/progress.json`; to c
 
 ## Summary
 
-- ✅ **20** of **44** tasks done
-- 🛠️ 1 in progress · ⛔ 0 blocked · ⬜ 23 pending
+- ✅ **21** of **44** tasks done
+- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 23 pending
 - ⬜ **3** manual steps waiting for you
 - 💡 8 feature ideas open
 
@@ -76,7 +76,7 @@ Work done before or outside the numbered tasks.
 - ✅ T15 · Scene: Cliffs of Ein Gedi — 2026-11-11 · [PR #26](https://github.com/shlomyeisenberg-lang/Otiyot/pull/26)
 - ✅ R15 — 2026-11-12 · [PR #34](https://github.com/shlomyeisenberg-lang/Otiyot/pull/34)
 - ✅ T16 · Boss kit and the first boss — 2026-11-11 · [PR #27](https://github.com/shlomyeisenberg-lang/Otiyot/pull/27)
-- 🛠️ R16
+- ✅ R16 — 2026-11-12 · [PR #36](https://github.com/shlomyeisenberg-lang/Otiyot/pull/36)
 - ✅ T17 · Scene: The Gematria Forge — 2026-11-11 · [PR #28](https://github.com/shlomyeisenberg-lang/Otiyot/pull/28)
 - ⬜ R17
 - ✅ T18 · Scene: The Night Shuk — 2026-11-11 · [PR #29](https://github.com/shlomyeisenberg-lang/Otiyot/pull/29)
@@ -815,9 +815,9 @@ The first boss, the Great Blot, can be fought in the Silent Arena once the Cliff
 
 Local checks passed (lint, typecheck, 397 unit tests, build) and tests/e2e/arena.spec.ts passed in the sandbox. The first CI run failed only in tests/e2e/cliffs.spec.ts, which expects a down-reach from random words (flaky, unrelated to this task; see todo).
 
-### 🛠️ R16
+### ✅ R16
 
-**Status:** In progress
+**Status:** Done · **Finished:** 2026-11-12 · **Pull request:** [PR #36](https://github.com/shlomyeisenberg-lang/Otiyot/pull/36)
 
 Opus reviewed Fable's boss kit and the Great Blot (T16) and played the whole fight in light and dark mode. It is a strong, varied four-phase fight that is winnable on every difficulty; only two small per-frame allocations in the 3D code were fixed.
 
