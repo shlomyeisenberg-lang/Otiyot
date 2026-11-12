@@ -335,7 +335,7 @@ One-pass review of Sonnet's T19; fix what is weak. Done when merged.
 - **Done when** The scene is playable start to finish from the hub at 60 fps on medium, feels different from every other scene, and its smoke test passes.
 - **User must have ready** Nothing.
 
-### [ ] T24 · Scene: The Long Midbar
+### [x] T24 · Scene: The Long Midbar
 - **Branch** `t24-midbar`
 - **Model** Opus 5.5 · **Effort** High
 - **Goal** Build the "The Long Midbar" scene as a distinct, beautiful, exciting 3D level whose mechanic is: survival crossing: sentences keep the caravan moving toward the oasis while sandstorms cut visibility and shorten the lookahead

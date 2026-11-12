@@ -6,8 +6,8 @@ _Last updated 2026-11-12. This page is generated from `docs/progress.json`; to c
 
 ## Summary
 
-- ✅ **28** of **44** tasks done
-- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 16 pending
+- ✅ **29** of **44** tasks done
+- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 15 pending
 - ⬜ **3** manual steps waiting for you
 - 💡 12 feature ideas open
 
@@ -87,7 +87,7 @@ Work done before or outside the numbered tasks.
 - ✅ T21 · Scene: Wings over Hermon — 2026-11-12 · [PR #41](https://github.com/shlomyeisenberg-lang/Otiyot/pull/41)
 - ✅ T22 · Scene: The Star Station — 2026-11-12 · [PR #42](https://github.com/shlomyeisenberg-lang/Otiyot/pull/42)
 - ✅ T23 · Scene: Atbash City — 2026-11-12 · [PR #43](https://github.com/shlomyeisenberg-lang/Otiyot/pull/43)
-- ⬜ T24 · Scene: The Long Midbar
+- ✅ T24 · Scene: The Long Midbar — 2026-11-12 · [PR #44](https://github.com/shlomyeisenberg-lang/Otiyot/pull/44)
 - ⬜ T25 · Scene: The Lantern Caves
 - ⬜ T26 · The Silent Arena: remaining bosses
 - ⬜ T27 · The Blank Scroll and the Keeper
@@ -1202,11 +1202,46 @@ Atbash City can be played from the map (Level 5 of the course, after the Great B
 
 Built over two runs: the first run (Opus builder) built the scene and was cut off; the second merged main, widened the camera, checked screenshots, wrote the docs and merged.
 
-### ⬜ T24 · Scene: The Long Midbar
+### ✅ T24 · Scene: The Long Midbar
 
-**Status:** Pending
+**Status:** Done · **Finished:** 2026-11-12 · **Pull request:** [PR #44](https://github.com/shlomyeisenberg-lang/Otiyot/pull/44)
 
-_Not started._
+The Long Midbar can be played from the map (Level 5 of the course, after the Great Blot): the apprentice leads a caravan of three camels, with Dyo riding on the first one, along the old desert road from well to well to the oasis. Every stage is a clear sentence, where the next words stand carved on a marker stone ahead, and a sandstorm sentence, where the sky turns to blowing sand, the words ahead vanish and every word brings a wall of sand to walk through before it reaches the caravan. Every storm blows out at a well where the color comes back, and at the end the oasis turns green under a golden evening sky.
+
+**What changed**
+
+- src/scenes/midbar/plan.ts: the run as pure data (3/4/5 stages, each a trek sentence and a storm sentence of learned words; chapters dunes/wadi/oasis; LOOKAHEAD per kind of sentence and level, wordsAhead, sightAt), gustSeconds per word and difficulty, the Gust stepper (waits, holds on Calm, buffets, rolls back, comes again slower), the March walk, marchAim, legAt, chapterAt, chapterStartsAt, stageWords, stageChars, colorShare, wellsReached, steadyPercent, gustsIn
+- src/scenes/midbar/index.ts: the Long Midbar scene (one sheet of dunes with a winding trodden road, sandstone outcrops and stone cairns, a marker stone walking ahead with the words ahead, wells with date palms, the oasis with a pool, reeds, nine palms, two striped tents and a fire; the apprentice leading three camels with saddle rugs, bells, pacing legs and a kneel, tied by a rope, Dyo riding on the first; the sandstorm sky, blowing sand and walls of sand for every storm word; wells that shine; the finale at the oasis)
+- src/scenes/midbar/palette.ts: faded, clear and storm skies for the light (golden afternoon) and dark (dusk) themes, and the colors of the sand, camels, rugs, wells and oasis
+- src/ui/screens/midbar.ts: the Midbar screen (#/midbar): chip with chapter, Clear road or Sandstorm, word count and wells; the next word on the paper strip blurs while a storm hides the road; buffets drop the streak; results card with gusts walked through, times buffeted and wells reached; probe window.__otiyotMidbar
+- src/ui/styles/meadow.css: .hud[data-veil=storm] blurs the next word on the paper strip during a storm (no motion with reduce-motion)
+- src/story/midbar.ts (+ src/story/index.ts): Reb Ezra and Dyo lines for every moment, Hebrew and English
+- src/ui/app.ts, src/ui/shell.ts, src/ui/playable.ts: the midbar route, its screen and SCENE_ROUTES.midbar so the map opens it
+- src/audio/themes.ts: the midbar theme (B freygish, rocking 6/8 at 76 bpm, the new ney melody voice in src/audio/synth.ts, oud pulse, cello counter, frame drum)
+- src/audio/ambience.ts: the sand ambience (a deep wind roar under a dry hiss)
+- src/audio/sfx.ts: the gust and camel-bell effects
+- locales/en.json, locales/he.json: midbar.* strings, the theme name and mood, the two new effect names
+- tests/unit/midbar.test.ts: learned keys only on every level and difficulty (English and Hebrew), capitals and stops only when learned, chapters, legs, stage characters, gust timing and fairness, Gust and March steppers, lookahead and sight, wells, region/route/theme, story lines clean
+- tests/e2e/midbar.spec.ts: a whole Calm run from the map (storm thickens, gust holds, all wells, finale, rank saved, back home, no GPU leaks) and a Standard run on Steady (the storm hides the words ahead, the HUD veils the next word, a gust buffets the caravan)
+- tests/e2e/sound.spec.ts: the midbar theme is rendered too
+- docs/ARCHITECTURE.md section 7q, CHANGELOG.md, docs/ROADMAP.md (T24 ticked)
+
+**Decisions**
+
+- **Every stage of the road is two sentences: a clear trek sentence (no timer, long lookahead) and a sandstorm sentence (short or no lookahead, one gust per word)** — It makes the storm a rhythm of calm and pressure, follows the Star Station pattern for sentence scenes, and keeps the survival tension fair
+- **In a storm the words ahead are hidden: 0 words on Standard and Hard, 1 word on Easy; the word being typed is always shown** — The task asks the storm to shorten the lookahead; a typing tutor must never hide the word to type
+- **The next word on the HUD paper strip is blurred (CSS data-veil) while the storm hides the road, without changing the shared HUD code** — Otherwise the HUD would still show the next word and the storm would not really shorten the lookahead
+- **A gust that reaches the caravan only drops the streak, kneels the camels for a moment and comes again slower; nothing is lost and the caravan always reaches the oasis** — Survival pressure without soft-locks, same rule as the other timed scenes; Calm has no timers
+- **Gusts come from the caravan's left and the camera sits behind and to the right of the caravan** — After looking at screenshots: from the other side the camels hid the wall of sand
+- **Text band is sentences: capital first letter and closing mark only when learned; a storm sentence ends with "!" when it is learned** — GAME_DESIGN scene table (Sentences) and learned-letters-only
+- **The Midbar opens at Level 5 of the course after the Great Blot (regions.ts unchanged)** — It was already set that way in the region table
+- **tests/e2e/sound.spec.ts now expects 13 themes in the sound room (it still said 11, from before Atbash City)** — The count was stale on main and the sound room now really lists 13 themes; without it the end-to-end check fails
+- **The e2e test was run locally with the sandbox Chromium; GitHub CI is the second gate** — Same as earlier scenes
+- **Merged on the strength of the passing local checks (lint, typecheck, 605 unit tests, build, the Long Midbar and sound-room end-to-end tests) after GitHub CI had run 15 minutes without reporting** — The run rules say to wait up to 15 minutes for CI and then merge on the local checks
+
+**Notes**
+
+Built in one run by the Opus builder.
 
 ### ⬜ T25 · Scene: The Lantern Caves
 

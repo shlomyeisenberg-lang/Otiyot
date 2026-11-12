@@ -25,6 +25,7 @@ import { genizaScreen } from './screens/geniza';
 import { hermonScreen } from './screens/hermon';
 import { stationScreen } from './screens/station';
 import { atbashScreen } from './screens/atbash';
+import { midbarScreen } from './screens/midbar';
 import { arenaScreen } from './screens/arena';
 import { meadowScreen } from './screens/meadow';
 import { introScreen } from './screens/intro';
@@ -123,6 +124,7 @@ export class Shell {
       hermon: hermonScreen,
       station: stationScreen,
       atbash: atbashScreen,
+      midbar: midbarScreen,
       arena: arenaScreen,
       menu: mainMenuScreen,
       welcome: (ctx) => wizardScreen(ctx, 'welcome', () => (this.needsWelcome = false)),
