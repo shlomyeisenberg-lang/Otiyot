@@ -7,7 +7,7 @@ _Last updated 2026-11-12. This page is generated from `docs/progress.json`; to c
 ## Summary
 
 - ✅ **24** of **44** tasks done
-- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 20 pending
+- 🛠️ 1 in progress · ⛔ 0 blocked · ⬜ 19 pending
 - ⬜ **3** manual steps waiting for you
 - 💡 10 feature ideas open
 
@@ -82,7 +82,7 @@ Work done before or outside the numbered tasks.
 - ✅ T18 · Scene: The Night Shuk — 2026-11-11 · [PR #29](https://github.com/shlomyeisenberg-lang/Otiyot/pull/29)
 - ✅ R18 — 2026-11-12 · [PR #39](https://github.com/shlomyeisenberg-lang/Otiyot/pull/39)
 - ✅ T19 · Scene: The Jaffa Line — 2026-11-12 · [PR #30](https://github.com/shlomyeisenberg-lang/Otiyot/pull/30)
-- ⬜ R19
+- 🛠️ R19
 - ✅ T20 · Scene: The Sunken Geniza — 2026-11-12 · [PR #35](https://github.com/shlomyeisenberg-lang/Otiyot/pull/35)
 - ⬜ T21 · Scene: Wings over Hermon
 - ⬜ T22 · Scene: The Star Station
@@ -1018,11 +1018,34 @@ The Jaffa Line can be played from the map (Level 3 of the course, after the Grea
 
 Compared against the Meadow and the Shuk with Playwright screenshots; the Line keeps their layout, HUD and restoration feel with its own dawn palette, rail mechanic and music.
 
-### ⬜ R19
+### 🛠️ R19
 
-**Status:** Pending
+**Status:** In progress
 
-_Not started._
+Opus reviewed Sonnet's Jaffa Line (T19) and played it in both languages, light and dark, desktop and phone. The race, the boost and the bends work and the line looks good, but the floating word was never visible (it sat behind the camera) and the finish could show the loser in front; both are fixed, and Hebrew words read right to left.
+
+**What changed**
+
+- src/scenes/rail/index.ts: the word banner floats 12 units ahead of the apprentice's train (new BANNER_AHEAD). It was placed 20 units behind, which is behind the camera, so the 3D word was never seen during a run.
+- src/scenes/rail/index.ts: the banner is told when the word is Hebrew, so it reads right to left (it was always laid out left to right), and it hides once the line is restored.
+- src/scenes/rail/plan.ts: new rivalAtFinish(total, lead): at the finish the winner is in front. Before, Naftali's train always stopped level with or behind the apprentice's, even when Naftali won the race.
+- tests/unit/rail.test.ts: new test for rivalAtFinish (won: Naftali 0.3 to 0.8 of a stretch behind; lost: ahead, never past the run-out).
+- Review findings, no change needed: content (Naftali, Reb Ezra and Dyo, all male; friendly rivalry, nothing suggestive; words from the learned word source, no holy Names or pesukim), learned-letters-only text with its test, Easy/Standard/Hard (8/12/16 stretches), boost and bend math, the run always finishes win or lose (no soft-lock, no timers), dispose and leak test, strings in he.json and en.json, phone layout.
+- Played in Chromium: English light and Hebrew dark, desktop 1280x720 and phone 375px, start, middle, finale and results, before and after the fixes.
+
+**Decisions**
+
+- **Kept the race based on clean words and bends, not on speed** — It matches the game's calm rule (nothing counts down) and still feels like a race thanks to the boost and the bends; changing it would be a redesign, not a review fix.
+- **Banner 12 units ahead of the train** — Close enough to read on desktop and far enough not to cover the trains; on a phone the HUD word card stays the main readout.
+
+**To do**
+
+- [ ] The Sunken Geniza still draws its banner left to right for Hebrew (src/scenes/geniza/index.ts, setWord(..., false)); the same one-line fix as the Shuk and the Line.
+- [ ] In dark theme the end of the line is quite dark around the trains; worth a look in T34 (polish).
+
+**Notes**
+
+Checked with Playwright screenshots; before the fix the 3D word was missing in every shot of the run.
 
 ### ✅ T20 · Scene: The Sunken Geniza
 

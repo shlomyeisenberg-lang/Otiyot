@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- The Jaffa Line, after its review: the word you are typing now floats over the track just ahead of your train (before, it hung behind the camera and was never seen), Hebrew words on it read right to left, and it leaves when the line is restored. At the finish the winner is now in front: Naftali's train stops just behind yours when you win, and just ahead when he wins (before, he always stopped behind).
+
 - The Night Shuk, after its review: the punctuation marks you learned in the first lessons now stay learned for good. Before, they dropped out of your learned keys once you reached Level 3, so most players met a market with no marks on the stalls and no coins to win. In Hebrew the word on the floating banner now reads right to left, and the banner leaves when the market is restored.
 
 - The Gematria Forge, after its review: the space between numbers now warms the fire too, and the fire is tuned to a calm, steady pace (Easy holds the green at a careful beginner's speed), so a careful player forges bright gold letters instead of a row of cold ones. Bright letters now earn more experience and glyphs, the results show them as "5/8", and the top chip always says which letter is on the anvil and its value ("Forge g = 7") so the letter values are learned along the way. The number over the anvil disappears when the run ends, and on a phone the results card is no longer covered by the chapter chip.
