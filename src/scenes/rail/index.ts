@@ -57,6 +57,7 @@ import {
   lampsLit,
   leadAfter,
   raceWon,
+  rivalAtFinish,
   SECTIONS,
   type ChapterId,
   type RailPlan,
@@ -75,6 +76,8 @@ const MAX_SLOTS = 16;
 const SIGN_SIZE = 1.0;
 const LETTER_SIZE = 1.05;
 const SIGN_Y = 3.6;
+/** How far ahead of the apprentice's car the word banner floats (it used to sit behind the camera). */
+const BANNER_AHEAD = 12;
 /** How far to the side the rival's track runs, and where the signals stand. */
 const RIVAL_SIDE = 4.6;
 const SIGNAL_SIDE = -3.4;
@@ -982,8 +985,9 @@ export class RailScene implements GameScene {
     // The trains: the apprentice's follows the typing, Naftali's keeps pace less the lead.
     const run = this.finished ? total + 1.2 : this.wordsDone + this.partial;
     const goMine = run * STRETCH_LENGTH;
+    // At the finish the winner is in front (Naftali used to stop behind even when he won).
     const goRival =
-      (this.finished ? total + 1.2 - Math.max(0, -this.lead) : run - this.lead) * STRETCH_LENGTH;
+      (this.finished ? rivalAtFinish(total, this.lead) : run - this.lead) * STRETCH_LENGTH;
     const prevMine = this.sMine;
     const prevRival = this.sRival;
     const speed = 3.2 + this.boostShown * 2.4;
@@ -1088,19 +1092,21 @@ export class RailScene implements GameScene {
     }
 
     // The banner floats over the line, ahead of the train.
-    const ahead = pointAt(this.track, this.sMine - 20, this.pt);
+    const ahead = pointAt(this.track, this.sMine + BANNER_AHEAD, this.pt);
     const a = this.text.anchor;
     a.x = damp(a.x, ahead.x, 6, dt);
     a.y = damp(a.y, 5.2, 3, dt);
     a.z = damp(a.z, ahead.z, 6, dt);
 
-    // The word to type: a new one rises when the driver moves on.
+    // The word to type: a new one rises when the driver moves on. Hebrew reads right to left,
+    // and once the line is restored the banner goes.
+    this.text.root.visible = !this.finished;
     if (typing.letters !== this.shownLetters) {
       this.shownLetters = typing.letters;
       const n = typing.letters.length;
       const end = n > 0 && typing.letters[n - 1] === ' ' ? n - 1 : n;
       this.letters = Math.max(1, end);
-      this.text.setWord(typing.letters.slice(0, end), false);
+      this.text.setWord(typing.letters.slice(0, end), /[\u0590-\u05ff]/.test(typing.word));
     }
     this.text.frame(dt, typing.states);
     this.feedback.frame(dt);

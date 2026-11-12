@@ -16,6 +16,7 @@ import {
   leadAfter,
   planRail,
   raceWon,
+  rivalAtFinish,
   SECTIONS,
   STRETCHES_PER_LEVEL,
 } from '../../src/scenes/rail/plan';
@@ -293,5 +294,22 @@ describe('what Reb Ezra, Dyo and Naftali say', () => {
     expect(railLine('bend', 0)).toBe(RAIL_LINES.bend[0]);
     expect(railLine('bend', 1)).toBe(RAIL_LINES.bend[1]);
     expect(railLine('bend', 2)).toBe(RAIL_LINES.bend[0]);
+  });
+});
+
+describe('the finish (R19)', () => {
+  it('shows the winner in front: Naftali stops behind after a win and ahead after a loss', () => {
+    const mine = 8 + 1.2;
+    for (const lead of [0, 0.1, 1, 3]) {
+      const r = rivalAtFinish(8, lead);
+      expect(r, `lead ${lead}`).toBeLessThan(mine);
+      expect(mine - r).toBeLessThanOrEqual(0.8 + 1e-9);
+    }
+    for (const lead of [-0.1, -1, -3]) {
+      const r = rivalAtFinish(8, lead);
+      expect(r, `lead ${lead}`).toBeGreaterThan(mine);
+      // Never past the run-out after the last stretch (2.5 stretches of track).
+      expect(r - 8).toBeLessThan(2.5);
+    }
   });
 });

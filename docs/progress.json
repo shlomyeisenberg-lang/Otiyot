@@ -1270,15 +1270,34 @@
       "notes": "Before the fix both test runs (English and Hebrew, about 60 lessons learned) had no marks at all; after it every run had marks and coins."
     },
     "R19": {
-      "status": "pending",
-      "finished": "",
-      "pr": "",
-      "summary": "",
-      "changes": [],
-      "decisions": [],
+      "status": "done",
+      "finished": "2026-11-12",
+      "pr": "https://github.com/shlomyeisenberg-lang/Otiyot/pull/40",
+      "summary": "Opus reviewed Sonnet's Jaffa Line (T19) and played it in both languages, light and dark, desktop and phone. The race, the boost and the bends work and the line looks good, but the floating word was never visible (it sat behind the camera) and the finish could show the loser in front; both are fixed, and Hebrew words read right to left.",
+      "changes": [
+        "src/scenes/rail/index.ts: the word banner floats 12 units ahead of the apprentice's train (new BANNER_AHEAD). It was placed 20 units behind, which is behind the camera, so the 3D word was never seen during a run.",
+        "src/scenes/rail/index.ts: the banner is told when the word is Hebrew, so it reads right to left (it was always laid out left to right), and it hides once the line is restored.",
+        "src/scenes/rail/plan.ts: new rivalAtFinish(total, lead): at the finish the winner is in front. Before, Naftali's train always stopped level with or behind the apprentice's, even when Naftali won the race.",
+        "tests/unit/rail.test.ts: new test for rivalAtFinish (won: Naftali 0.3 to 0.8 of a stretch behind; lost: ahead, never past the run-out).",
+        "Review findings, no change needed: content (Naftali, Reb Ezra and Dyo, all male; friendly rivalry, nothing suggestive; words from the learned word source, no holy Names or pesukim), learned-letters-only text with its test, Easy/Standard/Hard (8/12/16 stretches), boost and bend math, the run always finishes win or lose (no soft-lock, no timers), dispose and leak test, strings in he.json and en.json, phone layout.",
+        "Played in Chromium: English light and Hebrew dark, desktop 1280x720 and phone 375px, start, middle, finale and results, before and after the fixes."
+      ],
+      "decisions": [
+        {
+          "decision": "Kept the race based on clean words and bends, not on speed",
+          "why": "It matches the game's calm rule (nothing counts down) and still feels like a race thanks to the boost and the bends; changing it would be a redesign, not a review fix."
+        },
+        {
+          "decision": "Banner 12 units ahead of the train",
+          "why": "Close enough to read on desktop and far enough not to cover the trains; on a phone the HUD word card stays the main readout."
+        }
+      ],
       "manual_steps": [],
-      "todo": [],
-      "notes": ""
+      "todo": [
+        "The Sunken Geniza still draws its banner left to right for Hebrew (src/scenes/geniza/index.ts, setWord(..., false)); the same one-line fix as the Shuk and the Line.",
+        "In dark theme the end of the line is quite dark around the trains; worth a look in T34 (polish)."
+      ],
+      "notes": "Checked with Playwright screenshots; before the fix the 3D word was missing in every shot of the run."
     },
     "T20": {
       "status": "done",
