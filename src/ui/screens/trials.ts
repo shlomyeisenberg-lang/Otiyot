@@ -100,7 +100,7 @@ export function trialsScreen(ctx: AppContext): Screen {
       small: true,
       onClick: () => open(id),
     });
-    fight.dataset.trial = id;
+    fight.dataset.fight = id;
     fight.setAttribute('aria-keyshortcuts', String(i + 1));
     return h(
       'article',
@@ -120,12 +120,16 @@ export function trialsScreen(ctx: AppContext): Screen {
           h('p', { class: 'trials__skill', text: t.t(`trials.skill.${skill}` as MessageKey) }),
           h('h2', { class: 'trials__name', text: TRIAL_NAMES[id][lang] }),
         ),
+      ),
+      h('p', { class: 'trials__body', text: t.t(`trials.${id}.about` as MessageKey) }),
+      h(
+        'div',
+        { class: 'trials__actions' },
         rank
           ? rankBadge(rank, t.t('rank.label', { rank }))
           : status(t.t('trials.notYet'), 'neutral'),
+        fight,
       ),
-      h('p', { class: 'trials__body', text: t.t(`trials.${id}.about` as MessageKey) }),
-      h('div', { class: 'trials__actions' }, fight),
     );
   });
 

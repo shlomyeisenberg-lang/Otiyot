@@ -252,7 +252,14 @@ test.describe('The Trials of the Arena', () => {
     await page.goto('/#/trials');
     await expect(page.getByTestId('trials')).toBeVisible();
     await page.keyboard.press('3');
-    await waitReady(page);
+    await page.waitForFunction(
+      () => {
+        const a = (window as unknown as { __otiyotArena?: Probe }).__otiyotArena;
+        return a?.look === 'tide' && a.ready;
+      },
+      null,
+      { timeout: 120_000 },
+    );
     let p = await arena(page);
     expect(p.look).toBe('tide');
     expect(p.checkpoint).toBe(2);

@@ -244,7 +244,7 @@ export const LOOKS: Readonly<Record<BossLookId, BossLook>> = {
     stretch: [1.25, 0.92, 0.95],
     brows: [0.35, 0.45, 0.55],
     wobble: 0.8,
-    emissive: 0.55,
+    emissive: 0.14,
   },
   // The Glass Golem: a cut crystal with a cold glow; slips mend its cracks.
   glass: {
@@ -262,7 +262,7 @@ export const LOOKS: Readonly<Record<BossLookId, BossLook>> = {
     stretch: [0.9, 1.22, 0.9],
     brows: [0.05, 0.2, 0.3],
     wobble: 0.25,
-    emissive: 0.45,
+    emissive: 0.2,
   },
   // The Long Tide: a great sea-green whale of a wave, its back always rolling.
   tide: {
@@ -280,7 +280,7 @@ export const LOOKS: Readonly<Record<BossLookId, BossLook>> = {
     stretch: [1.4, 0.85, 1.05],
     brows: [0, 0.12, 0.25],
     wobble: 0.7,
-    emissive: 0.3,
+    emissive: 0.12,
   },
 };
 

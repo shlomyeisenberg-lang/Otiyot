@@ -393,6 +393,9 @@ export class ArenaScene implements GameScene {
   /** The Golem's glow when a slip mends a crack (1 → 0). */
   private healGlow = 0;
   private flashTimer = 4;
+  private wingT = 0;
+  /** The trials' own parts on the body: the Hawk's wings, the Golem's crown, the Tide's tail. */
+  private readonly parts: Mesh[] = [];
 
   constructor(private readonly setup: ArenaSetup) {
     this.lookId = setup.boss ?? 'blot';
@@ -899,6 +902,7 @@ export class ArenaScene implements GameScene {
       this.brows.push(brow);
       this.blot.add(eye, pupil, brow);
     }
+    this.buildParts();
     this.seal = new Mesh(
       tracker.track(new TorusGeometry(0.2, 0.035, 6, 24)),
       tracker.track(kit.ink(this.gold, 2.6)),
@@ -925,6 +929,94 @@ export class ArenaScene implements GameScene {
     this.ctx.atmosphere.addBlob(this.blot, BLOT_R * 0.9);
   }
 
+  /** The trials' own parts (T26), children of the body so they follow its size and squash. */
+  private buildParts(): void {
+    const { materials: kit, tracker } = this.ctx;
+    const L = this.look;
+    if (this.lookId === 'storm') {
+      // Two wings of storm cloud, edged in lightning, that beat faster as the fight goes on.
+      const geo = tracker.track(new ConeGeometry(0.55, 1.9, 4, 1).scale(1, 1, 0.22));
+      const mat = tracker.track(
+        kit.surface({
+          color: L.body,
+          restore: false,
+          emissive: L.sheen,
+          emissiveIntensity: 0.5,
+          flat: true,
+        }),
+      );
+      for (const side of [-1, 1]) {
+        const w = new Mesh(geo, mat);
+        w.position.set(side * 0.95, 0.1, -0.15);
+        w.userData.side = side;
+        kit.caster(w, true);
+        this.parts.push(w);
+        this.blot.add(w);
+      }
+    } else if (this.lookId === 'glass') {
+      // A crown of crystal points that glints.
+      const geo = tracker.track(new OctahedronGeometry(1, 0).scale(0.16, 0.42, 0.16));
+      const mat = tracker.track(kit.ink(L.shard, 1.5));
+      const n = 7;
+      for (let i = 0; i < n; i++) {
+        const a = (i / (n - 1) - 0.5) * 2.2;
+        const c = new Mesh(geo, mat);
+        c.position.set(Math.sin(a) * 0.55, 0.88 - Math.abs(a) * 0.12, Math.cos(a) * 0.1 - 0.15);
+        c.rotation.z = -a * 0.45;
+        c.scale.setScalar(1 - Math.abs(a) * 0.25);
+        this.parts.push(c);
+        this.blot.add(c);
+      }
+    } else if (this.lookId === 'tide') {
+      // A great tail fin behind, swaying with the swell.
+      const geo = tracker.track(new ConeGeometry(0.7, 1.3, 3, 1).scale(1.6, 1, 0.18));
+      const mat = tracker.track(
+        kit.surface({
+          color: L.body,
+          restore: false,
+          emissive: L.sheen,
+          emissiveIntensity: 0.25,
+          flat: true,
+        }),
+      );
+      const fin = new Mesh(geo, mat);
+      fin.position.set(0, 0.25, -1.2);
+      fin.rotation.x = -Math.PI / 2 - 0.5;
+      kit.caster(fin, true);
+      this.parts.push(fin);
+      this.blot.add(fin);
+    }
+  }
+
+  /** Moves the trials' parts (no allocations). */
+  private moveParts(resting: boolean, dt: number): void {
+    const t = this.time;
+    if (this.lookId === 'storm') {
+      const beat = resting ? 2 : 5 + this.phase * 1.6 + this.shown * 4;
+      this.wingT += beat * dt;
+      const flap = Math.sin(this.wingT * Math.PI) * (resting ? 0.15 : 0.4);
+      for (const w of this.parts) {
+        const side = w.userData.side as number;
+        w.rotation.z = side * (Math.PI / 2 + 0.25 + flap);
+        w.rotation.y = side * 0.35;
+      }
+    } else if (this.lookId === 'glass') {
+      for (let i = 0; i < this.parts.length; i++) {
+        const c = this.parts[i] as Mesh;
+        c.rotation.y = t * 0.6 + i;
+        const glint = 1 + this.healGlow * 0.4 + Math.max(0, Math.sin(t * 2.3 + i * 1.7)) * 0.08;
+        c.scale.y = (1 - Math.abs(i / (this.parts.length - 1) - 0.5) * 0.5) * glint;
+      }
+    } else if (this.lookId === 'tide') {
+      const fin = this.parts[0];
+      if (fin) {
+        const swell = 1 + (this.fight?.tideNow ?? 0) * 0.6;
+        fin.rotation.z = Math.sin(t * 1.4) * 0.35 * swell;
+        fin.rotation.x = -Math.PI / 2 - 0.5 + Math.sin(t * 1.1) * 0.15 * swell;
+      }
+    }
+  }
+
   private buildAttacks(): void {
     const { materials: kit, tracker, root } = this.ctx;
     const inkMat = tracker.track(
@@ -932,7 +1024,7 @@ export class ArenaScene implements GameScene {
         color: this.look.glob,
         restore: false,
         emissive: this.look.sheen,
-        emissiveIntensity: this.lookId === 'blot' ? 0.3 : 0.7,
+        emissiveIntensity: this.lookId === 'blot' ? 0.3 : 0.4,
       }),
     );
     // Spatter: one glob in the air at a time, and the ring on the floor that says where it lands.
@@ -1894,6 +1986,7 @@ export class ArenaScene implements GameScene {
       this.healGlow * 1.6 -
       (resting ? 0.2 : 0);
     this.writeBlot();
+    this.moveParts(resting, dt);
     // Eyes watch the scribe; brows show the mood; they squeeze shut when it reels.
     const ap = this.apprentice.root.position;
     const look = Math.atan2(ap.x - this.blot.position.x, ap.z - this.blot.position.z) * 0.2;

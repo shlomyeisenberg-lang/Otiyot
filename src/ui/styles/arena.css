@@ -222,7 +222,13 @@
 }
 .trials__actions {
   display: flex;
-  justify-content: flex-end;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  margin-block-start: auto;
+}
+.trials__card {
+  grid-template-rows: auto 1fr auto;
 }
 .trials__whole {
   display: flex;
