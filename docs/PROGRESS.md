@@ -1271,6 +1271,7 @@ The Lantern Caves, the first region of Act Three: a winding chalk cave lit only 
 - **Shadows are soft ink-smoke figures with pale sleepy eyes that only gather and touch, never attack** — The task asks for tense, not horror, and the game is family-safe
 - **The caves music uses a new kalimba voice in 2/4 at 68 bpm** — Every theme must have its own melody voice and tempo (existing unit test), and a soft struck tine fits drips in a cave
 - **Visual pass done with Playwright screenshots in both themes: darkened the cave fill light, softened the lantern color, made the shadows inkier and smaller and kept them in front and to the sides, moved the words-ahead tablet clear of the banner, and reframed the finale camera** — Pattern rule: compare against the Meadow and polish before merging
+- **Merged on the strength of the passing local checks (lint, typecheck, 633 unit tests, build, the Lantern Caves and sound-room end-to-end tests) after GitHub CI had run 15 minutes without reporting** — The run rules say to wait up to 15 minutes for CI and then merge on the local checks
 
 **Notes**
 

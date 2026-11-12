@@ -1651,6 +1651,10 @@
         {
           "decision": "Visual pass done with Playwright screenshots in both themes: darkened the cave fill light, softened the lantern color, made the shadows inkier and smaller and kept them in front and to the sides, moved the words-ahead tablet clear of the banner, and reframed the finale camera",
           "why": "Pattern rule: compare against the Meadow and polish before merging"
+        },
+        {
+          "decision": "Merged on the strength of the passing local checks (lint, typecheck, 633 unit tests, build, the Lantern Caves and sound-room end-to-end tests) after GitHub CI had run 15 minutes without reporting",
+          "why": "The run rules say to wait up to 15 minutes for CI and then merge on the local checks"
         }
       ],
       "manual_steps": [],
