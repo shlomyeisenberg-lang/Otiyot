@@ -4,7 +4,16 @@
 import type { Synth } from './synth';
 import { Rand } from './theory';
 
-export const AMBIENCE_IDS = ['wind', 'birds', 'water', 'fire', 'crickets', 'hum', 'rain', 'sand'] as const;
+export const AMBIENCE_IDS = [
+  'wind',
+  'birds',
+  'water',
+  'fire',
+  'crickets',
+  'hum',
+  'rain',
+  'sand',
+] as const;
 export type AmbienceId = (typeof AMBIENCE_IDS)[number];
 
 export function isAmbienceId(v: string): v is AmbienceId {
