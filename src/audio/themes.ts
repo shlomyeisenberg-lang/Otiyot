@@ -67,7 +67,8 @@ export interface ThemeSpec {
   level: number;
 }
 
-export type ThemeId = 'title' | 'hub' | 'meadow' | 'cliffs' | 'forge' | 'shuk' | 'rail' | 'boss';
+export type ThemeId =
+  'title' | 'hub' | 'meadow' | 'cliffs' | 'forge' | 'shuk' | 'rail' | 'geniza' | 'boss';
 export const THEME_IDS: readonly ThemeId[] = [
   'title',
   'hub',
@@ -76,6 +77,7 @@ export const THEME_IDS: readonly ThemeId[] = [
   'forge',
   'shuk',
   'rail',
+  'geniza',
   'boss',
 ];
 
@@ -313,6 +315,36 @@ export const THEMES: Readonly<Record<ThemeId, ThemeSpec>> = {
     reverb: 0.26,
     brightness: 0.7,
     level: 0.85,
+  },
+  // The Sunken Geniza: a slow, swaying A minor in 6/8, like water moving in a hall. A harp pulse
+  // rolls like the tide under a singing cello, a soft flute above it, a quiet frame drum, and a
+  // deep hall reverb.
+  geniza: {
+    id: 'geniza',
+    nameKey: 'sound.theme.geniza',
+    seed: 8123,
+    bpm: 72,
+    beats: 2,
+    sub: 3,
+    root: 57,
+    mode: 'minor',
+    swing: 0,
+    form: ['A', 'A', 'B', 'A', 'C'],
+    sections: {
+      A: { bars: 8, chords: [0, 0, 5, 5, 3, 3, 4, 0], register: 1, density: 0.4 },
+      B: { bars: 8, chords: [5, 5, 3, 3, 0, 0, 4, 4], register: 2, density: 0.5 },
+      C: { bars: 8, chords: [3, 4, 5, 4, 3, 0, 4, 0], register: 3, density: 0.55 },
+    },
+    voices: { drone: 'pad', pulse: 'harp', melody: 'cello', counter: 'flute' },
+    kit: 'frame',
+    pulse: [0, 2, 3, 1, 2, 3],
+    counterOctave: -1,
+    drums: { base: 'D.....', full: 'D..T.S' },
+    cells: CELLS_6,
+    cadences: CAD_6,
+    reverb: 0.5,
+    brightness: 0.55,
+    level: 0.88,
   },
   // Boss: C freygish at full drive, taiko and cello ostinato. Four phases: each climbs, and the
   // fourth (the mirror) turns the tune over.

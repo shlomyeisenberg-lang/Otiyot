@@ -7,9 +7,9 @@ _Last updated 2026-11-11. This page is generated from `docs/progress.json`; to c
 ## Summary
 
 - ✅ **19** of **39** tasks done
-- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 20 pending
+- 🛠️ 1 in progress · ⛔ 0 blocked · ⬜ 19 pending
 - ⬜ **3** manual steps waiting for you
-- 💡 6 feature ideas open
+- 💡 7 feature ideas open
 
 ## Waiting for me
 
@@ -77,7 +77,7 @@ Work done before or outside the numbered tasks.
 - ✅ T17 · Scene: The Gematria Forge — 2026-11-11 · [PR #28](https://github.com/shlomyeisenberg-lang/Otiyot/pull/28)
 - ✅ T18 · Scene: The Night Shuk — 2026-11-11 · [PR #29](https://github.com/shlomyeisenberg-lang/Otiyot/pull/29)
 - ✅ T19 · Scene: The Jaffa Line — 2026-11-12 · [PR #30](https://github.com/shlomyeisenberg-lang/Otiyot/pull/30)
-- ⬜ T20 · Scene: The Sunken Geniza
+- 🛠️ T20 · Scene: The Sunken Geniza
 - ⬜ T21 · Scene: Wings over Hermon
 - ⬜ T22 · Scene: The Star Station
 - ⬜ T23 · Scene: Atbash City
@@ -895,11 +895,41 @@ The Jaffa Line can be played from the map (Level 3 of the course, after the Grea
 
 Compared against the Meadow and the Shuk with Playwright screenshots; the Line keeps their layout, HUD and restoration feel with its own dawn palette, rail mechanic and music.
 
-### ⬜ T20 · Scene: The Sunken Geniza
+### 🛠️ T20 · Scene: The Sunken Geniza
 
-**Status:** Pending
+**Status:** In progress
 
-_Not started._
+The Sunken Geniza can be played from the map (Level 3 of the course, after the Great Blot): a flooded archive where every page on a stone lectern is one learned word. The water moves with a tide that follows the player's own beat; typing at an even pace opens a current that carries the page up whole and gold to the surface, while a rush of keys stirs the silt. Four shafts of light open as you go and the last page restores the hall.
+
+**What changed**
+
+- src/scenes/geniza/plan.ts: the run as pure data (pages of one learned word, chapters, shafts by quarter, color share) and the Tide (follows the player's beat, judges each key as steady, burst or rest, page steadiness), current, whole pages and silt
+- src/scenes/geniza/index.ts: the Geniza scene (flooded hall with sand floor, sandstone pillars, shelves of clay jars, swaying weed, drifting pages, a stone lectern with lamp and letter per page, four shafts of light, a tide ring that breathes with the beat, silt clouds that thicken the fog, a stream of light for the current, pages that rise whole and gold or slowly, restoration, walking apprentice, Reb Ezra and Dyo)
+- src/scenes/geniza/palette.ts: underwater day and night palettes and the colors of the hall
+- src/audio/themes.ts: the "geniza" music theme (A minor 6/8 at 72 bpm, harp pulse, cello melody, flute counter, frame drum, deep reverb); locales sound.theme.geniza and sound.mood.geniza
+- src/story/geniza.ts: lines for Reb Ezra and Dyo in Hebrew and English
+- src/ui/screens/geniza.ts: the Geniza screen (#/geniza) built like the Rail screen, with chapter and current chip, level and difficulty panel and results card with rank, pages carried whole and steady tide
+- src/ui/app.ts, src/ui/shell.ts, src/ui/playable.ts: the geniza route; the Sunken Geniza now has a Play button on the hub map when open
+- locales/en.json, locales/he.json: geniza.* strings
+- tests/unit/geniza.test.ts (learned letters only on every level in English and Hebrew, tide, steadiness, bursts, current, silt, shafts, region, route, theme, story lines) and tests/e2e/geniza.spec.ts (a whole run from the map, restart and Esc); tests/e2e/sound.spec.ts lists the new theme
+- docs/ARCHITECTURE.md section 7m, CHANGELOG.md, ROADMAP tick
+
+**Decisions**
+
+- **Steadiness is measured against the player's own pace (a slow moving average of the gaps between keys), not a fixed tempo.** — The task asks to reward consistency, not speed; a beginner typing slowly but evenly gets the same current as a fast typist, and nobody is pushed to rush.
+- **Gaps longer than 2.2 seconds count as a rest and are not judged.** — A breath between words or a moment to read should never be punished; only the rhythm inside the typing counts.
+- **Nothing fails or blocks: an uneven or rushed page still rises (slowly, not gold), and bursts only cloud the water.** — Same rule as every scene: no timers, no soft-locks, the run always finishes; the reward for steadiness is gold pages, a clear hall and the results card.
+- **Reb Ezra and Dyo speak here; no new librarian character was added.** — Adding a speaker touches the shared cast and portraits; the full story pass (T35) can add the librarian. Recorded as a feature idea.
+- **The theme uses the cello as its melody voice.** — A unit test requires every theme to have its own melody instrument; the cello was the only one left and suits a deep, slow underwater hall.
+- **Screenshots of the Geniza and the Meadow were compared with Playwright before merging; the camera was raised and the pillars, weed and light shafts moved back so the hall reads clearly.** — Pattern rule of this task: match the Meadow's polish while keeping a different look.
+
+**To do**
+
+- [ ] The page lift and tide ring are tuned by eye on software rendering; the polish pass (T34) may refine the water look (caustics on the floor, a moving surface).
+
+**Notes**
+
+Built by the Sonnet runner. The 60 fps check was not measured on a real device in this sandbox (software rendering); the scene follows the performance rules (instanced weed and pages, merged static geometry, no allocations in update()).
 
 ### ⬜ T21 · Scene: Wings over Hermon
 
@@ -1087,6 +1117,18 @@ Build prompt:
 
 ```text
 Otiyot project — GitHub repo shlomyeisenberg-lang/Otiyot. Idea: the Blot remembers (branch: idea-blot-remembers). Work without stopping for approval. Read CLAUDE.md, docs/ARCHITECTURE.md (sections 7e and 7j), docs/DESIGN.md and only your own needs in docs/progress.json (read just the T16 entry with node -e). Goal: in src/ui/screens/arena.ts collect the words of Phases I–III that were typed with a mistake, and when the fight reaches Phase IV rebuild its words from them (most-missed first, at most the planned count, filled with Phase I words last first if there are too few). Keep the planning pure: add a function in src/scenes/arena/plan.ts that takes the plan and the missed words and returns the new Phase IV, with unit tests in tests/unit/boss.test.ts, including that every character is a learned key. Run pnpm lint, pnpm typecheck, pnpm test and pnpm build until they pass, add a line to CHANGELOG.md, update docs/progress.json (append a note and set this idea to built) and run node scripts/render-progress.mjs, commit both files, push, open a pull request into main, wait for the checks, squash-merge it yourself and delete the branch.
+```
+
+### 💡 The Geniza librarian (from T20)
+
+**Status:** idea · **Model:** Sonnet 5.5 · **Effort:** Medium
+
+The Geniza has no keeper of its own yet; a male librarian character who greets the player and comments on whole pages would give the hall a face, like Naftali on the Line.
+
+Build prompt:
+
+```text
+Otiyot project — GitHub repo shlomyeisenberg-lang/Otiyot. Task: add a librarian to the Sunken Geniza (branch: idea-geniza-librarian). Work from start to finish without stopping for my approval. Read CLAUDE.md, docs/ARCHITECTURE.md (sections 7m and 8), docs/DESIGN.md and only your own entries of docs/progress.json. Add a male librarian speaker (old archivist, one strong trait) to src/story/types.ts SPEAKERS and src/story/cast.ts with a portrait in the existing style, place him in src/scenes/geniza beside the first lectern, and give him lines in src/story/geniza.ts in Hebrew and English (no women, nothing suggestive, no holy Names). Update the unit test for the lines. Run pnpm lint, typecheck, test and build, update docs/progress.json (a new history entry) and run node scripts/render-progress.mjs, push, open a pull request, merge it into main yourself and delete the branch.
 ```
 
 ## Notes

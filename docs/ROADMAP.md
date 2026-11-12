@@ -256,7 +256,7 @@ Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Fable 5.2 
 - **Done when** The scene is playable start to finish from the hub at 60 fps on medium, feels different from every other scene, and its smoke test passes.
 - **User must have ready** Nothing.
 
-### [ ] T20 · Scene: The Sunken Geniza
+### [x] T20 · Scene: The Sunken Geniza
 - **Branch** `t20-geniza`
 - **Model** Opus 5.5 · **Effort** High
 - **Goal** Build the "The Sunken Geniza" scene as a distinct, beautiful, exciting 3D level whose mechanic is: typing in rhythm with the tide: steady pace opens currents and lifts pages, bursts stir silt; rewards consistency
