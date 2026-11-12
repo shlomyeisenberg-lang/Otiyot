@@ -20,7 +20,8 @@ export type Voice =
   | 'cello'
   | 'bell'
   | 'horn'
-  | 'glass';
+  | 'glass'
+  | 'pluck';
 /** Drum kits; each plays the same pattern letters with its own sounds. */
 export type Kit = 'darbuka' | 'frame' | 'taiko' | 'brush';
 
@@ -89,6 +90,7 @@ export type ThemeId =
   | 'geniza'
   | 'hermon'
   | 'station'
+  | 'atbash'
   | 'boss';
 export const THEME_IDS: readonly ThemeId[] = [
   'title',
@@ -101,6 +103,7 @@ export const THEME_IDS: readonly ThemeId[] = [
   'geniza',
   'hermon',
   'station',
+  'atbash',
   'boss',
 ];
 
@@ -426,6 +429,37 @@ export const THEMES: Readonly<Record<ThemeId, ThemeSpec>> = {
     cadences: CAD_6,
     reverb: 0.6,
     brightness: 0.55,
+    level: 0.85,
+  },
+
+  // Atbash City: rain on neon, C sharp minor at 92 bpm in a straight, ticking 4/4. A synth pluck
+  // spins arpeggios like a code-breaking machine, a bell carries the tune over it (the signs
+  // flickering back on), a cello walks underneath, and brushes tick like the rain on the awnings.
+  atbash: {
+    id: 'atbash',
+    nameKey: 'sound.theme.atbash',
+    seed: 2323,
+    bpm: 92,
+    beats: 4,
+    sub: 2,
+    root: 61,
+    mode: 'minor',
+    swing: 0.08,
+    form: ['A', 'A', 'B', 'A', 'C'],
+    sections: {
+      A: { bars: 8, chords: [0, 0, 5, 5, 3, 3, 4, 4], register: 1, density: 0.45 },
+      B: { bars: 8, chords: [5, 5, 6, 6, 3, 3, 4, 4], register: 2, density: 0.55 },
+      C: { bars: 8, chords: [0, 6, 5, 4, 3, 5, 4, 0], register: 3, density: 0.6 },
+    },
+    voices: { drone: 'pad', pulse: 'pluck', melody: 'bell', counter: 'cello' },
+    kit: 'brush',
+    pulse: [0, 2, 1, 3, 0, 2, 3, 1],
+    counterOctave: -1,
+    drums: { base: 'D.k.T.k.', full: 'D.kTDkTk' },
+    cells: CELLS_8,
+    cadences: CAD_8,
+    reverb: 0.4,
+    brightness: 0.65,
     level: 0.85,
   },
 

@@ -1,10 +1,10 @@
-// Looping background sounds for places (wind, birds, water, fire, crickets, machine hum). Each one
+// Looping background sounds for places (wind, birds, water, fire, crickets, machine hum, rain). Each one
 // can stand at a point in the world (it then pans and fades with distance) or fill the room.
 
 import type { Synth } from './synth';
 import { Rand } from './theory';
 
-export const AMBIENCE_IDS = ['wind', 'birds', 'water', 'fire', 'crickets', 'hum'] as const;
+export const AMBIENCE_IDS = ['wind', 'birds', 'water', 'fire', 'crickets', 'hum', 'rain'] as const;
 export type AmbienceId = (typeof AMBIENCE_IDS)[number];
 
 export function isAmbienceId(v: string): v is AmbienceId {
@@ -111,6 +111,19 @@ export class AmbienceLoop implements AmbienceHandle {
         }
         return;
       }
+      case 'rain': {
+        // Steady rain: a hiss of bright noise over a soft low wash, swelling a little now and then.
+        const hiss = s.filter('highpass', 2400, 0.4);
+        const hg = ctx.createGain();
+        hg.gain.value = 0.05;
+        this.loopNoise(t).connect(hiss).connect(hg).connect(this.out);
+        const wash = s.filter('lowpass', 700, 0.5);
+        const wg = ctx.createGain();
+        wg.gain.value = 0.06;
+        this.loopNoise(t).connect(wash).connect(wg).connect(this.out);
+        this.lfo(0.05, 0.015, hg.gain, t);
+        return;
+      }
       case 'birds':
       case 'crickets':
         // Made only of events (see `tick`).
@@ -154,6 +167,15 @@ export class AmbienceLoop implements AmbienceHandle {
             .connect(s.decay(t, 0.05 + r.next() * 0.06, 0.02))
             .connect(this.out);
           this.nextEvent = t + 0.05 + r.next() * 0.5;
+          break;
+        }
+        case 'rain': {
+          // A drop from an awning onto a puddle or a tin roof.
+          const hz = 1400 + r.next() * 1600;
+          const o = s.osc('sine', hz, t, t + 0.08);
+          o.frequency.exponentialRampToValueAtTime(hz * 0.6, t + 0.05);
+          o.connect(s.decay(t, 0.018 + r.next() * 0.02, 0.05)).connect(this.out);
+          this.nextEvent = t + 0.12 + r.next() * 0.6;
           break;
         }
         case 'crickets': {

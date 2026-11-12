@@ -279,6 +279,19 @@ export class Synth {
         g.connect(f).connect(dest);
         return;
       }
+      case 'pluck': {
+        // A synth pluck: two detuned saws through a filter that snaps shut, like a code machine
+        // ticking through its wheels. Short and bright, for neon arpeggios.
+        const len = Math.min(0.9, dur + 0.35);
+        const end = t + len;
+        const f = this.filter('lowpass', 700, 3.5);
+        f.frequency.setValueAtTime(3200 + bright * 2600, t);
+        f.frequency.exponentialRampToValueAtTime(380 + bright * 300, t + 0.22);
+        for (const d of [-9, 9]) this.osc('sawtooth', hz, t, end, d).connect(f);
+        const g = this.decay(t, 0.075 * vel, len);
+        f.connect(g).connect(dest);
+        return;
+      }
       case 'bell': {
         const len = Math.min(3, dur + 2);
         const end = t + len;

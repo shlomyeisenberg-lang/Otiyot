@@ -21,6 +21,8 @@ export const SFX_NAMES = [
   'thunder',
   'thrust',
   'laser',
+  'scan',
+  'unlock',
   'success',
   'ui-move',
   'ui-click',
@@ -195,6 +197,39 @@ export function playSfx(
       const low = s.osc('sine', 110, t, t + 0.25);
       low.frequency.exponentialRampToValueAtTime(55, t + 0.2);
       low.connect(s.decay(t, 0.18, 0.22)).connect(dest);
+      return;
+    }
+    case 'scan': {
+      // A patrol drone's searchlight sweeping: a thin rising whine with a slow wobble.
+      const o = s.osc('triangle', 600, t, t + 0.9);
+      o.frequency.exponentialRampToValueAtTime(1500, t + 0.7);
+      const w = s.osc('sine', 7, t, t + 0.9);
+      const wg = s.ctx.createGain();
+      wg.gain.value = 40;
+      w.connect(wg).connect(o.frequency);
+      o.connect(s.filter('bandpass', 1100, 2))
+        .connect(s.env(t, 0.09, 0.2, 0.4, 0.3))
+        .connect(dest);
+      return;
+    }
+    case 'unlock': {
+      // A vault giving way: two heavy clunks of the bolts, then a bright little rising chime.
+      for (const at of [t, t + 0.12]) {
+        const n = s.noiseSrc(at, at + 0.08, 0.5);
+        n.connect(s.filter('lowpass', 900, 1.5))
+          .connect(s.decay(at, 0.3, 0.07))
+          .connect(dest);
+        const k = s.osc('sine', 140, at, at + 0.12);
+        k.frequency.exponentialRampToValueAtTime(70, at + 0.1);
+        k.connect(s.decay(at, 0.25, 0.1)).connect(dest);
+      }
+      let at = t + 0.26;
+      for (const hz of [1046.5, 1318.5, 1568]) {
+        s.osc('sine', hz, at, at + 0.5)
+          .connect(s.decay(at, 0.07, 0.45))
+          .connect(dest);
+        at += 0.07;
+      }
       return;
     }
     case 'thunder': {

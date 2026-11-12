@@ -14,3 +14,4 @@ export * from './rail';
 export * from './geniza';
 export * from './hermon';
 export * from './station';
+export * from './atbash';
