@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-12",
+  "updated": "2026-11-11",
   "history": [
     {
       "date": "2026-11-09",
@@ -24,6 +24,11 @@
     {
       "date": "2026-11-10",
       "what": "Owners changed by the owner: Fable builds T14 (Meadow), T16 (boss kit), T27 (final fight) and T34 (polish pass); Opus finishes T13 (hub, already running); Sonnet builds everything else including T35.",
+      "where": "docs/auto-run/TASK-PROMPTS.md, docs/ROADMAP.md"
+    },
+    {
+      "date": "2026-11-11",
+      "what": "Owners changed by the owner: tasks planned as Fable move to Opus (T20 to T26, T28, T33), except T14, T16, T27, T34 which stay Fable. Sonnet keeps what was Sonnet. Builders now push every 15 minutes with a docs/WIP-Txx.md note.",
       "where": "docs/auto-run/TASK-PROMPTS.md, docs/ROADMAP.md"
     }
   ],
