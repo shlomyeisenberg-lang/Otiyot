@@ -1160,6 +1160,10 @@
         {
           "decision": "Left the waterfall streaks, phone dialogue size and art as they are",
           "why": "They work and look fine; bigger art changes belong to the polish pass T34."
+        },
+        {
+          "decision": "Merged after 15 minutes with GitHub CI still running",
+          "why": "The task rules allow 15 minutes for CI; lint, typecheck, all 465 unit tests, the build and the Cliffs end-to-end test had already passed locally."
         }
       ],
       "manual_steps": [],

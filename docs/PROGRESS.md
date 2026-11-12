@@ -761,6 +761,7 @@ Opus reviewed Sonnet's Cliffs of Ein Gedi (T15) and played it in English and Heb
 - **Fix the climb by choosing among several learned words instead of changing the height rules** — English words almost always contain a top-row vowel, so taking words in order gave runs like up,up,up,up,up and the stones sat flat at the ceiling. Picking the best-fitting of 8 learned words keeps the learned-letters rule untouched and changes nothing in the 3D scene.
 - **Allow at most one flat 'reach' per run rather than none** — With a small learned set sometimes every candidate word reaches the same way; forcing zero would need words the player has not learned.
 - **Left the waterfall streaks, phone dialogue size and art as they are** — They work and look fine; bigger art changes belong to the polish pass T34.
+- **Merged after 15 minutes with GitHub CI still running** — The task rules allow 15 minutes for CI; lint, typecheck, all 465 unit tests, the build and the Cliffs end-to-end test had already passed locally.
 
 **To do**
 
