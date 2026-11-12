@@ -13,6 +13,7 @@ import {
   clampHeat,
   colorShare,
   cooled,
+  STEADY_PACE,
   flared,
   HEAT_PER_KEY,
   HEAT_START,
@@ -164,14 +165,38 @@ describe('the furnace', () => {
   });
 
   it('settles inside the band for a steady typist at the pace of each level', () => {
-    const pace = { easy: 1, standard: 1.5, hard: 2 } as const;
     for (const level of LEVEL_IDS) {
       let heat = HEAT_START;
-      const every = Math.round(1 / (pace[level] * 0.05));
+      const every = Math.round(1 / (STEADY_PACE[level] * 0.05));
       for (let step = 0; step < 2400; step++) {
         heat = cooled(heat, 0.05, level);
         if (step % every === 0) heat = stoked(heat);
         if (step > 1200) expect(temperOf(heat), `${level} at step ${step}`).toBe('good');
+      }
+    }
+  });
+
+  it('forges bright letters for a steady typist when every key of the real text stokes (R17)', () => {
+    // The scene stokes the fire on every right key, the spaces between numbers included; a
+    // careful player at the level's pace must get bright letters, not a run of cold ones.
+    for (const layout of ['en', 'he'] as const) {
+      for (const level of LEVEL_IDS) {
+        const keys = new Set('0123456789');
+        let seed = 7;
+        const rng = (): number => (seed = (seed * 16807) % 2147483647) / 2147483647;
+        const plan = planForge({ layout, keys, level, rng });
+        const gap = 1 / STEADY_PACE[level];
+        let heat = HEAT_START;
+        const tempers: ReturnType<typeof temperOf>[] = [];
+        for (let i = 0; i < plan.text.length; i++) {
+          heat = stoked(cooled(heat, gap, level));
+          // A number is forged on its last digit.
+          if (plan.text[i + 1] === ' ' || i === plan.text.length - 1) tempers.push(temperOf(heat));
+        }
+        expect(tempers).toHaveLength(plan.numbers.length);
+        expect(brightCount(tempers), `${layout} ${level}`).toBeGreaterThanOrEqual(
+          Math.ceil(plan.numbers.length * 0.75),
+        );
       }
     }
   });

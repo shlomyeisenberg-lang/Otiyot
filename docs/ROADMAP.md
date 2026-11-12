@@ -270,7 +270,7 @@ One-pass review of Sonnet's T15; fix what is weak. Done when merged.
 
 One-pass review of Sonnet's T16; fix what is weak. Done when merged.
 
-### [ ] R17 · Review of T17
+### [x] R17 · Review of T17
 
 - **Branch** `review-t17`
 - **Model** Opus 5.5 · **Effort** Medium

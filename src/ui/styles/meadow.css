@@ -174,6 +174,8 @@
   color: var(--gold-deep);
 }
 .meadow__results {
+  /* Above the chapter chip, which shares its corner on a phone. */
+  z-index: 5;
   margin-inline: var(--sp-4) auto;
   inline-size: min(27rem, calc(100% - 2 * var(--sp-4)));
   gap: var(--sp-2);

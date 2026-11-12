@@ -6,10 +6,10 @@ _Last updated 2026-11-12. This page is generated from `docs/progress.json`; to c
 
 ## Summary
 
-- ✅ **22** of **44** tasks done
-- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 22 pending
+- ✅ **23** of **44** tasks done
+- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 21 pending
 - ⬜ **3** manual steps waiting for you
-- 💡 9 feature ideas open
+- 💡 10 feature ideas open
 
 ## Waiting for me
 
@@ -78,7 +78,7 @@ Work done before or outside the numbered tasks.
 - ✅ T16 · Boss kit and the first boss — 2026-11-11 · [PR #27](https://github.com/shlomyeisenberg-lang/Otiyot/pull/27)
 - ✅ R16 — 2026-11-12 · [PR #36](https://github.com/shlomyeisenberg-lang/Otiyot/pull/36)
 - ✅ T17 · Scene: The Gematria Forge — 2026-11-11 · [PR #28](https://github.com/shlomyeisenberg-lang/Otiyot/pull/28)
-- ⬜ R17
+- ✅ R17 — 2026-11-12 · [PR #38](https://github.com/shlomyeisenberg-lang/Otiyot/pull/38)
 - ✅ T18 · Scene: The Night Shuk — 2026-11-11 · [PR #29](https://github.com/shlomyeisenberg-lang/Otiyot/pull/29)
 - ⬜ R18
 - ✅ T19 · Scene: The Jaffa Line — 2026-11-12 · [PR #30](https://github.com/shlomyeisenberg-lang/Otiyot/pull/30)
@@ -879,11 +879,39 @@ The Gematria Forge can be played from the map once the number row is learned and
 
 Built by the Sonnet runner, High effort, following the Cliffs and Meadow pattern. Looked at in Chromium at 1280 wide, light theme, three moments of a run. The CI state file on the auto-run-state branch could not be written through the proxy; the pushed branch served as the claim.
 
-### ⬜ R17
+### ✅ R17
 
-**Status:** Pending
+**Status:** Done · **Finished:** 2026-11-12 · **Pull request:** [PR #38](https://github.com/shlomyeisenberg-lang/Otiyot/pull/38)
 
-_Not started._
+Opus reviewed Sonnet's Gematria Forge (T17) and played it in both languages, light and dark, desktop and phone. The scene is handsome and clearly built, but its main mechanic did not work for a careful beginner: the fire ran cold for almost every letter, and keeping it steady changed nothing. Both are fixed, and the letter values are now shown while you play.
+
+**What changed**
+
+- src/scenes/forge/index.ts: the space between numbers now stokes the fire like any right key. Before, only digits did, while the furnace model and its unit test counted every key, so a steady player at 1 key a second forged 7 of 8 letters cold.
+- src/scenes/forge/plan.ts: cooling retuned (Easy 0.08, Standard 0.12, Hard 0.16 a second) and a new STEADY_PACE table: the fire holds the middle of the green at 0.8 keys a second on Easy, 1.2 on Standard and 1.6 on Hard (spaces included).
+- src/ui/screens/forge.ts: a bright letter now counts like a perfect number in the rewards (more experience and glyphs), so keeping the fire steady pays; the rank itself is unchanged (accuracy and speed).
+- src/ui/screens/forge.ts: the chapter chip shows the letter on the anvil and its value ('Forge g = 7' / 'יוצקים ל = 30') instead of 'Word 6 of 8', using the forge.letter string that existed but was never shown; the results show bright letters as '5/8'.
+- src/scenes/forge/index.ts: the number banner over the anvil hides when the run ends (the last number used to stay there under the celebration).
+- src/ui/styles/meadow.css: the results card sits above the chapter chip; on a 375px phone the chip covered the card's 'restored' note (shared style, so every scene using the Meadow results card benefits).
+- src/story/forge.ts: Reb Ezra's gauge line adds that a bright letter earns more (Hebrew and English).
+- tests/unit/forge.test.ts: the steady-pace test uses STEADY_PACE, and a new test types each level's real text (digits and spaces) at that pace in both languages and requires at least three quarters of the letters to come out bright.
+- Review findings, no change needed: content (only the smith, the apprentice, Reb Ezra and Dyo, all male; nothing suggestive; letter names only, no holy Names or pesukim), numbers only from learned digits with their test, Forge locked until the number row is learned, Easy/Standard/Hard sizes (8/12/16 letters), no soft-lock (a cold or hot letter is still forged), dispose and leak test, strings in he.json and en.json, RTL layout of the chip and numbers.
+- Played in Chromium: English light and Hebrew dark, desktop 1280x720 and phone 375px, start, middle, finale and results, before and after the fixes.
+
+**Decisions**
+
+- **Made the space stoke the fire instead of changing the model to ignore spaces** — A space is a right key the player has to type; counting it keeps the scene, the model and its documented pace in agreement and needs the smallest change.
+- **Tuned Easy to a calm 0.8 keys a second** — The Forge opens right after the number row is learned, when numbers are typed slowly; the game's motto is that a slow letter written well beats a fast one smudged. A fast player on Easy now runs hot, which nudges him up a level.
+- **Bright letters raise experience and glyphs, not the rank** — Gives the fire real stakes without changing the shared rank rules every scene uses.
+- **Fixed the phone overlap in the shared Meadow results style** — One line, clearly a bug, and the same card is used by the other scenes.
+
+**To do**
+
+- [ ] The HUD's word card under the anvil still shows the last number after the run ends (shared HUD element, not the scene); worth a look in T34 (polish).
+
+**Notes**
+
+Checked with Playwright screenshots of start, middle, finale and results; before the fix the English run forged 1 bright letter of 8, after it 8 of 8 at a steady pace.
 
 ### ✅ T18 · Scene: The Night Shuk
 
@@ -1232,6 +1260,18 @@ Build prompt:
 
 ```text
 Otiyot project — GitHub repo shlomyeisenberg-lang/Otiyot. Build idea 'Arena best-run ghost' on branch idea-arena-ghost. Work without stopping for approval. Read CLAUDE.md, docs/ARCHITECTURE.md, docs/DESIGN.md, docs/GAME_DESIGN.md and only your own entry in docs/progress.json. If T37 (ghosts) is merged, reuse its ghost recording; otherwise store only per-word timings (never typed text) through a new save migration with a test. In src/scenes/arena show a faint second scribe whose progress follows the best earlier run on the same level and difficulty, and a small 'ahead / behind' readout in he and en. Unit tests for the timing logic, extend tests/e2e/arena.spec.ts. Run pnpm lint && pnpm typecheck && pnpm test && pnpm build, update CHANGELOG.md and docs/progress.json, run node scripts/render-progress.mjs, push, open a pull request, merge it into main and delete the branch.
+```
+
+### 💡 Forge: the letter value as a quick question (from R17)
+
+**Status:** idea · **Model:** Sonnet 5.5 · **Effort:** Medium
+
+Now and then show only the letter on the anvil (not its number) on Standard and Hard, so the player recalls the value himself; turns the Forge into real gematria practice.
+
+Build prompt:
+
+```text
+Otiyot project — GitHub repo shlomyeisenberg-lang/Otiyot. Build feature idea 'Forge recall' on branch idea-forge-recall. Work without stopping for approval. Read CLAUDE.md, docs/ARCHITECTURE.md, docs/DESIGN.md, docs/GAME_DESIGN.md and only your entry in docs/progress.json. In the Gematria Forge (src/scenes/forge, src/ui/screens/forge.ts), on Standard and Hard, hide the number for about one letter in four once the player has forged that letter bright at least twice: the banner shows only the letter and a '?', the chip says 'Forge g = ?', the finger guide still shows the next key, and a slip reveals the number. Keep learned-letters-only text, add unit tests for which letters are hidden and a Playwright check, strings in he.json and en.json. Run pnpm lint, typecheck, test and build, update CHANGELOG.md and docs/progress.json (run node scripts/render-progress.mjs), open a pull request, squash-merge it into main and delete the branch.
 ```
 
 ## Notes

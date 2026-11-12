@@ -12,6 +12,7 @@ import { rewardsOf, type RunRewards } from '../../game/results';
 import type { Engine, SceneManager } from '../../engine';
 import type { ForgeScene } from '../../scenes/forge';
 import {
+  brightCount,
   chapterAt,
   chapterStartsAt,
   planForge,
@@ -231,6 +232,12 @@ export function forgeScreen(ctx: AppContext): Screen {
     speech.el.hidden = true;
   }
 
+  /** "Forge g = 7": the letter on the anvil and the value that forges it (it teaches gematria). */
+  const letterNow = (): string => {
+    const l = plan?.letters[Math.min(wordsDone, Math.max(0, plan.letters.length - 1))];
+    return l ? t.t('forge.letter', { glyph: l.glyph, value: l.value }) : '';
+  };
+
   const chapterNow = (): ChapterId | 'finale' =>
     over && !probe.results?.failed ? 'finale' : plan ? chapterAt(plan, wordsDone) : 'stoke';
 
@@ -249,7 +256,7 @@ export function forgeScreen(ctx: AppContext): Screen {
     chipCount.textContent =
       chapter === 'finale'
         ? t.t('forge.lamps', { n: probe.lamps, total: SECTIONS })
-        : `${t.t('meadow.progress', { n: Math.min(wordsDone + 1, probe.total), total: probe.total })} · ${t.t(`forge.heat.${scene?.fireTemper ?? 'cold'}` as MessageKey)}`;
+        : `${letterNow()} · ${t.t(`forge.heat.${scene?.fireTemper ?? 'cold'}` as MessageKey)}`;
     const share = probe.total > 0 ? wordsDone / probe.total : 0;
     (bar.firstElementChild as HTMLElement).style.inlineSize = `${Math.round(share * 100)}%`;
     probe.glyphs = plan ? plan.letters.map((l) => l.glyph).join('') : '';
@@ -311,7 +318,8 @@ export function forgeScreen(ctx: AppContext): Screen {
         wpm,
         bestCombo: end.bestCombo,
         words: end.words,
-        perfect: perfectWords,
+        // A letter forged bright counts like a perfect number: keeping the fire steady pays.
+        perfect: perfectWords + brightCount(scene?.forged ?? []),
         broken: end.words,
         smudges: 0,
         failed,
@@ -478,7 +486,7 @@ export function forgeScreen(ctx: AppContext): Screen {
         statTile({ label: t.t('range.results.combo'), value: play.current?.bestCombo ?? 0 }),
         statTile({
           label: t.t('forge.results.bright'),
-          value: (scene?.forged ?? []).filter((x) => x === 'good').length,
+          value: `${brightCount(scene?.forged ?? [])}/${plan?.letters.length ?? 0}`,
         }),
       ),
       h(

@@ -151,14 +151,22 @@ export const HEAT_PER_SLIP = 0.1;
 
 /**
  * How fast the fire loses its heat: a share of the heat per second (so a hot fire cools faster
- * than a warm one and every steady pace has a temperature it settles at). The fire settles at
- * about HEAT_PER_KEY * keys-a-second / rate: in the middle of the band at one key a second on
- * Easy, one and a half on Standard and two on Hard. Typing faster runs it hotter, slower colder.
+ * than a warm one and every steady pace has a temperature it settles at). Every right key stokes
+ * it, the space between numbers too. The fire settles at about HEAT_PER_KEY * keys-a-second /
+ * rate: in the middle of the band at 0.8 keys a second on Easy (a careful beginner on the number
+ * row), 1.2 on Standard and 1.6 on Hard. Typing faster runs it hotter, slower colder.
  */
 export const COOL_RATE: Readonly<Record<LevelId, number>> = {
-  easy: 0.1,
-  standard: 0.15,
-  hard: 0.2,
+  easy: 0.08,
+  standard: 0.12,
+  hard: 0.16,
+};
+
+/** The steady pace (keys a second, spaces included) that holds the fire mid-band on a level. */
+export const STEADY_PACE: Readonly<Record<LevelId, number>> = {
+  easy: 0.8,
+  standard: 1.2,
+  hard: 1.6,
 };
 
 export function clampHeat(heat: number): number {
