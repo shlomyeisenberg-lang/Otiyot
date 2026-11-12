@@ -19,6 +19,8 @@ export const SFX_NAMES = [
   'shatter',
   'whoosh',
   'thunder',
+  'thrust',
+  'laser',
   'success',
   'ui-move',
   'ui-click',
@@ -166,6 +168,33 @@ export function playSfx(
       n.connect(f)
         .connect(s.env(t, 0.22, 0.15, 0, 0.25))
         .connect(dest);
+      return;
+    }
+    case 'thrust': {
+      // A thruster puff: a short breath of filtered noise that rises and falls.
+      const n = s.noiseSrc(t, t + 0.35, 0.2);
+      const f = s.filter('bandpass', 700, 0.8);
+      f.frequency.setValueAtTime(500, t);
+      f.frequency.exponentialRampToValueAtTime(1600, t + 0.12);
+      f.frequency.exponentialRampToValueAtTime(400, t + 0.32);
+      n.connect(f)
+        .connect(s.env(t, 0.22, 0.03, 0.05, 0.22))
+        .connect(dest);
+      return;
+    }
+    case 'laser': {
+      // The turret: a bright falling zap over a soft thump.
+      const o = s.osc('square', 1900, t, t + 0.3);
+      o.frequency.exponentialRampToValueAtTime(240, t + 0.25);
+      o.connect(s.filter('lowpass', 3200, 1))
+        .connect(s.decay(t, 0.09, 0.26))
+        .connect(dest);
+      const z = s.osc('sine', 3100, t, t + 0.18, 7);
+      z.frequency.exponentialRampToValueAtTime(900, t + 0.16);
+      z.connect(s.decay(t, 0.05, 0.16)).connect(dest);
+      const low = s.osc('sine', 110, t, t + 0.25);
+      low.frequency.exponentialRampToValueAtTime(55, t + 0.2);
+      low.connect(s.decay(t, 0.18, 0.22)).connect(dest);
       return;
     }
     case 'thunder': {

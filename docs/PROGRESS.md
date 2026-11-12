@@ -6,8 +6,8 @@ _Last updated 2026-11-12. This page is generated from `docs/progress.json`; to c
 
 ## Summary
 
-- ✅ **26** of **44** tasks done
-- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 18 pending
+- ✅ **27** of **44** tasks done
+- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 17 pending
 - ⬜ **3** manual steps waiting for you
 - 💡 12 feature ideas open
 
@@ -85,7 +85,7 @@ Work done before or outside the numbered tasks.
 - ✅ R19 — 2026-11-12 · [PR #40](https://github.com/shlomyeisenberg-lang/Otiyot/pull/40)
 - ✅ T20 · Scene: The Sunken Geniza — 2026-11-12 · [PR #35](https://github.com/shlomyeisenberg-lang/Otiyot/pull/35)
 - ✅ T21 · Scene: Wings over Hermon — 2026-11-12 · [PR #41](https://github.com/shlomyeisenberg-lang/Otiyot/pull/41)
-- ⬜ T22 · Scene: The Star Station
+- ✅ T22 · Scene: The Star Station — 2026-11-12 · [PR #42](https://github.com/shlomyeisenberg-lang/Otiyot/pull/42)
 - ⬜ T23 · Scene: Atbash City
 - ⬜ T24 · Scene: The Long Midbar
 - ⬜ T25 · Scene: The Lantern Caves
@@ -1126,11 +1126,46 @@ Wings over Hermon can be played from the map (Level 4 of the course, after the G
 
 About 63 draw calls and 48k triangles on medium (budget 150 / 300k). Found while building: the Sunken Geniza and the Gematria Forge lay out their in-world word with rtl false, so a Hebrew word reads left to right there (added to ROADMAP "Later" and as a feature idea).
 
-### ⬜ T22 · Scene: The Star Station
+### ✅ T22 · Scene: The Star Station
 
-**Status:** Pending
+**Status:** Done · **Finished:** 2026-11-12 · **Pull request:** [PR #42](https://github.com/shlomyeisenberg-lang/Otiyot/pull/42)
 
-_Not started._
+The Star Station can be played from the map (Level 4 of the course, after the Great Blot): the apprentice floats in a thruster pack through a broken, dimmed observatory high above the land. Every module is two sentences: one fires the thrusters to drift and dock at its hatch, the other works its turret against debris rocks that each carry a word. Every word lights more stars, and at the end the dome opens and the constellations are drawn across the sky.
+
+**What changed**
+
+- src/scenes/station/plan.ts: the run as pure data (3/4/4 modules, each a drift sentence and a turret sentence of learned words; capital and full stop or "!" only when learned; chapters outer/ring/observatory), approach time per turret word (approachSeconds), the Rock stepper (waits, holds on Calm, strikes and bounces back slower), the Drift (weightless float that follows the typing and never passes the hatch), legAt, legChars, starsLit, colorShare, modulesOnline, clearPercent, rocksIn
+- src/scenes/station/index.ts: the Star Station scene (follow camera behind the apprentice with a thruster pack, flames, glass helmet and lamp; Dyo in a bubble; modules with brass ribs, unfolding solar wings, warming windows, beacons and a tracking turret; the observatory with a two-shell dome and telescope; a turning great ring; a tumbling debris field; a sky that rides with the camera with dim and lit stars, constellations, nebulae, the sun and the curve of the land; drift arcs, docking, turret beams, rock strikes, the finale wide shot)
+- src/scenes/station/palette.ts: dimmed and clear skies for the light and dark themes, and the colors of the station, planet, sky, debris and pack
+- src/audio/themes.ts: the "station" music theme (A dorian, a slow 3/4 at 66 bpm, glass melody over a harp pulse, cello counter, far frame drum)
+- src/audio/synth.ts: a new "glass" voice (glass harmonica); src/audio/sfx.ts: new "thrust" and "laser" effects
+- src/story/station.ts (and src/story/index.ts): lines for Reb Ezra and Dyo in Hebrew and English
+- src/ui/screens/station.ts: the Station screen (#/station) built like the Hermon screen, with chapter, Drift/Turret, count and stars chip, level and difficulty panel, streak drop on a strike, and a results card with rank, rocks broken, strikes and stars counted
+- src/ui/app.ts, src/ui/shell.ts, src/ui/playable.ts: the station route; the Star Station now has a Play button on the hub map when open
+- locales/en.json, locales/he.json: station.* strings, sound.theme.station, sound.mood.station, sound.sfx.thrust, sound.sfx.laser
+- tests/unit/station.test.ts (learned keys only on every level and difficulty in English and Hebrew, capitals and stops only when learned, legs and chapters, fair approach times, the rock and drift steppers, stars, region, route, theme, story lines) and tests/e2e/station.spec.ts (a whole Calm run from the map, and a Steady run where a rock strikes); tests/e2e/sound.spec.ts lists the new theme
+- docs/ARCHITECTURE.md section 7o, docs/GAME_DESIGN.md scene row, CHANGELOG.md, ROADMAP tick
+- .github/workflows: CI job timeout raised from 30 to 45 minutes (the end-to-end run with the new scene went past 30 minutes); docs/ROADMAP.md "Later": faster CI
+
+**Decisions**
+
+- **Every module is two sentences: a drift (no timer) and a turret (timed debris)** — Gives the scene a rhythm of calm weightless floating and tense defense, uses both halves of the mechanic ("thrusters and turrets"), and the band asks for sentences.
+- **The drift has no timer on any difficulty** — The float is the restful part of the level and can never soft-lock; the pressure lives in the turret sentences, which follow the difficulty like Hermon's hail.
+- **Sentences are built from learned words (like the Great Blot's tendrils), not taken from the sentence library** — At Level 4 almost no library sentence uses only learned letters; building them guarantees the learned-letters rule on every level, with a capital and a full stop only when those keys are learned.
+- **The sky (stars, constellations, nebulae, sun, planet) is one group that rides with the camera, drawn first** — The engine camera sees only 600 units, so a sky farther away was clipped; riding with the camera makes it look infinitely far and keeps it inside the far plane without changing the engine.
+- **Only Reb Ezra (through the station's speaking tube) and Dyo speak; no new station-crew character** — A new speaker needs a portrait, a voice and cast changes in the story kit; kept the task in scope.
+- **The music is a slow 3/4 at 66 bpm with a new glass voice** — Every theme must have its own tempo and melody voice, and the ten-minute composer test needs at least 200 bars; 66 bpm in 4/4 was too few bars.
+- **At the observatory the debris comes from the side, and the finale cuts to a fixed wide shot** — The dome otherwise filled the view; the wide shot shows the dome opening, the apprentice and the constellations together.
+- **Checks: lint, typecheck, unit tests, build and the station and sound e2e specs were run locally before merging** — The sandbox has a matching Chromium; local checks are the gate, GitHub CI is waited for when it runs.
+- **Raised the CI job timeout from 30 to 45 minutes** — The first CI run passed lint, typecheck, unit tests and build but was cancelled at the 30-minute limit while the end-to-end tests (one more full scene run) were still going; the tests themselves pass locally.
+
+**To do**
+
+- [ ] On a phone in portrait the dialogue box can cover the rock's word for a few seconds (same shared layout as the other scenes); the word is always in the typing bar below.
+
+**Notes**
+
+Built by the Opus builder. About 70 draw calls on medium; no allocations in update().
 
 ### ⬜ T23 · Scene: Atbash City
 

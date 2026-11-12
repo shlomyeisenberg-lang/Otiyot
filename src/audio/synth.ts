@@ -259,6 +259,26 @@ export class Synth {
         o.connect(f).connect(g).connect(dest);
         return;
       }
+      case 'glass': {
+        // A glass harmonica: a pure tone and its octave, swelling in slowly and ringing on, with
+        // a slow shimmer. The sound of stars far away.
+        const end = t + dur + 1.2;
+        const g = this.env(t, 0.075 * vel, Math.min(0.18, dur * 0.4), Math.max(0, dur - 0.15), 1.1);
+        for (const [ratio, amp, d] of [
+          [1, 1, 0],
+          [2, 0.32, 4],
+          [3.01, 0.08, -3],
+        ] as const) {
+          const o = this.osc('sine', hz * ratio, t, end, d);
+          this.vib(o, 6, t, Math.min(0.6, dur * 0.8));
+          const a = this.ctx.createGain();
+          a.gain.value = amp;
+          o.connect(a).connect(g);
+        }
+        const f = this.filter('lowpass', 2400 + bright * 3000, 0.5);
+        g.connect(f).connect(dest);
+        return;
+      }
       case 'bell': {
         const len = Math.min(3, dur + 2);
         const end = t + len;
