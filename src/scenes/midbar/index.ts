@@ -2,7 +2,7 @@
 //
 // Far to the south the old caravan road crosses the Midbar to the oasis of the scribes. The
 // Fading has greyed the sand and stirred up the storms. The apprentice leads a little caravan of
-// three camels (Dyo rides on the first one's hump, under a scarf against the sand) from well to
+// three camels (Dyo rides on the first one's hump) from well to
 // well along a road of stone markers.
 //
 // Every stage of the road is two sentences. In the first the sky is clear: every right letter is
@@ -703,9 +703,12 @@ export class MidbarScene implements GameScene {
     for (let k = 0; k < 9; k++) {
       const a = (k / 9) * Math.PI * 2;
       const len = 2.4 + (k % 3) * 0.3;
-      const frond = new BoxGeometry(0.5, 0.05, len).translate(0, 0, len / 2);
-      // Droop: tip down, then turn around the trunk.
-      frond.rotateX(0.35 + (k % 2) * 0.25);
+      // A tapered leaf, flat, from the crown outward; the tip droops, then it turns around.
+      const frond = new ConeGeometry(0.3, len, 4)
+        .rotateX(Math.PI / 2)
+        .scale(1, 0.18, 1)
+        .translate(0, 0, len / 2);
+      frond.rotateX(0.45 + (k % 2) * 0.3);
       frond.rotateY(a);
       frond.translate(top.x, top.y, top.z);
       parts.push(painted(frond, k % 2 === 0 ? TINT.frond : TINT.frondLight));
@@ -1012,13 +1015,6 @@ export class MidbarScene implements GameScene {
       pupil: TINT.ink,
     });
     this.dyo.root.scale.setScalar(0.45);
-    // A little scarf against the sand.
-    const scarf = new Mesh(
-      tracker.track(new TorusGeometry(0.44, 0.15, 6, 14).rotateX(Math.PI / 2)),
-      tracker.track(kit.surface({ color: TINT.rugSaffron, restore: false })),
-    );
-    scarf.position.y = 0.3;
-    this.dyo.root.add(scarf);
     root.add(this.dyo.root);
 
     // The lead rope: from the apprentice's hand to the first camel, and camel to camel.
@@ -1398,8 +1394,8 @@ export class MidbarScene implements GameScene {
     // Pull back and look over the oasis: the caravan at the water, the palms, the evening sky.
     const back = roadYaw(o.z);
     this.ctx.rig.fixed(
-      this.v.set(o.x - Math.sin(back) * 15 - 9, o.y + 6.5, o.z - Math.cos(back) * 15),
-      this.w.set(o.x + 1, o.y + 1.2, o.z + 2),
+      this.v.set(o.x - Math.sin(back) * 21 + 6, o.y + 9.5, o.z - Math.cos(back) * 21),
+      this.w.set(o.x, o.y + 1, o.z + 1),
     );
   }
 
@@ -1558,7 +1554,9 @@ export class MidbarScene implements GameScene {
         const right = i % 2 === 1;
         const front = i < 2;
         const swing = Math.sin(c.phase + (right ? Math.PI : 0)) * 0.42 * walk;
-        leg.rotation.x = swing + c.kneel * (front ? 1.45 : -1.25);
+        leg.rotation.x = swing + c.kneel * (front ? 1.4 : -1.3);
+        // A folded leg tucks in under the body.
+        leg.scale.y = 1 - c.kneel * 0.4;
       }
       c.head.rotation.x =
         Math.sin(c.phase * 2) * 0.07 * walk + c.drink * 1.0 + c.kneel * 0.15 - 0.05;

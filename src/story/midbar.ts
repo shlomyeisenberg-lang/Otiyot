@@ -1,7 +1,6 @@
 // What Reb Ezra and Dyo say in the Long Midbar (T24): the caravan road from well to well, the
 // sandstorms that hide the markers, the gusts, and the oasis at the end. Reb Ezra walks with the
-// caravan (he knows every well of the old road); Dyo rides on the lead camel's hump, under a
-// little scarf against the sand. Short lines, never in the way of the typing. Every speaker is
+// caravan (he knows every well of the old road); Dyo rides on the lead camel's hump. Short lines, never in the way of the typing. Every speaker is
 // male or Dyo (ARCHITECTURE section 8). Pure data plus one chooser.
 
 import type { Line, Speaker } from './types';
