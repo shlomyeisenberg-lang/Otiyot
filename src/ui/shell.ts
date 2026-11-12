@@ -21,6 +21,7 @@ import { cliffsScreen } from './screens/cliffs';
 import { forgeScreen } from './screens/forge';
 import { shukScreen } from './screens/shuk';
 import { railScreen } from './screens/rail';
+import { genizaScreen } from './screens/geniza';
 import { arenaScreen } from './screens/arena';
 import { meadowScreen } from './screens/meadow';
 import { introScreen } from './screens/intro';
@@ -115,6 +116,7 @@ export class Shell {
       forge: forgeScreen,
       shuk: shukScreen,
       rail: railScreen,
+      geniza: genizaScreen,
       arena: arenaScreen,
       menu: mainMenuScreen,
       welcome: (ctx) => wizardScreen(ctx, 'welcome', () => (this.needsWelcome = false)),
