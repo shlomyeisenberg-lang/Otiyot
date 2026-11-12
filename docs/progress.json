@@ -1486,9 +1486,9 @@
       "notes": "Built by the Opus builder. About 70 draw calls on medium; no allocations in update()."
     },
     "T23": {
-      "status": "in_progress",
-      "finished": "",
-      "pr": "",
+      "status": "done",
+      "finished": "2026-11-12",
+      "pr": "https://github.com/shlomyeisenberg-lang/Otiyot/pull/43",
       "summary": "Atbash City can be played from the map (Level 5 of the course, after the Great Blot): a rainy neon street where every sign has been scrambled into atbash and steel vault gates block the way. Every gate is two codes: a cipher, where each right letter flips a neon sign letter back to its true face, and a sequence, where the vault tumbler plays a pattern of two codes to type back from memory, all while a patrol drone sweeps the street. Every opened gate sinks into the road, its drone becomes a gold lantern, and the city lights up block by block until the whole skyline shines.",
       "changes": [
         "src/scenes/atbash/plan.ts: the run as pure data (3/4/5 gates, each a cipher leg and a sequence leg of learned words; chapters market/towers/vault; sequence patterns per level), atbash and atbashLetter (Hebrew and English), patrolSeconds per leg and difficulty, the Patrol stepper (waits, holds on Calm, returns, spots, goes round again slower), legAt, chapterAt, chapterStartsAt, colorShare, gatesOpen, signsLit, neonFace",

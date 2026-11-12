@@ -6,8 +6,8 @@ _Last updated 2026-11-12. This page is generated from `docs/progress.json`; to c
 
 ## Summary
 
-- ✅ **27** of **44** tasks done
-- 🛠️ 1 in progress · ⛔ 0 blocked · ⬜ 16 pending
+- ✅ **28** of **44** tasks done
+- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 16 pending
 - ⬜ **3** manual steps waiting for you
 - 💡 12 feature ideas open
 
@@ -86,7 +86,7 @@ Work done before or outside the numbered tasks.
 - ✅ T20 · Scene: The Sunken Geniza — 2026-11-12 · [PR #35](https://github.com/shlomyeisenberg-lang/Otiyot/pull/35)
 - ✅ T21 · Scene: Wings over Hermon — 2026-11-12 · [PR #41](https://github.com/shlomyeisenberg-lang/Otiyot/pull/41)
 - ✅ T22 · Scene: The Star Station — 2026-11-12 · [PR #42](https://github.com/shlomyeisenberg-lang/Otiyot/pull/42)
-- 🛠️ T23 · Scene: Atbash City
+- ✅ T23 · Scene: Atbash City — 2026-11-12 · [PR #43](https://github.com/shlomyeisenberg-lang/Otiyot/pull/43)
 - ⬜ T24 · Scene: The Long Midbar
 - ⬜ T25 · Scene: The Lantern Caves
 - ⬜ T26 · The Silent Arena: remaining bosses
@@ -1167,9 +1167,9 @@ The Star Station can be played from the map (Level 4 of the course, after the Gr
 
 Built by the Opus builder. About 70 draw calls on medium; no allocations in update().
 
-### 🛠️ T23 · Scene: Atbash City
+### ✅ T23 · Scene: Atbash City
 
-**Status:** In progress
+**Status:** Done · **Finished:** 2026-11-12 · **Pull request:** [PR #43](https://github.com/shlomyeisenberg-lang/Otiyot/pull/43)
 
 Atbash City can be played from the map (Level 5 of the course, after the Great Blot): a rainy neon street where every sign has been scrambled into atbash and steel vault gates block the way. Every gate is two codes: a cipher, where each right letter flips a neon sign letter back to its true face, and a sequence, where the vault tumbler plays a pattern of two codes to type back from memory, all while a patrol drone sweeps the street. Every opened gate sinks into the road, its drone becomes a gold lantern, and the city lights up block by block until the whole skyline shines.
 
