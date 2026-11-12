@@ -243,3 +243,19 @@
     transition: none;
   }
 }
+
+/* The Lantern Caves: when the lantern is too dim, the next word on the paper strip is lost in the dark. */
+.caves .hud .hud-ahead {
+  transition:
+    opacity var(--t-panel) var(--ease),
+    filter var(--t-panel) var(--ease);
+}
+.caves .hud[data-veil='dark'] .hud-ahead {
+  opacity: 0.06;
+  filter: blur(5px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .caves .hud .hud-ahead {
+    transition: none;
+  }
+}

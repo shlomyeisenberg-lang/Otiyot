@@ -346,7 +346,7 @@ One-pass review of Sonnet's T19; fix what is weak. Done when merged.
 - **Done when** The scene is playable start to finish from the hub at 60 fps on medium, feels different from every other scene, and its smoke test passes.
 - **User must have ready** Nothing.
 
-### [ ] T25 · Scene: The Lantern Caves
+### [x] T25 · Scene: The Lantern Caves
 - **Branch** `t25-caves`
 - **Model** Opus 5.5 · **Effort** High
 - **Goal** Build the "The Lantern Caves" scene as a distinct, beautiful, exciting 3D level whose mechanic is: tense stealth: accurate typing keeps the lantern lit; shadows creep closer on stumbles and retreat on clean streaks

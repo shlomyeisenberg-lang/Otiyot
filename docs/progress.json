@@ -1610,15 +1610,56 @@
       "notes": "Built in one run by the Opus builder."
     },
     "T25": {
-      "status": "pending",
-      "finished": "",
-      "pr": "",
-      "summary": "",
-      "changes": [],
-      "decisions": [],
+      "status": "done",
+      "finished": "2026-11-12",
+      "pr": "https://github.com/shlomyeisenberg-lang/Otiyot/pull/45",
+      "summary": "The Lantern Caves, the first region of Act Three: a winding chalk cave lit only by the apprentice's lantern. Accurate typing keeps the lantern bright and the shadows at bay; stumbles dim it and the shadows creep closer, and every chamber ends with an old clay lamp lit in the wall, up to the Hall of Lamps at the end.",
+      "changes": [
+        "src/scenes/caves/plan.ts: pure run plan (3/4/5 chambers of learned words per level), the Lantern model (feeding, flares on clean streaks, dimming on stumbles, burning down on timed difficulties, going out and relighting, Calm floor), shadow distance and lookahead by light, chapters and lamp counts",
+        "src/scenes/caves/index.ts: CavesScene: winding chalk tunnel with flint bands swelling into the Hall of Lamps (pillars, 20 hanging lamps, a spring), stalactites and rubble, the apprentice with a brass lantern light, Dyo at his shoulder, drifting dust, nine soft ink-smoke shadows with blinking eyes, niche lamps per chamber, a chalk tablet with the words ahead, and the finale",
+        "src/scenes/caves/palette.ts: dark, lit and Hall skies for light and dark themes, and the scene's colors",
+        "src/ui/screens/caves.ts: the #/caves screen (chip with chapter, lantern state, count and lamps; the paper strip's next word veiled when the lantern is too dim; streak drop when the light goes out; results card with flares, times the light went out and lamps lit; probe window.__otiyotCaves)",
+        "src/story/caves.ts: lines for Reb Ezra and Dyo in Hebrew and English",
+        "src/audio: caves music theme (E mi sheberach, 2/4 at 68 bpm) with a new kalimba voice, the cave ambience (still air and echoing drips), and the flare, creep and lamp sound effects",
+        "src/ui/app.ts, src/ui/shell.ts, src/ui/playable.ts: the caves route, opened from the hub's map",
+        "src/ui/styles/meadow.css: the dark veil over the next word on the paper strip",
+        "locales/en.json, locales/he.json: every new string in English and Hebrew",
+        "tests/unit/caves.test.ts (26 tests incl. learned-letters-only on every level and difficulty, lantern fairness), tests/e2e/caves.spec.ts (full Calm run from the map, and a Steady run where the lantern goes out), tests/e2e/sound.spec.ts updated for the new theme",
+        "docs/ARCHITECTURE.md section 7r, CHANGELOG.md, ROADMAP.md tick"
+      ],
+      "decisions": [
+        {
+          "decision": "The run is chambers of plain learned words (no capitals or marks)",
+          "why": "The scene's band is accuracy focus; punctuation belongs to other scenes"
+        },
+        {
+          "decision": "Light is one number that drives everything: the lantern's brightness and reach, how near the shadows stand, and how many words ahead can be read",
+          "why": "One clear rule the player can feel: type accurately and the dark retreats"
+        },
+        {
+          "decision": "On Calm the lantern never burns down and never goes out (it has a floor); on other difficulties it burns down only after the first key of a passage, and going out drops the streak and relights the lantern at half with a slower burn",
+          "why": "No timers on Calm, no soft-locks anywhere, and a fair pace check (unit test) shows a typist at the difficulty's speed always keeps it lit"
+        },
+        {
+          "decision": "Shadows are soft ink-smoke figures with pale sleepy eyes that only gather and touch, never attack",
+          "why": "The task asks for tense, not horror, and the game is family-safe"
+        },
+        {
+          "decision": "The caves music uses a new kalimba voice in 2/4 at 68 bpm",
+          "why": "Every theme must have its own melody voice and tempo (existing unit test), and a soft struck tine fits drips in a cave"
+        },
+        {
+          "decision": "Visual pass done with Playwright screenshots in both themes: darkened the cave fill light, softened the lantern color, made the shadows inkier and smaller and kept them in front and to the sides, moved the words-ahead tablet clear of the banner, and reframed the finale camera",
+          "why": "Pattern rule: compare against the Meadow and polish before merging"
+        },
+        {
+          "decision": "Merged on the strength of the passing local checks (lint, typecheck, 633 unit tests, build, the Lantern Caves and sound-room end-to-end tests) after GitHub CI had run 15 minutes without reporting",
+          "why": "The run rules say to wait up to 15 minutes for CI and then merge on the local checks"
+        }
+      ],
       "manual_steps": [],
       "todo": [],
-      "notes": ""
+      "notes": "Same split as every scene: plan, scene, screen. Opens on the map at Level 6 once the Great Blot is beaten (unchanged region rule). Built in one run by the Opus builder."
     },
     "T26": {
       "status": "pending",

@@ -22,7 +22,8 @@ export type Voice =
   | 'horn'
   | 'glass'
   | 'pluck'
-  | 'ney';
+  | 'ney'
+  | 'kalimba';
 /** Drum kits; each plays the same pattern letters with its own sounds. */
 export type Kit = 'darbuka' | 'frame' | 'taiko' | 'brush';
 
@@ -93,6 +94,7 @@ export type ThemeId =
   | 'station'
   | 'atbash'
   | 'midbar'
+  | 'caves'
   | 'boss';
 export const THEME_IDS: readonly ThemeId[] = [
   'title',
@@ -107,6 +109,7 @@ export const THEME_IDS: readonly ThemeId[] = [
   'station',
   'atbash',
   'midbar',
+  'caves',
   'boss',
 ];
 
@@ -495,6 +498,39 @@ export const THEMES: Readonly<Record<ThemeId, ThemeSpec>> = {
     reverb: 0.5,
     brightness: 0.55,
     level: 0.85,
+  },
+
+  // The Lantern Caves: tense, never frightening. E mi sheberach (restless, with its raised
+  // fourth) at a slow, careful 68 bpm in 2/4, tiptoeing in sixteenths: a kalimba (a new voice,
+  // like drops in the dark)
+  // picks its way through the melody, a harp keeps a hushed pulse, a cello answers low, and
+  // brushes on a frame drum tread softly. It brightens as the lamps are lit.
+  caves: {
+    id: 'caves',
+    nameKey: 'sound.theme.caves',
+    seed: 2525,
+    bpm: 68,
+    beats: 2,
+    sub: 4,
+    root: 52,
+    mode: 'misheberach',
+    swing: 0.08,
+    form: ['A', 'A', 'B', 'A', 'C'],
+    sections: {
+      A: { bars: 8, chords: [0, 0, 3, 3, 0, 0, 4, 4], register: 2, density: 0.35 },
+      B: { bars: 8, chords: [5, 5, 3, 3, 1, 1, 4, 0], register: 3, density: 0.45 },
+      C: { bars: 8, chords: [3, 4, 0, 5, 3, 1, 4, 0], register: 4, density: 0.5 },
+    },
+    voices: { drone: 'pad', pulse: 'harp', melody: 'kalimba', counter: 'cello' },
+    kit: 'brush',
+    pulse: [0, -1, 2, -1, 1, -1, 2, 3],
+    counterOctave: -1,
+    drums: { base: 'D.......', full: 'D...k.S.' },
+    cells: CELLS_8,
+    cadences: CAD_8,
+    reverb: 0.62,
+    brightness: 0.45,
+    level: 0.9,
   },
 
   // Boss: C freygish at full drive, taiko and cello ostinato. Four phases: each climbs, and the

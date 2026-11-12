@@ -1,4 +1,4 @@
-// Looping background sounds for places (wind, birds, water, fire, crickets, machine hum, rain, sandstorm). Each one
+// Looping background sounds for places (wind, birds, water, fire, crickets, machine hum, rain, sandstorm, cave). Each one
 // can stand at a point in the world (it then pans and fades with distance) or fill the room.
 
 import type { Synth } from './synth';
@@ -13,6 +13,7 @@ export const AMBIENCE_IDS = [
   'hum',
   'rain',
   'sand',
+  'cave',
 ] as const;
 export type AmbienceId = (typeof AMBIENCE_IDS)[number];
 
@@ -148,6 +149,16 @@ export class AmbienceLoop implements AmbienceHandle {
         this.lfo(0.21, 0.018, hg.gain, t);
         return;
       }
+      case 'cave': {
+        // A chalk cave: the low, still breath of the air under the hill (the drips are events).
+        const f = s.filter('lowpass', 180, 0.8);
+        const g = ctx.createGain();
+        g.gain.value = 0.09;
+        this.loopNoise(t).connect(f).connect(g).connect(this.out);
+        this.lfo(0.05, 40, f.frequency, t);
+        this.lfo(0.08, 0.03, g.gain, t);
+        return;
+      }
       case 'birds':
       case 'crickets':
         // Made only of events (see `tick`).
@@ -200,6 +211,23 @@ export class AmbienceLoop implements AmbienceHandle {
           o.frequency.exponentialRampToValueAtTime(hz * 0.6, t + 0.05);
           o.connect(s.decay(t, 0.018 + r.next() * 0.02, 0.05)).connect(this.out);
           this.nextEvent = t + 0.12 + r.next() * 0.6;
+          break;
+        }
+        case 'cave': {
+          // A drop of water falling into a still pool somewhere in the dark, with its echo.
+          const hz = 700 + r.next() * 700;
+          for (const [d, v] of [
+            [0, 0.04],
+            [0.19, 0.012],
+            [0.37, 0.005],
+          ] as const) {
+            const at = t + d;
+            const o = s.osc('sine', hz, at, at + 0.14);
+            o.frequency.setValueAtTime(hz * 0.8, at);
+            o.frequency.exponentialRampToValueAtTime(hz * 1.6, at + 0.05);
+            o.connect(s.decay(at, v * (0.6 + r.next() * 0.6), 0.1)).connect(this.out);
+          }
+          this.nextEvent = t + 0.9 + r.next() * 3.2;
           break;
         }
         case 'crickets': {

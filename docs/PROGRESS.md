@@ -6,8 +6,8 @@ _Last updated 2026-11-12. This page is generated from `docs/progress.json`; to c
 
 ## Summary
 
-- ✅ **29** of **44** tasks done
-- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 15 pending
+- ✅ **30** of **44** tasks done
+- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 14 pending
 - ⬜ **3** manual steps waiting for you
 - 💡 12 feature ideas open
 
@@ -88,7 +88,7 @@ Work done before or outside the numbered tasks.
 - ✅ T22 · Scene: The Star Station — 2026-11-12 · [PR #42](https://github.com/shlomyeisenberg-lang/Otiyot/pull/42)
 - ✅ T23 · Scene: Atbash City — 2026-11-12 · [PR #43](https://github.com/shlomyeisenberg-lang/Otiyot/pull/43)
 - ✅ T24 · Scene: The Long Midbar — 2026-11-12 · [PR #44](https://github.com/shlomyeisenberg-lang/Otiyot/pull/44)
-- ⬜ T25 · Scene: The Lantern Caves
+- ✅ T25 · Scene: The Lantern Caves — 2026-11-12 · [PR #45](https://github.com/shlomyeisenberg-lang/Otiyot/pull/45)
 - ⬜ T26 · The Silent Arena: remaining bosses
 - ⬜ T27 · The Blank Scroll and the Keeper
 - ⬜ T28 · Scene: The Ladder (endless)
@@ -1243,11 +1243,39 @@ The Long Midbar can be played from the map (Level 5 of the course, after the Gre
 
 Built in one run by the Opus builder.
 
-### ⬜ T25 · Scene: The Lantern Caves
+### ✅ T25 · Scene: The Lantern Caves
 
-**Status:** Pending
+**Status:** Done · **Finished:** 2026-11-12 · **Pull request:** [PR #45](https://github.com/shlomyeisenberg-lang/Otiyot/pull/45)
 
-_Not started._
+The Lantern Caves, the first region of Act Three: a winding chalk cave lit only by the apprentice's lantern. Accurate typing keeps the lantern bright and the shadows at bay; stumbles dim it and the shadows creep closer, and every chamber ends with an old clay lamp lit in the wall, up to the Hall of Lamps at the end.
+
+**What changed**
+
+- src/scenes/caves/plan.ts: pure run plan (3/4/5 chambers of learned words per level), the Lantern model (feeding, flares on clean streaks, dimming on stumbles, burning down on timed difficulties, going out and relighting, Calm floor), shadow distance and lookahead by light, chapters and lamp counts
+- src/scenes/caves/index.ts: CavesScene: winding chalk tunnel with flint bands swelling into the Hall of Lamps (pillars, 20 hanging lamps, a spring), stalactites and rubble, the apprentice with a brass lantern light, Dyo at his shoulder, drifting dust, nine soft ink-smoke shadows with blinking eyes, niche lamps per chamber, a chalk tablet with the words ahead, and the finale
+- src/scenes/caves/palette.ts: dark, lit and Hall skies for light and dark themes, and the scene's colors
+- src/ui/screens/caves.ts: the #/caves screen (chip with chapter, lantern state, count and lamps; the paper strip's next word veiled when the lantern is too dim; streak drop when the light goes out; results card with flares, times the light went out and lamps lit; probe window.__otiyotCaves)
+- src/story/caves.ts: lines for Reb Ezra and Dyo in Hebrew and English
+- src/audio: caves music theme (E mi sheberach, 2/4 at 68 bpm) with a new kalimba voice, the cave ambience (still air and echoing drips), and the flare, creep and lamp sound effects
+- src/ui/app.ts, src/ui/shell.ts, src/ui/playable.ts: the caves route, opened from the hub's map
+- src/ui/styles/meadow.css: the dark veil over the next word on the paper strip
+- locales/en.json, locales/he.json: every new string in English and Hebrew
+- tests/unit/caves.test.ts (26 tests incl. learned-letters-only on every level and difficulty, lantern fairness), tests/e2e/caves.spec.ts (full Calm run from the map, and a Steady run where the lantern goes out), tests/e2e/sound.spec.ts updated for the new theme
+- docs/ARCHITECTURE.md section 7r, CHANGELOG.md, ROADMAP.md tick
+
+**Decisions**
+
+- **The run is chambers of plain learned words (no capitals or marks)** — The scene's band is accuracy focus; punctuation belongs to other scenes
+- **Light is one number that drives everything: the lantern's brightness and reach, how near the shadows stand, and how many words ahead can be read** — One clear rule the player can feel: type accurately and the dark retreats
+- **On Calm the lantern never burns down and never goes out (it has a floor); on other difficulties it burns down only after the first key of a passage, and going out drops the streak and relights the lantern at half with a slower burn** — No timers on Calm, no soft-locks anywhere, and a fair pace check (unit test) shows a typist at the difficulty's speed always keeps it lit
+- **Shadows are soft ink-smoke figures with pale sleepy eyes that only gather and touch, never attack** — The task asks for tense, not horror, and the game is family-safe
+- **The caves music uses a new kalimba voice in 2/4 at 68 bpm** — Every theme must have its own melody voice and tempo (existing unit test), and a soft struck tine fits drips in a cave
+- **Visual pass done with Playwright screenshots in both themes: darkened the cave fill light, softened the lantern color, made the shadows inkier and smaller and kept them in front and to the sides, moved the words-ahead tablet clear of the banner, and reframed the finale camera** — Pattern rule: compare against the Meadow and polish before merging
+- **Merged on the strength of the passing local checks (lint, typecheck, 633 unit tests, build, the Lantern Caves and sound-room end-to-end tests) after GitHub CI had run 15 minutes without reporting** — The run rules say to wait up to 15 minutes for CI and then merge on the local checks
+
+**Notes**
+
+Same split as every scene: plan, scene, screen. Opens on the map at Level 6 once the Great Blot is beaten (unchanged region rule). Built in one run by the Opus builder.
 
 ### ⬜ T26 · The Silent Arena: remaining bosses
 
