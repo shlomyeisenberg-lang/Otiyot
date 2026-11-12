@@ -1137,9 +1137,9 @@
       "notes": "Compared against the Meadow and the Shuk with Playwright screenshots; the Line keeps their layout, HUD and restoration feel with its own dawn palette, rail mechanic and music."
     },
     "R15": {
-      "status": "in_progress",
-      "finished": "",
-      "pr": "",
+      "status": "done",
+      "finished": "2026-11-12",
+      "pr": "https://github.com/shlomyeisenberg-lang/Otiyot/pull/34",
       "summary": "Opus reviewed Sonnet's Cliffs of Ein Gedi (T15) and played it in English and Hebrew at desktop and phone width. The scene is solid and good-looking; one real gameplay flaw was fixed: in English the stones climbed to the top and then stayed flat, so 'reach up' stopped meaning anything.",
       "changes": [
         "src/scenes/cliffs/plan.ts: planCliffs now draws 8 learned words for each stone and keeps the one whose reach fits the climb best (new reachCost): it turns the path back before the stones hit their height limit, avoids three same reaches in a row and favours the row used least, so top-row and bottom-row words are both practised and every reach visibly moves the stone.",

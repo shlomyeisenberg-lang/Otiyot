@@ -6,8 +6,8 @@ _Last updated 2026-11-12. This page is generated from `docs/progress.json`; to c
 
 ## Summary
 
-- ✅ **19** of **44** tasks done
-- 🛠️ 1 in progress · ⛔ 0 blocked · ⬜ 24 pending
+- ✅ **20** of **44** tasks done
+- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 24 pending
 - ⬜ **3** manual steps waiting for you
 - 💡 7 feature ideas open
 
@@ -74,7 +74,7 @@ Work done before or outside the numbered tasks.
 - ✅ T13 · Hub: the House of the Scribe — 2026-11-11 · [PR #23](https://github.com/shlomyeisenberg-lang/Otiyot/pull/23)
 - ✅ T14 · Scene: Home Row Meadow — 2026-11-11 · [PR #25](https://github.com/shlomyeisenberg-lang/Otiyot/pull/25)
 - ✅ T15 · Scene: Cliffs of Ein Gedi — 2026-11-11 · [PR #26](https://github.com/shlomyeisenberg-lang/Otiyot/pull/26)
-- 🛠️ R15
+- ✅ R15 — 2026-11-12 · [PR #34](https://github.com/shlomyeisenberg-lang/Otiyot/pull/34)
 - ✅ T16 · Boss kit and the first boss — 2026-11-11 · [PR #27](https://github.com/shlomyeisenberg-lang/Otiyot/pull/27)
 - ⬜ R16
 - ✅ T17 · Scene: The Gematria Forge — 2026-11-11 · [PR #28](https://github.com/shlomyeisenberg-lang/Otiyot/pull/28)
@@ -742,9 +742,9 @@ The Cliffs of Ein Gedi can be played from the map: a grey desert canyon where ev
 
 Built by the Sonnet runner, High effort, following the Meadow's pattern. Looked at in Chromium at 1280 and 375 wide, English and Hebrew, both themes. About 85 draw calls and 52k triangles on medium.
 
-### 🛠️ R15
+### ✅ R15
 
-**Status:** In progress
+**Status:** Done · **Finished:** 2026-11-12 · **Pull request:** [PR #34](https://github.com/shlomyeisenberg-lang/Otiyot/pull/34)
 
 Opus reviewed Sonnet's Cliffs of Ein Gedi (T15) and played it in English and Hebrew at desktop and phone width. The scene is solid and good-looking; one real gameplay flaw was fixed: in English the stones climbed to the top and then stayed flat, so 'reach up' stopped meaning anything.
 
