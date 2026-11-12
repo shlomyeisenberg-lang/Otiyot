@@ -6,10 +6,10 @@ _Last updated 2026-11-12. This page is generated from `docs/progress.json`; to c
 
 ## Summary
 
-- ✅ **20** of **44** tasks done
-- 🛠️ 1 in progress · ⛔ 0 blocked · ⬜ 23 pending
+- ✅ **21** of **44** tasks done
+- 🛠️ 1 in progress · ⛔ 0 blocked · ⬜ 22 pending
 - ⬜ **3** manual steps waiting for you
-- 💡 8 feature ideas open
+- 💡 9 feature ideas open
 
 ## Waiting for me
 
@@ -76,7 +76,7 @@ Work done before or outside the numbered tasks.
 - ✅ T15 · Scene: Cliffs of Ein Gedi — 2026-11-11 · [PR #26](https://github.com/shlomyeisenberg-lang/Otiyot/pull/26)
 - ✅ R15 — 2026-11-12 · [PR #34](https://github.com/shlomyeisenberg-lang/Otiyot/pull/34)
 - ✅ T16 · Boss kit and the first boss — 2026-11-11 · [PR #27](https://github.com/shlomyeisenberg-lang/Otiyot/pull/27)
-- ⬜ R16
+- ✅ R16 — 2026-11-12 · [PR #36](https://github.com/shlomyeisenberg-lang/Otiyot/pull/36)
 - ✅ T17 · Scene: The Gematria Forge — 2026-11-11 · [PR #28](https://github.com/shlomyeisenberg-lang/Otiyot/pull/28)
 - ⬜ R17
 - ✅ T18 · Scene: The Night Shuk — 2026-11-11 · [PR #29](https://github.com/shlomyeisenberg-lang/Otiyot/pull/29)
@@ -815,11 +815,30 @@ The first boss, the Great Blot, can be fought in the Silent Arena once the Cliff
 
 Local checks passed (lint, typecheck, 397 unit tests, build) and tests/e2e/arena.spec.ts passed in the sandbox. The first CI run failed only in tests/e2e/cliffs.spec.ts, which expects a down-reach from random words (flaky, unrelated to this task; see todo).
 
-### ⬜ R16
+### ✅ R16
 
-**Status:** Pending
+**Status:** Done · **Finished:** 2026-11-12 · **Pull request:** [PR #36](https://github.com/shlomyeisenberg-lang/Otiyot/pull/36)
 
-_Not started._
+Opus reviewed Fable's boss kit and the Great Blot (T16) and played the whole fight in light and dark mode. It is a strong, varied four-phase fight that is winnable on every difficulty; only two small per-frame allocations in the 3D code were fixed.
+
+**What changed**
+
+- src/scenes/arena/index.ts: the victory rain of gold letters no longer builds an array every beat ([...w] became charAt), and the attack visibility check is a method instead of a closure made every frame (ARCHITECTURE rule: no allocations inside update()).
+- Review findings, no change needed: content (only Reb Ezra, Dyo and the narrator speak, no women, nothing suggestive, no holy Names or pesukim), learned-letters-only text for every phase with its test, Easy/Standard/Hard sizes, Calm never lets an attack land, an attack that lands winds up again (no soft-lock), checkpoints, strings in he.json and en.json, RTL bar fill, phone layout test, dispose and leak test.
+- Played start to finish in Chromium: four phases (Spatter, Tendrils, Flood, Mirror), the victory cutscene, results with rank S, back to the house, plus the checkpoint and phone tests (all passing).
+
+**Decisions**
+
+- **Did not change the fight's design or balance** — Each phase plays differently, the health bar and notches read clearly, and the sizes grow sensibly from Easy (27 words) to Hard; nothing was weak enough to justify changing Fable's work.
+- **Did not add a unit test for the allocation fix** — It changes no behaviour; the arena end-to-end test (victory included) still passes and covers it.
+
+**To do**
+
+- [ ] In headless screenshots a theme-coloured block shows under the results card (bottom-left) in the arena; it is drawn in the 3D canvas, not the page, and may only be a software-rendering artifact. Worth a look in a real browser during T34 (polish).
+
+**Notes**
+
+Fight checked with ARENA_SHOTS screenshots of every phase in light and dark mode.
 
 ### ✅ T17 · Scene: The Gematria Forge
 
@@ -1201,6 +1220,18 @@ Build prompt:
 
 ```text
 Otiyot project — GitHub repo shlomyeisenberg-lang/Otiyot. Task: add a librarian to the Sunken Geniza (branch: idea-geniza-librarian). Work from start to finish without stopping for my approval. Read CLAUDE.md, docs/ARCHITECTURE.md (sections 7m and 8), docs/DESIGN.md and only your own entries of docs/progress.json. Add a male librarian speaker (old archivist, one strong trait) to src/story/types.ts SPEAKERS and src/story/cast.ts with a portrait in the existing style, place him in src/scenes/geniza beside the first lectern, and give him lines in src/story/geniza.ts in Hebrew and English (no women, nothing suggestive, no holy Names). Update the unit test for the lines. Run pnpm lint, typecheck, test and build, update docs/progress.json (a new history entry) and run node scripts/render-progress.mjs, push, open a pull request, merge it into main yourself and delete the branch.
+```
+
+### 💡 Boss replay with a ghost of your best run (from R16)
+
+**Status:** idea · **Model:** Sonnet 5.5 · **Effort:** Medium
+
+Seeing your own best time and accuracy as a faint second scribe in the Arena would make fighting the Great Blot again on a harder level more rewarding.
+
+Build prompt:
+
+```text
+Otiyot project — GitHub repo shlomyeisenberg-lang/Otiyot. Build idea 'Arena best-run ghost' on branch idea-arena-ghost. Work without stopping for approval. Read CLAUDE.md, docs/ARCHITECTURE.md, docs/DESIGN.md, docs/GAME_DESIGN.md and only your own entry in docs/progress.json. If T37 (ghosts) is merged, reuse its ghost recording; otherwise store only per-word timings (never typed text) through a new save migration with a test. In src/scenes/arena show a faint second scribe whose progress follows the best earlier run on the same level and difficulty, and a small 'ahead / behind' readout in he and en. Unit tests for the timing logic, extend tests/e2e/arena.spec.ts. Run pnpm lint && pnpm typecheck && pnpm test && pnpm build, update CHANGELOG.md and docs/progress.json, run node scripts/render-progress.mjs, push, open a pull request, merge it into main and delete the branch.
 ```
 
 ## Notes

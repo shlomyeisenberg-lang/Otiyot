@@ -1443,7 +1443,8 @@ export class ArenaScene implements GameScene {
     const words = this.plan?.phases[0]?.words ?? [];
     if (this.rained < LETTERS_RAIN && Math.floor(before * 6) !== Math.floor(this.rainT * 6)) {
       const w = words[this.rained % Math.max(1, words.length)] ?? '';
-      const ch = [...w][this.rained % Math.max(1, w.length)] ?? '';
+      // charAt, not [...w]: no array is made each beat (no allocations in update()).
+      const ch = w.charAt(this.rained % Math.max(1, w.length));
       if (ch) {
         vfx.shatter(
           ch,
@@ -1591,12 +1592,16 @@ export class ArenaScene implements GameScene {
     );
   }
 
+  /** Whether this attack's 3D pieces are shown (a method, so no closure is made each frame). */
+  private isAttackVisible(kind: AttackKind, live: boolean): boolean {
+    return live && this.attack === kind && !this.won;
+  }
+
   private writeAttacks(): void {
     const w = this.shown;
     const live = this.fight?.state === 'fight' || this.landT >= 0 || this.snapT >= 0;
-    const show = (kind: AttackKind): boolean => live && this.attack === kind && !this.won;
     // Spatter.
-    this.glob.visible = show('spatter') && w > 0.02;
+    this.glob.visible = this.isAttackVisible('spatter', live) && w > 0.02;
     this.ring.visible = this.glob.visible;
     if (this.glob.visible) {
       this.globPoint(this.landT >= 0 ? 1 : w, this.glob.position);
@@ -1614,7 +1619,7 @@ export class ArenaScene implements GameScene {
       this.ring.scale.setScalar(Math.max(0.5, 2.8 - 2.2 * w));
     }
     // Tendril.
-    if (show('tendril') && w > 0.02) {
+    if (this.isAttackVisible('tendril', live) && w > 0.02) {
       this.tendril.count = TENDRIL;
       for (let i = 0; i < TENDRIL; i++) {
         const s = i / (TENDRIL - 1);
@@ -1630,7 +1635,7 @@ export class ArenaScene implements GameScene {
       this.tendril.count = 0;
     }
     // Flood.
-    const flood = show('flood');
+    const flood = this.isAttackVisible('flood', live);
     this.tide.visible = flood;
     if (flood) {
       const c = this.apprentice.root.position;
@@ -1655,7 +1660,7 @@ export class ArenaScene implements GameScene {
       this.crest.count = 0;
     }
     // Mirror shards.
-    if (show('mirror')) {
+    if (this.isAttackVisible('mirror', live)) {
       const c = this.apprentice.root.position;
       const r = 8.5 - 7 * (this.landT >= 0 ? 1 : w);
       this.shards.count = SHARDS;
