@@ -1074,12 +1074,14 @@ export class ShukScene implements GameScene {
     a.y = damp(a.y, 3.5, 3, dt);
     a.z = damp(a.z, APPRENTICE_Z - 4, 3, dt);
 
-    // The trade to type: a new one rises when the driver moves on.
+    // The trade to type: a new one rises when the driver moves on. Once the market is restored
+    // the banner goes, so no finished trade is left hanging over the carpet.
+    this.text.root.visible = !this.finished;
     if (typing.letters !== this.shownLetters) {
       this.shownLetters = typing.letters;
       const n = typing.letters.length;
       const end = n > 0 && typing.letters[n - 1] === ' ' ? n - 1 : n;
-      this.text.setWord(typing.letters.slice(0, end), false);
+      this.text.setWord(typing.letters.slice(0, end), /[\u0590-\u05ff]/.test(typing.word));
     }
     this.text.frame(dt, typing.states);
     this.feedback.frame(dt);

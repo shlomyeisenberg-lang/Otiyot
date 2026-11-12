@@ -36,7 +36,6 @@ export function level1LessonKeys2(language: LayoutId, j: number): string[] {
 /** Keys introduced so far: the keys of every passed Level 1 lesson. */
 export function knownKeys2(ctx: TextContext): Set<string> {
   const order = keyOrder2(ctx.language);
-  if (ctx.activeLevel >= 3) return new Set(lettersOf(ctx.language));
   const done = new Set(ctx.completed);
   const introduced = new Set<string>();
   for (let j = 0; j < level1LessonCount2(ctx.language); j++) {
@@ -44,6 +43,9 @@ export function knownKeys2(ctx: TextContext): Set<string> {
       level1LessonKeys2(ctx.language, j).forEach((c) => introduced.add(keyChar(ctx.language, c)));
     }
   }
+  // From Level 3 every letter counts as known, and the marks passed in Level 1 stay known too
+  // (they used to drop out here, so the Night Shuk lost its punctuation coins).
+  if (ctx.activeLevel >= 3) return new Set([...lettersOf(ctx.language), ...introduced]);
   return introduced.size
     ? introduced
     : new Set(order.slice(0, KEYS_PER_LESSON).map((c) => keyChar(ctx.language, c)));

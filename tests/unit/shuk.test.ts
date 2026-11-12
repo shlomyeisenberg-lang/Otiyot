@@ -1,4 +1,6 @@
 import { describe, expect, it } from 'vitest';
+import { getTrack, knownKeysOf, recordLessonResult } from '../../src/learn';
+import { createProfile } from '../../src/save';
 import { Vector3 } from 'three';
 import { LEVEL_IDS } from '../../src/game/levels';
 import { THEME_IDS, THEMES } from '../../src/audio/themes';
@@ -224,5 +226,31 @@ describe('what Reb Ezra and Dyo say', () => {
     expect(shukLine('haggle', 0)).toBe(SHUK_LINES.haggle[0]);
     expect(shukLine('haggle', 1)).toBe(SHUK_LINES.haggle[1]);
     expect(shukLine('haggle', 2)).toBe(SHUK_LINES.haggle[0]);
+  });
+});
+
+describe('marks stay learned (R18)', () => {
+  it('a player past Level 3 still has the marks he learned in Level 1, so the Shuk pays coins', () => {
+    for (const layout of ['en', 'he'] as const) {
+      for (const track of [1, 2] as const) {
+        const p = createProfile('a', 'David', 0);
+        p.layout = layout;
+        p.track = track;
+        const t = getTrack(track);
+        let marksSeen = new Set<string>();
+        for (const lvl of t.levels(layout, layout)) {
+          for (const l of t.lessons(lvl.id, layout, layout)) {
+            recordLessonResult(p, l.id, { wpm: 20, accuracy: 100 });
+            const keys = knownKeysOf(p);
+            // A mark once learned is never forgotten again.
+            for (const m of marksSeen)
+              expect(keys.has(m), `${layout} ${track} ${l.id} ${m}`).toBe(true);
+            marksSeen = new Set(MARKS.filter((m) => keys.has(m)));
+          }
+        }
+        expect(marksSeen.size, `${layout} track ${track}`).toBeGreaterThan(0);
+        expect(usableMarks(knownKeysOf(p), 'standard').length).toBeGreaterThan(0);
+      }
+    }
   });
 });

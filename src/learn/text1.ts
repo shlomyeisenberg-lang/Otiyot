@@ -26,7 +26,9 @@ export function knownKeys1(ctx: TextContext): Set<string> {
   order.forEach((code, idx) => {
     if (done.has(level1LessonId1(idx))) introduced.add(keyChar(ctx.language, code));
   });
-  if (ctx.activeLevel >= 3) return new Set(lettersOf(ctx.language));
+  // From Level 3 every letter counts as known, and the marks passed in Level 1 stay known too
+  // (they used to drop out here, so the Night Shuk lost its punctuation coins).
+  if (ctx.activeLevel >= 3) return new Set([...lettersOf(ctx.language), ...introduced]);
   return introduced.size
     ? introduced
     : new Set(order.slice(0, 2).map((c) => keyChar(ctx.language, c)));
