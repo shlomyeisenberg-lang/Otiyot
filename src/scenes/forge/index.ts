@@ -747,6 +747,9 @@ export class ForgeScene implements GameScene {
     }
     if (ev.kind !== 'char') return;
     if (ev.expected === ' ') {
+      // The space between numbers is a right key too: it stokes the fire like a digit (the
+      // furnace model in plan.ts counts every key, so a steady pace holds the band).
+      this.heat = stoked(this.heat);
       audio.play('space');
       return;
     }
@@ -1013,7 +1016,9 @@ export class ForgeScene implements GameScene {
     a.y = damp(a.y, 3.5, 3, dt);
     a.z = damp(a.z, ANVIL_Z - 0.6, 3, dt);
 
-    // The number to type: a new one rises when the driver moves on.
+    // The number to type: a new one rises when the driver moves on. Once the run is over the
+    // banner goes, so no stale number is left hanging over the anvil.
+    this.text.root.visible = !this.finished;
     if (typing.letters !== this.shownLetters) {
       this.shownLetters = typing.letters;
       const n = typing.letters.length;
