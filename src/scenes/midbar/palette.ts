@@ -102,7 +102,7 @@ export const STORM: Readonly<Record<ThemeName, Sky>> = {
     fillGround: 0x5a3e28,
     fillIntensity: 2.4,
     fog: 0x7a5a3a,
-    fogDensity: 0.07,
+    fogDensity: 0.09,
     fogBase: -1,
     fogFalloff: 0.02,
     inscatter: 0.2,

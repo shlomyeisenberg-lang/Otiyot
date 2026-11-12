@@ -123,7 +123,7 @@ const OASIS_PALMS = 9;
 const POOL_AHEAD = 9;
 const POOL_R = 5.2;
 /** The camera looks at the caravan from behind and a little to the side. */
-const CAM_YAW = -0.5;
+const CAM_YAW = -0.42;
 
 /** The road's line across the desert: x for a given z. */
 export function roadX(z: number): number {
@@ -515,8 +515,8 @@ export class MidbarScene implements GameScene {
   /** The camera of a run: behind the caravan and a little to its side. */
   private follow(): void {
     this.ctx.rig.follow(this.eye, {
-      distance: 11.5,
-      height: 4.8,
+      distance: 13,
+      height: 5.6,
       lookHeight: 1.9,
       turnWith: 1,
       stiffness: 2.2,
@@ -1033,27 +1033,37 @@ export class MidbarScene implements GameScene {
   private buildStorm(): void {
     const { tracker, root } = this.ctx;
     const r = this.rng;
-    // A wall of sand: two curved sheets, thick at the foot, thinning upward and at the ends.
+    // A wall of sand: three curved sheets, billowing, thick at the foot and thinning upward
+    // into a ragged top and at the ends. Tinted like the storm's own air, so it reads as the
+    // storm coming on (and does not glow) in either theme.
     this.wall = new Group();
-    for (let layer = 0; layer < 2; layer++) {
-      const geo = new PlaneGeometry(34, 11, 18, 6);
+    const air = STORM[this.ctx.theme].fog;
+    for (let layer = 0; layer < 3; layer++) {
+      const geo = new PlaneGeometry(40, 12, 28, 8);
       const pos = geo.getAttribute('position');
       const col = new Float32Array(pos.count * 4);
-      const c = new Color(layer === 0 ? TINT.sandAir : TINT.sandDeep);
+      const shade = 1 - layer * 0.14;
       for (let i = 0; i < pos.count; i++) {
         const x = pos.getX(i);
-        const y = pos.getY(i) + 5.5;
-        const edge = 1 - Math.abs(x) / 17;
-        // Bulging toward the caravan in the middle, rolling forward at the top.
-        pos.setXYZ(i, x, y, Math.cos((x / 17) * (Math.PI / 2)) * 3 + (y / 11) * 2.2 - layer * 1.6);
-        col[i * 4] = c.r;
-        col[i * 4 + 1] = c.g;
-        col[i * 4 + 2] = c.b;
-        col[i * 4 + 3] = Math.pow(Math.max(0, 1 - y / 11), 1.3) * Math.pow(Math.max(0, edge), 0.7);
+        const y = pos.getY(i) + 6;
+        const edge = 1 - Math.abs(x) / 20;
+        // A ragged top: billows of different heights along the wall.
+        const top =
+          12 * (0.55 + 0.25 * Math.sin(x * 0.37 + layer * 1.7) + 0.2 * Math.sin(x * 0.91 + 2));
+        const billow =
+          Math.sin(x * 0.45 + y * 0.35 + layer) * 0.9 + Math.sin(y * 0.8 + x * 0.2) * 0.5;
+        // Bulging toward the caravan in the middle, the top rolling forward over the foot.
+        const z = Math.cos((x / 20) * (Math.PI / 2)) * 3.5 + (y / 12) * 3 + billow - layer * 1.8;
+        pos.setXYZ(i, x, y * (0.8 + layer * 0.15), z);
+        col[i * 4] = shade;
+        col[i * 4 + 1] = shade * 0.97;
+        col[i * 4 + 2] = shade * 0.92;
+        col[i * 4 + 3] = Math.pow(Math.max(0, 1 - y / top), 0.9) * Math.pow(Math.max(0, edge), 0.6);
       }
       geo.setAttribute('color', new BufferAttribute(col, 4));
       const mat = tracker.track(
         new MeshBasicMaterial({
+          color: air,
           vertexColors: true,
           transparent: true,
           opacity: 0,
@@ -1457,7 +1467,7 @@ export class MidbarScene implements GameScene {
       const near = 1 - Math.min(1, this.shownGust);
       const k = this.wallFade * (1 - this.wallBreak) * (0.35 + near * 0.5);
       for (let i = 0; i < this.wallMats.length; i++) {
-        (this.wallMats[i] as MeshBasicMaterial).opacity = k * (i === 0 ? 1 : 0.7);
+        (this.wallMats[i] as MeshBasicMaterial).opacity = k * (i === 0 ? 0.85 : 0.6);
       }
       const roll = 1 + Math.sin(this.time * 2.3) * 0.04 + near * 0.15;
       this.wall.scale.set(1, roll, 1);
