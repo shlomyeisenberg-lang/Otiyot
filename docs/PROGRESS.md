@@ -6,8 +6,8 @@ _Last updated 2026-11-12. This page is generated from `docs/progress.json`; to c
 
 ## Summary
 
-- ✅ **24** of **44** tasks done
-- 🛠️ 1 in progress · ⛔ 0 blocked · ⬜ 19 pending
+- ✅ **25** of **44** tasks done
+- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 19 pending
 - ⬜ **3** manual steps waiting for you
 - 💡 10 feature ideas open
 
@@ -82,7 +82,7 @@ Work done before or outside the numbered tasks.
 - ✅ T18 · Scene: The Night Shuk — 2026-11-11 · [PR #29](https://github.com/shlomyeisenberg-lang/Otiyot/pull/29)
 - ✅ R18 — 2026-11-12 · [PR #39](https://github.com/shlomyeisenberg-lang/Otiyot/pull/39)
 - ✅ T19 · Scene: The Jaffa Line — 2026-11-12 · [PR #30](https://github.com/shlomyeisenberg-lang/Otiyot/pull/30)
-- 🛠️ R19
+- ✅ R19 — 2026-11-12 · [PR #40](https://github.com/shlomyeisenberg-lang/Otiyot/pull/40)
 - ✅ T20 · Scene: The Sunken Geniza — 2026-11-12 · [PR #35](https://github.com/shlomyeisenberg-lang/Otiyot/pull/35)
 - ⬜ T21 · Scene: Wings over Hermon
 - ⬜ T22 · Scene: The Star Station
@@ -1018,9 +1018,9 @@ The Jaffa Line can be played from the map (Level 3 of the course, after the Grea
 
 Compared against the Meadow and the Shuk with Playwright screenshots; the Line keeps their layout, HUD and restoration feel with its own dawn palette, rail mechanic and music.
 
-### 🛠️ R19
+### ✅ R19
 
-**Status:** In progress
+**Status:** Done · **Finished:** 2026-11-12 · **Pull request:** [PR #40](https://github.com/shlomyeisenberg-lang/Otiyot/pull/40)
 
 Opus reviewed Sonnet's Jaffa Line (T19) and played it in both languages, light and dark, desktop and phone. The race, the boost and the bends work and the line looks good, but the floating word was never visible (it sat behind the camera) and the finish could show the loser in front; both are fixed, and Hebrew words read right to left.
 

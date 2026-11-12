@@ -1270,9 +1270,9 @@
       "notes": "Before the fix both test runs (English and Hebrew, about 60 lessons learned) had no marks at all; after it every run had marks and coins."
     },
     "R19": {
-      "status": "in_progress",
-      "finished": "",
-      "pr": "",
+      "status": "done",
+      "finished": "2026-11-12",
+      "pr": "https://github.com/shlomyeisenberg-lang/Otiyot/pull/40",
       "summary": "Opus reviewed Sonnet's Jaffa Line (T19) and played it in both languages, light and dark, desktop and phone. The race, the boost and the bends work and the line looks good, but the floating word was never visible (it sat behind the camera) and the finish could show the loser in front; both are fixed, and Hebrew words read right to left.",
       "changes": [
         "src/scenes/rail/index.ts: the word banner floats 12 units ahead of the apprentice's train (new BANNER_AHEAD). It was placed 20 units behind, which is behind the camera, so the 3D word was never seen during a run.",
