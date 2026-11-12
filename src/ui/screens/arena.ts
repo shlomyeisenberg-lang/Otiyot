@@ -462,7 +462,7 @@ export function bossScreen(ctx: AppContext, cfg: BossConfig): Screen {
       const restored = Math.round((1 - health) * 100);
       bossFill.style.inlineSize = `${restored}%`;
       boss.setAttribute('aria-valuenow', String(100 - restored));
-      boss.setAttribute('aria-label', t.t('arena.health', { n: 100 - restored }));
+      boss.setAttribute('aria-label', t.t('arena.health', { name: cfg.name, n: 100 - restored }));
     }
     if (f.phase !== lastPhaseShown) {
       lastPhaseShown = f.phase;

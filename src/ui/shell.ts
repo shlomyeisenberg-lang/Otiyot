@@ -28,6 +28,7 @@ import { atbashScreen } from './screens/atbash';
 import { midbarScreen } from './screens/midbar';
 import { cavesScreen } from './screens/caves';
 import { arenaScreen } from './screens/arena';
+import { trialScreen, trialsScreen } from './screens/trials';
 import { meadowScreen } from './screens/meadow';
 import { introScreen } from './screens/intro';
 import { lessonScreen } from './screens/lesson';
@@ -128,6 +129,8 @@ export class Shell {
       midbar: midbarScreen,
       caves: cavesScreen,
       arena: arenaScreen,
+      trials: trialsScreen,
+      trial: trialScreen,
       menu: mainMenuScreen,
       welcome: (ctx) => wizardScreen(ctx, 'welcome', () => (this.needsWelcome = false)),
       players: playersScreen,
