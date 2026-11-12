@@ -47,8 +47,8 @@ export const FORGE_LINES: Readonly<Record<ForgeMoment, readonly Line[]>> = {
   forge: [
     L(
       'ezra',
-      'שמור על המחוג באמצע הסרגל הירוק. אש חלשה מעממת, אש חזקה מדי שורפת, ואף אחת מהן לא עוצרת אותך.',
-      'Keep the needle in the green. A low fire dulls the letter, a high one scorches it, and neither stops you.',
+      'שמור על המחוג באמצע הסרגל הירוק: אות זוהרת שווה יותר. אש חלשה מעממת, אש חזקה מדי שורפת, ואף אחת מהן לא עוצרת אותך.',
+      'Keep the needle in the green: a bright letter earns more. A low fire dulls the letter, a high one scorches it, and neither stops you.',
     ),
   ],
   quench: [

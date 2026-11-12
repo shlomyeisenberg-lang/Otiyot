@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- The Gematria Forge, after its review: the space between numbers now warms the fire too, and the fire is tuned to a calm, steady pace (Easy holds the green at a careful beginner's speed), so a careful player forges bright gold letters instead of a row of cold ones. Bright letters now earn more experience and glyphs, the results show them as "5/8", and the top chip always says which letter is on the anvil and its value ("Forge g = 7") so the letter values are learned along the way. The number over the anvil disappears when the run ends, and on a phone the results card is no longer covered by the chapter chip.
+
 - The Sunken Geniza, the fourth region of Act Two: a flooded archive hall under green water, grey and still until you type. The old pages lie on stone lecterns along the floor, one short word on each, made only of letters you have learned. The water moves with a tide that follows your own beat, and a ring of light around the lectern breathes with it. Type at an even pace (any pace, as long as it is even) and a current opens that carries the page up whole, in gold, through the light to the surface; a sudden rush of keys stirs the silt and clouds the water, and that page rises slowly instead. Four shafts of light open as you go and the last page restores the hall. Nothing counts down. Rank S/A/B/C with pages carried whole and how steady your tide was, Hebrew and English, level and difficulty choices, and its own music (a slow, swaying 6/8 with a singing cello over a rolling harp).
 
 - Cliffs of Ein Gedi: the path of stepping stones now really goes up and down. Before, English runs climbed to the top and then stayed flat; now top-row and bottom-row words both come up, so you practise reaching both ways.

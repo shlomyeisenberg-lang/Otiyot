@@ -183,7 +183,7 @@ describe('the furnace', () => {
       for (const level of LEVEL_IDS) {
         const keys = new Set('0123456789');
         let seed = 7;
-        const rng = (): number => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+        const rng = (): number => (seed = (seed * 16807) % 2147483647) / 2147483647;
         const plan = planForge({ layout, keys, level, rng });
         const gap = 1 / STEADY_PACE[level];
         let heat = HEAT_START;
