@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Cliffs of Ein Gedi: the path of stepping stones now really goes up and down. Before, English runs climbed to the top and then stayed flat; now top-row and bottom-row words both come up, so you practise reaching both ways.
+
 - The Jaffa Line, the third region of Act Two: a clockwork railway at dawn, from the coast up to the hills, grey and cold until you ride it. Every stretch of track is one short word made only of letters you have learned. Typing drives your train, clean words build boost, and after every third stretch a bend comes: with enough boost you are carried through it and gain on Naftali, who races on the next track in rose and cream; too slow and he pulls ahead. Station lamps light as you go, the colors roll back along the line, and the last stretch restores it. Nothing counts down, and the run always finishes whether or not you win the race. Rank S/A/B/C, Hebrew and English, level and difficulty choices, and its own music (a driving dorian groove with a chugging kanun). The scene also records when each stretch was finished, as data for a later ghost.
 
 - The Night Shuk, the second region of Act Two: a lantern-lit market square after dark, grey and shut until you trade. Every stall is one trade, a learned word with a punctuation mark on its tail once you have learned one, and the marks are the coins: each one jumps into your purse, a clean deal opens the stall's lantern and three clean deals in a row win a haggle that doubles the mark coins. Four big lanterns light over the square as you go and the last trade restores the market. Opens at Level 2 once the Great Blot is beaten, in both languages and on every level and difficulty; only keys you have learned are typed.

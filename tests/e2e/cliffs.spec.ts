@@ -164,6 +164,7 @@ test.describe('Cliffs of Ein Gedi', () => {
     while (!(p = await cliffs(page)).ended) {
       seen.add(p.chapter);
       reaches.add(p.reach);
+      heights.add(Math.round(p.height * 10));
       await pressGuide(page);
       keysTyped += 1;
       if (keysTyped % 10 === 0) {
