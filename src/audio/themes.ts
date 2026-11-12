@@ -432,14 +432,14 @@ export const THEMES: Readonly<Record<ThemeId, ThemeSpec>> = {
     level: 0.85,
   },
 
-  // Atbash City: rain on neon, C sharp minor at 92 bpm in a straight, ticking 4/4. A synth pluck
-  // spins arpeggios like a code-breaking machine, a bell carries the tune over it (the signs
-  // flickering back on), a cello walks underneath, and brushes tick like the rain on the awnings.
+  // Atbash City: rain on neon, C sharp minor at 96 bpm in a lightly swung 4/4. A synth pluck
+  // sings the tune like a code-breaking machine, bells ring the pulse (the signs flickering back
+  // on), a cello walks underneath, and brushes tick like the rain on the awnings.
   atbash: {
     id: 'atbash',
     nameKey: 'sound.theme.atbash',
     seed: 2323,
-    bpm: 92,
+    bpm: 96,
     beats: 4,
     sub: 2,
     root: 61,
@@ -451,7 +451,7 @@ export const THEMES: Readonly<Record<ThemeId, ThemeSpec>> = {
       B: { bars: 8, chords: [5, 5, 6, 6, 3, 3, 4, 4], register: 2, density: 0.55 },
       C: { bars: 8, chords: [0, 6, 5, 4, 3, 5, 4, 0], register: 3, density: 0.6 },
     },
-    voices: { drone: 'pad', pulse: 'pluck', melody: 'bell', counter: 'cello' },
+    voices: { drone: 'pad', pulse: 'bell', melody: 'pluck', counter: 'cello' },
     kit: 'brush',
     pulse: [0, 2, 1, 3, 0, 2, 3, 1],
     counterOctave: -1,

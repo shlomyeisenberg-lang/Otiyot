@@ -332,7 +332,7 @@ describe('Atbash City on the map', () => {
     expect(playableRegions()).toContain('atbash');
     expect(THEME_IDS).toContain('atbash');
     expect(THEMES.atbash.id).toBe('atbash');
-    expect(THEMES.atbash.voices.pulse).toBe('pluck');
+    expect(THEMES.atbash.voices.melody).toBe('pluck');
     expect(AMBIENCE_IDS).toContain('rain');
     expect(SFX_NAMES).toContain('scan');
     expect(SFX_NAMES).toContain('unlock');
