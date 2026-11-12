@@ -324,7 +324,7 @@ One-pass review of Sonnet's T19; fix what is weak. Done when merged.
 - **Done when** The scene is playable start to finish from the hub at 60 fps on medium, feels different from every other scene, and its smoke test passes.
 - **User must have ready** Nothing.
 
-### [ ] T23 · Scene: Atbash City
+### [x] T23 · Scene: Atbash City
 - **Branch** `t23-atbash`
 - **Model** Opus 5.5 · **Effort** High
 - **Goal** Build the "Atbash City" scene as a distinct, beautiful, exciting 3D level whose mechanic is: timed cipher puzzles (atbash decoding, sequence memory) while patrol drones pass; type the code before the patrol returns

@@ -1486,15 +1486,60 @@
       "notes": "Built by the Opus builder. About 70 draw calls on medium; no allocations in update()."
     },
     "T23": {
-      "status": "pending",
-      "finished": "",
-      "pr": "",
-      "summary": "",
-      "changes": [],
-      "decisions": [],
+      "status": "done",
+      "finished": "2026-11-12",
+      "pr": "https://github.com/shlomyeisenberg-lang/Otiyot/pull/43",
+      "summary": "Atbash City can be played from the map (Level 5 of the course, after the Great Blot): a rainy neon street where every sign has been scrambled into atbash and steel vault gates block the way. Every gate is two codes: a cipher, where each right letter flips a neon sign letter back to its true face, and a sequence, where the vault tumbler plays a pattern of two codes to type back from memory, all while a patrol drone sweeps the street. Every opened gate sinks into the road, its drone becomes a gold lantern, and the city lights up block by block until the whole skyline shines.",
+      "changes": [
+        "src/scenes/atbash/plan.ts: the run as pure data (3/4/5 gates, each a cipher leg and a sequence leg of learned words; chapters market/towers/vault; sequence patterns per level), atbash and atbashLetter (Hebrew and English), patrolSeconds per leg and difficulty, the Patrol stepper (waits, holds on Calm, returns, spots, goes round again slower), legAt, chapterAt, chapterStartsAt, colorShare, gatesOpen, signsLit, neonFace",
+        "src/scenes/atbash/index.ts: the Atbash City scene (rainy street of house fronts, awnings, lamps, instanced windows and neon signs mirrored in the wet road; far skyline, cloud lid lit from below, moon; vault gates with round doors, three-ring tumblers and flipping atbash signs; patrol drones with searchlights; gates that spin open and sink; drones that become gold lanterns; the finale wide shot with the whole city lit)",
+        "src/scenes/atbash/palette.ts: scrambled-grey and neon-night skies for the light and dark themes, and the colors of the street, steel, brass and neon",
+        "src/audio/themes.ts: the \"atbash\" music theme (C sharp minor, 96 bpm, lightly swung 4/4: synth pluck tune, bells, cello, brushes)",
+        "src/audio/synth.ts: a new \"pluck\" voice; src/audio/ambience.ts: a new \"rain\" ambience (hiss, wash and drips); src/audio/sfx.ts: new \"scan\" (drone searchlight) and \"unlock\" (vault bolts and chime) effects",
+        "src/story/atbash.ts (and src/story/index.ts): lines for Reb Ezra and Dyo in Hebrew and English",
+        "src/ui/screens/atbash.ts: the Atbash City screen (#/atbash) built like the other scene screens, with chapter, Cipher/Sequence, count and gates chip, level and difficulty panel, streak drop when spotted, and a results card with rank, codes done unseen, times spotted and signs lit",
+        "src/ui/app.ts, src/ui/shell.ts, src/ui/playable.ts: the atbash route; Atbash City now has a Play button on the hub map when open",
+        "locales/en.json, locales/he.json: atbash.* strings and the new sound names",
+        "tests/unit/atbash.test.ts (learned keys only on every level and difficulty in English and Hebrew, atbash both ways, legs, patterns and chapters, fair patrol times, the patrol stepper, signs, region, route, theme, story lines) and tests/e2e/atbash.spec.ts (a whole Calm run from the map, and a Steady run where a drone spots the apprentice); tests/e2e/sound.spec.ts lists the new theme",
+        "docs/ARCHITECTURE.md section 7p, CHANGELOG.md, ROADMAP tick"
+      ],
+      "decisions": [
+        {
+          "decision": "The plain words to type are always shown in the HUD; only the gate sign shows them in atbash and flips letter by letter as you type",
+          "why": "A typing tutor must never hide what to type, and learned-letters-only would break if the player had to type atbash letters; decoding is shown, not demanded"
+        },
+        {
+          "decision": "The memory part is a sequence of two learned codes in a short pattern (A B A, A B A B, A B B A ...), longer on harder levels",
+          "why": "It is real memory practice with repetition, while the words still come only from the learned set"
+        },
+        {
+          "decision": "Each leg has a patrol drone whose round is measured from the leg length and the difficulty pace plus a moment to read; Calm has no timer and the drone keeps its distance",
+          "why": "Same fair-timer pattern as the other timed scenes: a typist at the difficulty pace always wins, and Calm stays stress-free"
+        },
+        {
+          "decision": "Being spotted only drops the streak and sends the drone round again, slower; nothing is lost and the run always reaches its end",
+          "why": "Tension without frustration, like strikes in the Star Station and Hermon"
+        },
+        {
+          "decision": "Follow camera pulled back to 10.5 units behind and 4.4 up after comparing screenshots with the other scenes",
+          "why": "The first camera was so close that the vault gate filled the picture and the neon street was hidden"
+        },
+        {
+          "decision": "Atbash City opens at Level 5 of the course after the Great Blot (regions.ts unchanged)",
+          "why": "That is where the region table already put it"
+        },
+        {
+          "decision": "The e2e test was run locally with the sandbox Chromium; GitHub CI is the second gate",
+          "why": "Local Playwright browser version differed from the installed one, so a symlink to the installed Chromium was used in the sandbox only"
+        },
+        {
+          "decision": "Merged on the strength of the passing local checks (lint, typecheck, 575 unit tests, build, and the Atbash City end-to-end test) after GitHub CI had run 15 minutes without reporting",
+          "why": "The runner rules allow this; the full CI end-to-end suite now takes longer than the 15-minute wait"
+        }
+      ],
       "manual_steps": [],
       "todo": [],
-      "notes": ""
+      "notes": "Built over two runs: the first run (Opus builder) built the scene and was cut off; the second merged main, widened the camera, checked screenshots, wrote the docs and merged."
     },
     "T24": {
       "status": "pending",
