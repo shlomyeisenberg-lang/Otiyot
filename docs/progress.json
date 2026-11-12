@@ -1599,6 +1599,10 @@
         {
           "decision": "The e2e test was run locally with the sandbox Chromium; GitHub CI is the second gate",
           "why": "Same as earlier scenes"
+        },
+        {
+          "decision": "Merged on the strength of the passing local checks (lint, typecheck, 605 unit tests, build, the Long Midbar and sound-room end-to-end tests) after GitHub CI had run 15 minutes without reporting",
+          "why": "The run rules say to wait up to 15 minutes for CI and then merge on the local checks"
         }
       ],
       "manual_steps": [],

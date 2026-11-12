@@ -1237,6 +1237,7 @@ The Long Midbar can be played from the map (Level 5 of the course, after the Gre
 - **The Midbar opens at Level 5 of the course after the Great Blot (regions.ts unchanged)** — It was already set that way in the region table
 - **tests/e2e/sound.spec.ts now expects 13 themes in the sound room (it still said 11, from before Atbash City)** — The count was stale on main and the sound room now really lists 13 themes; without it the end-to-end check fails
 - **The e2e test was run locally with the sandbox Chromium; GitHub CI is the second gate** — Same as earlier scenes
+- **Merged on the strength of the passing local checks (lint, typecheck, 605 unit tests, build, the Long Midbar and sound-room end-to-end tests) after GitHub CI had run 15 minutes without reporting** — The run rules say to wait up to 15 minutes for CI and then merge on the local checks
 
 **Notes**
 
