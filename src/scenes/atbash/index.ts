@@ -58,7 +58,6 @@ import {
   type SceneContext,
   type ScenePalette,
   type TypedKey,
-  type WorldLetterState,
 } from '../../engine';
 import { tierIntensity } from '../../audio/composer';
 import { Dyo } from '../../game/dyo';
@@ -89,13 +88,12 @@ const MAX_GATES = 5;
 const FIRST_GATE = 16;
 const GATE_GAP = 22;
 /** Where the apprentice stands before a gate. */
-const STAND = 5.5;
+const STAND = 10;
 /** Half the width of the road, and where the house fronts stand. */
 const ROAD = 5;
 const FRONT = 8.6;
 const STREET_END = FIRST_GATE + GATE_GAP * MAX_GATES + 30;
-const LETTER_SIZE = 0.6;
-const SIGN_LETTER = 0.95;
+const SIGN_LETTER = 0.62;
 /** Running speed between gates (units a second). */
 const RUN = 5.2;
 /** Seconds after a leg begins before its drone leaves on its own (the first key sends it too). */
@@ -154,6 +152,8 @@ interface Gate {
   readonly frameMat: MeshBasicMaterial;
   open: number;
   openTarget: number;
+  /** Part of this run's street (hidden gates stay hidden even while they sink). */
+  shown: boolean;
   turned: number;
   turnTarget: number;
   vault: boolean;
@@ -182,11 +182,9 @@ export class AtbashScene implements GameScene {
   private apprentice!: Character;
   private dyo!: Dyo;
   private umbrella!: Group;
-  private text!: WorldText;
   private sign!: WorldText;
   private feedback!: TypingFeedback;
   private shownLetters: readonly string[] | null = null;
-  private readonly signStates: WorldLetterState[] = [];
   private signWord = '';
   private signTyped = -1;
   private signCipher = true;
@@ -432,25 +430,9 @@ export class AtbashScene implements GameScene {
     this.buildDrone();
     this.buildApprentice();
 
-    // The word to type: on a parchment strip over the apprentice's head, always readable.
-    this.text = new WorldText({
-      atlas: ctx.engine.atlas,
-      materials: kit,
-      billboard: ctx.vfx.billboard,
-      colors: {
-        ink: this.inkDark,
-        paper: this.paper,
-        stone: ctx.color('fade'),
-        gold: this.gold,
-        techelet: this.techelet,
-        err: ctx.color('err-fg'),
-      },
-      style: 'banner',
-      size: LETTER_SIZE,
-    });
-    root.add(this.text.root);
-    // The cipher sign over the gate: the code in atbash, magenta neon, turning gold letter by
-    // letter as it is broken.
+    // The word to type, as a neon sign hanging in the rain ahead of the apprentice: in a cipher
+    // it shows the code in atbash, magenta, and every right letter flips back to its true face
+    // in gold; in a sequence it shows the code plainly.
     this.sign = new WorldText({
       atlas: ctx.engine.atlas,
       materials: kit,
@@ -467,7 +449,6 @@ export class AtbashScene implements GameScene {
       size: SIGN_LETTER,
     });
     root.add(this.sign.root);
-    for (let i = 0; i < 24; i++) this.signStates.push('todo');
     this.feedback = new TypingFeedback(ctx, {
       gold: this.gold,
       ink: this.inkDark,
@@ -480,11 +461,11 @@ export class AtbashScene implements GameScene {
   /** The camera of a run: behind the apprentice, a little above, looking up the street. */
   private follow(): void {
     this.ctx.rig.follow(this.apprentice.root, {
-      distance: 7,
-      height: 2.6,
-      lookHeight: 2.6,
-      turnWith: 0.4,
-      stiffness: 2.2,
+      distance: 6.4,
+      height: 2.5,
+      lookHeight: 1.8,
+      turnWith: 1,
+      stiffness: 3.2,
     });
   }
 
@@ -857,7 +838,7 @@ export class AtbashScene implements GameScene {
       new MeshBasicMaterial({
         color: 0xffffff,
         transparent: true,
-        opacity: 0.55,
+        opacity: 0.32,
         depthWrite: false,
         blending: AdditiveBlending,
       }),
@@ -875,8 +856,8 @@ export class AtbashScene implements GameScene {
       this.dummy.updateMatrix();
       this.signMesh.setMatrixAt(i, this.dummy.matrix);
       // Its reflection: a long smear on the wet road, from the kerb toward the middle.
-      this.dummy.position.set(s.x * 0.55, 0.03, s.z);
-      this.dummy.scale.set(2.6, 1, 1.2);
+      this.dummy.position.set(s.x * 0.7, 0.03, s.z - 0.6);
+      this.dummy.scale.set(0.9, 1, 2.6);
       this.dummy.updateMatrix();
       this.glowMesh.setMatrixAt(i, this.dummy.matrix);
     }
@@ -1061,6 +1042,7 @@ export class AtbashScene implements GameScene {
         frameMat,
         open: 0,
         openTarget: 0,
+        shown: false,
         turned: 0,
         turnTarget: 0,
         vault,
@@ -1260,10 +1242,10 @@ export class AtbashScene implements GameScene {
         side: DoubleSide,
       }),
     );
-    const canopy = new Mesh(tracker.track(new ConeGeometry(1.2, 0.55, 8, 1, true)), umat);
-    canopy.position.y = 2.6;
-    const stick = new Mesh(tracker.track(new CylinderGeometry(0.04, 0.04, 2.2, 5)), umat);
-    stick.position.y = 1.55;
+    const canopy = new Mesh(tracker.track(new ConeGeometry(0.85, 0.4, 8, 1, true)), umat);
+    canopy.position.y = 2.05;
+    const stick = new Mesh(tracker.track(new CylinderGeometry(0.04, 0.04, 1.5, 5)), umat);
+    stick.position.y = 1.3;
     this.umbrella.add(canopy, stick);
     this.dyo.root.add(this.umbrella);
     root.add(this.dyo.root);
@@ -1312,8 +1294,8 @@ export class AtbashScene implements GameScene {
       g.openTarget = 0;
       g.turned = 0;
       g.turnTarget = 0;
-      g.door.position.x = 0;
       g.door.rotation.z = 0;
+      g.root.position.y = 0;
       for (const ring of g.rings) ring.rotation.z = 0;
       g.ringMat.color.setHex(TINT.ring);
       g.lamp.color.setHex(TINT.eye);
@@ -1338,7 +1320,8 @@ export class AtbashScene implements GameScene {
     const n = Math.max(1, Math.min(MAX_GATES, plan.gates));
     for (let k = 0; k < MAX_GATES; k++) {
       const g = this.gates[k] as Gate;
-      g.root.visible = k < n - 1 || k === MAX_GATES - 1;
+      g.shown = k < n - 1 || k === MAX_GATES - 1;
+      g.root.visible = g.shown;
     }
     // The great vault stands where the run's last gate is.
     const vault = this.gates[MAX_GATES - 1] as Gate;
@@ -1407,7 +1390,6 @@ export class AtbashScene implements GameScene {
     const { typing, audio, vfx } = this.ctx;
     this.release();
     if (!ev.correct) {
-      this.text.miss();
       this.sign.miss();
       this.feedback.wrong();
       audio.play('error');
@@ -1420,14 +1402,13 @@ export class AtbashScene implements GameScene {
       return;
     }
     this.typedInWord = ev.index + 1;
-    const at = this.text.letterPosition(ev.index, this.v);
-    this.text.hit(ev.index);
-    this.feedback.correct(at.x, at.y, at.z, this.text.size, typing.tier);
+    const at = this.sign.letterPosition(ev.index, this.v);
+    this.sign.hit(ev.index);
+    this.feedback.correct(at.x, at.y, at.z, this.sign.size, typing.tier);
     audio.play('key', typing.combo, ev.expected);
     // The neon letter on the sign flips back to its true face with a little pop of light.
     if (this.signCipher) {
-      const p = this.sign.letterPosition(ev.index, this.w);
-      vfx.burst(this.neonPop, p.x, p.y, p.z, 0, 0, -1);
+      vfx.burst(this.neonPop, at.x, at.y, at.z, 0, 0, -1);
     } else {
       // A tumbler click: the ring for this word steps round a little.
       const g = this.gateOf(this.plan?.legs[this.leg]);
@@ -1454,7 +1435,7 @@ export class AtbashScene implements GameScene {
     const { audio } = this.ctx;
     this.wordsDone += 1;
     this.typedInWord = 0;
-    const a = this.text.anchor;
+    const a = this.sign.anchor;
     this.feedback.word(a.x, a.y, a.z, perfect);
     audio.play(perfect ? 'perfect' : 'word');
     const g = this.gateOf(leg);
@@ -1580,11 +1561,17 @@ export class AtbashScene implements GameScene {
     this.legT += dt;
 
     // --- The apprentice runs up to the next gate, then stands and works.
-    const toGo = this.standZ - this.walkZ;
+    // He waits for a gate on the way to sink far enough before he runs through it.
+    let goal = this.standZ;
+    for (const g of this.gates) {
+      const gz = g.root.position.z;
+      if (g.shown && g.open < 0.7 && gz > this.walkZ && gz - STAND < goal) goal = gz - STAND;
+    }
+    const toGo = goal - this.walkZ;
     const step = Math.min(Math.max(0, toGo), RUN * dt);
     this.walkZ += step;
-    const running = toGo > 0.05;
-    this.apprentice.speed = running ? RUN : 0;
+    const running = this.standZ - this.walkZ > 0.05;
+    this.apprentice.speed = step > 0.001 ? RUN : 0;
     const lift = this.finished ? Math.min(1, Math.max(0, this.finaleT / 2.5)) : 0;
     app.position.set(Math.sin(this.time * 0.6) * 0.05, 0, this.walkZ + lift * 2);
     app.rotation.y = damp(app.rotation.y, 0, 4, dt);
@@ -1600,20 +1587,24 @@ export class AtbashScene implements GameScene {
 
     // Dyo rides beside the apprentice under his umbrella.
     this.dyo.root.position.set(
-      app.position.x + 0.95,
-      app.position.y + 1.9 + Math.sin(this.time * 1.6) * 0.06,
-      app.position.z + 0.15,
+      app.position.x - 1.05,
+      app.position.y + 1.7 + Math.sin(this.time * 1.6) * 0.06,
+      app.position.z - 0.2,
     );
     this.umbrella.rotation.z = Math.sin(this.time * 1.1) * 0.08;
     this.dyo.update(dt);
 
     // --- The gates: doors roll aside, tumbler rings turn.
     for (const g of this.gates) {
-      if (!g.root.visible) continue;
-      g.open = damp(g.open, g.openTarget, 1.6, dt);
+      if (!g.shown) continue;
+      g.open = damp(g.open, g.openTarget, 2.2, dt);
       g.turned = damp(g.turned, g.turnTarget, 5, dt);
-      g.door.position.x = g.open * 6.4;
-      g.door.rotation.z = -g.open * 2.4;
+      // The wheel spins the bolts back first; then the whole gate sinks into the street.
+      const spin = Math.min(1, g.open / 0.35);
+      const sink = Math.max(0, (g.open - 0.3) / 0.7);
+      g.door.rotation.z = -spin * spin * 2.6;
+      g.root.position.y = -sink * sink * (g.vault ? 13 : 10);
+      g.root.visible = g.shown && sink < 0.995;
       const r0 = g.rings[0];
       const r1 = g.rings[1];
       const r2 = g.rings[2];
@@ -1750,46 +1741,22 @@ export class AtbashScene implements GameScene {
     const app = this.apprentice.root.position;
     this.dyo.face(app.x, app.z + 10);
 
-    // The word to type: on a banner over the apprentice's head, a little ahead of him.
-    const a = this.text.anchor;
-    a.set(app.x, app.y + 3.6, app.z + 2.4);
-    this.text.size = damp(this.text.size, LETTER_SIZE, 6, dt);
-    if (typing.letters !== this.shownLetters) {
-      this.shownLetters = typing.letters;
-      const n = typing.letters.length;
-      const end = n > 0 && typing.letters[n - 1] === ' ' ? n - 1 : n;
-      this.text.setWord(
-        this.finished ? [] : typing.letters.slice(0, end),
-        /[֐-׿]/.test(typing.word),
-      );
-    }
-    this.text.root.visible = !this.finished;
-    this.text.frame(dt, typing.states);
-
-    // The gate's sign: the code in atbash, its letters flipping back as they are typed.
-    const g = this.gateOf(this.plan?.legs[this.leg]);
+    // The word to type: a neon sign in the rain, a little ahead of the apprentice and over him.
     const sa = this.sign.anchor;
-    sa.set(0, (g.vault ? 12 : 9) - 1.6, g.root.position.z - 1.2);
+    sa.set(app.x, app.y + 2.4, app.z + 3.6);
+    this.sign.size = damp(this.sign.size, SIGN_LETTER, 6, dt);
     const word = this.finished ? '' : typing.word;
-    const typed = this.signCipher ? this.typedInWord : [...word].length;
+    const typed = this.signCipher ? this.typedInWord : 99;
     if (word !== this.signWord || typed !== this.signTyped) {
+      const fresh = word !== this.signWord;
       this.signWord = word;
       this.signTyped = typed;
       this.sign.setWord(neonFace(word, typed), /[֐-׿]/.test(word));
-      if (this.signCipher && typed > 0) this.sign.hit(typed - 1);
-    }
-    for (let i = 0; i < this.signStates.length; i++) {
-      this.signStates[i] =
-        i < typed
-          ? 'ok'
-          : i === typed && this.signCipher
-            ? 'next'
-            : this.signCipher
-              ? 'todo'
-              : 'ok';
+      // The letter that just flipped pops (setWord starts every letter fresh).
+      if (!fresh && this.signCipher && typed > 0) this.sign.hit(typed - 1);
     }
     this.sign.root.visible = !this.finished && word.length > 0;
-    this.sign.frame(dt, this.signStates);
+    this.sign.frame(dt, typing.states);
     this.feedback.frame(dt);
   }
 
@@ -1798,7 +1765,6 @@ export class AtbashScene implements GameScene {
     this.rain = null;
     this.apprentice?.dispose();
     this.dyo?.dispose();
-    this.text?.dispose();
     this.sign?.dispose();
     this.feedback?.dispose();
     this.shownLetters = null;
