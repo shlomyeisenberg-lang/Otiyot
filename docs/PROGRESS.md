@@ -1196,6 +1196,7 @@ Atbash City can be played from the map (Level 5 of the course, after the Great B
 - **Follow camera pulled back to 10.5 units behind and 4.4 up after comparing screenshots with the other scenes** — The first camera was so close that the vault gate filled the picture and the neon street was hidden
 - **Atbash City opens at Level 5 of the course after the Great Blot (regions.ts unchanged)** — That is where the region table already put it
 - **The e2e test was run locally with the sandbox Chromium; GitHub CI is the second gate** — Local Playwright browser version differed from the installed one, so a symlink to the installed Chromium was used in the sandbox only
+- **Merged on the strength of the passing local checks (lint, typecheck, 575 unit tests, build, and the Atbash City end-to-end test) after GitHub CI had run 15 minutes without reporting** — The runner rules allow this; the full CI end-to-end suite now takes longer than the 15-minute wait
 
 **Notes**
 

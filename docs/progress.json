@@ -1531,6 +1531,10 @@
         {
           "decision": "The e2e test was run locally with the sandbox Chromium; GitHub CI is the second gate",
           "why": "Local Playwright browser version differed from the installed one, so a symlink to the installed Chromium was used in the sandbox only"
+        },
+        {
+          "decision": "Merged on the strength of the passing local checks (lint, typecheck, 575 unit tests, build, and the Atbash City end-to-end test) after GitHub CI had run 15 minutes without reporting",
+          "why": "The runner rules allow this; the full CI end-to-end suite now takes longer than the 15-minute wait"
         }
       ],
       "manual_steps": [],
