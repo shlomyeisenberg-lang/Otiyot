@@ -927,7 +927,14 @@ export class CavesScene implements GameScene {
       ]),
     );
     this.shadeMat = tracker.track(
-      kit.surface({ color: TINT.shadow, restore: false, transparent: true, opacity: 0.82 }),
+      kit.surface({
+        color: TINT.shadow,
+        emissive: TINT.shadowEdge,
+        emissiveIntensity: 0.45,
+        restore: false,
+        transparent: true,
+        opacity: 0.82,
+      }),
     );
     const hazeGeo = tracker.track(new SphereGeometry(1, 12, 9).scale(0.95, 1.35, 0.85));
     this.hazeMat = tracker.track(kit.ink(TINT.shadowEdge, 1, BackSide));
@@ -953,11 +960,11 @@ export class CavesScene implements GameScene {
       }
       eyes.position.set(0, 1.42, 0.44);
       g.add(eyes);
-      const scale = r.range(0.8, 1.15);
+      const scale = r.range(0.72, 1);
       g.scale.setScalar(scale);
       root.add(g);
       // Spread around the apprentice, more in front and to the sides than behind.
-      const angle = (k / (SHADOWS - 1) - 0.5) * 3.8 + r.signed() * 0.12;
+      const angle = (k / (SHADOWS - 1) - 0.5) * 3.1 + r.signed() * 0.12;
       this.shades.push({
         root: g,
         eyes,
@@ -1278,7 +1285,7 @@ export class CavesScene implements GameScene {
     vfx.burst(this.fountain, sx, 0.5, SPRING_Z, 0, 1, 0);
     this.ctx.rig.pushIn(0.25, 0.6);
     // Pull back and look over the Hall: the lamps, the pillars, the spring, the apprentice.
-    this.ctx.rig.fixed(this.v.set(sx - 6, 2.6, RUN_LEN + 6), this.w.set(sx + 1, 1.6, SPRING_Z + 2));
+    this.ctx.rig.fixed(this.v.set(sx + 2, 5, RUN_LEN + 2), this.w.set(sx, 2.6, SPRING_Z + 3));
   }
 
   update(dt: number): void {
