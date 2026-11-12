@@ -12,6 +12,7 @@ import {
   fallsFlowing,
   ibexBack,
   planCliffs,
+  reachCost,
   reachOf,
   rowOf,
   SECTIONS,
@@ -157,6 +158,50 @@ describe('the Cliffs run: learned letters only', () => {
     for (let i = 1; i < plan.words.length; i++) expect(plan.words[i]).not.toBe(plan.words[i - 1]);
     // The stones always follow the reaches.
     expect(plan.heights).toEqual(stoneHeights(plan.reaches));
+  });
+});
+
+describe('the climb stays varied (R15)', () => {
+  it('keeps the climb moving for a fluent player: almost every reach lands higher or lower', () => {
+    for (const layout of ['en', 'he'] as const) {
+      const p = pass(player(layout), 60);
+      const keys = knownKeysOf(p);
+      for (const level of LEVEL_IDS) {
+        for (let seed = 1; seed <= 12; seed++) {
+          const words = levelWordSource(p, LEVELS[level], DIFFICULTIES.steady, seeded(seed));
+          const plan = planCliffs({ layout, keys, level, words });
+          let ups = 0;
+          let downs = 0;
+          let flat = 0;
+          plan.reaches.forEach((r, k) => {
+            if (r === 'up') ups += 1;
+            if (r === 'down') downs += 1;
+            // A reach up or down should land on a stone that really is higher or lower.
+            if (r !== 'level' && plan.heights[k + 1] === plan.heights[k]) flat += 1;
+          });
+          expect(flat, `${layout} ${level} ${seed} ${plan.reaches.join(',')}`).toBeLessThanOrEqual(
+            1,
+          );
+          // Both rows are practised, and neither crowds the other out.
+          expect(downs, `${layout} ${level} ${seed} ${plan.reaches.join(',')}`).toBeGreaterThan(0);
+          expect(ups).toBeGreaterThan(0);
+          expect(Math.abs(ups - downs)).toBeLessThanOrEqual(Math.ceil(plan.words.length / 2));
+        }
+      }
+    }
+  });
+
+  it('scores a step past the limit or a third same reach in a row as a poor fit', () => {
+    const none = { up: 0, level: 0, down: 0 };
+    expect(reachCost('up', STONE_MAX, [], none)).toBeGreaterThan(
+      reachCost('down', STONE_MAX, [], none),
+    );
+    expect(reachCost('down', STONE_MIN, [], none)).toBeGreaterThan(
+      reachCost('up', STONE_MIN, [], none),
+    );
+    expect(reachCost('up', 0, ['up', 'up'], none)).toBeGreaterThan(
+      reachCost('down', 0, ['up', 'up'], none),
+    );
   });
 });
 
