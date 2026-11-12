@@ -1,10 +1,10 @@
-// Looping background sounds for places (wind, birds, water, fire, crickets, machine hum, rain). Each one
+// Looping background sounds for places (wind, birds, water, fire, crickets, machine hum, rain, sandstorm). Each one
 // can stand at a point in the world (it then pans and fades with distance) or fill the room.
 
 import type { Synth } from './synth';
 import { Rand } from './theory';
 
-export const AMBIENCE_IDS = ['wind', 'birds', 'water', 'fire', 'crickets', 'hum', 'rain'] as const;
+export const AMBIENCE_IDS = ['wind', 'birds', 'water', 'fire', 'crickets', 'hum', 'rain', 'sand'] as const;
 export type AmbienceId = (typeof AMBIENCE_IDS)[number];
 
 export function isAmbienceId(v: string): v is AmbienceId {
@@ -122,6 +122,21 @@ export class AmbienceLoop implements AmbienceHandle {
         wg.gain.value = 0.06;
         this.loopNoise(t).connect(wash).connect(wg).connect(this.out);
         this.lfo(0.05, 0.015, hg.gain, t);
+        return;
+      }
+      case 'sand': {
+        // A sandstorm: a deep roar of wind under a dry hiss of blown sand, both surging slowly.
+        const roar = s.filter('bandpass', 260, 0.7);
+        const rg = ctx.createGain();
+        rg.gain.value = 0.12;
+        this.loopNoise(t).connect(roar).connect(rg).connect(this.out);
+        this.lfo(0.09, 120, roar.frequency, t);
+        this.lfo(0.13, 0.05, rg.gain, t);
+        const hiss = s.filter('highpass', 3200, 0.5);
+        const hg = ctx.createGain();
+        hg.gain.value = 0.035;
+        this.loopNoise(t).connect(hiss).connect(hg).connect(this.out);
+        this.lfo(0.21, 0.018, hg.gain, t);
         return;
       }
       case 'birds':

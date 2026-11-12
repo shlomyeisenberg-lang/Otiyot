@@ -227,3 +227,19 @@
     inline-size: calc(100% - 2 * var(--sp-2));
   }
 }
+
+/* The Long Midbar: in a sandstorm the next word on the paper strip goes into the sand too. */
+.midbar .hud .hud-ahead {
+  transition:
+    opacity var(--t-panel) var(--ease),
+    filter var(--t-panel) var(--ease);
+}
+.midbar .hud[data-veil='storm'] .hud-ahead {
+  opacity: 0.08;
+  filter: blur(6px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .midbar .hud .hud-ahead {
+    transition: none;
+  }
+}

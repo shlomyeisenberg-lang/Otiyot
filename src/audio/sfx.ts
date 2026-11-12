@@ -23,6 +23,8 @@ export const SFX_NAMES = [
   'laser',
   'scan',
   'unlock',
+  'gust',
+  'camel-bell',
   'success',
   'ui-move',
   'ui-click',
@@ -230,6 +232,34 @@ export function playSfx(
           .connect(dest);
         at += 0.07;
       }
+      return;
+    }
+    case 'gust': {
+      // A gust of sand: a rushing swell of noise sweeping down from bright to dark.
+      const n = s.noiseSrc(t, t + 1.1, 0.5);
+      const f = s.filter('bandpass', 1800, 0.6);
+      f.frequency.setValueAtTime(2400, t);
+      f.frequency.exponentialRampToValueAtTime(380, t + 1);
+      n.connect(f)
+        .connect(s.env(t, 0.3, 0.35, 0.2, 0.5))
+        .connect(dest);
+      return;
+    }
+    case 'camel-bell': {
+      // A brass camel bell: a clonk with a slightly out-of-tune second partial, ringing out.
+      for (const [hz, v] of [
+        [620, 0.12],
+        [1013, 0.06],
+        [1690, 0.03],
+      ] as const) {
+        s.osc('sine', hz, t, t + 1.2)
+          .connect(s.decay(t, v, 1.1))
+          .connect(dest);
+      }
+      const k = s.noiseSrc(t, t + 0.03, 0.4);
+      k.connect(s.filter('bandpass', 2500, 2))
+        .connect(s.decay(t, 0.06, 0.03))
+        .connect(dest);
       return;
     }
     case 'thunder': {

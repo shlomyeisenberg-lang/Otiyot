@@ -91,6 +91,7 @@ export type ThemeId =
   | 'hermon'
   | 'station'
   | 'atbash'
+  | 'midbar'
   | 'boss';
 export const THEME_IDS: readonly ThemeId[] = [
   'title',
@@ -104,6 +105,7 @@ export const THEME_IDS: readonly ThemeId[] = [
   'hermon',
   'station',
   'atbash',
+  'midbar',
   'boss',
 ];
 
@@ -460,6 +462,37 @@ export const THEMES: Readonly<Record<ThemeId, ThemeSpec>> = {
     cadences: CAD_8,
     reverb: 0.4,
     brightness: 0.65,
+    level: 0.85,
+  },
+
+  // The Long Midbar: a caravan in the sand. B freygish in a slow rocking 6/8 at 76 bpm, the
+  // sway of a camel's walk: an oud sings the road song, a kanun ripples the pulse like heat over
+  // the dunes, a cello holds the low road, and a frame drum keeps the camels' pace.
+  midbar: {
+    id: 'midbar',
+    nameKey: 'sound.theme.midbar',
+    seed: 2424,
+    bpm: 76,
+    beats: 2,
+    sub: 3,
+    root: 59,
+    mode: 'freygish',
+    swing: 0,
+    form: ['A', 'A', 'B', 'A', 'C'],
+    sections: {
+      A: { bars: 8, chords: [0, 0, 6, 6, 5, 5, 1, 0], register: 1, density: 0.5 },
+      B: { bars: 8, chords: [3, 3, 1, 1, 6, 6, 1, 0], register: 3, density: 0.6 },
+      C: { bars: 8, chords: [5, 6, 1, 0, 3, 1, 6, 0], register: 4, density: 0.45 },
+    },
+    voices: { drone: 'pad', pulse: 'kanun', melody: 'oud', counter: 'cello' },
+    kit: 'frame',
+    pulse: [0, 2, 1, 3, 2, 1],
+    counterOctave: -1,
+    drums: { base: 'D..T.k', full: 'D.kTkk' },
+    cells: CELLS_6,
+    cadences: CAD_6,
+    reverb: 0.5,
+    brightness: 0.55,
     level: 0.85,
   },
 
