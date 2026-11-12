@@ -42,12 +42,17 @@ export interface BossPhaseDef {
    *   fight comes in bursts (type fast, breathe, type fast).
    * `heal`: characters of health a slip gives back to the boss (Precision: errors heal it).
    * `tide`: 0..1, how far the windup speed swings up and down; `tidePeriod` its seconds.
+   * `erase` (T27, the Keeper's last phase): the boss erases what was written while the player
+   *   types, at this share of the difficulty's pace (0.4 = 40% of the typing speed the fight is
+   *   timed for). Like `heal` it only wins health back, never the words themselves, and never
+   *   more than ERASE_CAP of the phase; a weak point struck clean writes it all back.
    */
   pace?: number;
   rest?: number;
   heal?: number;
   tide?: number;
   tidePeriod?: number;
+  erase?: number;
 }
 
 export interface BossDef {
@@ -130,6 +135,18 @@ export function windupSeconds(
 export const HEAL_CAP = 0.35;
 /** Each right letter pays back this much of the healed health (the crack closes again). */
 export const HEAL_REPAY = 0.5;
+
+/** The most an erasing phase (`erase`) can win back, as a share of the phase's text. */
+export const ERASE_CAP = 0.5;
+/** On Calm (no timers) the eraser still works, slowly and only this far, so it can be seen. */
+export const CALM_ERASE = { chars: 0.7, cap: 0.15 } as const;
+
+/** Characters a second an erasing phase wins back on this difficulty. */
+export function eraseRate(share: number, difficulty: Difficulty): number {
+  if (share <= 0) return 0;
+  const wpm = difficulty.timers ? BOSS_PACE[difficulty.id] : null;
+  return wpm ? (share * wpm * 5) / 60 : CALM_ERASE.chars;
+}
 
 /** How close an attack on Calm comes before it stops and waits (0..1 of the windup). */
 export const CALM_HOVER = 0.72;
@@ -312,6 +329,8 @@ export class BossFight {
       this.weakHits += 1;
       this.stagger = STAGGER_SECONDS;
       this.wind = Math.min(this.wind, this.windFor * 0.35);
+      // On an erasing phase a clean weak point writes back everything that was erased.
+      if (this.def.erase) this.healed = 0;
     }
     if (this.word >= p.words.length) {
       // Every word typed: the phase is over, whatever the character count says.
@@ -340,6 +359,7 @@ export class BossFight {
       return NONE;
     }
     this.clock += dt;
+    this.eraseStep(dt);
     // The tide: the windup runs faster at high tide and slower at low (the same on average).
     const tide = this.def.tide ?? 0;
     this.wind += this.wind < 0 ? dt : dt * (1 + tide * this.tideNow);
@@ -350,6 +370,28 @@ export class BossFight {
     this.windFor = this.windupFor(this.remainingInGroup()) + RECOVER_SECONDS;
     this.wind = 0;
     return { kind: 'land', group: g };
+  }
+
+  /** True on a phase whose boss erases what is written (the Keeper's last phase). */
+  get erasing(): boolean {
+    return this.state === 'fight' && (this.def.erase ?? 0) > 0;
+  }
+
+  /** 0..1: how much of what was written in this phase is erased right now. */
+  get erasedShare(): number {
+    return this.typed > 0 ? Math.min(1, this.healed / this.typed) : 0;
+  }
+
+  /** The eraser at work: health comes back while the player types, up to the cap. */
+  private eraseStep(dt: number): void {
+    const share = this.def.erase ?? 0;
+    if (share <= 0) return;
+    const capShare = this.difficulty.timers ? ERASE_CAP : CALM_ERASE.cap;
+    const cap = Math.min(this.typed, phaseLength(this.current) * capShare);
+    if (this.healed >= cap) return;
+    const before = this.healed;
+    this.healed = Math.min(cap, before + eraseRate(share, this.difficulty) * dt);
+    this.healedTotal += this.healed - before;
   }
 
   /** The transition is over: the next phase begins. */
