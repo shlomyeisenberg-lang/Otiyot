@@ -18,6 +18,7 @@ export const SFX_NAMES = [
   'impact-small',
   'shatter',
   'whoosh',
+  'thunder',
   'success',
   'ui-move',
   'ui-click',
@@ -165,6 +166,26 @@ export function playSfx(
       n.connect(f)
         .connect(s.env(t, 0.22, 0.15, 0, 0.25))
         .connect(dest);
+      return;
+    }
+    case 'thunder': {
+      // A crack, then a long low roll that grumbles away.
+      const crack = s.noiseSrc(t, t + 0.25, 0.4);
+      crack
+        .connect(s.filter('highpass', 1800))
+        .connect(s.decay(t, 0.18, 0.2))
+        .connect(dest);
+      const roll = s.noiseSrc(t + 0.05, t + 2.6, 1.1);
+      const f = s.filter('lowpass', 420, 0.9);
+      f.frequency.setValueAtTime(420, t);
+      f.frequency.exponentialRampToValueAtTime(90, t + 2.4);
+      roll
+        .connect(f)
+        .connect(s.env(t + 0.05, 0.7, 0.08, 0.4, 2))
+        .connect(dest);
+      const low = s.osc('sine', 52, t + 0.05, t + 2);
+      low.frequency.exponentialRampToValueAtTime(34, t + 1.6);
+      low.connect(s.decay(t + 0.05, 0.35, 1.6)).connect(dest);
       return;
     }
     case 'success': {

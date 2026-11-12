@@ -9,7 +9,17 @@ export const STEMS: readonly StemId[] = ['drone', 'pulse', 'melody', 'counter', 
 
 /** Pitched voices the synth knows (src/audio/synth.ts). */
 export type Voice =
-  'pad' | 'harp' | 'oud' | 'kanun' | 'flute' | 'clarinet' | 'violin' | 'strings' | 'cello' | 'bell';
+  | 'pad'
+  | 'harp'
+  | 'oud'
+  | 'kanun'
+  | 'flute'
+  | 'clarinet'
+  | 'violin'
+  | 'strings'
+  | 'cello'
+  | 'bell'
+  | 'horn';
 /** Drum kits; each plays the same pattern letters with its own sounds. */
 export type Kit = 'darbuka' | 'frame' | 'taiko' | 'brush';
 
@@ -68,7 +78,7 @@ export interface ThemeSpec {
 }
 
 export type ThemeId =
-  'title' | 'hub' | 'meadow' | 'cliffs' | 'forge' | 'shuk' | 'rail' | 'geniza' | 'boss';
+  'title' | 'hub' | 'meadow' | 'cliffs' | 'forge' | 'shuk' | 'rail' | 'geniza' | 'hermon' | 'boss';
 export const THEME_IDS: readonly ThemeId[] = [
   'title',
   'hub',
@@ -78,6 +88,7 @@ export const THEME_IDS: readonly ThemeId[] = [
   'shuk',
   'rail',
   'geniza',
+  'hermon',
   'boss',
 ];
 
@@ -345,6 +356,36 @@ export const THEMES: Readonly<Record<ThemeId, ThemeSpec>> = {
     reverb: 0.5,
     brightness: 0.55,
     level: 0.88,
+  },
+  // Wings over Hermon: E minor in a soaring 3/4, like great wings beating. A horn calls over a
+  // rolling kanun (the rain), strings hold the counter-line, and taiko drums roll like thunder.
+  // It climbs as the storm breaks and the eagle rises toward the summit.
+  hermon: {
+    id: 'hermon',
+    nameKey: 'sound.theme.hermon',
+    seed: 9417,
+    bpm: 100,
+    beats: 3,
+    sub: 2,
+    root: 64,
+    mode: 'minor',
+    swing: 0,
+    form: ['A', 'A', 'B', 'A', 'C'],
+    sections: {
+      A: { bars: 8, chords: [0, 0, 5, 5, 3, 3, 4, 4], register: 1, density: 0.45 },
+      B: { bars: 8, chords: [5, 5, 6, 6, 0, 0, 4, 4], register: 2, density: 0.55 },
+      C: { bars: 8, chords: [3, 4, 5, 6, 5, 3, 4, 0], register: 4, density: 0.65 },
+    },
+    voices: { drone: 'strings', pulse: 'kanun', melody: 'horn', counter: 'strings' },
+    kit: 'taiko',
+    pulse: [0, 2, 1, 3, 2, 1],
+    counterOctave: -1,
+    drums: { base: 'D...T.', full: 'D.kTDk' },
+    cells: CELLS_6,
+    cadences: CAD_6,
+    reverb: 0.42,
+    brightness: 0.6,
+    level: 0.85,
   },
   // Boss: C freygish at full drive, taiko and cello ostinato. Four phases: each climbs, and the
   // fourth (the mirror) turns the tune over.
