@@ -17,4 +17,5 @@
 - plan.ts + unit tests (26 pass), story lines, palette, scene index.ts (first pass), screen, routes, audio theme `station` (glass voice, 3/4 at 66) + sfx thrust/laser, locales.
 
 ## Next steps
-- Screenshots with Playwright and look passes; e2e smoke test; sound.spec count 10->11; docs (ARCHITECTURE 7o, GAME_DESIGN row, CHANGELOG), ROADMAP tick, progress.json.
+- Done: look passes 1-3 (sky rides with camera inside far plane, planet curve, low debris line, observatory side debris, finale wide shot with constellations), e2e spec passes locally.
+- Next: sound.spec count 10->11; docs (ARCHITECTURE 7o, GAME_DESIGN row, CHANGELOG), ROADMAP tick, progress.json.

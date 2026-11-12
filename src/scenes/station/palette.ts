@@ -109,7 +109,7 @@ export const TINT = {
   nebulaB: 0x8a4ac0,
   nebulaC: 0x2aa0a0,
   sunGlow: 0xfff0d0,
-  line: 0xa8c8ff,
+  line: 0xffe6b0,
   // The debris: grey rock crusted with ink, torn metal.
   rock: 0x6a6670,
   rockDark: 0x3a3840,

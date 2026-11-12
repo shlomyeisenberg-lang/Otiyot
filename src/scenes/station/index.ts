@@ -98,9 +98,10 @@ const ROCK_NEAR = 2.4;
 const LETTER_SIZE = 0.62;
 const ROCK_LETTER = 1.05;
 const DEBRIS = 70;
-const STAR_R = 900;
-const PLANET_R = 520;
-const PLANET = new Vector3(0, -650, 300);
+/** The sky rides with the camera (it is infinitely far away), inside the camera's far plane. */
+const STAR_R = 520;
+const PLANET_R = 300;
+const PLANET = new Vector3(0, -372, 160);
 /** Seconds after a turret sentence begins before its first rock comes in on its own. */
 const TURRET_GRACE = 3;
 /** Four constellations, each a few stars (azimuth, elevation in degrees) and the lines between. */
@@ -272,7 +273,8 @@ export class StationScene implements GameScene {
   private beamT = 0;
   private flashLight!: PointLight;
 
-  // The sky.
+  // The sky (it rides with the camera).
+  private readonly sky = new Group();
   private litStars!: Points;
   private dimMat!: PointsMaterial;
   private litMat!: PointsMaterial;
@@ -517,14 +519,18 @@ export class StationScene implements GameScene {
       techelet: this.techelet,
     });
 
-    ctx.rig.follow(this.apprentice.root, {
-      distance: 6.2,
-      height: 2.1,
-      lookHeight: 1.5,
+    this.place();
+  }
+
+  /** The camera of a run: behind the apprentice and a little above him. */
+  private follow(): void {
+    this.ctx.rig.follow(this.apprentice.root, {
+      distance: 6.4,
+      height: 2.5,
+      lookHeight: 1.8,
       turnWith: 1,
       stiffness: 2.4,
     });
-    this.place();
   }
 
   /** Blends the sky from dimmed (0) to clear (1). Cheap: only when it changed. */
@@ -557,7 +563,7 @@ export class StationScene implements GameScene {
 
   /** Stars (dim ones, lit ones, the constellations), the nebulae and the sun. */
   private buildSky(): void {
-    const { tracker, root } = this.ctx;
+    const { tracker } = this.ctx;
     const r = this.rng;
     const pos = new Float32Array(STARS * 3);
     const col = new Float32Array(STARS * 3);
@@ -611,7 +617,7 @@ export class StationScene implements GameScene {
     dim.frustumCulled = false;
     this.litStars.frustumCulled = false;
     this.litStars.geometry.setDrawRange(0, 0);
-    root.add(dim, this.litStars);
+    this.sky.add(dim, this.litStars);
 
     // The constellations: bright stars and the lines between them (drawn as modules come back).
     const cs: number[] = [];
@@ -632,7 +638,7 @@ export class StationScene implements GameScene {
     this.brightMat = tracker.track(
       new PointsMaterial({
         color: TINT.starGold,
-        size: 4.2,
+        size: 5,
         sizeAttenuation: false,
         transparent: true,
         opacity: 0.25,
@@ -649,7 +655,7 @@ export class StationScene implements GameScene {
       new LineBasicMaterial({
         color: TINT.line,
         transparent: true,
-        opacity: 0.55,
+        opacity: 0.8,
         depthWrite: false,
         fog: false,
         blending: AdditiveBlending,
@@ -658,7 +664,7 @@ export class StationScene implements GameScene {
     this.lines = new LineSegments(lg, this.lineMat);
     this.lines.frustumCulled = false;
     this.lines.geometry.setDrawRange(0, 0);
-    root.add(bright, this.lines);
+    this.sky.add(bright, this.lines);
 
     // Nebulae: soft clouds of colored light far away, glowing up as the stars come back.
     const glowDisc = (inner: number, outer: number): BufferGeometry => {
@@ -703,7 +709,7 @@ export class StationScene implements GameScene {
       m.scale.set(size * squash, size, 1);
       m.rotation.z += az * 0.01;
       this.nebulae.push(mat);
-      root.add(m);
+      this.sky.add(m);
     }
 
     // The sun: a white disc with a wide soft glow.
@@ -728,7 +734,7 @@ export class StationScene implements GameScene {
     const core = new Mesh(tracker.track(new CircleGeometry(9, 24)), this.sunMat);
     core.position.copy(sun.position).multiplyScalar(0.99);
     core.lookAt(0, 0, 0);
-    root.add(sun, core);
+    this.sky.add(sun, core);
   }
 
   /** The land far below: a great curve of sea, coast and cloud, with a thin blue rim of air. */
@@ -758,15 +764,18 @@ export class StationScene implements GameScene {
     g.setAttribute('color', new BufferAttribute(colors, 3));
     g.deleteAttribute('uv');
     g.computeVertexNormals();
-    const planet = new Mesh(tracker.track(g), tracker.track(kit.surface({ vertexColors: true })));
+    const planetMat = tracker.track(kit.surface({ vertexColors: true, lift: 0.1 }));
+    const planet = new Mesh(tracker.track(g), planetMat);
     planet.position.copy(PLANET);
     planet.rotation.set(0.4, 0.2, 0.1);
-    root.add(planet);
+    planet.renderOrder = -11;
+    planetMat.depthWrite = false;
+    this.sky.add(planet);
     this.rimMat = tracker.track(
       new MeshBasicMaterial({
         color: TINT.rim,
         transparent: true,
-        opacity: 0.18,
+        opacity: 0.12,
         side: BackSide,
         blending: AdditiveBlending,
         depthWrite: false,
@@ -775,7 +784,13 @@ export class StationScene implements GameScene {
     );
     const rim = new Mesh(tracker.track(new SphereGeometry(PLANET_R * 1.035, 64, 32)), this.rimMat);
     rim.position.copy(PLANET);
-    root.add(rim);
+    this.sky.add(rim);
+    root.add(this.sky);
+    // The sky is drawn first, behind everything, and never hides the station.
+    this.sky.traverse((o) => {
+      if (o.renderOrder === 0) o.renderOrder = -10;
+      o.frustumCulled = false;
+    });
   }
 
   /** The modules, the observatory, the great ring in the distance and the shuttle at the start. */
@@ -1003,8 +1018,10 @@ export class StationScene implements GameScene {
       );
       const m = new Mesh(geo, hullMat);
       kit.caster(m, true);
+      // Each shell hinges on its outer edge, so it swings outward and down as it opens.
+      m.position.z = -side * 3.4;
       pivot.add(m);
-      pivot.position.set(0, DOME_R - 0.2, 2.2);
+      pivot.position.set(0, DOME_R - 0.2, 2.2 + side * 3.4);
       this.observatory.root.add(pivot);
       return pivot;
     };
@@ -1114,7 +1131,7 @@ export class StationScene implements GameScene {
       return g;
     };
     this.rockMat = tracker.track(
-      kit.surface({ vertexColors: true, emissive: TINT.beam, emissiveIntensity: 0, lift: 0.25 }),
+      kit.surface({ vertexColors: true, emissive: TINT.beacon, emissiveIntensity: 0, lift: 0.25 }),
     );
     this.rockDimMat = tracker.track(kit.surface({ vertexColors: true, lift: 0.05 }));
     const geo = tracker.track(
@@ -1300,8 +1317,8 @@ export class StationScene implements GameScene {
       m.beacon.color.setHex(TINT.beacon);
       m.beacon.emissive.setHex(TINT.beacon);
     }
-    this.domeL.rotation.z = 0;
-    this.domeR.rotation.z = 0;
+    this.domeL.rotation.x = 0;
+    this.domeR.rotation.x = 0;
     this.scope.rotation.x = 1.25;
     for (const r of this.rocks) r.visible = false;
     this.lastSky = -1;
@@ -1338,7 +1355,9 @@ export class StationScene implements GameScene {
     m.root.rotation.set(0, 0, k % 2 === 0 ? 0.08 : -0.08);
     m.hatch.set(m.center.x, m.center.y + rad + 0.35, m.center.z - len * 0.28);
     const side = k % 2 === 0 ? 1 : -1;
-    m.from.set(side * 0.45, 0.28, 1).normalize();
+    // At the observatory the debris comes from the side, so the dome stays out of the way.
+    if (m.observatory) m.from.set(-side, 0.02, 0.35).normalize();
+    else m.from.set(side * 0.38, 0.02, 1).normalize();
     for (const p of m.panels) p.rotation.x = 0;
     m.turret.position.x = m.observatory ? 1.6 : 1.2;
   }
@@ -1365,6 +1384,7 @@ export class StationScene implements GameScene {
     this.apprentice.root.rotation.set(0, 0, 0);
     this.yaw = Math.atan2(this.p1.x - this.p0.x, this.p1.z - this.p0.z);
     this.apprentice.root.rotation.y = this.yaw;
+    this.follow();
     this.ctx.rig.cut();
   }
 
@@ -1404,7 +1424,7 @@ export class StationScene implements GameScene {
       .copy(m.hatch)
       .addScaledVector(m.from, dist)
       .addScaledVector(this.u, lane * Math.min(1, k * 1.3))
-      .add(this.w.set(0, 1.1 + k * 2.5, 0));
+      .add(this.w.set(0, -1 + k * 0.7, 0));
   }
 
   onKey(ev: TypedKey): void {
@@ -1658,6 +1678,12 @@ export class StationScene implements GameScene {
     this.apprentice.play('cheer');
     this.dyo.cheer(6);
     this.ctx.rig.pushIn(0.25, 0.6);
+    // Pull back and look up: the dome opening below, the counted sky above.
+    const h = o.hatch;
+    this.ctx.rig.fixed(
+      this.v.set(h.x - 7, h.y + 2.5, h.z - 12),
+      this.w.set(h.x, h.y + 6, h.z + 16),
+    );
     for (const r of this.rocks) r.visible = false;
   }
 
@@ -1691,8 +1717,11 @@ export class StationScene implements GameScene {
       if (this.face.lengthSq() < 1e-6) this.face.subVectors(this.p1, this.p0);
     } else {
       const m = this.moduleOf(leg ?? plan?.legs.at(-1));
-      app.position.set(m.hatch.x, m.hatch.y + bob, m.hatch.z);
-      if (this.finished) this.face.set(0.25, 0, 1);
+      // At the end he floats up over the dome to watch it open.
+      const t = this.finished ? Math.min(1, Math.max(0, this.finaleT / 3.5)) : 0;
+      const lift = t * t * (3 - 2 * t);
+      app.position.set(m.hatch.x, m.hatch.y + bob + lift * 3.2, m.hatch.z + lift * 1.5);
+      if (this.finished) this.face.set(0.1, 0, 1);
       else this.face.copy(m.from);
     }
     const want = Math.atan2(this.face.x, this.face.z);
@@ -1731,7 +1760,7 @@ export class StationScene implements GameScene {
       const near = 1 - Math.min(1, this.shownD);
       cur.scale.setScalar(1 + near * 0.2);
       this.rockMat.emissiveIntensity =
-        0.15 + near * 0.35 + Math.max(0, Math.sin(this.time * 6)) * near * 0.3;
+        0.04 + near * 0.16 + Math.max(0, Math.sin(this.time * 6)) * near * 0.24;
       const m = this.moduleOf(leg);
       m.barrel.lookAt(cur.position);
     }
@@ -1776,7 +1805,7 @@ export class StationScene implements GameScene {
     this.clearShown = damp(this.clearShown, clear, this.finished ? 0.7 : 1, dt);
     this.applySky(this.clearShown);
     for (const n of this.nebulae) n.opacity = 0.1 + this.clearShown * 0.45;
-    this.rimMat.opacity = 0.12 + this.clearShown * 0.3;
+    this.rimMat.opacity = 0.1 + this.clearShown * 0.25;
     this.dimMat.opacity = 0.4 - this.clearShown * 0.25;
     this.brightMat.opacity = 0.3 + (this.drawnLines / CONSTELLATIONS.length) * 0.7;
     this.linesShown = damp(this.linesShown, this.drawnLines, 1.2, dt);
@@ -1789,7 +1818,7 @@ export class StationScene implements GameScene {
       else if (k === whole) segs += Math.floor((n * (this.linesShown - whole)) / 2) * 2;
     }
     this.lines.geometry.setDrawRange(0, segs);
-    this.lineMat.opacity = 0.35 + Math.sin(this.time * 1.4) * 0.08 + this.clearShown * 0.25;
+    this.lineMat.opacity = 0.55 + Math.sin(this.time * 1.4) * 0.1 + this.clearShown * 0.35;
     this.sunMat.opacity = 0.55 + this.clearShown * 0.45;
 
     // --- The finale: the dome parts, the telescope turns up to the stars.
@@ -1806,8 +1835,8 @@ export class StationScene implements GameScene {
     }
     const open = this.finished ? Math.min(1, Math.max(0, (this.finaleT - 0.3) / 2.2)) : 0;
     const ease = open * open * (3 - 2 * open);
-    this.domeL.rotation.z = -ease * 1.3;
-    this.domeR.rotation.z = ease * 1.3;
+    this.domeL.rotation.x = ease * 1.45;
+    this.domeR.rotation.x = -ease * 1.45;
     this.scope.rotation.x = 1.25 - ease * 0.85;
 
     if (this.hum) this.hum.move(app.position.x, app.position.y, app.position.z);
@@ -1819,10 +1848,16 @@ export class StationScene implements GameScene {
     m.open = damp(m.open, m.openTarget, 1.1, dt);
     m.windows.emissiveIntensity = m.glow * (0.9 + Math.sin(this.time * 2 + m.center.z) * 0.05);
     const fold = 1 - m.open;
-    const [l, r] = m.panels;
-    if (l) l.rotation.z = fold * 1.35;
-    if (r) r.rotation.z = -fold * 1.35;
-    for (const p of m.panels) p.scale.x = 0.25 + m.open * 0.75;
+    const l = m.panels[0];
+    const r = m.panels[1];
+    if (l) {
+      l.rotation.z = fold * 1.35;
+      l.scale.x = 0.25 + m.open * 0.75;
+    }
+    if (r) {
+      r.rotation.z = -fold * 1.35;
+      r.scale.x = 0.25 + m.open * 0.75;
+    }
     m.beacon.emissiveIntensity = 0.6 + Math.max(0, Math.sin(this.time * 3 + m.center.z)) * 1.4;
   }
 
@@ -1848,6 +1883,7 @@ export class StationScene implements GameScene {
 
   frame(dt: number): void {
     const { typing } = this.ctx;
+    this.sky.position.copy(this.ctx.engine.camera.position);
     // Dyo looks at the apprentice.
     const app = this.apprentice.root.position;
     this.dyo.face(app.x, app.z);
