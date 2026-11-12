@@ -540,3 +540,4 @@ One-pass review of Sonnet's T19; fix what is weak. Done when merged.
 - More lesson tracks imported from files.
 - Capital-letter lessons (found in T21): no lesson teaches capitals, so Wings over Hermon's "words and capitals" band only ever shows capitals once a track teaches them (the plan already supports it).
 - Hebrew word direction in the Sunken Geniza and the Gematria Forge (found in T21): their in-world word banner is laid out with `rtl` false, so a Hebrew word reads left to right there; pass the same Hebrew test the other scenes use.
+- Faster CI (found in T22): the end-to-end tests now take close to half an hour on GitHub (every scene adds a full run in software WebGL); shard the Playwright run across two jobs or share one built app between specs, then lower the job timeout again (raised from 30 to 45 minutes in T22).

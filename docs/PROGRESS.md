@@ -1145,6 +1145,7 @@ The Star Station can be played from the map (Level 4 of the course, after the Gr
 - locales/en.json, locales/he.json: station.* strings, sound.theme.station, sound.mood.station, sound.sfx.thrust, sound.sfx.laser
 - tests/unit/station.test.ts (learned keys only on every level and difficulty in English and Hebrew, capitals and stops only when learned, legs and chapters, fair approach times, the rock and drift steppers, stars, region, route, theme, story lines) and tests/e2e/station.spec.ts (a whole Calm run from the map, and a Steady run where a rock strikes); tests/e2e/sound.spec.ts lists the new theme
 - docs/ARCHITECTURE.md section 7o, docs/GAME_DESIGN.md scene row, CHANGELOG.md, ROADMAP tick
+- .github/workflows: CI job timeout raised from 30 to 45 minutes (the end-to-end run with the new scene went past 30 minutes); docs/ROADMAP.md "Later": faster CI
 
 **Decisions**
 
@@ -1156,6 +1157,7 @@ The Star Station can be played from the map (Level 4 of the course, after the Gr
 - **The music is a slow 3/4 at 66 bpm with a new glass voice** — Every theme must have its own tempo and melody voice, and the ten-minute composer test needs at least 200 bars; 66 bpm in 4/4 was too few bars.
 - **At the observatory the debris comes from the side, and the finale cuts to a fixed wide shot** — The dome otherwise filled the view; the wide shot shows the dome opening, the apprentice and the constellations together.
 - **Checks: lint, typecheck, unit tests, build and the station and sound e2e specs were run locally before merging** — The sandbox has a matching Chromium; local checks are the gate, GitHub CI is waited for when it runs.
+- **Raised the CI job timeout from 30 to 45 minutes** — The first CI run passed lint, typecheck, unit tests and build but was cancelled at the 30-minute limit while the end-to-end tests (one more full scene run) were still going; the tests themselves pass locally.
 
 **To do**
 

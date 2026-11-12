@@ -1438,7 +1438,8 @@
         "src/ui/app.ts, src/ui/shell.ts, src/ui/playable.ts: the station route; the Star Station now has a Play button on the hub map when open",
         "locales/en.json, locales/he.json: station.* strings, sound.theme.station, sound.mood.station, sound.sfx.thrust, sound.sfx.laser",
         "tests/unit/station.test.ts (learned keys only on every level and difficulty in English and Hebrew, capitals and stops only when learned, legs and chapters, fair approach times, the rock and drift steppers, stars, region, route, theme, story lines) and tests/e2e/station.spec.ts (a whole Calm run from the map, and a Steady run where a rock strikes); tests/e2e/sound.spec.ts lists the new theme",
-        "docs/ARCHITECTURE.md section 7o, docs/GAME_DESIGN.md scene row, CHANGELOG.md, ROADMAP tick"
+        "docs/ARCHITECTURE.md section 7o, docs/GAME_DESIGN.md scene row, CHANGELOG.md, ROADMAP tick",
+        ".github/workflows: CI job timeout raised from 30 to 45 minutes (the end-to-end run with the new scene went past 30 minutes); docs/ROADMAP.md \"Later\": faster CI"
       ],
       "decisions": [
         {
@@ -1472,6 +1473,10 @@
         {
           "decision": "Checks: lint, typecheck, unit tests, build and the station and sound e2e specs were run locally before merging",
           "why": "The sandbox has a matching Chromium; local checks are the gate, GitHub CI is waited for when it runs."
+        },
+        {
+          "decision": "Raised the CI job timeout from 30 to 45 minutes",
+          "why": "The first CI run passed lint, typecheck, unit tests and build but was cancelled at the 30-minute limit while the end-to-end tests (one more full scene run) were still going; the tests themselves pass locally."
         }
       ],
       "manual_steps": [],
