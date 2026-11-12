@@ -1593,6 +1593,10 @@
           "why": "It was already set that way in the region table"
         },
         {
+          "decision": "tests/e2e/sound.spec.ts now expects 13 themes in the sound room (it still said 11, from before Atbash City)",
+          "why": "The count was stale on main and the sound room now really lists 13 themes; without it the end-to-end check fails"
+        },
+        {
           "decision": "The e2e test was run locally with the sandbox Chromium; GitHub CI is the second gate",
           "why": "Same as earlier scenes"
         }

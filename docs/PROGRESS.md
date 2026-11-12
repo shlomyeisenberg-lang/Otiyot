@@ -1235,6 +1235,7 @@ The Long Midbar can be played from the map (Level 5 of the course, after the Gre
 - **Gusts come from the caravan's left and the camera sits behind and to the right of the caravan** — After looking at screenshots: from the other side the camels hid the wall of sand
 - **Text band is sentences: capital first letter and closing mark only when learned; a storm sentence ends with "!" when it is learned** — GAME_DESIGN scene table (Sentences) and learned-letters-only
 - **The Midbar opens at Level 5 of the course after the Great Blot (regions.ts unchanged)** — It was already set that way in the region table
+- **tests/e2e/sound.spec.ts now expects 13 themes in the sound room (it still said 11, from before Atbash City)** — The count was stale on main and the sound room now really lists 13 themes; without it the end-to-end check fails
 - **The e2e test was run locally with the sandbox Chromium; GitHub CI is the second gate** — Same as earlier scenes
 
 **Notes**
