@@ -35,6 +35,19 @@ export interface BossPhaseDef {
   music: string;
   /** Seconds of windup added to every attack on top of the typing time (more for long groups). */
   grace: number;
+  /**
+   * The Arena's trials (T26) tune a phase further. All are optional; the Great Blot uses none.
+   * `pace`: the pace the attacks are timed for, times the difficulty's (1.4 = 40% faster).
+   * `rest`: seconds the boss rests after each parried attack before it winds up again, so the
+   *   fight comes in bursts (type fast, breathe, type fast).
+   * `heal`: characters of health a slip gives back to the boss (Precision: errors heal it).
+   * `tide`: 0..1, how far the windup speed swings up and down; `tidePeriod` its seconds.
+   */
+  pace?: number;
+  rest?: number;
+  heal?: number;
+  tide?: number;
+  tidePeriod?: number;
 }
 
 export interface BossDef {
@@ -102,11 +115,21 @@ export const BOSS_PACE: Readonly<Record<DifficultyId, number | null>> = {
 };
 
 /** Seconds of windup for a group of `chars` characters on this difficulty (Infinity on Calm). */
-export function windupSeconds(chars: number, difficulty: Difficulty, grace: number): number {
+export function windupSeconds(
+  chars: number,
+  difficulty: Difficulty,
+  grace: number,
+  pace = 1,
+): number {
   const wpm = difficulty.timers ? BOSS_PACE[difficulty.id] : null;
   if (!wpm) return Infinity;
-  return grace + (Math.max(1, chars) * 60) / (wpm * 5);
+  return grace + (Math.max(1, chars) * 60) / (wpm * Math.max(0.2, pace) * 5);
 }
+
+/** The most health a phase can win back from slips, as a share of the phase's text. */
+export const HEAL_CAP = 0.35;
+/** Each right letter pays back this much of the healed health (the crack closes again). */
+export const HEAL_REPAY = 0.5;
 
 /** How close an attack on Calm comes before it stops and waits (0..1 of the windup). */
 export const CALM_HOVER = 0.72;
@@ -176,6 +199,11 @@ export class BossFight {
   parried = 0;
   /** Weak points struck. */
   weakHits = 0;
+  /** Characters of health the boss has won back from slips in this phase (and in the fight). */
+  healed = 0;
+  healedTotal = 0;
+  /** Seconds of fighting in this phase (the tide's clock). */
+  clock = 0;
   /** Correct characters typed in the current phase (spaces included). */
   private typed = 0;
   /** Characters of every phase before the current one, and of the whole fight. */
@@ -209,7 +237,7 @@ export class BossFight {
   /** 1 = the boss is whole (nothing written yet), 0 = fully erased (the land restored). */
   get health(): number {
     if (this.total === 0 || this.state === 'victory') return 0;
-    return Math.max(0, 1 - (this.before + this.typed) / this.total);
+    return Math.max(0, Math.min(1, 1 - (this.before + this.typed - this.healed) / this.total));
   }
 
   /** Where each phase begins on the health bar (0..1 of the text restored), for its notches. */
@@ -226,11 +254,24 @@ export class BossFight {
   /** 0..1: how far the current attack has wound up (the telegraph). Calm stops at CALM_HOVER. */
   get windup(): number {
     if (this.state !== 'fight') return 0;
+    const wind = Math.max(0, this.wind);
     if (!Number.isFinite(this.windFor)) {
       // No timers: the attack creeps in and waits close by, as Blots do on Calm.
-      return CALM_HOVER * (1 - Math.exp(-this.wind / 2.2));
+      return CALM_HOVER * (1 - Math.exp(-wind / 2.2));
     }
-    return Math.min(1, this.wind / this.windFor);
+    return Math.min(1, wind / this.windFor);
+  }
+
+  /** True while the boss rests between bursts (after a parry, on phases with `rest`). */
+  get resting(): boolean {
+    return this.state === 'fight' && this.wind < 0;
+  }
+
+  /** -1..1: where the tide is (0 on phases without one). Fast when high, slow when low. */
+  get tideNow(): number {
+    const d = this.def;
+    if (!d.tide) return 0;
+    return Math.sin((this.clock * Math.PI * 2) / (d.tidePeriod ?? 6));
   }
 
   /** Is the word being typed now a weak point? */
@@ -242,6 +283,22 @@ export class BossFight {
   letter(): void {
     if (this.state !== 'fight') return;
     this.typed = Math.min(phaseLength(this.current), this.typed + 1);
+    if (this.healed > 0) this.healed = Math.max(0, this.healed - HEAL_REPAY);
+  }
+
+  /**
+   * A wrong key. On a phase that heals (`heal`), the boss wins back some health: never more
+   * than was written in this phase, nor more than HEAL_CAP of it. Returns the characters healed.
+   */
+  slip(): number {
+    const heal = this.def.heal ?? 0;
+    if (this.state !== 'fight' || heal <= 0) return 0;
+    const cap = Math.min(this.typed, phaseLength(this.current) * HEAL_CAP);
+    const before = this.healed;
+    this.healed = Math.max(before, Math.min(cap, before + heal));
+    const got = this.healed - before;
+    this.healedTotal += got;
+    return got;
   }
 
   /** A word was finished. Returns what that meant for the attack and the phase. */
@@ -259,6 +316,7 @@ export class BossFight {
     if (this.word >= p.words.length) {
       // Every word typed: the phase is over, whatever the character count says.
       this.typed = phaseLength(p);
+      this.healed = 0;
       this.parried += 1;
       this.state = this.last ? 'victory' : 'transition';
       return { kind: 'phase-end', phase: this.phase, last: this.last };
@@ -268,7 +326,7 @@ export class BossFight {
       const done = this.group;
       this.group = g;
       this.parried += 1;
-      this.armGroup();
+      this.armGroup(true);
       return { kind: 'parry', group: done, weak };
     }
     return weak ? { kind: 'stagger', group: this.group } : NONE;
@@ -281,7 +339,10 @@ export class BossFight {
       this.stagger = Math.max(0, this.stagger - dt);
       return NONE;
     }
-    this.wind += dt;
+    this.clock += dt;
+    // The tide: the windup runs faster at high tide and slower at low (the same on average).
+    const tide = this.def.tide ?? 0;
+    this.wind += this.wind < 0 ? dt : dt * (1 + tide * this.tideNow);
     if (this.wind < this.windFor) return NONE;
     // The attack lands. The boss recovers, then winds up again for what is left of the group.
     this.landed += 1;
@@ -300,6 +361,8 @@ export class BossFight {
     this.word = 0;
     this.group = 0;
     this.stagger = 0;
+    this.healed = 0;
+    this.clock = 0;
     this.state = 'fight';
     this.armGroup();
   }
@@ -309,13 +372,14 @@ export class BossFight {
     this.state = 'failed';
   }
 
-  private armGroup(): void {
-    this.wind = 0;
+  /** Arms the attack for the current group; after a parry the boss may rest first. */
+  private armGroup(afterParry = false): void {
+    this.wind = afterParry ? -(this.def.rest ?? 0) : 0;
     this.windFor = this.windupFor(this.remainingInGroup());
   }
 
   private windupFor(chars: number): number {
-    return windupSeconds(chars, this.difficulty, this.def.grace);
+    return windupSeconds(chars, this.difficulty, this.def.grace, this.def.pace ?? 1);
   }
 
   /** Characters still to type in the current group (its words and the spaces after them). */

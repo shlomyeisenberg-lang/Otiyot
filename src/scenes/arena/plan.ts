@@ -57,7 +57,7 @@ export const SIZES: Readonly<Record<LevelId, PhaseSizes>> = {
 /** Punctuation the passage may use, in order of preference (only the learned ones are used). */
 export const PASSAGE_MARKS: readonly string[] = [',', '.', ';', '!', '?', ':', '-'];
 /** Marks that end a passage (the first learned one closes the last word). */
-const END_MARKS: readonly string[] = ['.', '!', '?'];
+export const END_MARKS: readonly string[] = ['.', '!', '?'];
 
 export interface BlotInput {
   layout: LayoutId;
@@ -71,7 +71,7 @@ export interface BlotInput {
 }
 
 /** The words of a phase are all different from their neighbours, so the strip never stutters. */
-function take(src: { next(): string }, n: number, avoid: Set<string>): string[] {
+export function take(src: { next(): string }, n: number, avoid: Set<string>): string[] {
   const out: string[] = [];
   for (let i = 0; i < n; i++) {
     let w = src.next();
@@ -84,7 +84,7 @@ function take(src: { next(): string }, n: number, avoid: Set<string>): string[] 
   return out;
 }
 
-function phase(
+export function phase(
   def: BossPhaseDef,
   words: string[],
   groups: number[],
