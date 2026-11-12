@@ -84,8 +84,8 @@ const STONE_GAP = 26;
 /** Cruising speed, units per second. */
 const FLY_SPEED = 5.5;
 /** Where a stone is, relative to the eagle, at the top of its fall and when it lands. */
-const FALL_H = 13;
-const TOP_Z = 27;
+const FALL_H = 10;
+const TOP_Z = 30;
 const LAND_Z = 5.2;
 const LAND_Y = 1.3;
 /** Where the next stone waits inside the cloud (as a fall height above 1). */
@@ -93,9 +93,11 @@ const NEXT_H = 1.32;
 const LETTER_SIZE = 1.25;
 const NEXT_SIZE = 1.05;
 /** The rider's seat on the eagle (the cockpit camera). */
-const SEAT = new Vector3(0, 2.5, -4.9);
+const SEAT = new Vector3(0, 1.6, -6.8);
 const CEILING = 120;
-const SCUD = 26;
+const SCUD = 18;
+/** Puffs of the storm cloud the stones come out of, ahead and above the eagle. */
+const MOUTH = 8;
 const RAIN = 520;
 const TREES = 150;
 const HOUSES = 46;
@@ -129,16 +131,18 @@ function merged(parts: BufferGeometry[]): BufferGeometry {
 /** Height of the land at (x, z): a green valley between ridges, rising to Hermon at the end. */
 export function landHeight(x: number, z: number): number {
   const ax = Math.abs(x);
-  const wall = Math.max(0, ax - 34);
-  const ridge = wall * wall * 0.03 + Math.max(0, ax - 60) * 0.9;
+  const wall = Math.max(0, ax - 26);
+  // Slopes that steepen into ridges, with spurs and saddles along the valley.
+  const ridge = wall * 0.5 + wall * wall * 0.0045;
   const bumps =
     Math.sin(x * 0.05 + z * 0.021) * 3 +
     Math.sin(z * 0.043 + 1.3) * Math.cos(x * 0.031) * 4 +
     Math.sin(x * 0.17 + z * 0.13) * 0.8;
-  const peaks = ax > 50 ? Math.max(0, Math.sin(z * 0.018 + x * 0.01) * 22 + 8) : 0;
+  const spur = Math.sin(z * 0.022 + (x > 0 ? 0 : 2.1)) * 0.5 + 0.5;
+  const peaks = Math.pow(spur, 2.2) * 46 * Math.min(1, wall / 40);
   // The valley climbs toward the mountain at its far end.
   const climb = Math.max(0, z - 300) * 0.06;
-  return Math.max(-1, ridge + bumps + peaks * Math.min(1, wall / 30) + climb);
+  return Math.max(-1, ridge + bumps + peaks + climb);
 }
 
 /** The river's line down the valley. */
@@ -199,6 +203,8 @@ export class HermonScene implements GameScene {
   private scud!: InstancedMesh;
   private readonly scudPos = new Float32Array(SCUD * 4);
   private scudMat!: MeshLambertMaterial;
+  private mouth!: InstancedMesh;
+  private readonly mouthOff = new Float32Array(MOUTH * 4);
   private rain!: LineSegments;
   private rainMat!: LineBasicMaterial;
   private readonly rainPos = new Float32Array(RAIN * 3);
@@ -434,7 +440,7 @@ export class HermonScene implements GameScene {
       materials: kit,
       billboard: ctx.vfx.billboard,
       colors: { ...colors, stone: TINT.iceDark, paper: TINT.shard },
-      style: 'carved',
+      style: 'hologram',
       size: NEXT_SIZE,
     });
     root.add(this.text.root, this.nextText.root);
@@ -495,12 +501,18 @@ export class HermonScene implements GameScene {
       const river = Math.abs(x - riverX(z));
       if (river < 4) y = Math.min(y, -0.6 + river * 0.1);
       pos.setY(i, y);
-      // Fields in strips, darker orchards, bare rock up the ridges and snow on top.
+      // Fields in strips on the valley floor, green terraces up the slopes, bare rock higher up
+      // and snow on the ridges.
       const field = Math.sin(x * 0.12 + Math.floor(z / 18) * 1.7) > 0.2;
-      a.setHex(field ? TINT.grass : TINT.grassDark);
-      if (y > 14) a.lerp(b.setHex(TINT.rock), Math.min(1, (y - 14) / 12));
-      if (y > 34) a.lerp(b.setHex(TINT.rockDark), Math.min(1, (y - 34) / 10) * 0.6);
-      if (y > 52) a.lerp(b.setHex(TINT.snow), Math.min(1, (y - 52) / 8));
+      const terrace = Math.floor(y / 3.5 + Math.sin(z * 0.05) * 0.5) % 2 === 0;
+      a.setHex(
+        y > 4 ? (terrace ? TINT.grass : TINT.grassDark) : field ? TINT.grass : TINT.grassDark,
+      );
+      const rockLine = 30 + Math.sin(z * 0.07 + x * 0.05) * 5;
+      if (y > rockLine) a.lerp(b.setHex(TINT.rock), Math.min(1, (y - rockLine) / 8));
+      if (y > rockLine + 10) a.lerp(b.setHex(TINT.rockDark), 0.35);
+      const snowLine = 50 + Math.sin(z * 0.09 + x * 0.03) * 6;
+      if (y > snowLine) a.lerp(b.setHex(TINT.snow), Math.min(1, (y - snowLine) / 5));
       if (river < 3) a.setHex(TINT.river);
       a.multiplyScalar(0.9 + r.next() * 0.16);
       colors[i * 3] = a.r;
@@ -523,10 +535,13 @@ export class HermonScene implements GameScene {
       tracker.track(kit.surface({ vertexColors: true })),
       TREES,
     );
+    this.s.set(0, 0, 0);
+    for (let k = 0; k < TREES; k++) trees.setMatrixAt(k, this.m4.makeScale(0, 0, 0));
     for (let k = 0; k < TREES; k++) {
-      const z = r.range(-60, 460);
-      const x = riverX(z) + (r.next() < 0.5 ? -1 : 1) * r.range(6, 30);
-      const s = r.range(0.8, 1.6);
+      const z = r.range(-60, 470);
+      const x = riverX(z) + (r.next() < 0.5 ? -1 : 1) * r.range(8, 62);
+      if (landHeight(x, z) > 30) continue;
+      const s = r.range(1.4, 2.6);
       this.v.set(x, landHeight(x, z) - 0.2, z);
       this.q.setFromAxisAngle(this.w.set(0, 1, 0), r.range(0, 6.28));
       this.s.set(s, s, s);
@@ -549,10 +564,11 @@ export class HermonScene implements GameScene {
       const village = Math.floor(k / 6);
       const cz = 30 + village * 62;
       const z = cz + r.range(-8, 8);
-      const x = riverX(cz) + (village % 2 === 0 ? 12 : -12) + r.range(-7, 7);
+      const x =
+        riverX(cz) + (village % 2 === 0 ? 1 : -1) * (14 + (village % 3) * 9) + r.range(-6, 6);
       this.v.set(x, landHeight(x, z) - 0.1, z);
       this.q.setFromAxisAngle(this.w.set(0, 1, 0), r.range(0, 6.28));
-      const s = r.range(0.8, 1.3);
+      const s = r.range(1.5, 2.2);
       this.s.set(s, s, s);
       houses.setMatrixAt(k, this.m4.compose(this.v, this.q, this.s));
     }
@@ -628,7 +644,7 @@ export class HermonScene implements GameScene {
     for (let k = 0; k < CEILING; k++) {
       // x, y, z and a size; puffs over the valley part as the storm breaks.
       this.ceilingBase[k * 4] = r.range(-150, 150);
-      this.ceilingBase[k * 4 + 1] = ALT + r.range(19, 34);
+      this.ceilingBase[k * 4 + 1] = ALT + r.range(24, 40);
       this.ceilingBase[k * 4 + 2] = r.range(-40, 520);
       this.ceilingBase[k * 4 + 3] = r.range(9, 20);
     }
@@ -650,6 +666,22 @@ export class HermonScene implements GameScene {
     for (let k = 0; k < SCUD; k++) this.respawnScud(k, r.range(-10, 140));
     kit.caster(this.scud, false);
     root.add(this.scud);
+
+    // The cloud the stones come out of: a dark knot of puffs that rides ahead with the eagle.
+    this.mouth = new InstancedMesh(
+      tracker.track(new IcosahedronGeometry(1, 1)),
+      this.cloudMat,
+      MOUTH,
+    );
+    for (let k = 0; k < MOUTH; k++) {
+      const a = (k / MOUTH) * Math.PI * 2;
+      this.mouthOff[k * 4] = Math.cos(a) * r.range(5, 10);
+      this.mouthOff[k * 4 + 1] = r.range(1.5, 4.5);
+      this.mouthOff[k * 4 + 2] = r.range(3, 9);
+      this.mouthOff[k * 4 + 3] = r.range(3.5, 6.5);
+    }
+    kit.caster(this.mouth, false);
+    root.add(this.mouth);
 
     // Rain: short streaks around the rider, moved every frame (one draw call).
     const rainGeo = new BufferGeometry();
@@ -718,8 +750,8 @@ export class HermonScene implements GameScene {
   private respawnScud(k: number, ahead: number): void {
     const r = this.rng;
     const side = r.next() < 0.5 ? -1 : 1;
-    this.scudPos[k * 4] = side * r.range(9, 46);
-    this.scudPos[k * 4 + 1] = r.range(-14, 9);
+    this.scudPos[k * 4] = side * r.range(15, 50);
+    this.scudPos[k * 4 + 1] = r.range(-16, 5);
     this.scudPos[k * 4 + 2] = ahead;
     this.scudPos[k * 4 + 3] = r.range(2.5, 6);
   }
@@ -771,28 +803,53 @@ export class HermonScene implements GameScene {
     this.head.position.set(0, 1.2, 3.1);
     this.eagle.add(this.head);
 
-    // Each wing: an inner arm and an outer hand with five fingered primaries, on two pivots.
-    const inner = (side: number): BufferGeometry =>
-      merged([
-        painted(new BoxGeometry(4.2, 0.24, 2.3).translate((side * 4.2) / 2, 0, -0.1), TINT.feather),
-        painted(
-          new BoxGeometry(4.2, 0.1, 0.9).translate((side * 4.2) / 2, -0.12, -1.4),
-          TINT.featherDark,
-        ),
-        painted(new BoxGeometry(3.6, 0.28, 0.7).translate((side * 3.6) / 2, 0.12, 0.85), TINT.nape),
-      ]);
-    const outer = (side: number): BufferGeometry => {
-      const parts = [
-        painted(new BoxGeometry(2.4, 0.18, 1.9).translate(side * 1.2, 0, 0), TINT.feather),
-      ];
+    // Each wing: an inner arm of layered feathers (gold-brown coverts over long dark
+    // secondaries) and an outer hand of six fingered primaries, on two pivots so it bends.
+    const inner = (side: number): BufferGeometry => {
+      const parts: BufferGeometry[] = [];
+      // The leading edge: a rounded arm, thick at the shoulder.
+      parts.push(painted(feather(4.3, 0.34, 0.9, 0.55).translate(0, 0.08, 0.75), TINT.covert));
+      // Coverts: short, overlapping, lighter.
       for (let f = 0; f < 5; f++) {
-        const len = 2.6 - f * 0.25;
-        const feather = new BoxGeometry(len, 0.08, 0.36).translate((side * len) / 2, 0, 0);
-        feather.rotateY(side * (0.1 + f * 0.13));
-        feather.translate(side * 2.2, 0, 0.6 - f * 0.42);
-        parts.push(painted(feather, TINT.featherTip));
+        const w = 1.05;
+        parts.push(
+          painted(
+            feather(w, 0.12, 1.5, 0.7)
+              .rotateY(Math.PI / 2)
+              .translate(0.45 + f * 0.82, 0.12, 0.05),
+            f % 2 === 0 ? TINT.covert : TINT.feather,
+          ),
+        );
       }
-      return merged(parts);
+      // Secondaries: long dark feathers along the trailing edge, with pale tips.
+      for (let f = 0; f < 7; f++) {
+        parts.push(
+          painted(
+            feather(0.72, 0.07, 2.3, 0.75)
+              .rotateY(Math.PI / 2)
+              .translate(0.35 + f * 0.6, 0, -1.25 - Math.sin(f * 0.6) * 0.15),
+            f % 2 === 0 ? TINT.featherDark : TINT.feather,
+          ),
+        );
+      }
+      const g = merged(parts);
+      if (side < 0) mirrorX(g);
+      return g;
+    };
+    const outer = (side: number): BufferGeometry => {
+      const parts: BufferGeometry[] = [
+        painted(feather(2.2, 0.2, 1.6, 0.6).translate(0, 0.04, 0.35), TINT.feather),
+      ];
+      for (let f = 0; f < 6; f++) {
+        const len = 3.1 - f * 0.22;
+        const g = feather(len, 0.06, 0.42, 0.45);
+        g.rotateY(-0.12 + f * 0.15);
+        g.translate(1.5, 0, 0.75 - f * 0.4);
+        parts.push(painted(g, f < 2 ? TINT.featherTip : TINT.featherDark));
+      }
+      const g = merged(parts);
+      if (side < 0) mirrorX(g);
+      return g;
     };
     for (const [wing, tip, side] of [
       [this.wingL, this.tipL, 1],
@@ -804,7 +861,7 @@ export class HermonScene implements GameScene {
       kit.caster(b, true);
       wing.add(a);
       tip.add(b);
-      tip.position.set(side * 4.1, 0, 0);
+      tip.position.set(side * 4.3, 0, 0);
       wing.add(tip);
       wing.position.set(side * 0.9, 0.55, 0.3);
       this.eagle.add(wing);
@@ -961,9 +1018,10 @@ export class HermonScene implements GameScene {
     this.hail.release();
   }
 
+  /** A lane on the other side of the last one, so two stones never hang in the same place. */
   private pickLane(from: number): number {
-    const r = this.rng.range(-3.2, 3.2);
-    return Math.abs(r - from) < 1.5 ? -r * 0.8 : r;
+    const side = from > 0 ? -1 : from < 0 ? 1 : this.rng.next() < 0.5 ? -1 : 1;
+    return side * this.rng.range(1.6, 3.4);
   }
 
   /** Puts the eagle and the camera where a run starts. */
@@ -1281,6 +1339,23 @@ export class HermonScene implements GameScene {
       this.scud.setMatrixAt(k, this.m4.compose(this.v, this.q, this.s));
     }
     this.scud.instanceMatrix.needsUpdate = true;
+    // The knot of cloud the stones come out of rides ahead, and thins as the storm breaks.
+    const mouthY = e.y + LAND_Y + FALL_H * NEXT_H;
+    const mouthZ = e.z + LAND_Z + (TOP_Z - LAND_Z) * 1.25;
+    const thin = 1 - this.clearShown * 0.9;
+    for (let k = 0; k < MOUTH; k++) {
+      const o = k * 4;
+      const size = (this.mouthOff[o + 3] as number) * thin;
+      this.v.set(
+        e.x + (this.mouthOff[o] as number) + Math.sin(this.time * 0.4 + k) * 0.6,
+        mouthY + (this.mouthOff[o + 1] as number),
+        mouthZ + (this.mouthOff[o + 2] as number),
+      );
+      this.q.identity();
+      this.s.set(size * 1.5, size * 0.7, size);
+      this.mouth.setMatrixAt(k, this.m4.compose(this.v, this.q, this.s));
+    }
+    this.mouth.instanceMatrix.needsUpdate = true;
 
     // Rain streaks fall and stream at the rider.
     if (this.rain.visible) {
@@ -1361,7 +1436,7 @@ export class HermonScene implements GameScene {
     const cur = this.stones[this.cur];
     const a = this.text.anchor;
     if (cur && cur.visible) {
-      a.set(cur.position.x, cur.position.y - 1.75, cur.position.z - 0.4);
+      a.set(cur.position.x, cur.position.y + 1.75, cur.position.z - 0.4);
     }
     if (typing.letters !== this.shownLetters) {
       this.shownLetters = typing.letters;
@@ -1388,7 +1463,7 @@ export class HermonScene implements GameScene {
       this.nextText.root.visible = true;
       this.nextText.size = NEXT_SIZE * (0.75 + 0.25 * reveal);
       const b = this.nextText.anchor;
-      b.set(next.position.x, next.position.y - 1.6, next.position.z - 0.3);
+      b.set(next.position.x, next.position.y + 1.6, next.position.z - 0.3);
       this.nextText.frame(dt, NO_STATES);
     } else {
       this.nextText.root.visible = false;
@@ -1412,3 +1487,38 @@ export class HermonScene implements GameScene {
 }
 
 const NO_STATES: readonly never[] = [];
+
+/**
+ * A feather (or a wing part): a box `length` long along +x from x = 0, narrowing to `taper` of
+ * its width at the tip and thinning toward it, so wings read as feathers instead of slabs.
+ */
+function feather(length: number, thick: number, width: number, taper: number): BufferGeometry {
+  const g = new BoxGeometry(length, thick, width, 4, 1, 1).translate(length / 2, 0, 0);
+  const pos = g.getAttribute('position');
+  for (let i = 0; i < pos.count; i++) {
+    const t = pos.getX(i) / length;
+    const k = 1 - (1 - taper) * t;
+    pos.setZ(i, pos.getZ(i) * k);
+    pos.setY(i, pos.getY(i) * (1 - 0.5 * t));
+  }
+  return g;
+}
+
+/** Mirrors a geometry left to right (and keeps its faces facing out). */
+function mirrorX(g: BufferGeometry): void {
+  g.scale(-1, 1, 1);
+  const pos = g.getAttribute('position');
+  const col = g.getAttribute('color');
+  // Swap the winding of every triangle (non-indexed geometry).
+  for (let i = 0; i + 2 < pos.count; i += 3) {
+    for (const attr of [pos, col]) {
+      if (!attr) continue;
+      for (let c = 0; c < attr.itemSize; c++) {
+        const a = attr.getComponent(i + 1, c);
+        attr.setComponent(i + 1, c, attr.getComponent(i + 2, c));
+        attr.setComponent(i + 2, c, a);
+      }
+    }
+  }
+  g.computeVertexNormals();
+}
