@@ -1610,9 +1610,9 @@
       "notes": "Built in one run by the Opus builder."
     },
     "T25": {
-      "status": "in_progress",
-      "finished": "",
-      "pr": "",
+      "status": "done",
+      "finished": "2026-11-12",
+      "pr": "https://github.com/shlomyeisenberg-lang/Otiyot/pull/45",
       "summary": "The Lantern Caves, the first region of Act Three: a winding chalk cave lit only by the apprentice's lantern. Accurate typing keeps the lantern bright and the shadows at bay; stumbles dim it and the shadows creep closer, and every chamber ends with an old clay lamp lit in the wall, up to the Hall of Lamps at the end.",
       "changes": [
         "src/scenes/caves/plan.ts: pure run plan (3/4/5 chambers of learned words per level), the Lantern model (feeding, flares on clean streaks, dimming on stumbles, burning down on timed difficulties, going out and relighting, Calm floor), shadow distance and lookahead by light, chapters and lamp counts",
@@ -1655,7 +1655,7 @@
       ],
       "manual_steps": [],
       "todo": [],
-      "notes": "Same split as every scene: plan, scene, screen. Opens on the map at Level 6 once the Great Blot is beaten (unchanged region rule)."
+      "notes": "Same split as every scene: plan, scene, screen. Opens on the map at Level 6 once the Great Blot is beaten (unchanged region rule). Built in one run by the Opus builder."
     },
     "T26": {
       "status": "pending",

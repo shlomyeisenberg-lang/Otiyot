@@ -6,8 +6,8 @@ _Last updated 2026-11-12. This page is generated from `docs/progress.json`; to c
 
 ## Summary
 
-- ✅ **29** of **44** tasks done
-- 🛠️ 1 in progress · ⛔ 0 blocked · ⬜ 14 pending
+- ✅ **30** of **44** tasks done
+- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 14 pending
 - ⬜ **3** manual steps waiting for you
 - 💡 12 feature ideas open
 
@@ -88,7 +88,7 @@ Work done before or outside the numbered tasks.
 - ✅ T22 · Scene: The Star Station — 2026-11-12 · [PR #42](https://github.com/shlomyeisenberg-lang/Otiyot/pull/42)
 - ✅ T23 · Scene: Atbash City — 2026-11-12 · [PR #43](https://github.com/shlomyeisenberg-lang/Otiyot/pull/43)
 - ✅ T24 · Scene: The Long Midbar — 2026-11-12 · [PR #44](https://github.com/shlomyeisenberg-lang/Otiyot/pull/44)
-- 🛠️ T25 · Scene: The Lantern Caves
+- ✅ T25 · Scene: The Lantern Caves — 2026-11-12 · [PR #45](https://github.com/shlomyeisenberg-lang/Otiyot/pull/45)
 - ⬜ T26 · The Silent Arena: remaining bosses
 - ⬜ T27 · The Blank Scroll and the Keeper
 - ⬜ T28 · Scene: The Ladder (endless)
@@ -1243,9 +1243,9 @@ The Long Midbar can be played from the map (Level 5 of the course, after the Gre
 
 Built in one run by the Opus builder.
 
-### 🛠️ T25 · Scene: The Lantern Caves
+### ✅ T25 · Scene: The Lantern Caves
 
-**Status:** In progress
+**Status:** Done · **Finished:** 2026-11-12 · **Pull request:** [PR #45](https://github.com/shlomyeisenberg-lang/Otiyot/pull/45)
 
 The Lantern Caves, the first region of Act Three: a winding chalk cave lit only by the apprentice's lantern. Accurate typing keeps the lantern bright and the shadows at bay; stumbles dim it and the shadows creep closer, and every chamber ends with an old clay lamp lit in the wall, up to the Hall of Lamps at the end.
 
@@ -1274,7 +1274,7 @@ The Lantern Caves, the first region of Act Three: a winding chalk cave lit only 
 
 **Notes**
 
-Same split as every scene: plan, scene, screen. Opens on the map at Level 6 once the Great Blot is beaten (unchanged region rule).
+Same split as every scene: plan, scene, screen. Opens on the map at Level 6 once the Great Blot is beaten (unchanged region rule). Built in one run by the Opus builder.
 
 ### ⬜ T26 · The Silent Arena: remaining bosses
 
