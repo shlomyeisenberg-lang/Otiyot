@@ -29,6 +29,11 @@ Effort guide: Low = quick and direct · Medium = normal care · High = think the
 | T17 | Sonnet | High | `t17-forge` | Scene: The Gematria Forge |
 | T18 | Sonnet | High | `t18-shuk` | Scene: The Night Shuk |
 | T19 | Sonnet | High | `t19-rail` | Scene: The Jaffa Line |
+| R15 | Opus | Medium | `review-t15` | Review of T15 (Scene: Cliffs of Ein Gedi) |
+| R16 | Opus | Medium | `review-t16` | Review of T16 (Boss kit and the first boss) |
+| R17 | Opus | Medium | `review-t17` | Review of T17 (Scene: The Gematria Forge) |
+| R18 | Opus | Medium | `review-t18` | Review of T18 (Scene: The Night Shuk) |
+| R19 | Opus | Medium | `review-t19` | Review of T19 (Scene: The Jaffa Line) |
 | T20 | Opus | High | `t20-geniza` | Scene: The Sunken Geniza |
 | T21 | Opus | High | `t21-hermon` | Scene: Wings over Hermon |
 | T22 | Opus | High | `t22-station` | Scene: The Star Station |
@@ -379,6 +384,81 @@ Goal: Build the "The Jaffa Line" scene as a distinct, beautiful, exciting 3D lev
 3. Work from start to finish without stopping for my approval. Make sensible decisions yourself and record the important ones.
 4. Do everything to the end without stopping: build it, run lint, typecheck, tests and build, tick the task in ROADMAP.md, update docs/progress.json for T19 (see "Progress log" in CLAUDE.md) and run node scripts/render-progress.mjs, push, open a pull request, wait for the checks to pass (fix anything that fails), then merge it into main yourself and delete the branch. If docs/progress.json conflicts, keep both sides; if docs/PROGRESS.md conflicts, regenerate it with the script.
 5. When it is merged, tell me in plain words what was built, how to try it on the live link, and which manual steps are waiting for me.
+```
+
+## R15 · Review of T15 (Scene: Cliffs of Ein Gedi)
+
+Owner: **Opus** · Effort: **Medium** · Branch: `review-t15`
+
+Sonnet built T15 (branch `t15-cliffs`). Review ONLY that task, in this one pass, to save tokens. Prompt:
+
+```
+Otiyot project — GitHub repo shlomyeisenberg-lang/Otiyot.
+Review task R15: check Sonnet's work on T15 (branch: review-t15). Work without stopping for approval.
+1. Read CLAUDE.md, docs/ARCHITECTURE.md, docs/DESIGN.md, docs/GAME_DESIGN.md and the T15 entry in docs/ROADMAP.md. Read only the files T15 added or changed (see its PR) plus the tests for them. Do not review other tasks.
+2. Check: content rules (no women, nothing sexy, no holy Names, no pesukim as typing text), learned-letters-only text and the Easy/Standard/Hard levels with their test, scene lifecycle (disposes everything, no allocations in update(), no direct keyboard/save access), strings in locales/he.json and en.json, RTL-safe CSS, accessibility, performance budgets, tests, and whether it looks and feels as good as the Meadow pattern (run it in Chromium with Playwright and view screenshots at desktop and 375px). Then judge it as a game, not just as code: is it built well enough, interesting and fun enough, clear to a beginner, rewarding, varied (no boring stretches), well paced and balanced across Easy/Standard/Hard, and does it teach its keys well? Play it through in Playwright to judge this. Strengthen what is weak; put bigger ideas into feature_ideas.
+3. Fix what is wrong or weak with small, focused changes; improve visuals or fun where clearly lacking. Do not rewrite what works. Add tests for anything you fix.
+4. Run pnpm lint && pnpm typecheck && pnpm test && pnpm build. Update CHANGELOG.md if the player sees a change. Record findings and fixes in docs/progress.json under R15 (changes, decisions, todo) and run node scripts/render-progress.mjs. Tick R15 in docs/ROADMAP.md. Push regularly, open a pull request, merge it into main and delete the branch. If nothing needed changing, still merge a small PR that records the review result.
+```
+
+## R16 · Review of T16 (Boss kit and the first boss)
+
+Owner: **Opus** · Effort: **Medium** · Branch: `review-t16`
+
+Sonnet built T16 (branch `t16-boss-kit`). Review ONLY that task, in this one pass, to save tokens. Prompt:
+
+```
+Otiyot project — GitHub repo shlomyeisenberg-lang/Otiyot.
+Review task R16: check Sonnet's work on T16 (branch: review-t16). Work without stopping for approval.
+1. Read CLAUDE.md, docs/ARCHITECTURE.md, docs/DESIGN.md, docs/GAME_DESIGN.md and the T16 entry in docs/ROADMAP.md. Read only the files T16 added or changed (see its PR) plus the tests for them. Do not review other tasks.
+2. Check: content rules (no women, nothing sexy, no holy Names, no pesukim as typing text), learned-letters-only text and the Easy/Standard/Hard levels with their test, scene lifecycle (disposes everything, no allocations in update(), no direct keyboard/save access), strings in locales/he.json and en.json, RTL-safe CSS, accessibility, performance budgets, tests, and whether it looks and feels as good as the Meadow pattern (run it in Chromium with Playwright and view screenshots at desktop and 375px). Then judge it as a game, not just as code: is it built well enough, interesting and fun enough, clear to a beginner, rewarding, varied (no boring stretches), well paced and balanced across Easy/Standard/Hard, and does it teach its keys well? Play it through in Playwright to judge this. Strengthen what is weak; put bigger ideas into feature_ideas.
+3. Fix what is wrong or weak with small, focused changes; improve visuals or fun where clearly lacking. Do not rewrite what works. Add tests for anything you fix.
+4. Run pnpm lint && pnpm typecheck && pnpm test && pnpm build. Update CHANGELOG.md if the player sees a change. Record findings and fixes in docs/progress.json under R16 (changes, decisions, todo) and run node scripts/render-progress.mjs. Tick R16 in docs/ROADMAP.md. Push regularly, open a pull request, merge it into main and delete the branch. If nothing needed changing, still merge a small PR that records the review result.
+```
+
+## R17 · Review of T17 (Scene: The Gematria Forge)
+
+Owner: **Opus** · Effort: **Medium** · Branch: `review-t17`
+
+Sonnet built T17 (branch `t17-forge`). Review ONLY that task, in this one pass, to save tokens. Prompt:
+
+```
+Otiyot project — GitHub repo shlomyeisenberg-lang/Otiyot.
+Review task R17: check Sonnet's work on T17 (branch: review-t17). Work without stopping for approval.
+1. Read CLAUDE.md, docs/ARCHITECTURE.md, docs/DESIGN.md, docs/GAME_DESIGN.md and the T17 entry in docs/ROADMAP.md. Read only the files T17 added or changed (see its PR) plus the tests for them. Do not review other tasks.
+2. Check: content rules (no women, nothing sexy, no holy Names, no pesukim as typing text), learned-letters-only text and the Easy/Standard/Hard levels with their test, scene lifecycle (disposes everything, no allocations in update(), no direct keyboard/save access), strings in locales/he.json and en.json, RTL-safe CSS, accessibility, performance budgets, tests, and whether it looks and feels as good as the Meadow pattern (run it in Chromium with Playwright and view screenshots at desktop and 375px). Then judge it as a game, not just as code: is it built well enough, interesting and fun enough, clear to a beginner, rewarding, varied (no boring stretches), well paced and balanced across Easy/Standard/Hard, and does it teach its keys well? Play it through in Playwright to judge this. Strengthen what is weak; put bigger ideas into feature_ideas.
+3. Fix what is wrong or weak with small, focused changes; improve visuals or fun where clearly lacking. Do not rewrite what works. Add tests for anything you fix.
+4. Run pnpm lint && pnpm typecheck && pnpm test && pnpm build. Update CHANGELOG.md if the player sees a change. Record findings and fixes in docs/progress.json under R17 (changes, decisions, todo) and run node scripts/render-progress.mjs. Tick R17 in docs/ROADMAP.md. Push regularly, open a pull request, merge it into main and delete the branch. If nothing needed changing, still merge a small PR that records the review result.
+```
+
+## R18 · Review of T18 (Scene: The Night Shuk)
+
+Owner: **Opus** · Effort: **Medium** · Branch: `review-t18`
+
+Sonnet built T18 (branch `t18-shuk`). Review ONLY that task, in this one pass, to save tokens. Prompt:
+
+```
+Otiyot project — GitHub repo shlomyeisenberg-lang/Otiyot.
+Review task R18: check Sonnet's work on T18 (branch: review-t18). Work without stopping for approval.
+1. Read CLAUDE.md, docs/ARCHITECTURE.md, docs/DESIGN.md, docs/GAME_DESIGN.md and the T18 entry in docs/ROADMAP.md. Read only the files T18 added or changed (see its PR) plus the tests for them. Do not review other tasks.
+2. Check: content rules (no women, nothing sexy, no holy Names, no pesukim as typing text), learned-letters-only text and the Easy/Standard/Hard levels with their test, scene lifecycle (disposes everything, no allocations in update(), no direct keyboard/save access), strings in locales/he.json and en.json, RTL-safe CSS, accessibility, performance budgets, tests, and whether it looks and feels as good as the Meadow pattern (run it in Chromium with Playwright and view screenshots at desktop and 375px). Then judge it as a game, not just as code: is it built well enough, interesting and fun enough, clear to a beginner, rewarding, varied (no boring stretches), well paced and balanced across Easy/Standard/Hard, and does it teach its keys well? Play it through in Playwright to judge this. Strengthen what is weak; put bigger ideas into feature_ideas.
+3. Fix what is wrong or weak with small, focused changes; improve visuals or fun where clearly lacking. Do not rewrite what works. Add tests for anything you fix.
+4. Run pnpm lint && pnpm typecheck && pnpm test && pnpm build. Update CHANGELOG.md if the player sees a change. Record findings and fixes in docs/progress.json under R18 (changes, decisions, todo) and run node scripts/render-progress.mjs. Tick R18 in docs/ROADMAP.md. Push regularly, open a pull request, merge it into main and delete the branch. If nothing needed changing, still merge a small PR that records the review result.
+```
+
+## R19 · Review of T19 (Scene: The Jaffa Line)
+
+Owner: **Opus** · Effort: **Medium** · Branch: `review-t19`
+
+Sonnet built T19 (branch `t19-rail`). Review ONLY that task, in this one pass, to save tokens. Prompt:
+
+```
+Otiyot project — GitHub repo shlomyeisenberg-lang/Otiyot.
+Review task R19: check Sonnet's work on T19 (branch: review-t19). Work without stopping for approval.
+1. Read CLAUDE.md, docs/ARCHITECTURE.md, docs/DESIGN.md, docs/GAME_DESIGN.md and the T19 entry in docs/ROADMAP.md. Read only the files T19 added or changed (see its PR) plus the tests for them. Do not review other tasks.
+2. Check: content rules (no women, nothing sexy, no holy Names, no pesukim as typing text), learned-letters-only text and the Easy/Standard/Hard levels with their test, scene lifecycle (disposes everything, no allocations in update(), no direct keyboard/save access), strings in locales/he.json and en.json, RTL-safe CSS, accessibility, performance budgets, tests, and whether it looks and feels as good as the Meadow pattern (run it in Chromium with Playwright and view screenshots at desktop and 375px). Then judge it as a game, not just as code: is it built well enough, interesting and fun enough, clear to a beginner, rewarding, varied (no boring stretches), well paced and balanced across Easy/Standard/Hard, and does it teach its keys well? Play it through in Playwright to judge this. Strengthen what is weak; put bigger ideas into feature_ideas.
+3. Fix what is wrong or weak with small, focused changes; improve visuals or fun where clearly lacking. Do not rewrite what works. Add tests for anything you fix.
+4. Run pnpm lint && pnpm typecheck && pnpm test && pnpm build. Update CHANGELOG.md if the player sees a change. Record findings and fixes in docs/progress.json under R19 (changes, decisions, todo) and run node scripts/render-progress.mjs. Tick R19 in docs/ROADMAP.md. Push regularly, open a pull request, merge it into main and delete the branch. If nothing needed changing, still merge a small PR that records the review result.
 ```
 
 ## T20 · Scene: The Sunken Geniza

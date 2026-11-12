@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-11",
+  "updated": "2026-11-12",
   "history": [
     {
       "date": "2026-11-09",
@@ -29,6 +29,11 @@
     {
       "date": "2026-11-11",
       "what": "Owners changed by the owner: tasks planned as Fable move to Opus (T20 to T26, T28, T33), except T14, T16, T27, T34 which stay Fable. Sonnet keeps what was Sonnet. Builders now push every 15 minutes with a docs/WIP-Txx.md note.",
+      "where": "docs/auto-run/TASK-PROMPTS.md, docs/ROADMAP.md"
+    },
+    {
+      "date": "2026-11-11",
+      "what": "Added review tasks R15 to R19: Opus reviews Sonnet's T15 to T19 one task at a time and may fix them.",
       "where": "docs/auto-run/TASK-PROMPTS.md, docs/ROADMAP.md"
     }
   ],
@@ -1131,6 +1136,61 @@
       ],
       "notes": "Compared against the Meadow and the Shuk with Playwright screenshots; the Line keeps their layout, HUD and restoration feel with its own dawn palette, rail mechanic and music."
     },
+    "R15": {
+      "status": "pending",
+      "finished": "",
+      "pr": "",
+      "summary": "",
+      "changes": [],
+      "decisions": [],
+      "manual_steps": [],
+      "todo": [],
+      "notes": ""
+    },
+    "R16": {
+      "status": "pending",
+      "finished": "",
+      "pr": "",
+      "summary": "",
+      "changes": [],
+      "decisions": [],
+      "manual_steps": [],
+      "todo": [],
+      "notes": ""
+    },
+    "R17": {
+      "status": "pending",
+      "finished": "",
+      "pr": "",
+      "summary": "",
+      "changes": [],
+      "decisions": [],
+      "manual_steps": [],
+      "todo": [],
+      "notes": ""
+    },
+    "R18": {
+      "status": "pending",
+      "finished": "",
+      "pr": "",
+      "summary": "",
+      "changes": [],
+      "decisions": [],
+      "manual_steps": [],
+      "todo": [],
+      "notes": ""
+    },
+    "R19": {
+      "status": "pending",
+      "finished": "",
+      "pr": "",
+      "summary": "",
+      "changes": [],
+      "decisions": [],
+      "manual_steps": [],
+      "todo": [],
+      "notes": ""
+    },
     "T20": {
       "status": "in_progress",
       "finished": "",
@@ -1172,6 +1232,10 @@
         {
           "decision": "Screenshots of the Geniza and the Meadow were compared with Playwright before merging; the camera was raised and the pillars, weed and light shafts moved back so the hall reads clearly.",
           "why": "Pattern rule of this task: match the Meadow's polish while keeping a different look."
+        },
+        {
+          "decision": "Merged by the Sonnet runner although T20 was moved to Opus during the build.",
+          "why": "The owner approved merging the finished branch as long as no other runner had claimed T20; none had."
         }
       ],
       "manual_steps": [],

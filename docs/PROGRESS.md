@@ -2,12 +2,12 @@
 
 # Otiyot — Progress
 
-_Last updated 2026-11-11. This page is generated from `docs/progress.json`; to change it, edit the JSON and run `node scripts/render-progress.mjs`._
+_Last updated 2026-11-12. This page is generated from `docs/progress.json`; to change it, edit the JSON and run `node scripts/render-progress.mjs`._
 
 ## Summary
 
-- ✅ **19** of **39** tasks done
-- 🛠️ 1 in progress · ⛔ 0 blocked · ⬜ 19 pending
+- ✅ **19** of **44** tasks done
+- 🛠️ 1 in progress · ⛔ 0 blocked · ⬜ 24 pending
 - ⬜ **3** manual steps waiting for you
 - 💡 7 feature ideas open
 
@@ -55,6 +55,7 @@ Work done before or outside the numbered tasks.
 - **2026-11-10** — Three builders: Opus (T13, T14, T16, T34), Fable (T27, T35 story-heavy only), Sonnet (everything else). Builders pass the baton to the owner of the next task. (docs/auto-run/TASK-PROMPTS.md)
 - **2026-11-10** — Owners changed by the owner: Fable builds T14 (Meadow), T16 (boss kit), T27 (final fight) and T34 (polish pass); Opus finishes T13 (hub, already running); Sonnet builds everything else including T35. (docs/auto-run/TASK-PROMPTS.md, docs/ROADMAP.md)
 - **2026-11-11** — Owners changed by the owner: tasks planned as Fable move to Opus (T20 to T26, T28, T33), except T14, T16, T27, T34 which stay Fable. Sonnet keeps what was Sonnet. Builders now push every 15 minutes with a docs/WIP-Txx.md note. (docs/auto-run/TASK-PROMPTS.md, docs/ROADMAP.md)
+- **2026-11-11** — Added review tasks R15 to R19: Opus reviews Sonnet's T15 to T19 one task at a time and may fix them. (docs/auto-run/TASK-PROMPTS.md, docs/ROADMAP.md)
 
 ## Task overview
 
@@ -73,10 +74,15 @@ Work done before or outside the numbered tasks.
 - ✅ T13 · Hub: the House of the Scribe — 2026-11-11 · [PR #23](https://github.com/shlomyeisenberg-lang/Otiyot/pull/23)
 - ✅ T14 · Scene: Home Row Meadow — 2026-11-11 · [PR #25](https://github.com/shlomyeisenberg-lang/Otiyot/pull/25)
 - ✅ T15 · Scene: Cliffs of Ein Gedi — 2026-11-11 · [PR #26](https://github.com/shlomyeisenberg-lang/Otiyot/pull/26)
+- ⬜ R15
 - ✅ T16 · Boss kit and the first boss — 2026-11-11 · [PR #27](https://github.com/shlomyeisenberg-lang/Otiyot/pull/27)
+- ⬜ R16
 - ✅ T17 · Scene: The Gematria Forge — 2026-11-11 · [PR #28](https://github.com/shlomyeisenberg-lang/Otiyot/pull/28)
+- ⬜ R17
 - ✅ T18 · Scene: The Night Shuk — 2026-11-11 · [PR #29](https://github.com/shlomyeisenberg-lang/Otiyot/pull/29)
+- ⬜ R18
 - ✅ T19 · Scene: The Jaffa Line — 2026-11-12 · [PR #30](https://github.com/shlomyeisenberg-lang/Otiyot/pull/30)
+- ⬜ R19
 - 🛠️ T20 · Scene: The Sunken Geniza
 - ⬜ T21 · Scene: Wings over Hermon
 - ⬜ T22 · Scene: The Star Station
@@ -736,6 +742,12 @@ The Cliffs of Ein Gedi can be played from the map: a grey desert canyon where ev
 
 Built by the Sonnet runner, High effort, following the Meadow's pattern. Looked at in Chromium at 1280 and 375 wide, English and Hebrew, both themes. About 85 draw calls and 52k triangles on medium.
 
+### ⬜ R15
+
+**Status:** Pending
+
+_Not started._
+
 ### ✅ T16 · Boss kit and the first boss
 
 **Status:** Done · **Finished:** 2026-11-11 · **Pull request:** [PR #27](https://github.com/shlomyeisenberg-lang/Otiyot/pull/27)
@@ -780,6 +792,12 @@ The first boss, the Great Blot, can be fought in the Silent Arena once the Cliff
 
 Local checks passed (lint, typecheck, 397 unit tests, build) and tests/e2e/arena.spec.ts passed in the sandbox. The first CI run failed only in tests/e2e/cliffs.spec.ts, which expects a down-reach from random words (flaky, unrelated to this task; see todo).
 
+### ⬜ R16
+
+**Status:** Pending
+
+_Not started._
+
 ### ✅ T17 · Scene: The Gematria Forge
 
 **Status:** Done · **Finished:** 2026-11-11 · **Pull request:** [PR #28](https://github.com/shlomyeisenberg-lang/Otiyot/pull/28)
@@ -819,6 +837,12 @@ The Gematria Forge can be played from the map once the number row is learned and
 
 Built by the Sonnet runner, High effort, following the Cliffs and Meadow pattern. Looked at in Chromium at 1280 wide, light theme, three moments of a run. The CI state file on the auto-run-state branch could not be written through the proxy; the pushed branch served as the claim.
 
+### ⬜ R17
+
+**Status:** Pending
+
+_Not started._
+
 ### ✅ T18 · Scene: The Night Shuk
 
 **Status:** Done · **Finished:** 2026-11-11 · **Pull request:** [PR #29](https://github.com/shlomyeisenberg-lang/Otiyot/pull/29)
@@ -855,6 +879,12 @@ The Night Shuk can be played from the map (Level 2 of the course, after the Grea
 **Notes**
 
 Compared against the Meadow with Playwright screenshots; the Shuk keeps the Meadow's layout, HUD and restoration feel with its own night palette, mechanic and music.
+
+### ⬜ R18
+
+**Status:** Pending
+
+_Not started._
 
 ### ✅ T19 · Scene: The Jaffa Line
 
@@ -895,6 +925,12 @@ The Jaffa Line can be played from the map (Level 3 of the course, after the Grea
 
 Compared against the Meadow and the Shuk with Playwright screenshots; the Line keeps their layout, HUD and restoration feel with its own dawn palette, rail mechanic and music.
 
+### ⬜ R19
+
+**Status:** Pending
+
+_Not started._
+
 ### 🛠️ T20 · Scene: The Sunken Geniza
 
 **Status:** In progress
@@ -922,6 +958,7 @@ The Sunken Geniza can be played from the map (Level 3 of the course, after the G
 - **Reb Ezra and Dyo speak here; no new librarian character was added.** — Adding a speaker touches the shared cast and portraits; the full story pass (T35) can add the librarian. Recorded as a feature idea.
 - **The theme uses the cello as its melody voice.** — A unit test requires every theme to have its own melody instrument; the cello was the only one left and suits a deep, slow underwater hall.
 - **Screenshots of the Geniza and the Meadow were compared with Playwright before merging; the camera was raised and the pillars, weed and light shafts moved back so the hall reads clearly.** — Pattern rule of this task: match the Meadow's polish while keeping a different look.
+- **Merged by the Sonnet runner although T20 was moved to Opus during the build.** — The owner approved merging the finished branch as long as no other runner had claimed T20; none had.
 
 **To do**
 
