@@ -72,6 +72,7 @@ test('every theme makes clean sound, and layers add to it', async ({ page }, inf
       'shuk',
       'rail',
       'geniza',
+      'hermon',
       'boss',
     ] as const) {
       const low = measure(await p.render(id, 8, 0, 16000));

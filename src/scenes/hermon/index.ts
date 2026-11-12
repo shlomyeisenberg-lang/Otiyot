@@ -93,7 +93,7 @@ const NEXT_H = 1.1;
 /** The next stone waits off to the side, this many times farther out than its lane. */
 const NEXT_SPREAD = 2.4;
 const LETTER_SIZE = 1.25;
-const NEXT_SIZE = 1.05;
+const NEXT_SIZE = 1.3;
 /** The rider's seat on the eagle (the cockpit camera). */
 const SEAT = new Vector3(0, 1.6, -6.8);
 const CEILING = 120;
@@ -594,15 +594,23 @@ export class HermonScene implements GameScene {
         const py = pos.getY(i) + height / 2;
         const pz = pos.getZ(i);
         const ang = Math.atan2(pz, px);
-        const rough = 1 + Math.sin(ang * 5 + seed) * 0.08 + Math.sin(ang * 13 + seed * 2) * 0.04;
-        const k = py < height - 0.01 ? rough : 1;
-        pos.setXYZ(i, px * k + x, py - 4, pz * k + z);
+        const hh = py / height;
+        // Ridges and gullies down the flanks, shoulders part way up, a broad summit.
+        const rough =
+          1 +
+          Math.sin(ang * 5 + seed) * 0.08 +
+          Math.sin(ang * 13 + seed * 2) * 0.05 +
+          Math.sin(hh * 9 + ang * 3 + seed) * 0.07;
+        const shoulder = 1 + Math.max(0, Math.sin(hh * Math.PI)) * 0.18;
+        const k = py < height - 0.01 ? rough * shoulder : 1;
+        const top = hh > 0.97 ? height * 0.96 : py;
+        pos.setXYZ(i, px * k + x, top - 4, pz * k + z);
         const h = py / height;
         c.setHex(TINT.rock).lerp(
           d.setHex(TINT.rockDark),
           Math.max(0, Math.sin(ang * 7 + seed)) * 0.4,
         );
-        const snowLine = 0.52 + Math.sin(ang * 6 + seed) * 0.06;
+        const snowLine = 0.4 + Math.sin(ang * 6 + seed) * 0.07 + Math.sin(ang * 17 + seed) * 0.03;
         if (h > snowLine) c.lerp(d.setHex(h > snowLine + 0.08 ? TINT.snow : TINT.snowShade), 1);
         colors[i * 3] = c.r;
         colors[i * 3 + 1] = c.g;
@@ -726,7 +734,7 @@ export class HermonScene implements GameScene {
           const dy = ny - y;
           const l = Math.hypot(dx, dy);
           const seg = new PlaneGeometry(width, l);
-          seg.rotateZ(Math.atan2(dx, -dy) * -1);
+          seg.rotateZ(Math.atan2(dx, -dy));
           seg.translate((x + nx) / 2, (y + ny) / 2, 0);
           parts.push(seg);
           if (i > 1 && r.next() < 0.22) ribbon(nx, ny, len * 0.6, width * 0.6, 3);
@@ -734,7 +742,7 @@ export class HermonScene implements GameScene {
           y = ny;
         }
       };
-      ribbon(0, 0, 4.5, 0.55, 11);
+      ribbon(0, 0, 4.5, 0.9, 11);
       const bolt = new Mesh(tracker.track(merged(parts)), this.boltMat);
       bolt.visible = false;
       bolt.renderOrder = 3;
@@ -1447,6 +1455,7 @@ export class HermonScene implements GameScene {
         /[֐-׿]/.test(typing.word),
       );
     }
+    this.text.root.visible = !this.finished;
     this.text.frame(dt, typing.states);
 
     // The next word, cut in the dark ice inside the cloud; only lightning shows it.
