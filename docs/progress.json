@@ -30,6 +30,11 @@
       "date": "2026-11-11",
       "what": "Owners changed by the owner: tasks planned as Fable move to Opus (T20 to T26, T28, T33), except T14, T16, T27, T34 which stay Fable. Sonnet keeps what was Sonnet. Builders now push every 15 minutes with a docs/WIP-Txx.md note.",
       "where": "docs/auto-run/TASK-PROMPTS.md, docs/ROADMAP.md"
+    },
+    {
+      "date": "2026-11-11",
+      "what": "Added review tasks R15 to R19: Opus reviews Sonnet's T15 to T19 one task at a time and may fix them.",
+      "where": "docs/auto-run/TASK-PROMPTS.md, docs/ROADMAP.md"
     }
   ],
   "tasks": {
@@ -660,7 +665,7 @@
       "summary": "The game now opens like a story: a 3D title where gold-ink letters fall onto a grey parchment and spell the name, then the opening of Act 1 in the engine (the lamp-sign goes blank, Reb Ezra gives the quill, Dyo climbs out of the inkwell), with a dialogue box, skipping, and a hand-over to the main menu until the hub exists.",
       "changes": [
         "src/story/types.ts, cast.ts, player.ts, intro.ts, index.ts: cutscene data (beats with named shots, cues, actions and he/en lines), the cast (names, portraits, optional voices; the apprentice is silent), four male apprentice looks chosen by profile.avatar, the pure CutscenePlayer (letter-by-letter reveal by text speed with breaths after punctuation, waits for the player, advance, skip, events) and the Act 1 opening script",
-        "src/scenes/title: the title scene: a forgotten (grey) parchment on a desk in a dark blue room with an inkwell, quill and candle; gold letters fall with trails, land with ink splashes, sparks and a shockwave and sweep color back; אותיות then OTIYOT; camera fly-in across the page; grey drifting letters turn gold once the name is whole; a glint runs across the name; finish() jumps to the end",
+        "src/scenes/title: the title scene: a forgotten (grey) parchment on a desk in a dark blue room with an inkwell, quill and candle; gold letters fall with trails, land with ink splashes, sparks and a shockwave and sweep color back; \u05d0\u05d5\u05ea\u05d9\u05d5\u05ea then OTIYOT; camera fly-in across the page; grey drifting letters turn gold once the name is whole; a glint runs across the name; finish() jumps to the end",
         "src/scenes/intro: the intro scene: a night street with neighbors, cypresses and stars, the House of the Scribe with door, lit windows, lanterns and the lamp-sign; the Forgetting greys the street and the sign letters stutter out one by one; Ezra walks out of the opening door; the spare quill floats into the apprentice's hand on a gold ribbon; Dyo pops out of the inkwell; the first letter is written back and color returns around the house; 14 named camera shots",
         "src/game/dyo.ts: Dyo the ink drop for any scene (breathes, blinks, hops with squash and stretch, cheers, faces things)",
         "src/ui/screens/title.ts: the title screen (route #/title, the launch screen): press any key, then a compact menu: Begin the story, Main menu or Continue, Watch the opening again, Players, Settings; painted wordmark fallback without 3D; runs the animation once per visit",
@@ -756,7 +761,7 @@
       ],
       "decisions": [
         {
-          "decision": "Door words are built from learned letters only, even for a brand-new player (four-letter strings of f and j, or כ and ח)",
+          "decision": "Door words are built from learned letters only, even for a brand-new player (four-letter strings of f and j, or \u05db and \u05d7)",
           "why": "The learned-letters rule covers all text to type, and the hub is typed; words get real as soon as the library can spell them"
         },
         {
@@ -921,7 +926,7 @@
         "src/scenes/arena/plan.ts: the Great Blot as data (Spatter, Tendrils, Flood, Mirror) and planGreatBlot, built from levelWordSource so only learned keys; punctuation only when learned; Phase IV gives back Phase I words last first",
         "src/scenes/arena/index.ts: the Silent Arena scene (stone theatre with lathe-turned seats, broken colonnade, gate pylons, paved orchestra in rings, hills with olives and cypresses; the Great Blot with a living ink skin rewritten each frame, eyes and brows on its skin, a gold seal for weak points, an ink pool; glob, tendril, flood ring and mirror-shard attacks; gold bolts from the quill; cinematic transitions with hit-stop, push-in, palette and grade shifts, a camera roll into the Mirror; victory cues and shots)",
         "src/scenes/arena/palette.ts: a light for each phase and for the restored arena, in day and night themes",
-        "src/story/arena.ts: lines for Reb Ezra and Dyo in Hebrew and English, phase names, the victory cutscene BLOT_VICTORY and the card Act Two · The Road",
+        "src/story/arena.ts: lines for Reb Ezra and Dyo in Hebrew and English, phase names, the victory cutscene BLOT_VICTORY and the card Act Two \u00b7 The Road",
         "src/ui/screens/arena.ts and src/ui/styles/arena.css: the arena screen (#/arena): health bar with phase notches, phase cards, options panel, streak carried between phases, checkpoint resume, the victory cutscene with letterbox and Skip, results card",
         "src/game/regions.ts: new region blot (Act One, opens after the Cliffs); Act Two and Three regions wait for it (after: blot, RegionStatus.waitsFor); src/ui/screens/hub.ts says so on the map; src/scenes/hub/land.ts: a beacon spot for it",
         "src/audio/themes.ts: boss theme section P4 (phase4) for the Mirror; src/ui/screens/sound.ts: a Boss phase 4 button in the sound room",
@@ -941,7 +946,7 @@
           "why": "The story should not skip its first boss, but the course still decides when each scene opens. A player who beats the Blot loses nothing; the Blot is beatable on Calm by anyone who reached it."
         },
         {
-          "decision": "Health is the share of the fight text still unwritten, and attacks never fail the player (they drop the streak); only the Sofer’s Trial fails, on the first error.",
+          "decision": "Health is the share of the fight text still unwritten, and attacks never fail the player (they drop the streak); only the Sofer\u2019s Trial fails, on the first error.",
           "why": "Guarantees the fight is winnable on every difficulty with no soft-lock, matches GAME_DESIGN (only hardcore modes fail), and keeps the pressure honest: stalling costs streak, not progress."
         },
         {
@@ -1130,6 +1135,61 @@
         "A polish pass (T34) can add speed lines, bend-lean on the trains and a tunnel."
       ],
       "notes": "Compared against the Meadow and the Shuk with Playwright screenshots; the Line keeps their layout, HUD and restoration feel with its own dawn palette, rail mechanic and music."
+    },
+    "R15": {
+      "status": "pending",
+      "finished": "",
+      "pr": "",
+      "summary": "",
+      "changes": [],
+      "decisions": [],
+      "manual_steps": [],
+      "todo": [],
+      "notes": ""
+    },
+    "R16": {
+      "status": "pending",
+      "finished": "",
+      "pr": "",
+      "summary": "",
+      "changes": [],
+      "decisions": [],
+      "manual_steps": [],
+      "todo": [],
+      "notes": ""
+    },
+    "R17": {
+      "status": "pending",
+      "finished": "",
+      "pr": "",
+      "summary": "",
+      "changes": [],
+      "decisions": [],
+      "manual_steps": [],
+      "todo": [],
+      "notes": ""
+    },
+    "R18": {
+      "status": "pending",
+      "finished": "",
+      "pr": "",
+      "summary": "",
+      "changes": [],
+      "decisions": [],
+      "manual_steps": [],
+      "todo": [],
+      "notes": ""
+    },
+    "R19": {
+      "status": "pending",
+      "finished": "",
+      "pr": "",
+      "summary": "",
+      "changes": [],
+      "decisions": [],
+      "manual_steps": [],
+      "todo": [],
+      "notes": ""
     },
     "T20": {
       "status": "pending",
@@ -1359,7 +1419,7 @@
       "why": "Fast small Blots, armoured Blots whose shield needs two words, and splitting Blots would give each region its own enemies and make waves more varied",
       "model": "Fable 5.2",
       "effort": "High",
-      "prompt": "Otiyot project — GitHub repo shlomyeisenberg-lang/Otiyot. Task: Blot varieties (branch: idea-blot-varieties). Goal: add three Blot kinds to the combat kit: swift (small, fast, short word), armoured (shield of two words typed in a row) and splitting (breaks into two small Blots with short words). 1. Read CLAUDE.md, docs/ARCHITECTURE.md (section 7e), docs/DESIGN.md, docs/GAME_DESIGN.md (Combat) and only the T11 entry of docs/progress.json. 2. Start from the latest main and create the branch idea-blot-varieties. 3. Work from start to finish without stopping for my approval; make sensible decisions and record them. 4. Extend src/game/combat.ts (kinds in the wave plans, driven by the seed and the difficulty) and src/game/blots.ts (a distinct look for each kind), keep words to learned letters only and add unit tests for it, check it in the test range Wave fight mode with screenshots. 5. Run pnpm lint, typecheck, test and build, update docs/progress.json (feature_ideas status built, and a notes line) and run node scripts/render-progress.mjs, push, open a pull request, wait for the checks, merge it into main yourself and delete the branch.",
+      "prompt": "Otiyot project \u2014 GitHub repo shlomyeisenberg-lang/Otiyot. Task: Blot varieties (branch: idea-blot-varieties). Goal: add three Blot kinds to the combat kit: swift (small, fast, short word), armoured (shield of two words typed in a row) and splitting (breaks into two small Blots with short words). 1. Read CLAUDE.md, docs/ARCHITECTURE.md (section 7e), docs/DESIGN.md, docs/GAME_DESIGN.md (Combat) and only the T11 entry of docs/progress.json. 2. Start from the latest main and create the branch idea-blot-varieties. 3. Work from start to finish without stopping for my approval; make sensible decisions and record them. 4. Extend src/game/combat.ts (kinds in the wave plans, driven by the seed and the difficulty) and src/game/blots.ts (a distinct look for each kind), keep words to learned letters only and add unit tests for it, check it in the test range Wave fight mode with screenshots. 5. Run pnpm lint, typecheck, test and build, update docs/progress.json (feature_ideas status built, and a notes line) and run node scripts/render-progress.mjs, push, open a pull request, wait for the checks, merge it into main yourself and delete the branch.",
       "status": "idea"
     },
     {
@@ -1368,7 +1428,7 @@
       "why": "Lets the player pick one of the four male apprentice looks (robe, trim, cap, hat or turban) in the welcome and in Players, so the intro shows his own apprentice",
       "model": "Sonnet 5.5",
       "effort": "Medium",
-      "prompt": "Otiyot project — GitHub repo shlomyeisenberg-lang/Otiyot. Task: apprentice look picker (branch: idea-apprentice-look). Goal: let the player choose his apprentice's look from APPRENTICE_LOOKS in src/story/cast.ts (all male apprentices, ARCHITECTURE section 8), saved in profile.avatar. 1. Read CLAUDE.md, docs/ARCHITECTURE.md, docs/DESIGN.md and the T12 entry in docs/progress.json. 2. Start from the latest main and create the branch idea-apprentice-look. 3. Work from start to finish without stopping for my approval; record important decisions. 4. Add a fourth welcome step and a Players action that show the looks as choice cards with a small portrait drawn in code (tokens only, he and en strings, logical CSS), chosen by click, arrows or typed letter; the intro (src/scenes/intro) already uses apprenticeLook(profile.avatar). Unit-test the choice, add a Playwright check, run pnpm lint, typecheck, test and build, update docs and docs/progress.json (this idea's status to built) and run node scripts/render-progress.mjs, push, open a pull request, wait for CI, merge it into main yourself and delete the branch.",
+      "prompt": "Otiyot project \u2014 GitHub repo shlomyeisenberg-lang/Otiyot. Task: apprentice look picker (branch: idea-apprentice-look). Goal: let the player choose his apprentice's look from APPRENTICE_LOOKS in src/story/cast.ts (all male apprentices, ARCHITECTURE section 8), saved in profile.avatar. 1. Read CLAUDE.md, docs/ARCHITECTURE.md, docs/DESIGN.md and the T12 entry in docs/progress.json. 2. Start from the latest main and create the branch idea-apprentice-look. 3. Work from start to finish without stopping for my approval; record important decisions. 4. Add a fourth welcome step and a Players action that show the looks as choice cards with a small portrait drawn in code (tokens only, he and en strings, logical CSS), chosen by click, arrows or typed letter; the intro (src/scenes/intro) already uses apprenticeLook(profile.avatar). Unit-test the choice, add a Playwright check, run pnpm lint, typecheck, test and build, update docs and docs/progress.json (this idea's status to built) and run node scripts/render-progress.mjs, push, open a pull request, wait for CI, merge it into main yourself and delete the branch.",
       "status": "idea"
     },
     {
@@ -1377,7 +1437,7 @@
       "why": "Neither track teaches the digits, so the Gematria Forge can never open; the Night Shuk opens by course level instead of its own symbol lessons",
       "model": "Sonnet 5.5",
       "effort": "Medium",
-      "prompt": "Otiyot project — GitHub repo shlomyeisenberg-lang/Otiyot. Task: number row and symbol lessons (branch: idea-number-row). Work from start to finish without stopping for approval. 1. Read CLAUDE.md, docs/ARCHITECTURE.md, docs/DESIGN.md, docs/GAME_DESIGN.md and your entry in docs/progress.json (read only T13 and the feature idea). 2. Start from the latest main and create the branch idea-number-row. 3. Add lessons to both lesson tracks (src/learn/track.ts, text1.ts, text2.ts) in Hebrew and English that teach the number row (1-0) and the common symbols, after Level 1, so knownKeysOf includes them once passed; keep learned-letters-only and the content rules (ARCHITECTURE section 8). 4. In src/game/regions.ts let the Forge open when the digits are learned (it already asks for them) and point learnPath at the new lessons; give the Night Shuk a keys need for the symbols. 5. Unit tests for the new lessons and for the Forge opening; run pnpm lint, typecheck, test and build. 6. Update docs (ARCHITECTURE sections 5 and 7g, GAME_DESIGN), add your entry to docs/progress.json, run node scripts/render-progress.mjs, push, open a pull request, wait for CI, squash-merge it into main and delete the branch.",
+      "prompt": "Otiyot project \u2014 GitHub repo shlomyeisenberg-lang/Otiyot. Task: number row and symbol lessons (branch: idea-number-row). Work from start to finish without stopping for approval. 1. Read CLAUDE.md, docs/ARCHITECTURE.md, docs/DESIGN.md, docs/GAME_DESIGN.md and your entry in docs/progress.json (read only T13 and the feature idea). 2. Start from the latest main and create the branch idea-number-row. 3. Add lessons to both lesson tracks (src/learn/track.ts, text1.ts, text2.ts) in Hebrew and English that teach the number row (1-0) and the common symbols, after Level 1, so knownKeysOf includes them once passed; keep learned-letters-only and the content rules (ARCHITECTURE section 8). 4. In src/game/regions.ts let the Forge open when the digits are learned (it already asks for them) and point learnPath at the new lessons; give the Night Shuk a keys need for the symbols. 5. Unit tests for the new lessons and for the Forge opening; run pnpm lint, typecheck, test and build. 6. Update docs (ARCHITECTURE sections 5 and 7g, GAME_DESIGN), add your entry to docs/progress.json, run node scripts/render-progress.mjs, push, open a pull request, wait for CI, squash-merge it into main and delete the branch.",
       "status": "idea"
     },
     {
@@ -1386,7 +1446,7 @@
       "why": "The restored Meadow is the prettiest thing in the game so far; a key that hides the HUD and lets the camera ride its rail gives players something to show others.",
       "model": "Sonnet 5.5",
       "effort": "Low",
-      "prompt": "Otiyot project — GitHub repo shlomyeisenberg-lang/Otiyot. Idea: photo mode (branch: idea-photo-mode). Work without stopping for approval. Read CLAUDE.md, docs/ARCHITECTURE.md (sections 7b, 7c, 7h), docs/DESIGN.md and only your own needs in docs/progress.json. Goal: on the results card of the Home Row Meadow (src/ui/screens/meadow.ts) add a 'Look around' button that hides the HUD, the keyboard guide and the card, lets the camera glide slowly along the scene's rail (add a small method on MeadowScene), and returns on any key or click. Strings in both locales, tokens only, works with reduce motion (a still view). Add a unit or Playwright check that the HUD is hidden and comes back. Run pnpm lint, typecheck, test and build. Update docs/progress.json (feature_ideas status built) and run node scripts/render-progress.mjs, commit both, open a pull request, wait for checks, squash-merge it into main and delete the branch.",
+      "prompt": "Otiyot project \u2014 GitHub repo shlomyeisenberg-lang/Otiyot. Idea: photo mode (branch: idea-photo-mode). Work without stopping for approval. Read CLAUDE.md, docs/ARCHITECTURE.md (sections 7b, 7c, 7h), docs/DESIGN.md and only your own needs in docs/progress.json. Goal: on the results card of the Home Row Meadow (src/ui/screens/meadow.ts) add a 'Look around' button that hides the HUD, the keyboard guide and the card, lets the camera glide slowly along the scene's rail (add a small method on MeadowScene), and returns on any key or click. Strings in both locales, tokens only, works with reduce motion (a still view). Add a unit or Playwright check that the HUD is hidden and comes back. Run pnpm lint, typecheck, test and build. Update docs/progress.json (feature_ideas status built) and run node scripts/render-progress.mjs, commit both, open a pull request, wait for checks, squash-merge it into main and delete the branch.",
       "status": "idea"
     },
     {
@@ -1396,7 +1456,7 @@
       "model": "Sonnet 5.5",
       "effort": "Low",
       "status": "idea",
-      "prompt": "Otiyot project — GitHub repo shlomyeisenberg-lang/Otiyot. Idea: wandering ibex (branch: idea-ibex-walk). Work without stopping for approval. Read CLAUDE.md, docs/ARCHITECTURE.md (sections 7b, 7i), docs/DESIGN.md and only your own needs in docs/progress.json. Goal: in src/scenes/cliffs/index.ts make the ibex walk slowly along their ledge and look toward a waterfall when it starts, with no allocations in update(). Build it, add a unit or smoke assertion, run pnpm lint, typecheck, test and build, update docs/progress.json, open a pull request, merge it into main and delete the branch."
+      "prompt": "Otiyot project \u2014 GitHub repo shlomyeisenberg-lang/Otiyot. Idea: wandering ibex (branch: idea-ibex-walk). Work without stopping for approval. Read CLAUDE.md, docs/ARCHITECTURE.md (sections 7b, 7i), docs/DESIGN.md and only your own needs in docs/progress.json. Goal: in src/scenes/cliffs/index.ts make the ibex walk slowly along their ledge and look toward a waterfall when it starts, with no allocations in update(). Build it, add a unit or smoke assertion, run pnpm lint, typecheck, test and build, update docs/progress.json, open a pull request, merge it into main and delete the branch."
     },
     {
       "from": "T16",
@@ -1405,7 +1465,7 @@
       "model": "Sonnet 5.5",
       "effort": "Medium",
       "status": "idea",
-      "prompt": "Otiyot project — GitHub repo shlomyeisenberg-lang/Otiyot. Idea: the Blot remembers (branch: idea-blot-remembers). Work without stopping for approval. Read CLAUDE.md, docs/ARCHITECTURE.md (sections 7e and 7j), docs/DESIGN.md and only your own needs in docs/progress.json (read just the T16 entry with node -e). Goal: in src/ui/screens/arena.ts collect the words of Phases I–III that were typed with a mistake, and when the fight reaches Phase IV rebuild its words from them (most-missed first, at most the planned count, filled with Phase I words last first if there are too few). Keep the planning pure: add a function in src/scenes/arena/plan.ts that takes the plan and the missed words and returns the new Phase IV, with unit tests in tests/unit/boss.test.ts, including that every character is a learned key. Run pnpm lint, pnpm typecheck, pnpm test and pnpm build until they pass, add a line to CHANGELOG.md, update docs/progress.json (append a note and set this idea to built) and run node scripts/render-progress.mjs, commit both files, push, open a pull request into main, wait for the checks, squash-merge it yourself and delete the branch."
+      "prompt": "Otiyot project \u2014 GitHub repo shlomyeisenberg-lang/Otiyot. Idea: the Blot remembers (branch: idea-blot-remembers). Work without stopping for approval. Read CLAUDE.md, docs/ARCHITECTURE.md (sections 7e and 7j), docs/DESIGN.md and only your own needs in docs/progress.json (read just the T16 entry with node -e). Goal: in src/ui/screens/arena.ts collect the words of Phases I\u2013III that were typed with a mistake, and when the fight reaches Phase IV rebuild its words from them (most-missed first, at most the planned count, filled with Phase I words last first if there are too few). Keep the planning pure: add a function in src/scenes/arena/plan.ts that takes the plan and the missed words and returns the new Phase IV, with unit tests in tests/unit/boss.test.ts, including that every character is a learned key. Run pnpm lint, pnpm typecheck, pnpm test and pnpm build until they pass, add a line to CHANGELOG.md, update docs/progress.json (append a note and set this idea to built) and run node scripts/render-progress.mjs, commit both files, push, open a pull request into main, wait for the checks, squash-merge it yourself and delete the branch."
     }
   ],
   "notes": [
