@@ -930,7 +930,7 @@ export class CavesScene implements GameScene {
       kit.surface({
         color: TINT.shadow,
         emissive: TINT.shadowEdge,
-        emissiveIntensity: 0.45,
+        emissiveIntensity: 1.1,
         restore: false,
         transparent: true,
         opacity: 0.82,
