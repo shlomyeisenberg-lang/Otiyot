@@ -1199,9 +1199,9 @@
       "notes": "Fight checked with ARENA_SHOTS screenshots of every phase in light and dark mode."
     },
     "R17": {
-      "status": "in_progress",
-      "finished": "",
-      "pr": "",
+      "status": "done",
+      "finished": "2026-11-12",
+      "pr": "https://github.com/shlomyeisenberg-lang/Otiyot/pull/38",
       "summary": "Opus reviewed Sonnet's Gematria Forge (T17) and played it in both languages, light and dark, desktop and phone. The scene is handsome and clearly built, but its main mechanic did not work for a careful beginner: the fire ran cold for almost every letter, and keeping it steady changed nothing. Both are fixed, and the letter values are now shown while you play.",
       "changes": [
         "src/scenes/forge/index.ts: the space between numbers now stokes the fire like any right key. Before, only digits did, while the furnace model and its unit test counted every key, so a steady player at 1 key a second forged 7 of 8 letters cold.",

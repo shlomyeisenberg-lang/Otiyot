@@ -6,8 +6,8 @@ _Last updated 2026-11-12. This page is generated from `docs/progress.json`; to c
 
 ## Summary
 
-- ✅ **22** of **44** tasks done
-- 🛠️ 1 in progress · ⛔ 0 blocked · ⬜ 21 pending
+- ✅ **23** of **44** tasks done
+- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 21 pending
 - ⬜ **3** manual steps waiting for you
 - 💡 10 feature ideas open
 
@@ -78,7 +78,7 @@ Work done before or outside the numbered tasks.
 - ✅ T16 · Boss kit and the first boss — 2026-11-11 · [PR #27](https://github.com/shlomyeisenberg-lang/Otiyot/pull/27)
 - ✅ R16 — 2026-11-12 · [PR #36](https://github.com/shlomyeisenberg-lang/Otiyot/pull/36)
 - ✅ T17 · Scene: The Gematria Forge — 2026-11-11 · [PR #28](https://github.com/shlomyeisenberg-lang/Otiyot/pull/28)
-- 🛠️ R17
+- ✅ R17 — 2026-11-12 · [PR #38](https://github.com/shlomyeisenberg-lang/Otiyot/pull/38)
 - ✅ T18 · Scene: The Night Shuk — 2026-11-11 · [PR #29](https://github.com/shlomyeisenberg-lang/Otiyot/pull/29)
 - ⬜ R18
 - ✅ T19 · Scene: The Jaffa Line — 2026-11-12 · [PR #30](https://github.com/shlomyeisenberg-lang/Otiyot/pull/30)
@@ -879,9 +879,9 @@ The Gematria Forge can be played from the map once the number row is learned and
 
 Built by the Sonnet runner, High effort, following the Cliffs and Meadow pattern. Looked at in Chromium at 1280 wide, light theme, three moments of a run. The CI state file on the auto-run-state branch could not be written through the proxy; the pushed branch served as the claim.
 
-### 🛠️ R17
+### ✅ R17
 
-**Status:** In progress
+**Status:** Done · **Finished:** 2026-11-12 · **Pull request:** [PR #38](https://github.com/shlomyeisenberg-lang/Otiyot/pull/38)
 
 Opus reviewed Sonnet's Gematria Forge (T17) and played it in both languages, light and dark, desktop and phone. The scene is handsome and clearly built, but its main mechanic did not work for a careful beginner: the fire ran cold for almost every letter, and keeping it steady changed nothing. Both are fixed, and the letter values are now shown while you play.
 
