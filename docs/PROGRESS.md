@@ -2,12 +2,12 @@
 
 # Otiyot — Progress
 
-_Last updated 2026-11-11. This page is generated from `docs/progress.json`; to change it, edit the JSON and run `node scripts/render-progress.mjs`._
+_Last updated 2026-11-12. This page is generated from `docs/progress.json`; to change it, edit the JSON and run `node scripts/render-progress.mjs`._
 
 ## Summary
 
-- ✅ **18** of **39** tasks done
-- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 21 pending
+- ✅ **19** of **39** tasks done
+- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 20 pending
 - ⬜ **3** manual steps waiting for you
 - 💡 6 feature ideas open
 
@@ -75,7 +75,7 @@ Work done before or outside the numbered tasks.
 - ✅ T16 · Boss kit and the first boss — 2026-11-11 · [PR #27](https://github.com/shlomyeisenberg-lang/Otiyot/pull/27)
 - ✅ T17 · Scene: The Gematria Forge — 2026-11-11 · [PR #28](https://github.com/shlomyeisenberg-lang/Otiyot/pull/28)
 - ✅ T18 · Scene: The Night Shuk — 2026-11-11 · [PR #29](https://github.com/shlomyeisenberg-lang/Otiyot/pull/29)
-- ⬜ T19 · Scene: The Jaffa Line
+- ✅ T19 · Scene: The Jaffa Line — 2026-11-12 · [PR #30](https://github.com/shlomyeisenberg-lang/Otiyot/pull/30)
 - ⬜ T20 · Scene: The Sunken Geniza
 - ⬜ T21 · Scene: Wings over Hermon
 - ⬜ T22 · Scene: The Star Station
@@ -855,11 +855,44 @@ The Night Shuk can be played from the map (Level 2 of the course, after the Grea
 
 Compared against the Meadow with Playwright screenshots; the Shuk keeps the Meadow's layout, HUD and restoration feel with its own night palette, mechanic and music.
 
-### ⬜ T19 · Scene: The Jaffa Line
+### ✅ T19 · Scene: The Jaffa Line
 
-**Status:** Pending
+**Status:** Done · **Finished:** 2026-11-12 · **Pull request:** [PR #30](https://github.com/shlomyeisenberg-lang/Otiyot/pull/30)
 
-_Not started._
+The Jaffa Line can be played from the map (Level 3 of the course, after the Great Blot): a clockwork railway at dawn where every stretch of track is one learned word. Typing drives the train, clean words build boost, and boost carries the train through the bend after every third stretch and gains on Naftali, who races on the next track. Station lamps light as you go and the last stretch restores the line.
+
+**What changed**
+
+- src/scenes/rail/plan.ts: the run as pure data (stretches of one learned word, bends after every third, boost, carried bends, lead over Naftali, race result, chapters, lamps, color share)
+- src/scenes/rail/track.ts: the pure shape of the track (S-bends, run-in, position and heading at a distance)
+- src/scenes/rail/index.ts: the Rail scene (coast, plain and hills, two tracks, signals with letter boards, station lamps, two clockwork trains with turning wheels, Naftali, steam and sparks, camera that turns with the line, restoration, ghost trace as data)
+- src/scenes/rail/palette.ts: dawn and pre-dawn palettes and the colors of the line
+- src/audio/themes.ts: the "rail" music theme (D dorian, kanun pulse, harp melody, clarinet, brushes); locales sound.theme.rail and sound.mood.rail
+- src/story/rail.ts: lines for Reb Ezra, Dyo and Naftali in Hebrew and English
+- src/ui/screens/rail.ts: the Rail screen (#/rail) built like the Shuk screen, with chapter and boost chip, level and difficulty panel and results card with rank, bends and race result
+- src/ui/app.ts, src/ui/shell.ts, src/ui/playable.ts: the rail route; the Jaffa Line now has a Play button on the hub map when open
+- locales/en.json, locales/he.json: rail.* strings
+- tests/unit/rail.test.ts (learned letters only on every level, bends, boost, race, track, region and route, story lines) and tests/e2e/rail.spec.ts (a whole run from the map, restart and Esc); tests/e2e/sound.spec.ts lists the new theme
+- docs/ARCHITECTURE.md section 7l, CHANGELOG.md, ROADMAP tick
+
+**Decisions**
+
+- **The race is deterministic: Naftali is not a timer but a lead value moved by clean stretches and carried or missed bends.** — Nothing counts down in these scenes and a run must always be completable; the race is lost or won on skill without ever blocking the last stretch.
+- **Stretches are plain learned words with no punctuation, and a bend follows every third stretch.** — The roadmap asks for short words and speed; the Shuk already owns punctuation, so the Line stays about rhythm.
+- **Boost is +0.34 per clean stretch and -0.5 per slip, and a bend needs 0.5.** — Two clean stretches in a row carry a bend, one slip takes the player back to needing two again; forgiving but felt.
+- **The ghost is kept as data only (ghostTrace: ms at each finished stretch, exposed on the probe), with nothing saved yet.** — The task says data only; the save schema has no place for it and a schema change needs its own migration, so storing and replaying is left to the ghosts task (T37).
+- **Used the harp as melody voice and the kanun as pulse, with a brush kit at 132 bpm.** — The audio test requires a unique melody voice and tempo per theme; this sounds like pistons and stays distinct from the other themes.
+- **Ran the smoke test in this sandbox with an untracked local Playwright config pointing at the installed Chromium, and looked at screenshots against the Meadow and Shuk.** — The sandbox browser build differs from the version Playwright expects; the config was not committed.
+
+**To do**
+
+- [ ] Store the best run's ghostTrace in the save and replay it (T37).
+- [ ] Symbol and punctuation lessons are still missing, so the Line opens by course level like the Shuk (ROADMAP "Later").
+- [ ] A polish pass (T34) can add speed lines, bend-lean on the trains and a tunnel.
+
+**Notes**
+
+Compared against the Meadow and the Shuk with Playwright screenshots; the Line keeps their layout, HUD and restoration feel with its own dawn palette, rail mechanic and music.
 
 ### ⬜ T20 · Scene: The Sunken Geniza
 
