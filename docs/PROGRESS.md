@@ -7,9 +7,9 @@ _Last updated 2026-11-12. This page is generated from `docs/progress.json`; to c
 ## Summary
 
 - ✅ **25** of **44** tasks done
-- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 19 pending
+- 🛠️ 1 in progress · ⛔ 0 blocked · ⬜ 18 pending
 - ⬜ **3** manual steps waiting for you
-- 💡 10 feature ideas open
+- 💡 12 feature ideas open
 
 ## Waiting for me
 
@@ -84,7 +84,7 @@ Work done before or outside the numbered tasks.
 - ✅ T19 · Scene: The Jaffa Line — 2026-11-12 · [PR #30](https://github.com/shlomyeisenberg-lang/Otiyot/pull/30)
 - ✅ R19 — 2026-11-12 · [PR #40](https://github.com/shlomyeisenberg-lang/Otiyot/pull/40)
 - ✅ T20 · Scene: The Sunken Geniza — 2026-11-12 · [PR #35](https://github.com/shlomyeisenberg-lang/Otiyot/pull/35)
-- ⬜ T21 · Scene: Wings over Hermon
+- 🛠️ T21 · Scene: Wings over Hermon
 - ⬜ T22 · Scene: The Star Station
 - ⬜ T23 · Scene: Atbash City
 - ⬜ T24 · Scene: The Long Midbar
@@ -1084,11 +1084,47 @@ The Sunken Geniza can be played from the map (Level 3 of the course, after the G
 
 Built by the Sonnet runner. The 60 fps check was not measured on a real device in this sandbox (software rendering); the scene follows the performance rules (instanced weed and pages, merged static geometry, no allocations in update()).
 
-### ⬜ T21 · Scene: Wings over Hermon
+### 🛠️ T21 · Scene: Wings over Hermon
 
-**Status:** Pending
+**Status:** In progress
 
-_Not started._
+Wings over Hermon can be played from the map (Level 4 of the course, after the Great Blot): the apprentice rides a great eagle through a thunderstorm up a green valley to Mount Hermon, seen from the rider's seat. Hailstones fall one at a time, each carrying a learned word; finishing the word before the stone reaches the eagle bursts it into gold rain that restores the valley, and only lightning shows the next word waiting in the cloud. The storm breaks as you go and ends in an evening rainbow over the snow of Hermon.
+
+**What changed**
+
+- src/scenes/hermon/plan.ts: the run as pure data (9/12/15 stones of one learned word, chapters gathering/heart/summit, capitals only when learned), the fall time per word (fallSeconds), the Hail stepper (waits for the first key, holds on Calm, strikes and is thrown back up slower), lightning gaps, how long the next word stays readable, storm, breaks in the clouds, color share, caught percent
+- src/scenes/hermon/index.ts: the Hermon scene (rider's view on a great eagle with layered fingered wings that beat with the combo, Dyo on its neck, a valley of terraced green slopes, orchards, villages and a river between snowy ridges, Mount Hermon, a cloud ceiling that parts, scud racing past, a knot of cloud the stones come out of, rain streaks, lightning bolts that light the clouds, the falling stone with its word banner, the next word shown as a hologram by lightning, gold rain and a growing restoration sweep, strikes with ice and feathers, the clear evening finale with a rainbow)
+- src/scenes/hermon/palette.ts: storm and clear-evening skies for the light and dark themes, and the colors of the land, storm, hail and eagle
+- src/audio/themes.ts: the "hermon" music theme (E minor in a soaring 3/4 at 100 bpm, horn melody over a kanun pulse, strings, taiko)
+- src/audio/synth.ts: a new "horn" voice (soft brass call); src/audio/sfx.ts: a new "thunder" effect (a crack and a long low roll)
+- src/story/hermon.ts: lines for Reb Ezra and Dyo in Hebrew and English
+- src/ui/screens/hermon.ts: the Hermon screen (#/hermon) built like the Geniza screen, with chapter and caught chip, level and difficulty panel, streak drop on a strike, and a results card with rank, stones caught and strikes
+- src/ui/app.ts, src/ui/shell.ts, src/ui/playable.ts: the hermon route; Wings over Hermon now has a Play button on the hub map when open
+- locales/en.json, locales/he.json: hermon.* strings, sound.theme.hermon, sound.mood.hermon, sound.sfx.thunder
+- tests/unit/hermon.test.ts (learned letters only on every level and difficulty in English and Hebrew, capitals only when learned, fair fall times, the hail stepper, lightning, storm, breaks, region, route, theme, story lines) and tests/e2e/hermon.spec.ts (a whole Calm run from the map, and a Steady run where a stone strikes); tests/e2e/sound.spec.ts lists the new theme
+- docs/ARCHITECTURE.md section 7n, docs/GAME_DESIGN.md scene row, CHANGELOG.md, ROADMAP tick and two "Later" items
+
+**Decisions**
+
+- **Hailstones fall one at a time, in the order of the text, instead of many at once with targeting** — Keeps the typing a plain readable line (the same once-mode as the other scenes), keeps full control of learned letters, and makes the lightning that shows the next word meaningful.
+- **On Calm the stones stop in the air and wait; on the other difficulties a stone that lands only drops the streak (by the difficulty's smudge tiers) and is thrown back up to fall again 35% slower** — No timers on Calm and no soft-locks anywhere: the run always reaches its end, as the scene rules require. Strikes count as smudges for the rewards.
+- **A stone's fall time is the time to type the word at a gentle pace for the difficulty (Steady 9, Swift 16, Fierce 24, Trial 14 wpm) plus 1.8 seconds to read it, never under 3 seconds, shorter on harder levels** — A typist at the difficulty's pace always wins; a unit test checks this for every difficulty.
+- **The first stone hangs at the top until the first key** — Reb Ezra's opening line and reading the screen never cost time.
+- **"Words and capitals": on Hard, every other word over the summit gets a capital, but only when the learned set holds that capital** — No lesson teaches capitals yet, so today no capital appears and the learned-letters rule holds; capital lessons are added to ROADMAP "Later".
+- **Lightning flashes now and then and on every finished word; each flash shows the next word as a glowing hologram for 1.4 seconds, then it fades** — Matches the brief ("lightning reveals the next word"). The paper strip still shows the next word dimmed, so nobody depends on the flash. Flash strength follows the player's flash setting.
+- **Rider's view through the engine's cockpit camera, seated just behind the eagle's head** — The brief asks for cockpit view; from there the head, Dyo and the beating wings stay in view above the paper strip and keyboard.
+- **Reb Ezra is not in the 3D scene; he speaks in the dialogue box, calling after the apprentice from the ridge** — In the rider's view there is no place to see him, and Dyo rides along on the eagle.
+- **Added a new "horn" synth voice for the melody** — The theme test requires every theme to have its own melody voice, and all ten existing voices were taken; a soft horn suits a soaring flight.
+- **Added a new "thunder" sound effect** — The storm needs thunder after the lightning; there was no fitting effect.
+- **One restoration sweep from the start of the valley that grows with every word** — The material kit keeps only six sweeps and replaces the oldest; one growing sweep never takes back color that was restored.
+
+**To do**
+
+- [ ] Capitals appear only once a lesson teaches them (no lesson does yet; see ROADMAP "Later").
+
+**Notes**
+
+About 63 draw calls and 48k triangles on medium (budget 150 / 300k). Found while building: the Sunken Geniza and the Gematria Forge lay out their in-world word with rtl false, so a Hebrew word reads left to right there (added to ROADMAP "Later" and as a feature idea).
 
 ### ⬜ T22 · Scene: The Star Station
 
@@ -1318,6 +1354,42 @@ Build prompt:
 
 ```text
 Otiyot project — GitHub repo shlomyeisenberg-lang/Otiyot. Build feature idea 'Forge recall' on branch idea-forge-recall. Work without stopping for approval. Read CLAUDE.md, docs/ARCHITECTURE.md, docs/DESIGN.md, docs/GAME_DESIGN.md and only your entry in docs/progress.json. In the Gematria Forge (src/scenes/forge, src/ui/screens/forge.ts), on Standard and Hard, hide the number for about one letter in four once the player has forged that letter bright at least twice: the banner shows only the letter and a '?', the chip says 'Forge g = ?', the finger guide still shows the next key, and a slip reveals the number. Keep learned-letters-only text, add unit tests for which letters are hidden and a Playwright check, strings in he.json and en.json. Run pnpm lint, typecheck, test and build, update CHANGELOG.md and docs/progress.json (run node scripts/render-progress.mjs), open a pull request, squash-merge it into main and delete the branch.
+```
+
+### 💡 Hebrew words read right to left in the Geniza and the Forge (from T21)
+
+**Status:** idea · **Model:** Sonnet 5.5 · **Effort:** Low
+
+In the Sunken Geniza and the Gematria Forge the word banner in the 3D world is laid out left to right, so a Hebrew word shows backwards there; the other scenes were fixed in their reviews.
+
+Build prompt:
+
+```text
+Otiyot project — GitHub repo shlomyeisenberg-lang/Otiyot.
+Task idea-geniza-forge-rtl: Hebrew words read right to left in the Geniza and the Forge (branch: idea-geniza-forge-rtl)
+Goal: In src/scenes/geniza/index.ts and src/scenes/forge/index.ts the WorldText word is set with setWord(letters, false). Pass the same Hebrew test the other scenes use (/[\u0590-\u05ff]/.test(typing.word)) so a Hebrew word reads right to left in the world.
+1. Work from start to finish without stopping for my approval. Read CLAUDE.md, docs/ARCHITECTURE.md, docs/DESIGN.md and only your own entry in docs/progress.json.
+2. Start from the latest main and create the branch idea-geniza-forge-rtl.
+3. Make the change, add a small unit test if a pure helper is touched, run pnpm lint, typecheck, test and build, and check a Hebrew run of both scenes in the browser with a screenshot.
+4. Add a line to CHANGELOG.md, update docs/progress.json (feature_ideas status "built" for this idea and a note), run node scripts/render-progress.mjs, push, open a pull request, wait for the checks, merge it into main yourself and delete the branch.
+```
+
+### 💡 Capital-letter lessons (from T21)
+
+**Status:** idea · **Model:** Sonnet 5.5 · **Effort:** Medium
+
+No lesson teaches capitals, so Wings over Hermon's "words and capitals" band cannot show capitals yet; a short lesson per hand (Shift with the other hand) would unlock them everywhere the plan already supports them.
+
+Build prompt:
+
+```text
+Otiyot project — GitHub repo shlomyeisenberg-lang/Otiyot.
+Task idea-capitals: Capital-letter lessons (branch: idea-capitals)
+Goal: Add English lessons that teach capital letters (the opposite hand holds Shift) to both lesson tracks at a sensible point after all letters are learned, so the learned key set then holds the capitals. Wings over Hermon already capitalizes words on Hard once the capitals are learned (capitalized() in src/scenes/hermon/plan.ts).
+1. Work from start to finish without stopping for my approval. Read CLAUDE.md, docs/ARCHITECTURE.md (section 5 and 7n), docs/DESIGN.md and only your own entry in docs/progress.json.
+2. Start from the latest main and create the branch idea-capitals.
+3. Build it with unit tests (the learned set holds a capital only after its lesson; no capital ever appears in typing text before), keep saves compatible (a migration with a test if the save changes), run pnpm lint, typecheck, test and build.
+4. Update the docs you changed the truth of, CHANGELOG.md, docs/progress.json (this idea's status "built" and a note), run node scripts/render-progress.mjs, push, open a pull request, wait for the checks, merge it into main yourself and delete the branch.
 ```
 
 ## Notes
