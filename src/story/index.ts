@@ -12,3 +12,4 @@ export * from './forge';
 export * from './shuk';
 export * from './rail';
 export * from './geniza';
+export * from './hermon';

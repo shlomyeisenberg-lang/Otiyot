@@ -218,6 +218,22 @@ export class Synth {
         o.connect(f).connect(body).connect(g).connect(dest);
         return;
       }
+      case 'horn': {
+        // A soft brass call: two detuned saws through a filter that opens as the note swells.
+        const end = t + dur + 0.35;
+        const f = this.filter('lowpass', 500, 0.9);
+        f.frequency.setValueAtTime(380, t);
+        f.frequency.linearRampToValueAtTime(900 + bright * 1600, t + Math.min(0.25, dur * 0.5));
+        f.frequency.setTargetAtTime(700 + bright * 900, t + 0.3, 0.4);
+        for (const d of [-5, 5]) {
+          const o = this.osc('sawtooth', hz, t, end, d);
+          this.vib(o, 9, t, Math.min(0.5, dur * 0.7));
+          o.connect(f);
+        }
+        const g = this.env(t, 0.07 * vel, 0.08, Math.max(0, dur - 0.1), 0.32);
+        f.connect(g).connect(dest);
+        return;
+      }
       case 'strings': {
         const end = t + dur + 0.6;
         const f = this.filter('lowpass', 1200 + bright * 1800, 0.7);

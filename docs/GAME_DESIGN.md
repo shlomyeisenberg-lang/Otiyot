@@ -54,7 +54,7 @@ Each has its own mechanic, palette, weather, time of day, music theme and enemie
 | 6 | **The Night Shuk** | Lantern-lit market after dark, fast-talking merchants | Punctuation is currency: type prices and haggles | Symbols and punctuation |
 | 7 | **The Jaffa Line** | Clockwork train from the coast up to the hills; dawn | Rail race against Naftali: typing is boost, combos take the bends | Short words, speed |
 | 8 | **The Sunken Geniza** | Flooded archive, drifting pages, shafts of light | Rhythm: type with the tide; steady pace beats bursts | Words, consistency |
-| 9 | **Wings over Hermon** | Flight through a thunderstorm on a great eagle | Dodge falling words by finishing them before they land; cockpit view | Words and capitals |
+| 9 | **Wings over Hermon** | Flight through a thunderstorm on a great eagle, up a green valley to the snows of Hermon; the storm breaks into an evening rainbow | Hailstones fall one at a time, each carrying a word: finish it before it reaches the eagle (on Calm they stop and wait; elsewhere a landed stone drops the streak and is thrown back up). The next word waits dark in the cloud and only lightning shows it; rider's (cockpit) view | Words and capitals (capitals only once they are learned) |
 | 10 | **The Star Station** | Zero-gravity observatory counting the stars | Words fire thrusters and turrets | Sentences |
 | 11 | **Atbash City** | Neon district of code-breakers; rain | Timed cipher puzzles (atbash, sequence memory), patrol drones | Mixed, codes |
 | 12 | **The Long Midbar** | Sandstorm desert crossing toward an oasis | Survival: sentences keep the caravan moving; visibility drops | Sentences |

@@ -302,7 +302,7 @@ One-pass review of Sonnet's T19; fix what is weak. Done when merged.
 - **Done when** The scene is playable start to finish from the hub at 60 fps on medium, feels different from every other scene, and its smoke test passes.
 - **User must have ready** Nothing.
 
-### [ ] T21 · Scene: Wings over Hermon
+### [x] T21 · Scene: Wings over Hermon
 - **Branch** `t21-hermon`
 - **Model** Opus 5.5 · **Effort** High
 - **Goal** Build the "Wings over Hermon" scene as a distinct, beautiful, exciting 3D level whose mechanic is: a storm flight in cockpit view where words fall like hail and must be finished before they land; lightning reveals the next word
@@ -538,3 +538,5 @@ One-pass review of Sonnet's T19; fix what is weak. Done when merged.
 - Standalone Windows .exe build (wrap the web build).
 - Yiddish typing track.
 - More lesson tracks imported from files.
+- Capital-letter lessons (found in T21): no lesson teaches capitals, so Wings over Hermon's "words and capitals" band only ever shows capitals once a track teaches them (the plan already supports it).
+- Hebrew word direction in the Sunken Geniza and the Gematria Forge (found in T21): their in-world word banner is laid out with `rtl` false, so a Hebrew word reads left to right there; pass the same Hebrew test the other scenes use.
