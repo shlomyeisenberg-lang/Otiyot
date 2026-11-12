@@ -429,11 +429,3 @@ export function gustsIn(plan: MidbarPlan): number {
   for (const leg of plan.legs) if (leg.kind === 'storm') n += leg.to - leg.from;
   return n;
 }
-
-/** Palms at the oasis, and how many are green after so many wells (all of them at the end). */
-export const PALMS = 9;
-export function palmsGreen(wells: number, stages: number, finished: boolean): number {
-  if (finished) return PALMS;
-  if (stages <= 0) return 0;
-  return Math.min(PALMS - 1, Math.floor((PALMS * Math.max(0, wells)) / (stages + 1)));
-}
