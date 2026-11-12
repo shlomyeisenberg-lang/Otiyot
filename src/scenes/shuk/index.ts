@@ -1079,7 +1079,7 @@ export class ShukScene implements GameScene {
       this.shownLetters = typing.letters;
       const n = typing.letters.length;
       const end = n > 0 && typing.letters[n - 1] === ' ' ? n - 1 : n;
-      this.text.setWord(typing.letters.slice(0, end), false);
+      this.text.setWord(typing.letters.slice(0, end), /[\u0590-\u05ff]/.test(typing.word));
     }
     this.text.frame(dt, typing.states);
     this.feedback.frame(dt);
