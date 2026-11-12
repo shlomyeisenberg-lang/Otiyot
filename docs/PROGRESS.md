@@ -6,8 +6,8 @@ _Last updated 2026-11-12. This page is generated from `docs/progress.json`; to c
 
 ## Summary
 
-- ✅ **28** of **44** tasks done
-- 🛠️ 1 in progress · ⛔ 0 blocked · ⬜ 15 pending
+- ✅ **29** of **44** tasks done
+- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 15 pending
 - ⬜ **3** manual steps waiting for you
 - 💡 12 feature ideas open
 
@@ -87,7 +87,7 @@ Work done before or outside the numbered tasks.
 - ✅ T21 · Scene: Wings over Hermon — 2026-11-12 · [PR #41](https://github.com/shlomyeisenberg-lang/Otiyot/pull/41)
 - ✅ T22 · Scene: The Star Station — 2026-11-12 · [PR #42](https://github.com/shlomyeisenberg-lang/Otiyot/pull/42)
 - ✅ T23 · Scene: Atbash City — 2026-11-12 · [PR #43](https://github.com/shlomyeisenberg-lang/Otiyot/pull/43)
-- 🛠️ T24 · Scene: The Long Midbar
+- ✅ T24 · Scene: The Long Midbar — 2026-11-12 · [PR #44](https://github.com/shlomyeisenberg-lang/Otiyot/pull/44)
 - ⬜ T25 · Scene: The Lantern Caves
 - ⬜ T26 · The Silent Arena: remaining bosses
 - ⬜ T27 · The Blank Scroll and the Keeper
@@ -1202,9 +1202,9 @@ Atbash City can be played from the map (Level 5 of the course, after the Great B
 
 Built over two runs: the first run (Opus builder) built the scene and was cut off; the second merged main, widened the camera, checked screenshots, wrote the docs and merged.
 
-### 🛠️ T24 · Scene: The Long Midbar
+### ✅ T24 · Scene: The Long Midbar
 
-**Status:** In progress
+**Status:** Done · **Finished:** 2026-11-12 · **Pull request:** [PR #44](https://github.com/shlomyeisenberg-lang/Otiyot/pull/44)
 
 The Long Midbar can be played from the map (Level 5 of the course, after the Great Blot): the apprentice leads a caravan of three camels, with Dyo riding on the first one, along the old desert road from well to well to the oasis. Every stage is a clear sentence, where the next words stand carved on a marker stone ahead, and a sandstorm sentence, where the sky turns to blowing sand, the words ahead vanish and every word brings a wall of sand to walk through before it reaches the caravan. Every storm blows out at a well where the color comes back, and at the end the oasis turns green under a golden evening sky.
 
