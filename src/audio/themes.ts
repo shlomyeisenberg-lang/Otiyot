@@ -19,7 +19,8 @@ export type Voice =
   | 'strings'
   | 'cello'
   | 'bell'
-  | 'horn';
+  | 'horn'
+  | 'glass';
 /** Drum kits; each plays the same pattern letters with its own sounds. */
 export type Kit = 'darbuka' | 'frame' | 'taiko' | 'brush';
 
@@ -78,7 +79,17 @@ export interface ThemeSpec {
 }
 
 export type ThemeId =
-  'title' | 'hub' | 'meadow' | 'cliffs' | 'forge' | 'shuk' | 'rail' | 'geniza' | 'hermon' | 'boss';
+  | 'title'
+  | 'hub'
+  | 'meadow'
+  | 'cliffs'
+  | 'forge'
+  | 'shuk'
+  | 'rail'
+  | 'geniza'
+  | 'hermon'
+  | 'station'
+  | 'boss';
 export const THEME_IDS: readonly ThemeId[] = [
   'title',
   'hub',
@@ -89,6 +100,7 @@ export const THEME_IDS: readonly ThemeId[] = [
   'rail',
   'geniza',
   'hermon',
+  'station',
   'boss',
 ];
 
@@ -386,7 +398,37 @@ export const THEMES: Readonly<Record<ThemeId, ThemeSpec>> = {
     reverb: 0.42,
     brightness: 0.6,
     level: 0.85,
+  }, // The Star Station: slow and weightless, A dorian at 66 bpm. A glass harmonica sings the
+  // stars over a harp that twinkles in steady eighths, a soft pad hangs underneath and a cello
+  // walks below; only a frame drum, far away. It opens up as the stars come back.
+  station: {
+    id: 'station',
+    nameKey: 'sound.theme.station',
+    seed: 6610,
+    bpm: 66,
+    beats: 3,
+    sub: 2,
+    root: 69,
+    mode: 'dorian',
+    swing: 0,
+    form: ['A', 'A', 'B', 'A', 'C'],
+    sections: {
+      A: { bars: 8, chords: [0, 0, 3, 3, 5, 5, 4, 4], register: 2, density: 0.35 },
+      B: { bars: 8, chords: [3, 3, 0, 0, 6, 6, 4, 4], register: 3, density: 0.45 },
+      C: { bars: 8, chords: [5, 3, 0, 4, 5, 3, 4, 0], register: 4, density: 0.5 },
+    },
+    voices: { drone: 'pad', pulse: 'harp', melody: 'glass', counter: 'cello' },
+    kit: 'frame',
+    pulse: [0, 2, 3, 1, 3, 2],
+    counterOctave: -1,
+    drums: { base: 'D.....', full: 'D..k.T' },
+    cells: CELLS_6,
+    cadences: CAD_6,
+    reverb: 0.6,
+    brightness: 0.55,
+    level: 0.85,
   },
+
   // Boss: C freygish at full drive, taiko and cello ostinato. Four phases: each climbs, and the
   // fourth (the mirror) turns the tune over.
   boss: {
