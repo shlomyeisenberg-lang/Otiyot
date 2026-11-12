@@ -461,9 +461,9 @@ export class AtbashScene implements GameScene {
   /** The camera of a run: behind the apprentice, a little above, looking up the street. */
   private follow(): void {
     this.ctx.rig.follow(this.apprentice.root, {
-      distance: 6.4,
-      height: 2.5,
-      lookHeight: 1.8,
+      distance: 10.5,
+      height: 4.4,
+      lookHeight: 3.1,
       turnWith: 1,
       stiffness: 3.2,
     });
