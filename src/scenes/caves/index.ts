@@ -24,6 +24,7 @@
 
 import {
   BackSide,
+  DoubleSide,
   BoxGeometry,
   BufferAttribute,
   BufferGeometry,
@@ -603,7 +604,7 @@ export class CavesScene implements GameScene {
     geo.computeVertexNormals();
     const tunnel = new Mesh(
       tracker.track(geo),
-      tracker.track(kit.surface({ vertexColors: true, side: BackSide })),
+      tracker.track(kit.surface({ vertexColors: true, side: DoubleSide })),
     );
     tunnel.receiveShadow = true;
     tunnel.frustumCulled = false;
@@ -1493,9 +1494,9 @@ export class CavesScene implements GameScene {
       this.ahead.setWord([...line].slice(0, AHEAD_CAP), /[֐-׿]/.test(line));
       this.ahead.root.visible = words.length > 0;
     }
-    const dist = 5.5 + 3.5 * this.shownLight;
+    const dist = 8 + 4 * this.shownLight;
     const tz = this.leadZ + dist;
-    const tx = pathX(tz) + 1.1;
+    const tx = pathX(tz) + 2.1;
     this.tablet.position.set(tx, floorAt(tx, tz), tz);
     this.tablet.rotation.y = pathYaw(tz) - 0.25;
     this.tablet.visible = !this.finished && n > 0;
@@ -1519,7 +1520,7 @@ export class CavesScene implements GameScene {
       arr[o + 2] = c.z + (((bz % DUST_BOX) + DUST_BOX) % DUST_BOX) - DUST_BOX / 2;
     }
     pos.needsUpdate = true;
-    this.dustMat.opacity = 0.2 + this.shownLight * 0.45;
+    this.dustMat.opacity = 0.08 + this.shownLight * 0.3;
   }
 
   private aheadCount(): number {
