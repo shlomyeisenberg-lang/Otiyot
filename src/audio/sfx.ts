@@ -25,6 +25,9 @@ export const SFX_NAMES = [
   'unlock',
   'gust',
   'camel-bell',
+  'flare',
+  'creep',
+  'lamp',
   'success',
   'ui-move',
   'ui-click',
@@ -243,6 +246,54 @@ export function playSfx(
       n.connect(f)
         .connect(s.env(t, 0.3, 0.35, 0.2, 0.5))
         .connect(dest);
+      return;
+    }
+    case 'flare': {
+      // The lantern flares: a soft breath of flame swelling up, with a warm glassy shimmer.
+      const n = s.noiseSrc(t, t + 0.7, 0.6);
+      const f = s.filter('bandpass', 600, 0.8);
+      f.frequency.setValueAtTime(400, t);
+      f.frequency.exponentialRampToValueAtTime(1600, t + 0.35);
+      n.connect(f)
+        .connect(s.env(t, 0.12, 0.15, 0.1, 0.4))
+        .connect(dest);
+      for (const hz of [880, 1318.5]) {
+        s.osc('sine', hz, t + 0.05, t + 0.9)
+          .connect(s.decay(t + 0.05, 0.03, 0.8))
+          .connect(dest);
+      }
+      return;
+    }
+    case 'creep': {
+      // The shadows creep closer: a low, soft slide downward, more felt than heard.
+      const o = s.osc('triangle', 150, t, t + 0.9);
+      o.frequency.exponentialRampToValueAtTime(92, t + 0.8);
+      o.connect(s.filter('lowpass', 500, 0.7))
+        .connect(s.env(t, 0.14, 0.12, 0.3, 0.45))
+        .connect(dest);
+      const n = s.noiseSrc(t, t + 0.6, 0.3);
+      n.connect(s.filter('lowpass', 400, 0.6))
+        .connect(s.env(t, 0.05, 0.2, 0.1, 0.3))
+        .connect(dest);
+      return;
+    }
+    case 'lamp': {
+      // An oil lamp catches: the scratch of the wick, a little whump of flame, a warm chord.
+      const k = s.noiseSrc(t, t + 0.06, 0.5);
+      k.connect(s.filter('highpass', 2600, 0.7))
+        .connect(s.decay(t, 0.06, 0.05))
+        .connect(dest);
+      const w = s.noiseSrc(t + 0.05, t + 0.5, 0.4);
+      w.connect(s.filter('lowpass', 700, 0.8))
+        .connect(s.env(t + 0.05, 0.16, 0.06, 0.05, 0.3))
+        .connect(dest);
+      let at = t + 0.12;
+      for (const hz of [523.25, 659.25, 783.99]) {
+        s.osc('sine', hz, at, at + 1.4)
+          .connect(s.decay(at, 0.05, 1.3))
+          .connect(dest);
+        at += 0.06;
+      }
       return;
     }
     case 'camel-bell': {

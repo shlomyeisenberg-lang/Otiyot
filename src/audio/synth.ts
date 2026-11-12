@@ -300,6 +300,21 @@ export class Synth {
         g.connect(f).connect(dest);
         return;
       }
+      case 'kalimba': {
+        // A kalimba: a soft metal tine, struck. A quick bright knock that dies at once over a
+        // round tone ringing on, like a drop of water in a dark cave.
+        const end = t + dur + 1.4;
+        for (const [ratio, amp, life] of [
+          [1, 0.11, 1.3],
+          [5.4, 0.025, 0.12],
+          [8.9, 0.012, 0.05],
+        ] as const) {
+          this.osc('sine', hz * ratio, t, end)
+            .connect(this.decay(t, amp * vel, life + dur * 0.3))
+            .connect(dest);
+        }
+        return;
+      }
       case 'pluck': {
         // A synth pluck: two detuned saws through a filter that snaps shut, like a code machine
         // ticking through its wheels. Short and bright, for neon arpeggios.
