@@ -6,10 +6,10 @@ _Last updated 2026-11-12. This page is generated from `docs/progress.json`; to c
 
 ## Summary
 
-- ✅ **30** of **44** tasks done
-- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 14 pending
+- ✅ **31** of **44** tasks done
+- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 13 pending
 - ⬜ **3** manual steps waiting for you
-- 💡 12 feature ideas open
+- 💡 13 feature ideas open
 
 ## Waiting for me
 
@@ -89,7 +89,7 @@ Work done before or outside the numbered tasks.
 - ✅ T23 · Scene: Atbash City — 2026-11-12 · [PR #43](https://github.com/shlomyeisenberg-lang/Otiyot/pull/43)
 - ✅ T24 · Scene: The Long Midbar — 2026-11-12 · [PR #44](https://github.com/shlomyeisenberg-lang/Otiyot/pull/44)
 - ✅ T25 · Scene: The Lantern Caves — 2026-11-12 · [PR #45](https://github.com/shlomyeisenberg-lang/Otiyot/pull/45)
-- ⬜ T26 · The Silent Arena: remaining bosses
+- ✅ T26 · The Silent Arena: remaining bosses — 2026-11-12 · [PR #46](https://github.com/shlomyeisenberg-lang/Otiyot/pull/46)
 - ⬜ T27 · The Blank Scroll and the Keeper
 - ⬜ T28 · Scene: The Ladder (endless)
 - ⬜ T29 · Arcade: host and the 3D classics
@@ -1277,11 +1277,45 @@ The Lantern Caves, the first region of Act Three: a winding chalk cave lit only 
 
 Same split as every scene: plan, scene, screen. Opens on the map at Level 6 once the Great Blot is beaten (unchanged region rule). Built in one run by the Opus builder.
 
-### ⬜ T26 · The Silent Arena: remaining bosses
+### ✅ T26 · The Silent Arena: remaining bosses
 
-**Status:** Pending
+**Status:** Done · **Finished:** 2026-11-12 · **Pull request:** [PR #46](https://github.com/shlomyeisenberg-lang/Otiyot/pull/46)
 
-_Not started._
+The Silent Arena now holds three more bosses, chosen from a trials board: the Storm Hawk (speed: quick bursts and rests), the Glass Golem (precision: every slip heals it) and the Long Tide (endurance: long passages and a swinging tide). Beating all three restores the Arena and opens the way to the Blank Scroll.
+
+**What changed**
+
+- src/game/boss.ts: boss kit options per phase: pace (faster attacks), rest (a pause after each parried burst), heal (slips give health back, capped and repaid by right letters), tide (windup speed swings up and down); BossFight.slip(), resting, tideNow, healed/healedTotal, HEAL_CAP, HEAL_REPAY
+- src/game/trials.ts: the three trial ids, per-trial ranks in story.ranks["trial:<id>"], nextTrial, recordTrialRank (restores the arena region with the lowest of the three once all are beaten)
+- src/scenes/arena/trials.ts: TRIALS (three phases each), TRIAL_SIZES per level and planTrial (bursts, sentences, passages from learned letters only; learned punctuation only)
+- src/scenes/arena/plan.ts: take, phase and END_MARKS exported for the trials
+- src/scenes/arena/palette.ts: LOOKS per boss (colors, shape, stretch, brows), the trials' day skies, night skies derived from them, lightsFor(look, theme)
+- src/scenes/arena/index.ts: ArenaScene takes setup.boss: the Storm Hawk (crackling crest, beating wings, hovering, lightning flashes over the theatre), the Glass Golem (big facets, crystal crown, heal() glow and shards), the Long Tide (rolling back, swaying tail fin, crest rising with high tide); per-trial grades; only the Great Blot turns the world in its mirror phase
+- src/audio/themes.ts: boss theme sections S1-S3, G1-G3, T1-T3 (phases storm1..3, glass1..3, tide1..3) and drum patterns gallop, chime, swell
+- src/ui/screens/arena.ts: bossScreen(ctx, BossConfig) shared by the Great Blot and the trials; slips heal the Golem; each trial's trick is named once by Reb Ezra or Dyo; probe adds boss, look, healed, resting, tide; health label names the boss
+- src/ui/screens/trials.ts: #/trials board (three cards with skill, name, description, rank, keys 1-3, a gold note when the Arena is restored) and #/trial fight via trialConfig
+- src/ui/app.ts, src/ui/shell.ts, src/ui/playable.ts: routes trials and trial; the map's Silent Arena region opens the trials board
+- src/ui/styles/arena.css: trials board styles (tokens only)
+- src/story/trials.ts: lines for each trial (arrive, returning, three phases, its trick), victory cutscenes, names (Hebrew masculine: נץ הסערה, גולם הזכוכית, הגל הארוך)
+- locales/en.json, locales/he.json: trials board, phase names and hints, results notes; arena.health takes the boss name
+- tests/unit/trials.test.ts: kit options, learned letters only in every layout/track/level/difficulty, sizes, winnable on every difficulty even with heals, ranks and the Blank Scroll gate, looks, lines, locales
+- tests/e2e/trials.spec.ts: board, the Storm Hawk from start to finish, a slip healing the Golem, the Long Tide from its last checkpoint restoring the Arena, phone fit
+- docs/ARCHITECTURE.md (section 7s), docs/GAME_DESIGN.md, docs/ROADMAP.md, CHANGELOG.md
+
+**Decisions**
+
+- **Reused the Great Blot's theatre, scene and screen for the three trials instead of building a new scene** — The roadmap places all bosses in the same Silent Arena; one shared, tested boss screen keeps every boss consistent and the bundle small. Each trial still has its own creature, skies, grade, music sections, trick and cutscene.
+- **The three trials are the Storm Hawk (speed), the Glass Golem (precision) and the Long Tide (endurance), three phases each** — Matches the roadmap's Boss of Speed (bursts), Precision (errors heal it) and Endurance (long passage, shifting tides); three phases keep each fight shorter than the Great Blot's four.
+- **Bursts are made with a rest after each parried group plus a faster pace, not with a time limit per word** — It feels like bursts (type fast, breathe) and is still gentle; on Calm nothing ever lands, as in every fight.
+- **Healing is capped (never more than was written in the phase, at most 35% of it) and right letters repay it; finishing the phase always clears it** — Errors must matter for the Precision boss, but the fight can never be soft-locked and stays winnable on every difficulty.
+- **Music: three new section sets inside the existing boss theme instead of three new themes** — The roadmap asks for each boss's own music section set; the theme tests require every theme to have its own melody voice and tempo, and there were not three free voices.
+- **The Arena region is restored once all three trials are beaten, with the lowest of the three ranks** — The Blank Scroll waits for the Arena; the lowest rank honestly reflects the whole arena.
+- **Hebrew names chosen to be grammatically masculine (Storm Hawk נץ הסערה, Long Tide הגל הארוך) and lines use masculine forms** — Content rules: no female characters; the content filter also rejects feminine pronouns in story lines.
+- **History entries for the trials are written as scene:arena:<level>:<difficulty>:<trial>** — The region suggestion keeps working unchanged, and each trial remembers its own last difficulty.
+
+**Notes**
+
+Try it on the live site: hub > map > The Silent Arena (opens at lesson level 6 once the Great Blot is beaten), or go straight to #/trials.
 
 ### ⬜ T27 · The Blank Scroll and the Keeper
 
@@ -1517,6 +1551,18 @@ Goal: Add English lessons that teach capital letters (the opposite hand holds Sh
 2. Start from the latest main and create the branch idea-capitals.
 3. Build it with unit tests (the learned set holds a capital only after its lesson; no capital ever appears in typing text before), keep saves compatible (a migration with a test if the save changes), run pnpm lint, typecheck, test and build.
 4. Update the docs you changed the truth of, CHANGELOG.md, docs/progress.json (this idea's status "built" and a note), run node scripts/render-progress.mjs, push, open a pull request, wait for the checks, merge it into main yourself and delete the branch.
+```
+
+### 💡 Arena gauntlet (from T26)
+
+**Status:** idea · **Model:** Sonnet 5.5 · **Effort:** Medium
+
+Once all three trials are beaten, a gauntlet fights the Storm Hawk, the Glass Golem and the Long Tide back to back with one streak, for players who want a longer challenge and a best time.
+
+Build prompt:
+
+```text
+Otiyot project — GitHub repo shlomyeisenberg-lang/Otiyot. Task: Arena gauntlet (branch: idea-arena-gauntlet). Goal: once the Silent Arena is restored (all three trials beaten), add a "Gauntlet" button on the trials board (#/trials) that fights the Storm Hawk, the Glass Golem and the Long Tide back to back with one streak and one results card (total time, rank). 1. Read CLAUDE.md, docs/ARCHITECTURE.md (sections 7j and 7s), docs/DESIGN.md and only your own entry in docs/progress.json. Open src/ui/screens/arena.ts (bossScreen, BossConfig), src/ui/screens/trials.ts, src/scenes/arena/trials.ts and src/game/trials.ts. 2. Start from the latest main and create the branch idea-arena-gauntlet. 3. Work from start to finish without stopping for my approval; record important choices in docs/progress.json under a new feature entry. 4. Learned letters only, levels Easy/Standard/Hard, every difficulty, Hebrew and English strings in locales, no women and nothing sexy anywhere. Add unit tests for the logic and a Playwright smoke test. Run pnpm lint, typecheck, test and build. Update docs/progress.json and run node scripts/render-progress.mjs, push, open a pull request, wait for checks, squash-merge it into main yourself and delete the branch.
 ```
 
 ## Notes
