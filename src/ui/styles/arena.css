@@ -138,3 +138,113 @@
     inset-block-start: calc(var(--sp-3) + 4.5rem);
   }
 }
+
+/* The trials board (T26): three cards, each with its skill's sigil, name, rank and a fight
+   button. Tokens only. */
+.trials {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: var(--sp-3);
+  text-align: start;
+}
+.trials__card {
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: var(--sp-2);
+  padding: var(--sp-3);
+  padding-block-start: var(--sp-5);
+  overflow: hidden;
+  border: var(--border-w) solid var(--line);
+  border-radius: var(--radius-2);
+  background: var(--surface);
+  box-shadow: var(--shadow-1);
+  transition:
+    transform var(--t-feedback) var(--ease),
+    box-shadow var(--t-feedback) var(--ease);
+}
+.trials__card:hover,
+.trials__card:focus-within {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-2);
+}
+.trials__card[data-state='beaten'] {
+  border-color: var(--gold);
+  box-shadow:
+    var(--shadow-1),
+    0 0 0 var(--border-w) var(--gold-soft);
+}
+.trials__card[data-state='next'] {
+  border-color: var(--techelet);
+}
+/* A band of the boss's color across the top, and its sigil. */
+.trials__sigil {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: 0;
+  block-size: var(--sp-3);
+  background: linear-gradient(90deg, var(--techelet), var(--gold));
+}
+.trials__sigil[data-skill='precision'] {
+  background: linear-gradient(90deg, var(--surface-2), var(--techelet), var(--surface-2));
+}
+.trials__sigil[data-skill='endurance'] {
+  background: repeating-linear-gradient(
+    90deg,
+    var(--techelet) 0 var(--sp-4),
+    var(--ink-soft) var(--sp-4) calc(var(--sp-4) * 2)
+  );
+}
+.trials__head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.trials__head > div {
+  flex: 1;
+}
+.trials__skill {
+  margin: 0;
+  font-size: var(--fs-12);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.trials__name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-20);
+  color: var(--ink);
+}
+.trials__body {
+  margin: 0;
+  color: var(--ink-soft);
+}
+.trials__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  margin-block-start: auto;
+}
+.trials__card {
+  grid-template-rows: auto 1fr auto;
+}
+.trials__whole {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  margin-block-end: var(--sp-3);
+  padding: var(--sp-3);
+  border: var(--border-w) solid var(--gold);
+  border-radius: var(--radius-2);
+  background: var(--surface-2);
+}
+.trials__whole p {
+  margin: 0;
+}
+.trials__foot {
+  display: flex;
+  justify-content: center;
+  margin-block-start: var(--sp-4);
+}

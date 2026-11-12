@@ -17,3 +17,4 @@ export * from './station';
 export * from './atbash';
 export * from './midbar';
 export * from './caves';
+export * from './trials';

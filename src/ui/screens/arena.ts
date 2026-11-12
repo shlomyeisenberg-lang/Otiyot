@@ -20,12 +20,15 @@ import {
   type BossEvent,
   type BossPlan,
 } from '../../game/boss';
-import { recordRegionRank, regionMode, regionStatuses } from '../../game/regions';
-import { rewardsOf, type RunRewards } from '../../game/results';
+import type { BossDef } from '../../game/boss';
+import { recordRegionRank, regionMode, regionStatuses, type RegionId } from '../../game/regions';
+import { rewardsOf, type RunRank, type RunRewards } from '../../game/results';
 import type { Metrics } from '../../core';
 import type { Engine, SceneManager } from '../../engine';
+import type { Profile } from '../../save';
 import type { ArenaScene } from '../../scenes/arena';
-import { GREAT_BLOT, planGreatBlot } from '../../scenes/arena/plan';
+import type { BossLookId } from '../../scenes/arena/palette';
+import { GREAT_BLOT, planGreatBlot, type BlotInput } from '../../scenes/arena/plan';
 import {
   ACT_TWO,
   apprenticeLook,
@@ -35,8 +38,10 @@ import {
   CutscenePlayer,
   type ArenaMoment,
   type Beat,
+  type Cutscene,
+  type Line,
 } from '../../story';
-import type { AppContext, Screen } from '../app';
+import type { AppContext, Route, Screen } from '../app';
 import { button, dialogueBox, rankBadge, statTile, status } from '../components';
 import { h } from '../dom';
 import type { MessageKey } from '../i18n';
@@ -50,6 +55,77 @@ const MAJOR_HOLD_MS = 3500;
 const VICTORY_DELAY_MS = 1300;
 const FAILED_DELAY_MS = 1200;
 const ROMAN = ['I', 'II', 'III', 'IV'];
+
+/** A moment worth a line: the arena's shared ones, or a boss's own ('special': its trick). */
+export type BossMoment = ArenaMoment | 'special';
+
+/**
+ * One boss fight in the Silent Arena, as the screen needs it (T26). The Great Blot is one; the
+ * three trials (src/ui/screens/trials.ts) are the others. The screen is the same for all of them.
+ */
+export interface BossConfig {
+  /** The boss's id (its checkpoints are kept under it). */
+  key: string;
+  /** Who stands on the stage. */
+  look: BossLookId;
+  def: BossDef;
+  plan(o: BlotInput): BossPlan;
+  /** The region whose levels are suggested; history entries are written under `mode`. */
+  region: RegionId;
+  mode(level: LevelId, difficulty: DifficultyId): string;
+  /** History entries of this boss start with this (its last difficulty is offered again). */
+  modePrefix: string;
+  testid: string;
+  /** Texts (already translated): the boss's name, a phase's name and how to fight it. */
+  name: string;
+  phaseName(i: number): string;
+  phaseHow(i: number): string;
+  line(moment: BossMoment, n: number): Line;
+  victory: Cutscene;
+  /** The card at the end of the victory cutscene. */
+  card(): { kicker: string; title: string };
+  /** Was this boss beaten before? */
+  beaten(p: Profile): boolean;
+  /** Records a win (inside a save update). Returns the note for the results card, or null. */
+  win(p: Profile, rank: RunRank): string | null;
+  /** Where to go after the fight, and the button's labels (plain, and with "(Enter)"). */
+  home: { route: Route; label: string; labelEnter: string };
+}
+
+/** The Great Blot (T16), as a boss config. */
+function blotConfig(ctx: AppContext): BossConfig {
+  const t = ctx.i18n;
+  const lang = ctx.profile.settings.uiLanguage;
+  const id = (i: number): string => GREAT_BLOT.phases[i]?.id ?? 'p1';
+  return {
+    key: GREAT_BLOT.id,
+    look: 'blot',
+    def: GREAT_BLOT,
+    plan: planGreatBlot,
+    region: 'blot',
+    mode: (level, difficulty) => regionMode('blot', level, difficulty),
+    modePrefix: `scene:${GREAT_BLOT.id}:`,
+    testid: 'arena',
+    name: t.t('arena.boss'),
+    phaseName: (i) => t.t(`arena.phase.${id(i)}` as MessageKey),
+    phaseHow: (i) => t.t(`arena.phase.how.${id(i)}` as MessageKey),
+    line: (m, n) => arenaLine(m === 'special' ? 'parry' : m, n),
+    victory: BLOT_VICTORY,
+    card: () => ({ kicker: t.t('arena.victory'), title: ACT_TWO[lang] }),
+    beaten: (p) => (p.story.ranks[GREAT_BLOT.id] ?? 0) > 0,
+    win: (p, rank) => {
+      const first = (p.story.ranks[GREAT_BLOT.id] ?? 0) === 0;
+      recordRegionRank(p, 'blot', rank);
+      p.story.flags.act2 = true;
+      return first ? t.t('arena.results.restored') : null;
+    },
+    home: {
+      route: 'hub',
+      label: t.t('arena.results.home'),
+      labelEnter: t.t('arena.results.homeEnter'),
+    },
+  };
+}
 
 interface ArenaProbe {
   ready: boolean;
@@ -68,6 +144,13 @@ interface ArenaProbe {
   /** Words finished in this phase, and words in it. */
   words: number;
   total: number;
+  /** Which boss (its id) and look. */
+  boss: string;
+  look: BossLookId;
+  /** Health the boss won back from slips, whether it rests, where its tide is. */
+  healed: number;
+  resting: boolean;
+  tide: number;
   /** The text of each phase, and the keys the player has learned. */
   texts: string[];
   keys: string;
@@ -97,25 +180,31 @@ declare global {
 }
 
 export function arenaScreen(ctx: AppContext): Screen {
+  return bossScreen(ctx, blotConfig(ctx));
+}
+
+/** A boss fight in the Silent Arena: the Great Blot or one of the trials. */
+export function bossScreen(ctx: AppContext, cfg: BossConfig): Screen {
   const t = ctx.i18n;
   const profile = ctx.profile;
   const settings = profile.settings;
   const layout = profile.layout;
   const lang = settings.uiLanguage;
-  const bossId = GREAT_BLOT.id;
+  const bossId = cfg.key;
+  const DEF = cfg.def;
 
   // --- What this player may play, and what he played last time.
-  const own = profile.history.filter((e) => e.mode.startsWith(`scene:${bossId}:`));
+  const own = profile.history.filter((e) => e.mode.startsWith(cfg.modePrefix));
   const lastDifficulty = own.at(-1)?.mode.split(':')[3] ?? '';
   let difficulty: DifficultyId = (DIFFICULTY_IDS as readonly string[]).includes(lastDifficulty)
     ? (lastDifficulty as DifficultyId)
     : 'calm';
   let openLevels: LevelId[] = levelsFor(profile);
   const statusNow = (): LevelId =>
-    regionStatuses(ctx.profile).find((s) => s.id === 'blot')?.suggested ?? 'easy';
+    regionStatuses(ctx.profile).find((s) => s.id === cfg.region)?.suggested ?? 'easy';
   let suggested: LevelId = statusNow();
   let level: LevelId = openLevels.includes(suggested) ? suggested : 'easy';
-  const restoredBefore = (profile.story.ranks[bossId] ?? 0) > 0;
+  const restoredBefore = cfg.beaten(profile);
 
   // --- The page.
   const view = h('div', { class: 'meadow__view' });
@@ -145,7 +234,7 @@ export function arenaScreen(ctx: AppContext): Screen {
     h(
       'div',
       { class: 'arena__boss-head' },
-      h('span', { class: 'arena__name', text: t.t('arena.boss') }),
+      h('span', { class: 'arena__name', text: cfg.name }),
       bossPhase,
     ),
     bossTrack,
@@ -208,7 +297,12 @@ export function arenaScreen(ctx: AppContext): Screen {
 
   const el = h(
     'section',
-    { class: 'meadow arena', 'data-testid': 'arena', 'aria-label': t.t('region.blot') },
+    {
+      class: 'meadow arena',
+      'data-testid': cfg.testid,
+      'data-boss': cfg.look,
+      'aria-label': cfg.name,
+    },
     view,
     barTop,
     barBottom,
@@ -228,7 +322,12 @@ export function arenaScreen(ctx: AppContext): Screen {
     failed: false,
     stats: null,
     phase: 0,
-    phases: GREAT_BLOT.phases.length,
+    phases: DEF.phases.length,
+    boss: bossId,
+    look: cfg.look,
+    healed: 0,
+    resting: false,
+    tide: 0,
     state: 'idle',
     health: 1,
     windup: 0,
@@ -265,6 +364,9 @@ export function arenaScreen(ctx: AppContext): Screen {
     parried: { get: () => fight?.parried ?? 0, enumerable: true },
     restored: { get: () => scene?.restored ?? false, enumerable: true },
     blotBroken: { get: () => scene?.blotBroken ?? false, enumerable: true },
+    healed: { get: () => fight?.healedTotal ?? 0, enumerable: true },
+    resting: { get: () => fight?.resting ?? false, enumerable: true },
+    tide: { get: () => fight?.tideNow ?? 0, enumerable: true },
   });
   window.__otiyotArena = probe;
 
@@ -288,6 +390,8 @@ export function arenaScreen(ctx: AppContext): Screen {
   let landSaid = false;
   let parrySaid = false;
   let staggerSaid = false;
+  let specialSaid = false;
+  let winNote: string | null = null;
   let resultsTimer = 0;
   let victoryTimer = 0;
   let lineTimer = 0;
@@ -300,12 +404,12 @@ export function arenaScreen(ctx: AppContext): Screen {
   view.append(play.hud.el, results);
 
   // --- Lines from Reb Ezra and Dyo. A small remark never talks over a phase's line.
-  function say(moment: ArenaMoment, minor = false): void {
+  function say(moment: BossMoment, minor = false): void {
     if (player) return;
     const now = performance.now();
     if (minor && now - lastMajor < MAJOR_HOLD_MS) return;
     if (!minor) lastMajor = now;
-    const line = arenaLine(moment, lineCount++);
+    const line = cfg.line(moment, lineCount++);
     const who = CAST[line.who];
     const text = line.text[lang];
     speech.setLine(who.name[lang], text, undefined, who.portrait);
@@ -321,9 +425,6 @@ export function arenaScreen(ctx: AppContext): Screen {
     speech.el.hidden = true;
   }
 
-  const phaseKey = (i: number): MessageKey =>
-    `arena.phase.${GREAT_BLOT.phases[i]?.id ?? 'p1'}` as MessageKey;
-
   let lastHealth = -1;
   let lastPhaseShown = -1;
   const sync = (): void => {
@@ -336,8 +437,8 @@ export function arenaScreen(ctx: AppContext): Screen {
     probe.nextKey = f?.state === 'fight' ? (next?.code ?? null) : null;
     probe.nextShift = f?.state === 'fight' ? (next?.shift ?? null) : null;
     const phase = f?.phase ?? 0;
-    chipTitle.textContent = f?.state === 'victory' ? t.t('arena.victory') : t.t(phaseKey(phase));
-    chipCount.textContent = `${t.t('arena.phase', { n: phase + 1, total: GREAT_BLOT.phases.length })} · ${t.t('arena.word', { n: Math.min(probe.words + 1, Math.max(1, probe.total)), total: probe.total })}`;
+    chipTitle.textContent = f?.state === 'victory' ? cfg.card().kicker : cfg.phaseName(phase);
+    chipCount.textContent = `${t.t('arena.phase', { n: phase + 1, total: DEF.phases.length })} · ${t.t('arena.word', { n: Math.min(probe.words + 1, Math.max(1, probe.total)), total: probe.total })}`;
     const share = probe.total > 0 ? probe.words / probe.total : 0;
     (bar.firstElementChild as HTMLElement).style.inlineSize = `${Math.round(share * 100)}%`;
     optionsButton.textContent = t.t('range.results.sub', {
@@ -361,11 +462,11 @@ export function arenaScreen(ctx: AppContext): Screen {
       const restored = Math.round((1 - health) * 100);
       bossFill.style.inlineSize = `${restored}%`;
       boss.setAttribute('aria-valuenow', String(100 - restored));
-      boss.setAttribute('aria-label', t.t('arena.health', { n: 100 - restored }));
+      boss.setAttribute('aria-label', t.t('arena.health', { name: cfg.name, n: 100 - restored }));
     }
     if (f.phase !== lastPhaseShown) {
       lastPhaseShown = f.phase;
-      bossPhase.textContent = `${ROMAN[f.phase] ?? ''} · ${t.t(phaseKey(f.phase))}`;
+      bossPhase.textContent = `${ROMAN[f.phase] ?? ''} · ${cfg.phaseName(f.phase)}`;
       bossTrack.querySelectorAll('.arena__notch').forEach((n) => n.remove());
       f.notches.forEach((at, i) => {
         const n = h('span', { class: 'arena__notch' });
@@ -376,6 +477,7 @@ export function arenaScreen(ctx: AppContext): Screen {
     }
     boss.dataset.weak = String(f.weakNow);
     boss.dataset.windup = f.windup > 0.66 ? 'high' : 'low';
+    boss.dataset.resting = String(f.resting);
   }
 
   // --- The fight.
@@ -394,7 +496,7 @@ export function arenaScreen(ctx: AppContext): Screen {
     const d = DIFFICULTIES[difficulty];
     const keys = knownKeysOf(ctx.profile);
     const words = levelWordSource(ctx.profile, LEVELS[level], d, rngNext);
-    plan = planGreatBlot({ layout, keys, level, words, rng: rngNext });
+    plan = cfg.plan({ layout, keys, level, words, rng: rngNext });
     const from =
       fromCheckpoint && keepsCheckpoints(difficulty)
         ? checkpointOf(ctx.profile.story.flags, bossId, plan.phases.length)
@@ -414,6 +516,7 @@ export function arenaScreen(ctx: AppContext): Screen {
     landSaid = false;
     parrySaid = false;
     staggerSaid = false;
+    specialSaid = false;
     lastHealth = -1;
     lastPhaseShown = -1;
     probe.results = null;
@@ -515,9 +618,9 @@ export function arenaScreen(ctx: AppContext): Screen {
     }
     hideLine();
     showCard(
-      t.t('arena.phase', { n: next + 1, total: GREAT_BLOT.phases.length }),
-      t.t(phaseKey(next)),
-      t.t(`arena.phase.how.${GREAT_BLOT.phases[next]?.id ?? 'p1'}` as MessageKey),
+      t.t('arena.phase', { n: next + 1, total: DEF.phases.length }),
+      cfg.phaseName(next),
+      cfg.phaseHow(next),
     );
     sync();
   };
@@ -568,21 +671,21 @@ export function arenaScreen(ctx: AppContext): Screen {
       level,
     );
     probe.results = { ...r, accuracy, wpm, failed };
-    firstRestore = !failed && (ctx.profile.story.ranks[bossId] ?? 0) === 0;
+    firstRestore = !failed && !cfg.beaten(ctx.profile);
+    winNote = null;
     ctx.saves.update((p) => {
       p.history.push({
         at: Date.now(),
         track: p.track,
-        mode: regionMode('blot', level, difficulty),
+        mode: cfg.mode(level, difficulty),
         wpm,
         accuracy,
         durationMs: Math.round(m.elapsedMs),
         chars: m.keystrokes,
       });
       if (!failed) {
-        recordRegionRank(p, 'blot', r.rank);
+        winNote = cfg.win(p, r.rank);
         clearCheckpoints(p.story.flags, bossId);
-        p.story.flags.act2 = true;
       }
     });
     void ctx.saves.flush();
@@ -612,7 +715,7 @@ export function arenaScreen(ctx: AppContext): Screen {
     el.dataset.cinema = 'true';
     skipWrap.hidden = false;
     probe.cutscene = { playing: true, beat: '', waiting: false, done: false };
-    player = new CutscenePlayer(BLOT_VICTORY, {
+    player = new CutscenePlayer(cfg.victory, {
       lang,
       speed: settings.textSpeed,
       listener: {
@@ -628,7 +731,8 @@ export function arenaScreen(ctx: AppContext): Screen {
     if (b.shot) scene?.shotFor(b.shot);
     if (b.cue) scene?.cue(b.cue);
     if (b.cue === 'card') {
-      showCard(t.t('arena.victory'), ACT_TWO[lang], '');
+      const c = cfg.card();
+      showCard(c.kicker, c.title, '');
     }
     if (b.say) {
       const who = CAST[b.say.who];
@@ -685,6 +789,15 @@ export function arenaScreen(ctx: AppContext): Screen {
     const f = fight;
     if (!f || over || f.state !== 'fight' || !options.hidden) return;
     handle(f.update(dt));
+    // A trial's own trick, named once: the Storm Hawk's rest, the Long Tide's high water.
+    if (!specialSaid && f.parried > 0) {
+      const storm = cfg.look === 'storm' && f.resting;
+      const tide = cfg.look === 'tide' && f.tideNow > 0.92 && DIFFICULTIES[difficulty].timers;
+      if (storm || tide) {
+        specialSaid = true;
+        say('special', true);
+      }
+    }
   };
 
   // --- Level and difficulty: the same choices in the options panel and on the results card.
@@ -783,9 +896,9 @@ export function arenaScreen(ctx: AppContext): Screen {
     });
     again.dataset.action = 'again';
     const home = button({
-      label: t.t(firstRestore ? 'arena.results.homeEnter' : 'arena.results.home'),
+      label: firstRestore ? cfg.home.labelEnter : cfg.home.label,
       variant: firstRestore ? 'primary' : 'quiet',
-      onClick: () => ctx.go('hub'),
+      onClick: () => ctx.go(cfg.home.route),
     });
     home.dataset.action = 'home';
     results.replaceChildren(
@@ -806,7 +919,7 @@ export function arenaScreen(ctx: AppContext): Screen {
           }),
         ),
       ),
-      firstRestore ? status(t.t('arena.results.restored'), 'gold') : '',
+      winNote ? status(winNote, 'gold') : '',
       h(
         'div',
         { class: 'range__results-stats' },
@@ -859,6 +972,16 @@ export function arenaScreen(ctx: AppContext): Screen {
   play.onJudged = (key) => {
     const f = fight;
     if (!key.correct) {
+      // The Glass Golem: a slip mends a crack.
+      const healed = f?.slip() ?? 0;
+      if (healed > 0) {
+        scene?.heal(healed);
+        if (!specialSaid) {
+          specialSaid = true;
+          slipSaid = true;
+          say('special', true);
+        }
+      }
       if (!slipSaid && !DIFFICULTIES[difficulty].failOnError) {
         slipSaid = true;
         say('slip', true);
@@ -914,7 +1037,7 @@ export function arenaScreen(ctx: AppContext): Screen {
     play.target = manager;
     const rng = new eng.Rng((Date.now() % 100000) + 16);
     rngNext = () => rng.next();
-    scene = new mod.ArenaScene({ look: apprenticeLook(profile.avatar) });
+    scene = new mod.ArenaScene({ look: apprenticeLook(profile.avatar), boss: cfg.look });
     scene.onStep = step;
     scene.onTransitionEnd = afterTransition;
 
@@ -998,7 +1121,7 @@ export function arenaScreen(ctx: AppContext): Screen {
         // During the victory and the celebration every key waits; on the card Enter leads on.
         if (results.hidden) return true;
         if (ev.key !== 'Enter') return false;
-        if (firstRestore) ctx.go('hub');
+        if (firstRestore) ctx.go(cfg.home.route);
         else startRun(false);
         return true;
       }

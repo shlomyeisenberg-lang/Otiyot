@@ -358,7 +358,7 @@ One-pass review of Sonnet's T19; fix what is weak. Done when merged.
 - **Done when** The scene is playable start to finish from the hub at 60 fps on medium, feels different from every other scene, and its smoke test passes.
 - **User must have ready** Nothing.
 
-### [ ] T26 · The Silent Arena: remaining bosses
+### [x] T26 · The Silent Arena: remaining bosses
 - **Branch** `t26-arena-bosses`
 - **Model** Opus 5.5 · **Effort** High
 - **Goal** Three more multi-phase bosses in the arena, each testing a different skill.

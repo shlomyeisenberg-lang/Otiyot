@@ -69,11 +69,21 @@ import { tierIntensity } from '../../audio/composer';
 import type { AttackKind, BossFight, BossPlan } from '../../game/boss';
 import { Dyo } from '../../game/dyo';
 import { TypingFeedback } from '../../game/feedback';
-import { LIGHTS, TINT, type ArenaLight, type Sky } from './palette';
+import {
+  lightsFor,
+  LOOKS,
+  TINT,
+  type ArenaLight,
+  type BossLook,
+  type BossLookId,
+  type Sky,
+} from './palette';
 
 export interface ArenaSetup {
   /** The apprentice's robe (the profile's avatar). */
   look: { robe: number; hem: number; trim: number; headwear: 'cap' | 'hat' | 'turban' };
+  /** Who stands on the stage (T26): the Great Blot (default) or one of the three trials. */
+  boss?: BossLookId;
 }
 
 // --- The lay of the theatre.
@@ -196,9 +206,58 @@ const GRADES: Readonly<Record<ArenaLight, Parameters<SceneContext['post']['setGr
   restored: { saturation: 1.14, contrast: 1.06, vignette: 0.34, godRays: 0.95, exposure: 1.03 },
 };
 
+/** The trials' grades (T26): the Storm Hawk's charged dusk, the Golem's cold glare, the sea. */
+const TRIAL_GRADES: Readonly<
+  Record<Exclude<BossLookId, 'blot'>, readonly Parameters<SceneContext['post']['setGrade']>[0][]>
+> = {
+  storm: [
+    { saturation: 0.9, contrast: 1.12, vignette: 0.44, shadowTint: 0xd8dcff, godRays: 0.45 },
+    { saturation: 0.92, contrast: 1.18, vignette: 0.5, shadowTint: 0xc8d0ff, godRays: 0.6 },
+    {
+      saturation: 1,
+      contrast: 1.24,
+      vignette: 0.58,
+      shadowTint: 0xc0c4ff,
+      bloom: 1.4,
+      godRays: 0.85,
+    },
+  ],
+  glass: [
+    {
+      saturation: 0.9,
+      contrast: 1.04,
+      vignette: 0.34,
+      lightTint: 0xf4fcff,
+      bloom: 1.2,
+      godRays: 0.5,
+    },
+    {
+      saturation: 0.95,
+      contrast: 1.08,
+      vignette: 0.4,
+      shadowTint: 0xd8f0ff,
+      bloom: 1.3,
+      godRays: 0.6,
+    },
+    {
+      saturation: 1.02,
+      contrast: 1.14,
+      vignette: 0.48,
+      shadowTint: 0xc4e4ff,
+      bloom: 1.45,
+      godRays: 0.8,
+    },
+  ],
+  tide: [
+    { saturation: 0.95, contrast: 1.04, vignette: 0.38, shadowTint: 0xd8f0e8, godRays: 0.45 },
+    { saturation: 1, contrast: 1.1, vignette: 0.46, shadowTint: 0xc8e8e0, godRays: 0.55 },
+    { saturation: 1.05, contrast: 1.16, vignette: 0.54, shadowTint: 0xb8e0d8, godRays: 0.75 },
+  ],
+};
+
 const LIGHT_OF: readonly ArenaLight[] = ['p1', 'p2', 'p3', 'p4'];
-/** How the Blot's brows sit in each phase: cross, angrier, furious, and strange in the mirror. */
-const BROWS: readonly number[] = [0.1, 0.32, 0.48, -0.25];
+/** Seconds between the Storm Hawk's flashes of lightning over the theatre (at random). */
+const STORM_FLASH: readonly [number, number] = [3.5, 7];
 
 export class ArenaScene implements GameScene {
   readonly id = 'arena';
@@ -329,7 +388,34 @@ export class ArenaScene implements GameScene {
   private readonly cA = new Color();
   private readonly cB = new Color();
 
-  constructor(private readonly setup: ArenaSetup) {}
+  private readonly lookId: BossLookId;
+  private readonly look: BossLook;
+  /** The Golem's glow when a slip mends a crack (1 → 0). */
+  private healGlow = 0;
+  private flashTimer = 4;
+  private wingT = 0;
+  /** The trials' own parts on the body: the Hawk's wings, the Golem's crown, the Tide's tail. */
+  private readonly parts: Mesh[] = [];
+
+  constructor(private readonly setup: ArenaSetup) {
+    this.lookId = setup.boss ?? 'blot';
+    this.look = LOOKS[this.lookId];
+  }
+
+  /** Which boss stands on the stage. */
+  get bossShown(): BossLookId {
+    return this.lookId;
+  }
+
+  private sky(light: ArenaLight): Sky {
+    return lightsFor(this.lookId, this.ctx.theme)[light];
+  }
+
+  private grade(light: ArenaLight): Parameters<SceneContext['post']['setGrade']>[0] {
+    if (this.lookId === 'blot' || light === 'restored') return GRADES[light];
+    const set = TRIAL_GRADES[this.lookId];
+    return set[Math.min(set.length - 1, LIGHT_OF.indexOf(light))] ?? GRADES[light];
+  }
 
   // ---- probes (the screen and the smoke test read these) -------------------------------------
 
@@ -375,12 +461,12 @@ export class ArenaScene implements GameScene {
     ctx.audio.intensity(0);
     ctx.audio.ambience('wind');
 
-    this.palFrom = LIGHTS[ctx.theme].p1;
+    this.palFrom = this.sky('p1');
     this.palTo = this.palFrom;
     this.applyPalette(1);
     ctx.atmosphere.groundAt = ground;
     ctx.atmosphere.setShadowRange(30);
-    ctx.post.setGrade(GRADES.p1);
+    ctx.post.setGrade(this.grade('p1'));
     ctx.rig.groundAt = ground;
 
     this.sparks = burstStyle({
@@ -395,8 +481,8 @@ export class ArenaScene implements GameScene {
     });
     this.chips = burstStyle({
       count: 6,
-      color: TINT.blot,
-      color2: TINT.blotSheen,
+      color: this.look.body,
+      color2: this.look.sheen,
       speed: [1.5, 4],
       spread: 0.7,
       life: [0.5, 1.1],
@@ -406,8 +492,8 @@ export class ArenaScene implements GameScene {
     });
     this.splash = burstStyle({
       count: 34,
-      color: TINT.glob,
-      color2: TINT.blotSheen,
+      color: this.look.glob,
+      color2: this.look.sheen,
       speed: [2.5, 8],
       spread: 0.9,
       life: [0.6, 1.4],
@@ -440,7 +526,7 @@ export class ArenaScene implements GameScene {
     });
     this.glass = burstStyle({
       count: 26,
-      color: TINT.shard,
+      color: this.look.shard,
       color2: this.gold,
       intensity: 2.6,
       speed: [2, 6],
@@ -777,17 +863,19 @@ export class ArenaScene implements GameScene {
     const { materials: kit, tracker, root } = this.ctx;
     this.blot = new Group();
     this.blot.position.set(0, BLOT_R * 0.7, BLOT_Z);
-    const geo = new IcosahedronGeometry(1, 9);
+    const L = this.look;
+    // Cut glass has big facets; ink and cloud and sea are finely rolled.
+    const geo = new IcosahedronGeometry(1, L.facets ? 3 : 9);
     const dirs = geo.getAttribute('position');
     this.blotDirs = new Float32Array(dirs.array as ArrayLike<number>);
     geo.deleteAttribute('uv');
     this.blotPos = geo.getAttribute('position') as BufferAttribute;
     this.blotNormal = geo.getAttribute('normal') as BufferAttribute;
     this.blotMat = kit.surface({
-      color: TINT.blot,
+      color: L.body,
       restore: false,
-      emissive: TINT.blotSheen,
-      emissiveIntensity: 0.25,
+      emissive: L.sheen,
+      emissiveIntensity: L.emissive,
       flat: true,
     });
     this.blotMesh = new Mesh(tracker.track(geo), tracker.track(this.blotMat));
@@ -796,10 +884,10 @@ export class ArenaScene implements GameScene {
     this.blot.add(this.blotMesh);
 
     const eyeGeo = tracker.track(new SphereGeometry(1, 16, 12));
-    const eyeMat = tracker.track(kit.ink(TINT.eye, 1.5));
-    const pupilMat = tracker.track(kit.surface({ color: TINT.pupil, restore: false }));
+    const eyeMat = tracker.track(kit.ink(L.eye, 1.5));
+    const pupilMat = tracker.track(kit.surface({ color: L.pupil, restore: false }));
     const browGeo = tracker.track(new BoxGeometry(0.62, 0.11, 0.12));
-    const browMat = tracker.track(kit.surface({ color: TINT.blot, restore: false }));
+    const browMat = tracker.track(kit.surface({ color: L.body, restore: false }));
     for (const side of [-1, 1]) {
       const eye = new Mesh(eyeGeo, eyeMat);
       eye.scale.set(0.2, 0.26, 0.1);
@@ -814,6 +902,7 @@ export class ArenaScene implements GameScene {
       this.brows.push(brow);
       this.blot.add(eye, pupil, brow);
     }
+    this.buildParts();
     this.seal = new Mesh(
       tracker.track(new TorusGeometry(0.2, 0.035, 6, 24)),
       tracker.track(kit.ink(this.gold, 2.6)),
@@ -828,9 +917,9 @@ export class ArenaScene implements GameScene {
       tracker.track(new IcosahedronGeometry(1, 2).scale(1, 0.04, 1)),
       tracker.track(
         kit.surface({
-          color: TINT.tide,
+          color: L.tide,
           restore: false,
-          emissive: TINT.blotSheen,
+          emissive: L.sheen,
           emissiveIntensity: 0.15,
         }),
       ),
@@ -840,14 +929,102 @@ export class ArenaScene implements GameScene {
     this.ctx.atmosphere.addBlob(this.blot, BLOT_R * 0.9);
   }
 
+  /** The trials' own parts (T26), children of the body so they follow its size and squash. */
+  private buildParts(): void {
+    const { materials: kit, tracker } = this.ctx;
+    const L = this.look;
+    if (this.lookId === 'storm') {
+      // Two wings of storm cloud, edged in lightning, that beat faster as the fight goes on.
+      const geo = tracker.track(new ConeGeometry(0.55, 1.9, 4, 1).scale(1, 1, 0.22));
+      const mat = tracker.track(
+        kit.surface({
+          color: L.body,
+          restore: false,
+          emissive: L.sheen,
+          emissiveIntensity: 0.5,
+          flat: true,
+        }),
+      );
+      for (const side of [-1, 1]) {
+        const w = new Mesh(geo, mat);
+        w.position.set(side * 0.95, 0.1, -0.15);
+        w.userData.side = side;
+        kit.caster(w, true);
+        this.parts.push(w);
+        this.blot.add(w);
+      }
+    } else if (this.lookId === 'glass') {
+      // A crown of crystal points that glints.
+      const geo = tracker.track(new OctahedronGeometry(1, 0).scale(0.16, 0.42, 0.16));
+      const mat = tracker.track(kit.ink(L.shard, 1.5));
+      const n = 7;
+      for (let i = 0; i < n; i++) {
+        const a = (i / (n - 1) - 0.5) * 2.2;
+        const c = new Mesh(geo, mat);
+        c.position.set(Math.sin(a) * 0.55, 0.88 - Math.abs(a) * 0.12, Math.cos(a) * 0.1 - 0.15);
+        c.rotation.z = -a * 0.45;
+        c.scale.setScalar(1 - Math.abs(a) * 0.25);
+        this.parts.push(c);
+        this.blot.add(c);
+      }
+    } else if (this.lookId === 'tide') {
+      // A great tail fin behind, swaying with the swell.
+      const geo = tracker.track(new ConeGeometry(0.7, 1.3, 3, 1).scale(1.6, 1, 0.18));
+      const mat = tracker.track(
+        kit.surface({
+          color: L.body,
+          restore: false,
+          emissive: L.sheen,
+          emissiveIntensity: 0.25,
+          flat: true,
+        }),
+      );
+      const fin = new Mesh(geo, mat);
+      fin.position.set(0, 0.25, -1.2);
+      fin.rotation.x = -Math.PI / 2 - 0.5;
+      kit.caster(fin, true);
+      this.parts.push(fin);
+      this.blot.add(fin);
+    }
+  }
+
+  /** Moves the trials' parts (no allocations). */
+  private moveParts(resting: boolean, dt: number): void {
+    const t = this.time;
+    if (this.lookId === 'storm') {
+      const beat = resting ? 2 : 5 + this.phase * 1.6 + this.shown * 4;
+      this.wingT += beat * dt;
+      const flap = Math.sin(this.wingT * Math.PI) * (resting ? 0.15 : 0.4);
+      for (const w of this.parts) {
+        const side = w.userData.side as number;
+        w.rotation.z = side * (Math.PI / 2 + 0.25 + flap);
+        w.rotation.y = side * 0.35;
+      }
+    } else if (this.lookId === 'glass') {
+      for (let i = 0; i < this.parts.length; i++) {
+        const c = this.parts[i] as Mesh;
+        c.rotation.y = t * 0.6 + i;
+        const glint = 1 + this.healGlow * 0.4 + Math.max(0, Math.sin(t * 2.3 + i * 1.7)) * 0.08;
+        c.scale.y = (1 - Math.abs(i / (this.parts.length - 1) - 0.5) * 0.5) * glint;
+      }
+    } else if (this.lookId === 'tide') {
+      const fin = this.parts[0];
+      if (fin) {
+        const swell = 1 + (this.fight?.tideNow ?? 0) * 0.6;
+        fin.rotation.z = Math.sin(t * 1.4) * 0.35 * swell;
+        fin.rotation.x = -Math.PI / 2 - 0.5 + Math.sin(t * 1.1) * 0.15 * swell;
+      }
+    }
+  }
+
   private buildAttacks(): void {
     const { materials: kit, tracker, root } = this.ctx;
     const inkMat = tracker.track(
       kit.surface({
-        color: TINT.glob,
+        color: this.look.glob,
         restore: false,
-        emissive: TINT.blotSheen,
-        emissiveIntensity: 0.3,
+        emissive: this.look.sheen,
+        emissiveIntensity: this.lookId === 'blot' ? 0.3 : 0.4,
       }),
     );
     // Spatter: one glob in the air at a time, and the ring on the floor that says where it lands.
@@ -872,10 +1049,10 @@ export class ArenaScene implements GameScene {
       tracker.track(new RingGeometry(1, 34, 72, 1).rotateX(-Math.PI / 2)),
       tracker.track(
         kit.surface({
-          color: TINT.tide,
+          color: this.look.tide,
           restore: false,
-          emissive: TINT.blotSheen,
-          emissiveIntensity: 0.18,
+          emissive: this.look.sheen,
+          emissiveIntensity: this.lookId === 'tide' ? 0.35 : 0.18,
           side: DoubleSide,
         }),
       ),
@@ -890,7 +1067,7 @@ export class ArenaScene implements GameScene {
     // Mirror: shards of glass that circle the scribe.
     this.shards = new InstancedMesh(
       tracker.track(new OctahedronGeometry(1, 0).scale(0.28, 1.15, 0.06)),
-      tracker.track(kit.ink(TINT.shard, 1.7)),
+      tracker.track(kit.ink(this.look.shard, 1.7)),
       SHARDS,
     );
     this.shards.count = 0;
@@ -979,10 +1156,12 @@ export class ArenaScene implements GameScene {
     this.attack = this.plan?.phases[i]?.def.attack ?? 'spatter';
     const light = LIGHT_OF[i] ?? 'p1';
     this.toLight(light, now ? 0 : 1.6);
-    ctx.post.setGrade(GRADES[light]);
-    this.mirrorWant = this.attack === 'mirror' ? 1 : 0;
+    ctx.post.setGrade(this.grade(light));
+    // The Blot turns to its mirror; a trial turns to its fury color in its last phase.
+    const last = i >= (this.plan?.phases.length ?? 4) - 1;
+    this.mirrorWant = this.isMirror ? 1 : this.lookId !== 'blot' && last ? 0.65 : 0;
     if (now) this.mirror = this.mirrorWant;
-    this.text.setStyle(this.attack === 'mirror' ? 'hologram' : 'banner');
+    this.text.setStyle(this.isMirror || this.lookId === 'glass' ? 'hologram' : 'banner');
     this.tideScale = 13;
     // Color has come back as far as the fight has gone (the sweeps of earlier phases).
     if (now && i > 0) {
@@ -990,9 +1169,14 @@ export class ArenaScene implements GameScene {
     }
   }
 
+  /** The Great Blot's mirror phase (the world turns over); the trials never turn the world. */
+  private get isMirror(): boolean {
+    return this.attack === 'mirror' && this.lookId === 'blot';
+  }
+
   private toLight(light: ArenaLight, seconds: number): void {
     this.light = light;
-    const target = LIGHTS[this.ctx.theme][light];
+    const target = this.sky(light);
     this.palFrom = this.blendSnapshot();
     this.palTo = target;
     this.palT = seconds <= 0 ? 1 : 0;
@@ -1153,8 +1337,9 @@ export class ArenaScene implements GameScene {
     this.landT = 0;
     const p = this.apprentice.root.position;
     vfx.burst(this.splash, p.x, p.y + 1.6, p.z, 0, 1, 0, true);
-    vfx.shockwave(p.x, 0.05, p.z, 4, TINT.glob, 0.6, true, 1);
-    vfx.impact(0.8, TINT.blotSheen);
+    vfx.shockwave(p.x, 0.05, p.z, 4, this.look.glob, 0.6, true, 1);
+    vfx.impact(0.8, this.look.sheen);
+    if (this.lookId === 'storm') vfx.flash(0xe8f2ff, 0.35, 0.18);
     audio.playAt('impact', p.x, p.y, p.z, 0.2);
     this.apprentice.play('stagger');
     this.kick(-1.2);
@@ -1198,11 +1383,27 @@ export class ArenaScene implements GameScene {
       }
       case 'mirror':
         vfx.burst(this.glass, p.x, p.y, p.z, 0, 1, 0);
-        vfx.shockwave(p.x, p.y, p.z, 2.6, TINT.shard, 0.45, false, 2);
+        vfx.shockwave(p.x, p.y, p.z, 2.6, this.look.shard, 0.45, false, 2);
         break;
     }
     audio.play('shatter');
+    if (this.lookId === 'storm') vfx.flash(0xfff6c8, 0.25, 0.12);
     if (weak) this.stagger();
+  }
+
+  /**
+   * A slip mended the Glass Golem (T26): shards of light fly back into it, it swells a little
+   * and glows. `amount` is the characters of health it won back.
+   */
+  heal(amount: number): void {
+    if (amount <= 0) return;
+    const { vfx, audio } = this.ctx;
+    const b = this.blot.position;
+    this.healGlow = 1;
+    this.kick(-0.9);
+    vfx.burst(this.glass, b.x, b.y + this.blotSize * 0.4, b.z + this.blotSize * 0.6, 0, 0.5, 1);
+    vfx.shockwave(b.x, b.y, b.z, this.blotSize * 1.6, this.look.sheen, 0.4, false, 1.4);
+    audio.playAt('whoosh', b.x, b.y, b.z, 0.4);
   }
 
   /** A weak point struck clean: the Blot reels and the seal bursts. */
@@ -1290,7 +1491,7 @@ export class ArenaScene implements GameScene {
         this.ctx.post.setGrade(GRADES.restored);
         this.mirrorWant = 0;
         audio.play('success');
-        audio.section('phase1');
+        audio.section(this.plan?.phases[0]?.def.music ?? 'phase1');
         audio.intensity(1);
         this.apprentice.play('cheer');
         break;
@@ -1473,12 +1674,31 @@ export class ArenaScene implements GameScene {
   private skin(x: number, y: number, z: number): number {
     const t = this.time;
     const phase = this.phase;
-    const angry = 0.07 + phase * 0.025 + this.shown * 0.05;
+    const L = this.look;
+    const angry = (0.07 + phase * 0.025 + this.shown * 0.05) * L.wobble;
     let r =
       1 +
       angry * Math.sin(3.1 * x + t * 1.7) * Math.sin(2.3 * y - t * 1.1) +
-      0.05 * Math.sin(5.3 * z + t * 2.3 + y * 2) +
+      0.05 * L.wobble * Math.sin(5.3 * z + t * 2.3 + y * 2) +
       this.shake * 0.06 * Math.sin(37 * x + 41 * y + t * 40);
+    if (this.lookId !== 'blot') {
+      const face =
+        smoothstep(0.62, 0.32, Math.abs(x)) * smoothstep(-0.25, 0.05, y) * smoothstep(0.2, 0.6, z);
+      if (L.spikes > 0 && y > -0.1) {
+        // The Storm Hawk's crest: lightning feathers on the crown and the back, crackling.
+        const f = Math.max(0, Math.sin(9 * x + 2 * z) * Math.sin(7 * y + 1.3 + t * 0.6));
+        r +=
+          L.spikes * (0.22 + this.shown * 0.12 + phase * 0.04) * f * f * f * (1 - face) * (0.4 + y);
+      }
+      if (L.waves > 0) {
+        // The Long Tide's back rolls like a sea, harder at high tide.
+        const swell = 1 + (this.fight?.tideNow ?? 0) * 0.5;
+        r += L.waves * 0.1 * swell * Math.sin(4 * y + 3 * x - t * 2.2) * (1 - face);
+      }
+      if (L.facets && this.healGlow > 0) r += 0.04 * this.healGlow * Math.sin(20 * y + t * 30);
+      if (z > 0) r += this.shown * 0.25 * z * z;
+      return r;
+    }
     if (phase === 1) {
       // Knuckles on the shoulders, where the tendrils come from (never on the face).
       const face = smoothstep(0.55, 0.3, Math.abs(x)) * smoothstep(-0.2, 0.1, y);
@@ -1651,7 +1871,8 @@ export class ArenaScene implements GameScene {
           c.z + Math.cos(a) * this.tideScale,
         );
         this.q.identity();
-        this.s.set(0.55, 0.3 + this.shown * 0.4 + bob, 0.55);
+        const high = this.lookId === 'tide' ? 0.35 * (1 + (this.fight?.tideNow ?? 0)) : 0;
+        this.s.set(0.55, 0.3 + this.shown * 0.4 + bob + high, 0.55);
         this.m4.compose(this.v, this.q, this.s);
         this.crest.setMatrixAt(i, this.m4);
       }
@@ -1693,7 +1914,7 @@ export class ArenaScene implements GameScene {
       if (before < 0.55 && this.transT >= 0.55) {
         this.setPhaseLook(this.transTo, false);
         this.ctx.audio.section(this.plan?.phases[this.transTo]?.def.music ?? 'phase1');
-        if (this.attack === 'mirror' && this.motion) this.rollT = 0;
+        if (this.isMirror && this.motion) this.rollT = 0;
       }
       if (this.transT >= 3) {
         this.transT = -1;
@@ -1719,8 +1940,7 @@ export class ArenaScene implements GameScene {
         this.roll = 0;
       }
     }
-    const tilt =
-      this.motion && this.attack === 'mirror' && !this.won ? Math.sin(this.time * 0.5) * 0.06 : 0;
+    const tilt = this.motion && this.isMirror && !this.won ? Math.sin(this.time * 0.5) * 0.06 : 0;
     rig.camera.up.set(Math.sin(this.roll + tilt), Math.cos(this.roll + tilt), 0);
 
     // The camera glides to its shot, leaning in with the push.
@@ -1742,20 +1962,38 @@ export class ArenaScene implements GameScene {
     const squash = Math.max(-0.35, Math.min(0.35, this.flinch * 0.08));
     const sz = this.blotSize;
     const reel = this.reel > 0 ? Math.sin(this.time * 18) * 0.12 * Math.min(1, this.reel) : 0;
-    this.blot.scale.set(sz * (1 + squash * 0.6), sz * (1 - squash), sz * (1 + squash * 0.6));
-    this.blot.position.y = sz * 0.7 * (1 - squash) + Math.sin(this.time * 1.3) * 0.08;
+    const [stx, sty, stz] = this.look.stretch;
+    this.blot.scale.set(
+      sz * stx * (1 + squash * 0.6),
+      sz * sty * (1 - squash),
+      sz * stz * (1 + squash * 0.6),
+    );
+    // The Storm Hawk hovers over the stage; the others sit in their pool.
+    const hover = this.lookId === 'storm' ? 1.6 + Math.sin(this.time * 2.1) * 0.35 : 0;
+    this.blot.position.y =
+      sz * 0.7 * this.look.stretch[1] * (1 - squash) + Math.sin(this.time * 1.3) * 0.08 + hover;
     this.blot.rotation.z = reel;
     this.pool.visible = !this.blotGone;
     this.pool.scale.set(sz * 1.45 + Math.sin(this.time * 0.8) * 0.15, 1, sz * 1.3);
     this.blot.rotation.y = FACE_SCRIBE + Math.sin(this.time * 0.4) * 0.1;
-    this.blotMat.color.setHex(TINT.blot).lerp(this.cA.setHex(TINT.blotMirror), this.mirror);
-    this.blotMat.emissiveIntensity = 0.25 + (this.reel > 0 ? 0.8 : 0) + this.shown * 0.3;
+    this.healGlow = Math.max(0, this.healGlow - dt * 1.4);
+    const resting = f?.resting === true;
+    this.blotMat.color.setHex(this.look.body).lerp(this.cA.setHex(this.look.turn), this.mirror);
+    this.blotMat.emissiveIntensity =
+      this.look.emissive +
+      // A trial's sheen is bright: its stun and windup glow are kept softer than the Blot's.
+      (this.reel > 0 ? (this.lookId === 'blot' ? 0.8 : 0.3) : 0) +
+      this.shown * (this.lookId === 'blot' ? 0.3 : 0.15) +
+      this.healGlow * 1.6 -
+      (resting ? 0.2 : 0);
     this.writeBlot();
+    this.moveParts(resting, dt);
     // Eyes watch the scribe; brows show the mood; they squeeze shut when it reels.
     const ap = this.apprentice.root.position;
     const look = Math.atan2(ap.x - this.blot.position.x, ap.z - this.blot.position.z) * 0.2;
-    const blink = this.reel > 0 || Math.sin(this.time * 0.9) > 0.995 ? 0.25 : 1;
-    const brow = BROWS[this.phase] ?? 0.1;
+    // Eyes squeeze shut when it reels, and half close while it rests between bursts.
+    const blink = this.reel > 0 || Math.sin(this.time * 0.9) > 0.995 ? 0.25 : resting ? 0.55 : 1;
+    const brow = this.look.brows[this.phase] ?? 0.1;
     for (let i = 0; i < 2; i++) {
       const side = i === 0 ? -1 : 1;
       const eye = this.eyes[i] as Mesh;
@@ -1782,6 +2020,19 @@ export class ArenaScene implements GameScene {
     }
 
     this.writeAttacks();
+
+    // The Storm Hawk's sky: lightning now and then over the theatre while the fight is on.
+    if (this.lookId === 'storm' && f?.state === 'fight' && !this.won) {
+      this.flashTimer -= dt;
+      if (this.flashTimer <= 0) {
+        this.flashTimer = this.rng.range(STORM_FLASH[0], STORM_FLASH[1]);
+        if (this.motion) vfx.flash(0xeef4ff, 0.18 + this.phase * 0.06, 0.14);
+        const x = this.rng.range(-26, 26);
+        const z = this.rng.range(-40, -14);
+        vfx.shockwave(x, ground(x, z) + 0.2, z, 6, this.look.sheen, 0.5, true, 1.5);
+        this.ctx.audio.playAt('impact', x, 6, z, 0.12);
+      }
+    }
 
     // Ink flows from the quill while the apprentice writes.
     if (this.apprentice.anim.action === 'write') {

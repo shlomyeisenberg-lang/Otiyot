@@ -22,6 +22,8 @@ export type Route =
   | 'midbar'
   | 'caves'
   | 'arena'
+  | 'trials'
+  | 'trial'
   | 'menu'
   | 'welcome'
   | 'players'
@@ -88,6 +90,8 @@ export const PARENT: Readonly<Record<Route, Route | null>> = {
   midbar: 'hub',
   caves: 'hub',
   arena: 'hub',
+  trials: 'hub',
+  trial: 'trials',
   menu: null,
   welcome: null,
   players: 'menu',

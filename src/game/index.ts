@@ -12,3 +12,4 @@ export * from './results';
 export * from './blots';
 export * from './regions';
 export * from './doors';
+export * from './trials';
