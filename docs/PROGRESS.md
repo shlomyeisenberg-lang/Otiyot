@@ -7,7 +7,7 @@ _Last updated 2026-11-12. This page is generated from `docs/progress.json`; to c
 ## Summary
 
 - ✅ **23** of **44** tasks done
-- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 21 pending
+- 🛠️ 1 in progress · ⛔ 0 blocked · ⬜ 20 pending
 - ⬜ **3** manual steps waiting for you
 - 💡 10 feature ideas open
 
@@ -80,7 +80,7 @@ Work done before or outside the numbered tasks.
 - ✅ T17 · Scene: The Gematria Forge — 2026-11-11 · [PR #28](https://github.com/shlomyeisenberg-lang/Otiyot/pull/28)
 - ✅ R17 — 2026-11-12 · [PR #38](https://github.com/shlomyeisenberg-lang/Otiyot/pull/38)
 - ✅ T18 · Scene: The Night Shuk — 2026-11-11 · [PR #29](https://github.com/shlomyeisenberg-lang/Otiyot/pull/29)
-- ⬜ R18
+- 🛠️ R18
 - ✅ T19 · Scene: The Jaffa Line — 2026-11-12 · [PR #30](https://github.com/shlomyeisenberg-lang/Otiyot/pull/30)
 - ⬜ R19
 - ✅ T20 · Scene: The Sunken Geniza — 2026-11-12 · [PR #35](https://github.com/shlomyeisenberg-lang/Otiyot/pull/35)
@@ -950,11 +950,34 @@ The Night Shuk can be played from the map (Level 2 of the course, after the Grea
 
 Compared against the Meadow with Playwright screenshots; the Shuk keeps the Meadow's layout, HUD and restoration feel with its own night palette, mechanic and music.
 
-### ⬜ R18
+### 🛠️ R18
 
-**Status:** Pending
+**Status:** In progress
 
-_Not started._
+Opus reviewed Sonnet's Night Shuk (T18) and played it in both languages, light and dark, desktop and phone. The market is lovely and the trade-and-haggle idea works, but for most players it had no marks at all, because the learned punctuation dropped out of the learned keys at Level 3; that and a reversed Hebrew banner are fixed.
+
+**What changed**
+
+- src/learn/text1.ts and src/learn/text2.ts: from Level 3 the learned keys are every letter plus the keys passed in Level 1 (the marks among them). Before, they were the letters only, so a player who had learned '.', ',' or ';' lost them on reaching Level 3 and the Shuk (which opens at Level 2) laid out stalls with no marks and no coins. Only keys the player really passed are added, so the learned-letters rule holds.
+- src/scenes/shuk/index.ts: the floating banner is told when the word is Hebrew, so Hebrew trades read right to left (they were drawn left to right, reversed), the same way the Meadow, Cliffs and Arena do it.
+- src/scenes/shuk/index.ts: the banner hides once the market is restored (the last trade used to stay over the carpet under the results).
+- tests/unit/shuk.test.ts: new test: through every lesson of both tracks in both languages, a mark once learned is never lost again, and a finished course still has marks for the Shuk.
+- Review findings, no change needed: content (merchants, Reb Ezra and Dyo, all male; nothing suggestive; words from the learned word source, no holy Names or pesukim), learned-keys-only text and marks with their tests, Easy/Standard/Hard (8/12/16 trades, 1/2/4 kinds of mark), haggle streak and purse math, no soft-lock (a player with no marks trades plain words), dispose and leak test, strings in he.json and en.json, phone layout.
+- Played in Chromium: English light and Hebrew dark, desktop 1280x720 and phone 375px, start, middle, finale and results, before and after the fixes.
+
+**Decisions**
+
+- **Fixed the lost marks in the shared lesson code (knownKeys1/knownKeys2) instead of only inside the Shuk** — The bug is in what counts as learned, so every scene and drill benefits; the fix only adds back keys the player already passed, and all 493 unit tests still pass.
+- **Kept the Shuk's design, balance and haggle rules as they are** — Once the marks show up, the coins, clean-deal streak and haggles read clearly and the run is well paced on every level.
+
+**To do**
+
+- [ ] The Jaffa Line (rail) and the Sunken Geniza also draw their banner left to right even for Hebrew words (setWord(..., false)). R19 covers the rail; the Geniza needs the same one-line fix (src/scenes/geniza/index.ts).
+- [ ] On a phone, a character's speech box covers the floating banner for a few seconds (shared layout in every scene); worth a look in T34 (polish).
+
+**Notes**
+
+Before the fix both test runs (English and Hebrew, about 60 lessons learned) had no marks at all; after it every run had marks and coins.
 
 ### ✅ T19 · Scene: The Jaffa Line
 

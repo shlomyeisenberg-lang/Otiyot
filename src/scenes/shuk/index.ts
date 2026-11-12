@@ -1074,7 +1074,9 @@ export class ShukScene implements GameScene {
     a.y = damp(a.y, 3.5, 3, dt);
     a.z = damp(a.z, APPRENTICE_Z - 4, 3, dt);
 
-    // The trade to type: a new one rises when the driver moves on.
+    // The trade to type: a new one rises when the driver moves on. Once the market is restored
+    // the banner goes, so no finished trade is left hanging over the carpet.
+    this.text.root.visible = !this.finished;
     if (typing.letters !== this.shownLetters) {
       this.shownLetters = typing.letters;
       const n = typing.letters.length;
