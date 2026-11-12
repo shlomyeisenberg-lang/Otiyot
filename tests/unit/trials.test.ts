@@ -205,7 +205,10 @@ describe('the boss kit for the trials', () => {
     const ph = f.current;
     // Finish the first burst: the next group's attack waits for the rest to pass.
     let i = 0;
-    while (ph.groups[i] === 0) (f.wordDone(true), (i += 1));
+    while (ph.groups[i] === 0) {
+      f.wordDone(true);
+      i += 1;
+    }
     expect(f.resting).toBe(true);
     expect(f.windup).toBe(0);
     // (The burst's last word was a weak point: the stun holds the windup too.)
