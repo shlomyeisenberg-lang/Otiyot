@@ -1232,9 +1232,9 @@
       "notes": ""
     },
     "T20": {
-      "status": "in_progress",
-      "finished": "",
-      "pr": "",
+      "status": "done",
+      "finished": "2026-11-12",
+      "pr": "https://github.com/shlomyeisenberg-lang/Otiyot/pull/35",
       "summary": "The Sunken Geniza can be played from the map (Level 3 of the course, after the Great Blot): a flooded archive where every page on a stone lectern is one learned word. The water moves with a tide that follows the player's own beat; typing at an even pace opens a current that carries the page up whole and gold to the surface, while a rush of keys stirs the silt. Four shafts of light open as you go and the last page restores the hall.",
       "changes": [
         "src/scenes/geniza/plan.ts: the run as pure data (pages of one learned word, chapters, shafts by quarter, color share) and the Tide (follows the player's beat, judges each key as steady, burst or rest, page steadiness), current, whole pages and silt",
@@ -1573,7 +1573,7 @@
       "why": "Seeing your own best time and accuracy as a faint second scribe in the Arena would make fighting the Great Blot again on a harder level more rewarding.",
       "model": "Sonnet 5.5",
       "effort": "Medium",
-      "prompt": "Otiyot project \u2014 GitHub repo shlomyeisenberg-lang/Otiyot. Build idea 'Arena best-run ghost' on branch idea-arena-ghost. Work without stopping for approval. Read CLAUDE.md, docs/ARCHITECTURE.md, docs/DESIGN.md, docs/GAME_DESIGN.md and only your own entry in docs/progress.json. If T37 (ghosts) is merged, reuse its ghost recording; otherwise store only per-word timings (never typed text) through a new save migration with a test. In src/scenes/arena show a faint second scribe whose progress follows the best earlier run on the same level and difficulty, and a small 'ahead / behind' readout in he and en. Unit tests for the timing logic, extend tests/e2e/arena.spec.ts. Run pnpm lint && pnpm typecheck && pnpm test && pnpm build, update CHANGELOG.md and docs/progress.json, run node scripts/render-progress.mjs, push, open a pull request, merge it into main and delete the branch.",
+      "prompt": "Otiyot project — GitHub repo shlomyeisenberg-lang/Otiyot. Build idea 'Arena best-run ghost' on branch idea-arena-ghost. Work without stopping for approval. Read CLAUDE.md, docs/ARCHITECTURE.md, docs/DESIGN.md, docs/GAME_DESIGN.md and only your own entry in docs/progress.json. If T37 (ghosts) is merged, reuse its ghost recording; otherwise store only per-word timings (never typed text) through a new save migration with a test. In src/scenes/arena show a faint second scribe whose progress follows the best earlier run on the same level and difficulty, and a small 'ahead / behind' readout in he and en. Unit tests for the timing logic, extend tests/e2e/arena.spec.ts. Run pnpm lint && pnpm typecheck && pnpm test && pnpm build, update CHANGELOG.md and docs/progress.json, run node scripts/render-progress.mjs, push, open a pull request, merge it into main and delete the branch.",
       "status": "idea"
     }
   ],

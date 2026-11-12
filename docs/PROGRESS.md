@@ -6,8 +6,8 @@ _Last updated 2026-11-12. This page is generated from `docs/progress.json`; to c
 
 ## Summary
 
-- ✅ **21** of **44** tasks done
-- 🛠️ 1 in progress · ⛔ 0 blocked · ⬜ 22 pending
+- ✅ **22** of **44** tasks done
+- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 22 pending
 - ⬜ **3** manual steps waiting for you
 - 💡 9 feature ideas open
 
@@ -83,7 +83,7 @@ Work done before or outside the numbered tasks.
 - ⬜ R18
 - ✅ T19 · Scene: The Jaffa Line — 2026-11-12 · [PR #30](https://github.com/shlomyeisenberg-lang/Otiyot/pull/30)
 - ⬜ R19
-- 🛠️ T20 · Scene: The Sunken Geniza
+- ✅ T20 · Scene: The Sunken Geniza — 2026-11-12 · [PR #35](https://github.com/shlomyeisenberg-lang/Otiyot/pull/35)
 - ⬜ T21 · Scene: Wings over Hermon
 - ⬜ T22 · Scene: The Star Station
 - ⬜ T23 · Scene: Atbash City
@@ -973,9 +973,9 @@ Compared against the Meadow and the Shuk with Playwright screenshots; the Line k
 
 _Not started._
 
-### 🛠️ T20 · Scene: The Sunken Geniza
+### ✅ T20 · Scene: The Sunken Geniza
 
-**Status:** In progress
+**Status:** Done · **Finished:** 2026-11-12 · **Pull request:** [PR #35](https://github.com/shlomyeisenberg-lang/Otiyot/pull/35)
 
 The Sunken Geniza can be played from the map (Level 3 of the course, after the Great Blot): a flooded archive where every page on a stone lectern is one learned word. The water moves with a tide that follows the player's own beat; typing at an even pace opens a current that carries the page up whole and gold to the surface, while a rush of keys stirs the silt. Four shafts of light open as you go and the last page restores the hall.
 
