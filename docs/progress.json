@@ -1723,15 +1723,15 @@
       "notes": "Try it on the live site: hub > map > The Silent Arena (opens at lesson level 6 once the Great Blot is beaten), or go straight to #/trials."
     },
     "T27": {
-      "status": "pending",
+      "status": "in_progress",
       "finished": "",
       "pr": "",
-      "summary": "",
+      "summary": "In progress: the final scene, the nine-phase fight, the ending and the typed credits are written and pass the type checks. Still to do: play-testing and polish, tests, docs.",
       "changes": [],
       "decisions": [],
       "manual_steps": [],
       "todo": [],
-      "notes": ""
+      "notes": "2026-11-13: taken over by a manual Fable chat on the new account (the previous run stopped at 22:02Z on 2026-11-12)."
     },
     "T28": {
       "status": "pending",

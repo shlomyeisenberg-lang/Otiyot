@@ -7,7 +7,7 @@ _Last updated 2026-11-12. This page is generated from `docs/progress.json`; to c
 ## Summary
 
 - ✅ **31** of **44** tasks done
-- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 13 pending
+- 🛠️ 1 in progress · ⛔ 0 blocked · ⬜ 12 pending
 - ⬜ **3** manual steps waiting for you
 - 💡 13 feature ideas open
 
@@ -90,7 +90,7 @@ Work done before or outside the numbered tasks.
 - ✅ T24 · Scene: The Long Midbar — 2026-11-12 · [PR #44](https://github.com/shlomyeisenberg-lang/Otiyot/pull/44)
 - ✅ T25 · Scene: The Lantern Caves — 2026-11-12 · [PR #45](https://github.com/shlomyeisenberg-lang/Otiyot/pull/45)
 - ✅ T26 · The Silent Arena: remaining bosses — 2026-11-12 · [PR #46](https://github.com/shlomyeisenberg-lang/Otiyot/pull/46)
-- ⬜ T27 · The Blank Scroll and the Keeper
+- 🛠️ T27 · The Blank Scroll and the Keeper
 - ⬜ T28 · Scene: The Ladder (endless)
 - ⬜ T29 · Arcade: host and the 3D classics
 - ⬜ T30 · Arcade: new-generation and quick games
@@ -1317,11 +1317,15 @@ The Silent Arena now holds three more bosses, chosen from a trials board: the St
 
 Try it on the live site: hub > map > The Silent Arena (opens at lesson level 6 once the Great Blot is beaten), or go straight to #/trials.
 
-### ⬜ T27 · The Blank Scroll and the Keeper
+### 🛠️ T27 · The Blank Scroll and the Keeper
 
-**Status:** Pending
+**Status:** In progress
 
-_Not started._
+In progress: the final scene, the nine-phase fight, the ending and the typed credits are written and pass the type checks. Still to do: play-testing and polish, tests, docs.
+
+**Notes**
+
+2026-11-13: taken over by a manual Fable chat on the new account (the previous run stopped at 22:02Z on 2026-11-12).
 
 ### ⬜ T28 · Scene: The Ladder (endless)
 
