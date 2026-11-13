@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-12",
+  "updated": "2026-11-13",
   "history": [
     {
       "date": "2026-11-09",
@@ -35,6 +35,11 @@
       "date": "2026-11-11",
       "what": "Added review tasks R15 to R19: Opus reviews Sonnet's T15 to T19 one task at a time and may fix them.",
       "where": "docs/auto-run/TASK-PROMPTS.md, docs/ROADMAP.md"
+    },
+    {
+      "date": "2026-11-13",
+      "what": "T34 (art, lighting, VFX and music pass) moved from Fable to Opus by the owner. Added an auto-merger workflow that merges ready pull requests every 30 minutes in case a builder cannot merge its own.",
+      "where": "docs/auto-run/TASK-PROMPTS.md, docs/auto-run/RUNNER-PROMPTS.md, docs/ROADMAP.md, .github/workflows/auto-merge.yml"
     }
   ],
   "tasks": {

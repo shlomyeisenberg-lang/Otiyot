@@ -2,7 +2,7 @@
 
 One task = one chat = one branch = one pull request, merged into main by that chat.
 
-Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Fable 5.2 builds T14, T16, T27 and T34; Opus 5.5 builds the foundations, the remaining scenes (T20 to T26, T28) and T33; Sonnet 5.5 builds everything else.
+Legend: `[ ]` not done · `[x]` merged. **Model** says who builds it: Fable 5.2 builds T14, T16 and T27; Opus 5.5 builds the foundations, the remaining scenes (T20 to T26, T28), T33 and T34; Sonnet 5.5 builds everything else.
 
 ## Phase 0 · Foundation (logic, no visuals)
 
@@ -459,7 +459,7 @@ One-pass review of Sonnet's T19; fix what is weak. Done when merged.
 
 ### [ ] T34 · Art, lighting, VFX and music pass
 - **Branch** `t34-polish-pass`
-- **Model** Fable 5.2 · **Effort** Xhigh
+- **Model** Opus 5.5 · **Effort** Xhigh
 - **Goal** Raise every scene to the same top standard.
 - **Scope**
   - Play every scene; fix weak composition, lighting, readability and pacing using the playtest checklist in GAME_DESIGN

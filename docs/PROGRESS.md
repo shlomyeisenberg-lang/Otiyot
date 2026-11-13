@@ -2,7 +2,7 @@
 
 # Otiyot — Progress
 
-_Last updated 2026-11-12. This page is generated from `docs/progress.json`; to change it, edit the JSON and run `node scripts/render-progress.mjs`._
+_Last updated 2026-11-13. This page is generated from `docs/progress.json`; to change it, edit the JSON and run `node scripts/render-progress.mjs`._
 
 ## Summary
 
@@ -56,6 +56,7 @@ Work done before or outside the numbered tasks.
 - **2026-11-10** — Owners changed by the owner: Fable builds T14 (Meadow), T16 (boss kit), T27 (final fight) and T34 (polish pass); Opus finishes T13 (hub, already running); Sonnet builds everything else including T35. (docs/auto-run/TASK-PROMPTS.md, docs/ROADMAP.md)
 - **2026-11-11** — Owners changed by the owner: tasks planned as Fable move to Opus (T20 to T26, T28, T33), except T14, T16, T27, T34 which stay Fable. Sonnet keeps what was Sonnet. Builders now push every 15 minutes with a docs/WIP-Txx.md note. (docs/auto-run/TASK-PROMPTS.md, docs/ROADMAP.md)
 - **2026-11-11** — Added review tasks R15 to R19: Opus reviews Sonnet's T15 to T19 one task at a time and may fix them. (docs/auto-run/TASK-PROMPTS.md, docs/ROADMAP.md)
+- **2026-11-13** — T34 (art, lighting, VFX and music pass) moved from Fable to Opus by the owner. Added an auto-merger workflow that merges ready pull requests every 30 minutes in case a builder cannot merge its own. (docs/auto-run/TASK-PROMPTS.md, docs/auto-run/RUNNER-PROMPTS.md, docs/ROADMAP.md, .github/workflows/auto-merge.yml)
 
 ## Task overview
 

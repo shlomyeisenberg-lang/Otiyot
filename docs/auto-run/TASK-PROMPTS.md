@@ -4,7 +4,7 @@ Three scheduled tasks build this list while nobody watches: **"Otiyot Opus build
 
 **Rules for every task (from the owner):** (1) No women and nothing sexy anywhere: every human character is male, nothing suggestive in visuals, text, jokes or word lists. (2) Text to type uses only letters the player has already learned in their lesson track, and every scene has levels (Easy / Standard / Hard) built from that learned set and unlocked by course progress. Details: CLAUDE.md, ARCHITECTURE section 8, GAME_DESIGN 'Levels follow your learning'.
 
-Owner rule: Fable builds four tasks that need the most taste and skill: the Home Row Meadow that sets the pattern for all scenes (T14), the boss kit (T16), the final Keeper fight (T27) and the polish pass (T34). Opus builds everything else that was planned as Fable: the foundations (T07 to T13), the remaining scenes (T20 to T26, T28) and progression (T33). Sonnet builds everything that was planned as Sonnet: setup, saves, lessons, the first scenes already built by it (T15, T17 to T19), arcade, modes, stats, story text, packaging.
+Owner rule: Fable builds three tasks that need the most taste and skill: the Home Row Meadow that sets the pattern for all scenes (T14), the boss kit (T16) and the final Keeper fight (T27). Opus builds everything else that was planned as Fable: the foundations (T07 to T13), the remaining scenes (T20 to T26, T28), progression (T33) and the polish pass (T34, moved from Fable by the owner on 2026-11-13). Sonnet builds everything that was planned as Sonnet: setup, saves, lessons, the first scenes already built by it (T15, T17 to T19), arcade, modes, stats, story text, packaging.
 
 Effort guide: Low = quick and direct · Medium = normal care · High = think the design through before building, test edge cases · Xhigh = plan, build, then play it and critique it yourself and improve at least once before merging.
 
@@ -48,7 +48,7 @@ Effort guide: Low = quick and direct · Medium = normal care · High = think the
 | T31 | Sonnet | Medium | `t31-modes` | Modes: Practice, Time Attack, Survival, Daily |
 | T32 | Sonnet | Medium | `t32-dashboard-journal` | Statistics dashboard and journal |
 | T33 | Opus | Medium | `t33-progression` | Progression, abilities, shop and cosmetics |
-| T34 | Fable | Xhigh | `t34-polish-pass` | Art, lighting, VFX and music pass |
+| T34 | Opus | Xhigh | `t34-polish-pass` | Art, lighting, VFX and music pass |
 | T35 | Sonnet | High | `t35-story-full` | Full story: cutscenes and voice |
 | T36 | Sonnet | Medium | `t36-settings-a11y` | Settings, accessibility and health |
 | T37 | Sonnet | Medium | `t37-ghosts` | Ghosts and local leaderboards |
@@ -717,7 +717,7 @@ Goal: A light, readable progression that makes the player want one more run.
 
 ## T34 · Art, lighting, VFX and music pass
 
-Owner: **Fable** · Effort: **Xhigh** · Branch: `t34-polish-pass`
+Owner: **Opus** · Effort: **Xhigh** · Branch: `t34-polish-pass`
 
 Done when: No scene feels like homework or looks unfinished; checklist recorded per scene in the progress log.
 
