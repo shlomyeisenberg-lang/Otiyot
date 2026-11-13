@@ -1303,8 +1303,8 @@ export class LadderScene implements GameScene {
       const k = Math.min(1, this.restT / 3);
       const ca = a - 0.5 - k * 0.4;
       const R = 12 + k * 10;
-      this.camPos.set(Math.cos(ca) * R, app.y + 2 + k * 5, Math.sin(ca) * R);
-      this.camLook.set(app.x * 0.4, app.y + 2.5 + k * 3, app.z * 0.4);
+      this.camPos.set(Math.cos(ca) * R, app.y + 1.5 + k * 2.5, Math.sin(ca) * R);
+      this.camLook.set(app.x * 0.5, app.y + 0.2 + k * 1.2, app.z * 0.5);
     } else if (this.fallT >= 0) {
       // Falling: watch him drop softly into the clouds from the stair.
       const ca = a - 0.6;
@@ -1361,7 +1361,7 @@ export class LadderScene implements GameScene {
       this.ahead.setWord([...line].slice(0, AHEAD_CAP), /[֐-׿]/.test(line));
       this.ahead.root.visible = line.length > 0;
     }
-    const aa = a + 0.95;
+    const aa = a + 1.25;
     this.ahead.anchor.set(
       Math.cos(aa) * (TOWER_R + 0.6),
       stairY(this.s + 0.35) + 1.9,
