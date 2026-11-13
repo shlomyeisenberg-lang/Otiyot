@@ -35,6 +35,7 @@ import { trialScreen, trialsScreen } from './screens/trials';
 import { meadowScreen } from './screens/meadow';
 import { introScreen } from './screens/intro';
 import { lessonScreen } from './screens/lesson';
+import { modesScreen } from './screens/modes';
 import { mainMenuScreen } from './screens/mainMenu';
 import { openPauseMenu } from './screens/pause';
 import { playersScreen } from './screens/players';
@@ -120,6 +121,7 @@ export class Shell {
       intro: introScreen,
       hub: hubScreen,
       lesson: lessonScreen,
+      modes: modesScreen,
       meadow: meadowScreen,
       cliffs: cliffsScreen,
       forge: forgeScreen,

@@ -93,6 +93,8 @@ Each enemy (a **Blot**, a patch of the Fading given shape) carries a word shield
 
 Story · Practice (targeted drills, the only place a plain drill screen is allowed) · Endless (The Ladder) · Time Attack · Survival · Daily Challenge (one seed per date, local) · Arcade. Duel is in ROADMAP "Later".
 
+The practice slate in the hub opens the modes screen (T31). **Practice**: weak keys, what is due for review, any lesson of your track, or your own words (only words made of letters you have learned are used). **Time Attack**: type as much as you can before the clock runs out (on Calm: a quota of words, no clock). **Survival**: your grip tires as you go; finished words give it back and mistakes cost it; cross the distance before it gives out (on Calm it never tires). Both run in any open region, on any open level and difficulty. **Daily Challenge**: one set of words and one or two modifiers for each date, on Steady, a fixed number of words; your best for the date is kept on this device. **Modifiers**: no lookahead (the next word stays hidden), mirror (every word typed backwards), fog (the letters still to come are blurred), sudden layout (the keyboard guide vanishes a few words in).
+
 ## Progression and economy
 
 XP and levels. Currencies: **glyphs** (earned by accuracy) and **ink** (earned by combos). Abilities, e.g. *Echo* (shows one more word ahead), *Steady Hand* (absorbs one error per combo), *Second Wind*. A small skill tree, cosmetics (quills, ink colors, robes), hub decorations. Ranks S/A/B/C per scene from accuracy first, speed second. Five difficulties: Calm (no timers) · Steady · Swift · Fierce · Sofer's Trial (errors fail), each trading time pressure, error cost, word complexity and enemy pace.

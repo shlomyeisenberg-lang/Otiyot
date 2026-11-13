@@ -6,8 +6,8 @@ _Last updated 2026-11-13. This page is generated from `docs/progress.json`; to c
 
 ## Summary
 
-- ✅ **35** of **44** tasks done
-- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 9 pending
+- ✅ **36** of **44** tasks done
+- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 8 pending
 - ⬜ **3** manual steps waiting for you
 - 💡 14 feature ideas open
 
@@ -95,7 +95,7 @@ Work done before or outside the numbered tasks.
 - ✅ T28 · Scene: The Ladder (endless) — 2026-11-13 · [PR #49](https://github.com/shlomyeisenberg-lang/Otiyot/pull/49)
 - ✅ T29 · Arcade: host and the 3D classics — 2026-11-13 · [PR #50](https://github.com/shlomyeisenberg-lang/Otiyot/pull/50)
 - ✅ T30 · Arcade: new-generation and quick games — 2026-11-13 · [PR #51](https://github.com/shlomyeisenberg-lang/Otiyot/pull/51)
-- ⬜ T31 · Modes: Practice, Time Attack, Survival, Daily
+- ✅ T31 · Modes: Practice, Time Attack, Survival, Daily — 2026-11-13 · [PR #52](https://github.com/shlomyeisenberg-lang/Otiyot/pull/52)
 - ⬜ T32 · Statistics dashboard and journal
 - ⬜ T33 · Progression, abilities, shop and cosmetics
 - ⬜ T34 · Art, lighting, VFX and music pass
@@ -1466,11 +1466,43 @@ The Game Room now holds all sixteen games in three groups. Letter Dash, Key Rhyt
 
 Playwright in this sandbox needed its browser folder linked to the installed build; nothing in the repo changed for that.
 
-### ⬜ T31 · Modes: Practice, Time Attack, Survival, Daily
+### ✅ T31 · Modes: Practice, Time Attack, Survival, Daily
 
-**Status:** Pending
+**Status:** Done · **Finished:** 2026-11-13 · **Pull request:** [PR #52](https://github.com/shlomyeisenberg-lang/Otiyot/pull/52)
 
-_Not started._
+The hub’s practice slate now opens a modes screen with Practice, Time Attack, Survival and a Daily Challenge. Each runs only on learned letters, writes a statistics-only history entry, and can be played with four challenge modifiers (no lookahead, mirror, fog, sudden layout).
+
+**What changed**
+
+- src/game/modes.ts (new, pure): rule sets rulesFor/ModeRun for Time Attack and Survival, dailyPlan/dailyRules (date-seeded), seedOf/seededRng, mirrorWord/withModifiers/viewOf/suddenAfter, practiceText and learnedOnly, modeScore/dailyScore/entryScore/bestScoreOf; exported from src/game/index.ts
+- src/ui/screens/modes.ts (new) and route 'modes' in src/ui/app.ts and src/ui/shell.ts: lobby with four mode cards, options per mode, run view with timer or grip meter, results with rank, score and best
+- src/ui/screens/hub.ts: the practice slate opens #/modes (its Next lesson button leads to the course lesson); hub.station.practice renamed in en and he
+- src/ui/play.ts: RunOptions.hideLookahead for the no-lookahead modifier
+- src/ui/styles/hub.css: modes lobby, run, meter, results and the fog blur
+- locales/en.json and locales/he.json: modes.* strings (both languages)
+- tests/unit/modes.test.ts (34 tests: rules, daily plan, scores, learned-letters-only for every text, modifiers, strings) and tests/e2e/modes.spec.ts (practice, calm time attack with mirror and fog, survival falling, daily); tests/e2e/hub.spec.ts updated for the new slate
+- docs: ARCHITECTURE (Modes), GAME_DESIGN (Modes), CHANGELOG, ROADMAP tick
+
+**Decisions**
+
+- **No save migration: runs are history entries with modes mode:practice:<kind>, mode:timeattack|survival:<region>:<level>:<difficulty> and mode:daily:<date>; scores are derived from chars, accuracy and wpm** — History already keeps statistics only; a new table would have needed a v9 migration for numbers that can be recomputed
+- **Time Attack and Survival use the chosen open region as the setting (name and place) with learned-letter words, not that region's full 3D mechanic** — Plugging rule sets into twelve separate scenes would have been a large rewrite; the region choice and difficulty still follow what is open
+- **Calm has no clock: Time Attack becomes a quota of words and Survival's grip never tires; Survival always ends at a distance** — GAME_DESIGN says Calm has no timers and every mode must be completable on every difficulty
+- **Sudden layout = the keyboard guide vanishes after a seeded number of words; mirror reverses each word and fixes Hebrew final letters using only learned letters** — Switching the typing language mid-run would ask for letters not learned; both keep the learned-letters rule
+- **Practice custom text keeps only words made of learned keys** — The content rule is binding for every text a player types
+- **The practice slate leads to the modes screen; lessons stay one button away and on the map** — Modes need a hub entry and the slate is the practice corner
+- **The clock and the grip start on the first key, not on the first word shown** — Reading time should not cost the player anything
+- **Merged on the strength of passing local checks (lint, typecheck, 736 unit tests, build, modes and hub e2e) after GitHub's check was still running 16 minutes after the push** — The task rules allow merging when CI does not report in time (the end-to-end job is known to take close to half an hour)
+
+**To do**
+
+- [ ] The modes borrow only the name and place of a region; a later pass could run them inside the real 3D scenes
+- [ ] Mode results do not pay glyphs or ink yet (T33 builds the wallet and shop)
+- [ ] Ghost replay for Time Attack and Daily comes in T37
+
+**Notes**
+
+Daily plans use the local date and the learned letters, so two players on different lessons get the same scene and modifiers but different words.
 
 ### ⬜ T32 · Statistics dashboard and journal
 

@@ -271,8 +271,7 @@ export function hubScreen(ctx: AppContext): Screen {
         openMap();
         break;
       case 'practice':
-        wantLesson(null);
-        leave('lesson');
+        leave('modes');
         break;
       case 'settings':
         leave('settings');
@@ -288,7 +287,7 @@ export function hubScreen(ctx: AppContext): Screen {
     }
   }
 
-  function leave(route: 'lesson' | 'settings' | 'menu' | 'arcade'): void {
+  function leave(route: 'modes' | 'settings' | 'menu' | 'arcade'): void {
     probe.opened = route;
     leaving = window.setTimeout(() => ctx.go(route), 350);
   }

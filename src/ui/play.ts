@@ -53,6 +53,8 @@ export interface RunOptions {
   combo?: ComboPolicy;
   /** Combat: the first letter typed picks the enemy to lock onto. */
   targeting?: Targeting;
+  /** Challenge modifier: the dimmed next word is not shown. */
+  hideLookahead?: boolean;
 }
 
 const STATS_EVERY_MS = 250;
@@ -73,6 +75,7 @@ export class PlayController {
 
   private driver: TypingDriver | null = null;
   private targeting: Targeting | null = null;
+  private hideAhead = false;
   private coach = new HintCoach();
   private lastStats = -Infinity;
 
@@ -148,6 +151,7 @@ export class PlayController {
     this.guide.setLayout(layout);
     this.coach = new HintCoach();
     this.targeting = run.targeting ?? null;
+    this.hideAhead = run.hideLookahead ?? false;
     this.driver = new TypingDriver(source, {
       layout,
       mode,
@@ -294,7 +298,7 @@ export class PlayController {
   private showWord(): void {
     const d = this.driver;
     if (!d) return;
-    this.hud.setWord(d.letters, d.states, d.lookahead);
+    this.hud.setWord(d.letters, d.states, this.hideAhead ? '' : d.lookahead);
     this.guide.show(d.guide());
   }
 
