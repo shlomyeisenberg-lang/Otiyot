@@ -374,6 +374,7 @@ export function ladderScreen(ctx: AppContext): Screen {
     probe.reason = reason;
     const d = play.current;
     const m = d?.metrics(performance.now());
+    play.halt();
     const accuracy = m?.accuracy ?? 100;
     const wpm = Math.round(m?.netWpm ?? 0);
     const floors = scene?.floorsDone ?? 0;

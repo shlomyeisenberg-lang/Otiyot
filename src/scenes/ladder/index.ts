@@ -92,7 +92,7 @@ const STAIR_W = 2.2;
 const COURSE_H = 0.9;
 const TILES = 13;
 /** Clouds the climber passes, and how far above and below him they wrap. */
-const CLOUDS = 64;
+const CLOUDS = 80;
 const CLOUD_BAND = 30;
 const SEA = 46;
 const SEA_Y = -5;
@@ -660,13 +660,17 @@ export class LadderScene implements GameScene {
       const x = Math.cos(a) * (outer - 0.3);
       const z = Math.sin(a) * (outer - 0.3);
       parts.push(
-        painted(new CylinderGeometry(0.06, 0.08, 2.6, 6).translate(x, 1.3, z), TINT.cedarDark),
+        painted(new CylinderGeometry(0.05, 0.07, 1.9, 6).translate(x, 0.95, z), TINT.cedarDark),
       );
-      parts.push(painted(new SphereGeometry(0.11, 6, 4).translate(x, 2.62, z), TINT.brass));
-      const flag = new ConeGeometry(0.42, 1.1, 3).rotateZ(-Math.PI / 2).scale(1, 1, 0.12);
+      parts.push(painted(new SphereGeometry(0.09, 6, 4).translate(x, 1.92, z), TINT.brass));
+      const flag = new ConeGeometry(0.28, 0.75, 3).rotateZ(-Math.PI / 2).scale(1, 1, 0.12);
       flag
         .rotateY(-a + Math.PI / 2)
-        .translate(x + Math.cos(a + Math.PI / 2) * 0.5, 2.25, z + Math.sin(a + Math.PI / 2) * 0.5);
+        .translate(
+          x + Math.cos(a + Math.PI / 2) * 0.36,
+          1.62,
+          z + Math.sin(a + Math.PI / 2) * 0.36,
+        );
       parts.push(painted(flag, i % 2 === 0 ? TINT.pennant : TINT.pennantGold));
     }
     const geo = tracker.track(merged(parts));
@@ -736,7 +740,7 @@ export class LadderScene implements GameScene {
 
   private buildClouds(): void {
     const { materials: kit, tracker, root } = this.ctx;
-    const geo = tracker.track(new IcosahedronGeometry(1, 1));
+    const geo = tracker.track(new IcosahedronGeometry(1, 2));
     const mat = tracker.track(kit.surface({ restore: false, lift: 0.7, flat: false }));
     this.clouds = new InstancedMesh(geo, mat, CLOUDS);
     const r = this.rng;
@@ -744,11 +748,11 @@ export class LadderScene implements GameScene {
     for (let i = 0; i < CLOUDS; i++) {
       const o = i * 4;
       const a = r.range(0, Math.PI * 2);
-      const d = r.range(9, 34);
+      const d = r.range(17, 44);
       this.cloudPos[o] = Math.cos(a) * d;
       this.cloudPos[o + 1] = r.range(-CLOUD_BAND, CLOUD_BAND);
       this.cloudPos[o + 2] = Math.sin(a) * d;
-      this.cloudPos[o + 3] = r.range(1.6, 4.2);
+      this.cloudPos[o + 3] = r.range(1.3, 3.2);
       this.clouds.setColorAt(i, c.setHex(r.next() < 0.5 ? TINT.cloud : TINT.cloudShade));
     }
     if (this.clouds.instanceColor) this.clouds.instanceColor.needsUpdate = true;
@@ -1307,12 +1311,13 @@ export class LadderScene implements GameScene {
       this.camPos.set(Math.cos(ca) * 13, stairY(this.s) + 3, Math.sin(ca) * 13);
       this.camLook.copy(app);
     } else {
-      const ca = a - 0.42;
-      const R = 11.5 + this.murk * -2.5;
-      this.camPos.set(Math.cos(ca) * R, app.y + 3.4, Math.sin(ca) * R);
-      // Look a little ahead, up the stair.
-      const la = a + 0.35;
-      this.camLook.set(Math.cos(la) * STAIR_R * 0.7, app.y + 2.1, Math.sin(la) * STAIR_R * 0.7);
+      // Far enough out to see the climber, the stair ahead and the sky; he stands above the
+      // word strip and the keyboard at the bottom of the screen.
+      const ca = a - 0.34;
+      const R = 15.5 - this.murk * 3;
+      this.camPos.set(Math.cos(ca) * R, app.y + 3.2, Math.sin(ca) * R);
+      const la = a + 0.18;
+      this.camLook.set(Math.cos(la) * STAIR_R * 0.85, app.y - 0.9, Math.sin(la) * STAIR_R * 0.85);
     }
     this.ctx.rig.fixed(this.camPos, this.camLook);
   }
@@ -1324,11 +1329,11 @@ export class LadderScene implements GameScene {
     this.dyo.face(this.camPos.x, this.camPos.z);
 
     // The word: on a banner over the stair, just ahead of the climber.
-    const wa = a + 0.42;
+    const wa = a + 0.3;
     this.text.anchor.set(
-      Math.cos(wa) * (STAIR_R + 0.4),
-      app.y + 2.6,
-      Math.sin(wa) * (STAIR_R + 0.4),
+      Math.cos(wa) * (STAIR_R + 1.3),
+      app.y + 2.5,
+      Math.sin(wa) * (STAIR_R + 1.3),
     );
     if (typing.letters !== this.shownLetters) {
       this.shownLetters = typing.letters;
@@ -1356,11 +1361,11 @@ export class LadderScene implements GameScene {
       this.ahead.setWord([...line].slice(0, AHEAD_CAP), /[֐-׿]/.test(line));
       this.ahead.root.visible = line.length > 0;
     }
-    const aa = a + 1.05;
+    const aa = a + 0.95;
     this.ahead.anchor.set(
-      Math.cos(aa) * (TOWER_R + 0.7),
-      app.y + 2.9,
-      Math.sin(aa) * (TOWER_R + 0.7),
+      Math.cos(aa) * (TOWER_R + 0.6),
+      stairY(this.s + 0.35) + 1.9,
+      Math.sin(aa) * (TOWER_R + 0.6),
     );
     if (this.over) this.ahead.root.visible = false;
     this.ahead.frame(dt, this.aheadStates);
@@ -1383,7 +1388,7 @@ export class LadderScene implements GameScene {
       this.cloudPos[o + 1] = y;
       const big = this.cloudPos[o + 3] as number;
       // In a cloud bank, the clouds gather close round the climber.
-      const pull = 1 - this.murk * 0.55;
+      const pull = 1 - this.murk * 0.3;
       this.dummy.position.set(
         (this.cloudPos[o] as number) * pull,
         y,
