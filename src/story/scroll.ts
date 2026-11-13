@@ -51,7 +51,7 @@ export const SCROLL_PHASE_LINES: Readonly<Record<ScrollPhase, Line>> = {
   ),
   k1: L(
     'naftali',
-    'חשבת שניתן לך להיכנס לבד? אני מחזיק את הקו. כשאקרא לך מילה, כתוב אותה נקי, ואעצור לו את היד.',
+    'חשבת שניתן לך להיכנס לבד? אני מחזיק את הקו. כשאקרא לך מילה, כתוב נקי, ואעצור לו את היד.',
     'Did you think we would let you walk in alone? I am holding the line. When I call you a word, write it clean, and I will stay his hand.',
   ),
   k2: L(
@@ -115,14 +115,14 @@ export const SCROLL_LINES: Readonly<Record<ScrollMoment, readonly Line[]>> = {
     ),
     L(
       'ezra',
-      'יפה. מה שנמחק נכתב שוב. מחיקה היא לא סוף, רק שורה שמחכה.',
+      'יפה. מה שנמחק נכתב שוב. מחיקה איננה סוף, רק שורה שמחכה.',
       'Good. What was erased is written again. Erasing is not an end, only a line that waits.',
     ),
   ],
   slip: [
     L(
       'ezra',
-      'טעות היא לא מחיקה. תקן והמשך. אות איטית וכתובה היטב.',
+      'טעות איננה מחיקה. תקן והמשך. אות איטית וכתובה היטב.',
       'A slip is not an erasure. Mend it and go on. A slow letter, written well.',
     ),
   ],
@@ -181,7 +181,7 @@ export const SCROLL_ENDING: Cutscene = {
       shot: 'page',
       say: L(
         'narrator',
-        'השורה האחרונה עמדה על הדף, והיד של השומר לא עלתה למחוק אותה.',
+        'השורה האחרונה עמדה על הדף, והיד של השומר לא עלתה למחוק דבר.',
         'The last line stood on the page, and the Keeper’s hand did not rise to wipe it away.',
       ),
       seconds: 3,

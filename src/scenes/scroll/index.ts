@@ -161,12 +161,13 @@ const GRADES: Readonly<Record<ScrollLight, Grade>> = {
   k3: { saturation: 0.95, contrast: 1.14, vignette: 0.54, shadowTint: 0xc8d4f4, godRays: 0.5 },
   k4: {
     saturation: 0.95,
-    contrast: 1.2,
-    vignette: 0.58,
+    // Dark, but the archive must stay readable: softer contrast and vignette than the Caves.
+    contrast: 1.1,
+    vignette: 0.48,
     shadowTint: 0xc4c8f0,
     bloom: 1.45,
     godRays: 0.8,
-    exposure: 1.06,
+    exposure: 1.14,
   },
   restored: { saturation: 1.16, contrast: 1.06, vignette: 0.32, godRays: 1, exposure: 1.04 },
 };

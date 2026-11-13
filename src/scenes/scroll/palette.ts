@@ -140,8 +140,8 @@ const DAY: Readonly<Record<ScrollLight, Sky>> = {
     0xe8dcc0,
     1.8,
     [0, 0.6, 0.75],
-    0x5c6284,
-    0x2a2a38,
+    0x6a7096,
+    0x403e54,
     0x3c4058,
     0.0165,
     0.8,
@@ -183,7 +183,12 @@ function night(s: Sky, k: number): Sky {
 }
 
 const NIGHT = Object.fromEntries(
-  SCROLL_LIGHTS.map((id) => [id, night(DAY[id], id === 'restored' ? 0.35 : 0.6)]),
+  // Skies that are already dark (the Long Silence, the Lost Words) take less ink, or the night
+  // theme turns the archive into black shapes.
+  SCROLL_LIGHTS.map((id) => [
+    id,
+    night(DAY[id], id === 'restored' ? 0.35 : id === 'k4' ? 0.2 : id === 'k3' ? 0.4 : 0.6),
+  ]),
 ) as Record<ScrollLight, Sky>;
 
 export function scrollLights(theme: ThemeName): Readonly<Record<ScrollLight, Sky>> {
