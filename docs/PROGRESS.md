@@ -6,8 +6,8 @@ _Last updated 2026-11-13. This page is generated from `docs/progress.json`; to c
 
 ## Summary
 
-- ✅ **34** of **44** tasks done
-- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 10 pending
+- ✅ **35** of **44** tasks done
+- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 9 pending
 - ⬜ **3** manual steps waiting for you
 - 💡 14 feature ideas open
 
@@ -94,7 +94,7 @@ Work done before or outside the numbered tasks.
 - ✅ T27 · The Blank Scroll and the Keeper — 2026-11-12 · [PR #47](https://github.com/shlomyeisenberg-lang/Otiyot/pull/47)
 - ✅ T28 · Scene: The Ladder (endless) — 2026-11-13 · [PR #49](https://github.com/shlomyeisenberg-lang/Otiyot/pull/49)
 - ✅ T29 · Arcade: host and the 3D classics — 2026-11-13 · [PR #50](https://github.com/shlomyeisenberg-lang/Otiyot/pull/50)
-- ⬜ T30 · Arcade: new-generation and quick games
+- ✅ T30 · Arcade: new-generation and quick games — 2026-11-13 · [PR #51](https://github.com/shlomyeisenberg-lang/Otiyot/pull/51)
 - ⬜ T31 · Modes: Practice, Time Attack, Survival, Daily
 - ⬜ T32 · Statistics dashboard and journal
 - ⬜ T33 · Progression, abilities, shop and cosmetics
@@ -1432,11 +1432,39 @@ The Game Room opens: the hub's door leads to an arcade lobby (3D Classics, New G
 
 The arcade runs the owner's earlier code unchanged except for the bridge file; its HUD texts follow the UI language through the old t() helper.
 
-### ⬜ T30 · Arcade: new-generation and quick games
+### ✅ T30 · Arcade: new-generation and quick games
 
-**Status:** Pending
+**Status:** Done · **Finished:** 2026-11-13 · **Pull request:** [PR #51](https://github.com/shlomyeisenberg-lang/Otiyot/pull/51)
 
-_Not started._
+The Game Room now holds all sixteen games in three groups. Letter Dash, Key Rhythm, Fortress of Words, the five "+" versions and the three quick 2D games (Letter Rain, Word Rain, Word Storm) run in the same arcade page, with coins, a booster shop and a daily challenge. Everything typed in them uses only learned letters.
+
+**What changed**
+
+- public/arcade/js: plus.js (perks, target letters, coins, booster shop, daily challenge), plus-games.js, game3d-runner.js, game3d-rhythm.js, game3d-fortress.js, storm2d.js, and css/plus.css, ported from reference/plugin-4.2.0
+- public/arcade/arcade.html and bridge.js: load the new files; start any of the 16 games, the daily challenge ('daily') or the booster shop ('shop'); empty the old lexicons so only learned-letter banks feed the games
+- src/arcade/bridge.ts: CLASSIC_GAMES, NEWGEN_GAMES, QUICK_GAMES, ARCADE_GAMES (16), FLAT_BEST, coinsOf
+- src/ui/screens/arcade.ts and src/ui/styles/arcade.css: three groups of cards (5 / 8 / 3), coins line, Daily challenge and Booster shop buttons, best score for the 2D games
+- locales en/he: names and descriptions of the eleven new games, coins, daily, shop (arcade.later.* removed)
+- tests: tests/unit/arcade.test.ts (16 games, learned letters only for every game, coins and flat best scores) and tests/e2e/arcade.spec.ts (every new game launches, daily challenge and shop open)
+- docs: ARCHITECTURE section 6, ASSETS.md, CHANGELOG.md, ROADMAP tick
+
+**Decisions**
+
+- **The 16 games are 5 classics, 8 new generation (Letter Dash, Rhythm, Fortress and the five '+' versions) and 3 quick games (Letter Rain, Word Rain, Word Storm)** — Matches the task's 16 and the old plugin's own grouping, with Storm as the replacement of the rain games next to them
+- **The old HEBREW_LEXICON and ENGLISH_LEXICON are emptied in place at start-up** — The PLUS vocabulary falls back to every known word when too few fit, which would break the learned-letters-only rule; the banks from Otiyot's library are already learned-only
+- **plus.js now also returns openShop** — The shop is reachable from Otiyot's own lobby button instead of the old games screen; no other change to the game code
+- **Coins stay separate from glyphs and ink, shown only in the Game Room** — The task says no conversion
+- **Phone e2e runs one game per group only** — Keeps the suite fast; each game is tested on desktop
+- **Merged on the strength of passing local checks (lint, typecheck, 702 unit tests, build, arcade and hub e2e) after GitHub's check was still running 13 minutes after the push** — The task rules allow merging when CI does not report in time
+
+**To do**
+
+- [ ] Feed the arcade's key results into the profile's key statistics and history (a later pass)
+- [ ] A player with fewer than 3 learned letters still gets the old layout-letter fallback in Letter Dash and Storm letters mode
+
+**Notes**
+
+Playwright in this sandbox needed its browser folder linked to the installed build; nothing in the repo changed for that.
 
 ### ⬜ T31 · Modes: Practice, Time Attack, Survival, Daily
 

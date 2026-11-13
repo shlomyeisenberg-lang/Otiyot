@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import {
   ARCADE_GAMES,
+  CLASSIC_GAMES,
+  NEWGEN_GAMES,
+  QUICK_GAMES,
+  coinsOf,
   bankFrom,
   buildInit,
   clusters,
@@ -95,9 +99,54 @@ describe('arcade bridge payload', () => {
 
 describe('arcade messages and saves', () => {
   it('checks the games list', () => {
-    expect(ARCADE_GAMES).toHaveLength(5);
+    expect(ARCADE_GAMES).toHaveLength(16);
+    expect(CLASSIC_GAMES).toHaveLength(5);
+    expect(NEWGEN_GAMES).toHaveLength(8);
+    expect(QUICK_GAMES).toHaveLength(3);
+    expect(new Set(ARCADE_GAMES).size).toBe(16);
     expect(isArcadeGame('galaxy')).toBe(true);
+    expect(isArcadeGame('runner')).toBe(true);
+    expect(isArcadeGame('daily')).toBe(true);
+    expect(isArcadeGame('shop')).toBe(true);
     expect(isArcadeGame('rain')).toBe(false);
+  });
+
+  it('reads coins and flat best scores safely', () => {
+    expect(coinsOf(null)).toBe(0);
+    expect(coinsOf({ games3d: { plus: { coins: 42.9 } } })).toBe(42);
+    expect(coinsOf({ games3d: { plus: { coins: -3 } } })).toBe(0);
+    expect(coinsOf({ games3d: { plus: 'x' } })).toBe(0);
+    const blob = { games3d: {}, games: { stormBest: 900, rainBest: 'x' } };
+    expect(bestScore(blob, 'storm')).toBe(900);
+    expect(bestScore(blob, 'wordRain')).toBe(0);
+    expect(bestScore(blob, 'letterRain')).toBe(0);
+  });
+
+  it('builds a learned-letters-only payload for every game', () => {
+    const profile = createProfile('p2', 'Test', 0);
+    const known = knownKeysOf(profile);
+    for (const game of ARCADE_GAMES) {
+      const init = buildInit({
+        layout: 'he',
+        uiLang: 'en',
+        theme,
+        known,
+        weak: [],
+        blob: null,
+        game,
+        rng: seeded(),
+      });
+      expect(init.game).toBe(game);
+      const text = [
+        ...init.words.short,
+        ...init.words.medium,
+        ...init.words.long,
+        ...init.words.advanced,
+        ...init.sentences,
+        ...init.paragraphs,
+      ].join(' ');
+      for (const ch of text) if (ch !== ' ') expect(known.has(ch)).toBe(true);
+    }
   });
 
   it('accepts only known messages', () => {

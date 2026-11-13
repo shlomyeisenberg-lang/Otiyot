@@ -4,7 +4,8 @@
 // it sends their saved data back. The games themselves are not changed.
 /* global appData, appSettings, getDefaultData, WORD_BANK, ENGLISH_WORD_BANK, SENTENCE_BANK,
    ENGLISH_SENTENCE_BANK, PARAGRAPH_BANK, ENGLISH_PARAGRAPH_BANK, G3D, game3dDef, TORAH_DATA,
-   TORAH_CAT_ORDER, SEFARIM_DEF */
+   TORAH_CAT_ORDER, SEFARIM_DEF, PLUS, plusGameDef, startWordRain, startWordStorm, stopStorm,
+   HEBREW_LEXICON, ENGLISH_LEXICON */
 (function () {
     'use strict';
     var init = null;
@@ -111,9 +112,21 @@
             return msg.weak.slice(0, limit || 5).map(function (ch) { return { ch: ch, score: 50, attempts: 3 }; });
         };
 
-        if (msg.game === 'sefarim') restrictSefarim(msg);
+        // The old lexicons hold words the player may not be able to type: only the banks above
+        // (made of learned letters) feed the games, so the lexicons are emptied in place.
+        [typeof HEBREW_LEXICON !== 'undefined' ? HEBREW_LEXICON : null,
+            typeof ENGLISH_LEXICON !== 'undefined' ? ENGLISH_LEXICON : null].forEach(function (l) {
+            if (l && l.length) l.length = 0;
+        });
+
+        if (msg.game === 'sefarim' || msg.game === 'sefarimPlus') restrictSefarim(msg);
         var root = document.getElementById('arcadeRoot');
-        var def = game3dDef(msg.game);
+        if (msg.game === 'shop') { PLUS.openShop(root); document.body.dataset.ready = 'true'; return; }
+        if (msg.game === 'daily') { PLUS.startDaily(root); document.body.dataset.ready = 'true'; return; }
+        if (msg.game === 'letterRain') { startWordRain(root, 'letters'); document.body.dataset.ready = 'true'; return; }
+        if (msg.game === 'wordRain') { startWordRain(root, 'words'); document.body.dataset.ready = 'true'; return; }
+        if (msg.game === 'storm') { startWordStorm(root, 'mixed'); document.body.dataset.ready = 'true'; return; }
+        var def = plusGameDef(msg.game) || game3dDef(msg.game);
         if (!def) { post({ type: 'otiyot:exit' }); return; }
         G3D.openMenu(root, def);
         document.body.dataset.ready = 'true';

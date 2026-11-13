@@ -1904,15 +1904,51 @@
       "notes": "The arcade runs the owner's earlier code unchanged except for the bridge file; its HUD texts follow the UI language through the old t() helper."
     },
     "T30": {
-      "status": "pending",
-      "finished": "",
-      "pr": "",
-      "summary": "",
-      "changes": [],
-      "decisions": [],
+      "status": "done",
+      "finished": "2026-11-13",
+      "pr": "https://github.com/shlomyeisenberg-lang/Otiyot/pull/51",
+      "summary": "The Game Room now holds all sixteen games in three groups. Letter Dash, Key Rhythm, Fortress of Words, the five \"+\" versions and the three quick 2D games (Letter Rain, Word Rain, Word Storm) run in the same arcade page, with coins, a booster shop and a daily challenge. Everything typed in them uses only learned letters.",
+      "changes": [
+        "public/arcade/js: plus.js (perks, target letters, coins, booster shop, daily challenge), plus-games.js, game3d-runner.js, game3d-rhythm.js, game3d-fortress.js, storm2d.js, and css/plus.css, ported from reference/plugin-4.2.0",
+        "public/arcade/arcade.html and bridge.js: load the new files; start any of the 16 games, the daily challenge ('daily') or the booster shop ('shop'); empty the old lexicons so only learned-letter banks feed the games",
+        "src/arcade/bridge.ts: CLASSIC_GAMES, NEWGEN_GAMES, QUICK_GAMES, ARCADE_GAMES (16), FLAT_BEST, coinsOf",
+        "src/ui/screens/arcade.ts and src/ui/styles/arcade.css: three groups of cards (5 / 8 / 3), coins line, Daily challenge and Booster shop buttons, best score for the 2D games",
+        "locales en/he: names and descriptions of the eleven new games, coins, daily, shop (arcade.later.* removed)",
+        "tests: tests/unit/arcade.test.ts (16 games, learned letters only for every game, coins and flat best scores) and tests/e2e/arcade.spec.ts (every new game launches, daily challenge and shop open)",
+        "docs: ARCHITECTURE section 6, ASSETS.md, CHANGELOG.md, ROADMAP tick"
+      ],
+      "decisions": [
+        {
+          "decision": "The 16 games are 5 classics, 8 new generation (Letter Dash, Rhythm, Fortress and the five '+' versions) and 3 quick games (Letter Rain, Word Rain, Word Storm)",
+          "why": "Matches the task's 16 and the old plugin's own grouping, with Storm as the replacement of the rain games next to them"
+        },
+        {
+          "decision": "The old HEBREW_LEXICON and ENGLISH_LEXICON are emptied in place at start-up",
+          "why": "The PLUS vocabulary falls back to every known word when too few fit, which would break the learned-letters-only rule; the banks from Otiyot's library are already learned-only"
+        },
+        {
+          "decision": "plus.js now also returns openShop",
+          "why": "The shop is reachable from Otiyot's own lobby button instead of the old games screen; no other change to the game code"
+        },
+        {
+          "decision": "Coins stay separate from glyphs and ink, shown only in the Game Room",
+          "why": "The task says no conversion"
+        },
+        {
+          "decision": "Phone e2e runs one game per group only",
+          "why": "Keeps the suite fast; each game is tested on desktop"
+        },
+        {
+          "decision": "Merged on the strength of passing local checks (lint, typecheck, 702 unit tests, build, arcade and hub e2e) after GitHub's check was still running 13 minutes after the push",
+          "why": "The task rules allow merging when CI does not report in time"
+        }
+      ],
       "manual_steps": [],
-      "todo": [],
-      "notes": ""
+      "todo": [
+        "Feed the arcade's key results into the profile's key statistics and history (a later pass)",
+        "A player with fewer than 3 learned letters still gets the old layout-letter fallback in Letter Dash and Storm letters mode"
+      ],
+      "notes": "Playwright in this sandbox needed its browser folder linked to the installed build; nothing in the repo changed for that."
     },
     "T31": {
       "status": "pending",
