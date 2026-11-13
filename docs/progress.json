@@ -1951,9 +1951,9 @@
       "notes": "Playwright in this sandbox needed its browser folder linked to the installed build; nothing in the repo changed for that."
     },
     "T31": {
-      "status": "in_progress",
+      "status": "done",
       "finished": "2026-11-13",
-      "pr": "",
+      "pr": "https://github.com/shlomyeisenberg-lang/Otiyot/pull/52",
       "summary": "The hub’s practice slate now opens a modes screen with Practice, Time Attack, Survival and a Daily Challenge. Each runs only on learned letters, writes a statistics-only history entry, and can be played with four challenge modifiers (no lookahead, mirror, fog, sudden layout).",
       "changes": [
         "src/game/modes.ts (new, pure): rule sets rulesFor/ModeRun for Time Attack and Survival, dailyPlan/dailyRules (date-seeded), seedOf/seededRng, mirrorWord/withModifiers/viewOf/suddenAfter, practiceText and learnedOnly, modeScore/dailyScore/entryScore/bestScoreOf; exported from src/game/index.ts",

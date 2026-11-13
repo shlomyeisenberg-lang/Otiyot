@@ -6,8 +6,8 @@ _Last updated 2026-11-13. This page is generated from `docs/progress.json`; to c
 
 ## Summary
 
-- ✅ **35** of **44** tasks done
-- 🛠️ 1 in progress · ⛔ 0 blocked · ⬜ 8 pending
+- ✅ **36** of **44** tasks done
+- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 8 pending
 - ⬜ **3** manual steps waiting for you
 - 💡 14 feature ideas open
 
@@ -95,7 +95,7 @@ Work done before or outside the numbered tasks.
 - ✅ T28 · Scene: The Ladder (endless) — 2026-11-13 · [PR #49](https://github.com/shlomyeisenberg-lang/Otiyot/pull/49)
 - ✅ T29 · Arcade: host and the 3D classics — 2026-11-13 · [PR #50](https://github.com/shlomyeisenberg-lang/Otiyot/pull/50)
 - ✅ T30 · Arcade: new-generation and quick games — 2026-11-13 · [PR #51](https://github.com/shlomyeisenberg-lang/Otiyot/pull/51)
-- 🛠️ T31 · Modes: Practice, Time Attack, Survival, Daily — 2026-11-13
+- ✅ T31 · Modes: Practice, Time Attack, Survival, Daily — 2026-11-13 · [PR #52](https://github.com/shlomyeisenberg-lang/Otiyot/pull/52)
 - ⬜ T32 · Statistics dashboard and journal
 - ⬜ T33 · Progression, abilities, shop and cosmetics
 - ⬜ T34 · Art, lighting, VFX and music pass
@@ -1466,9 +1466,9 @@ The Game Room now holds all sixteen games in three groups. Letter Dash, Key Rhyt
 
 Playwright in this sandbox needed its browser folder linked to the installed build; nothing in the repo changed for that.
 
-### 🛠️ T31 · Modes: Practice, Time Attack, Survival, Daily
+### ✅ T31 · Modes: Practice, Time Attack, Survival, Daily
 
-**Status:** In progress · **Finished:** 2026-11-13
+**Status:** Done · **Finished:** 2026-11-13 · **Pull request:** [PR #52](https://github.com/shlomyeisenberg-lang/Otiyot/pull/52)
 
 The hub’s practice slate now opens a modes screen with Practice, Time Attack, Survival and a Daily Challenge. Each runs only on learned letters, writes a statistics-only history entry, and can be played with four challenge modifiers (no lookahead, mirror, fog, sudden layout).
 
