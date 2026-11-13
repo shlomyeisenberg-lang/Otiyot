@@ -255,6 +255,18 @@ export class PlayController {
     this.hud.setCombo(d.combo);
   }
 
+  /**
+   * Ends an endless run from outside (the Ladder: the climber fell or rested). No more keys are
+   * judged, the word strip empties and the finger guide rests. `onEnd` is not called.
+   */
+  halt(): void {
+    const d = this.driver;
+    if (!d || d.ended) return;
+    d.ended = true;
+    this.hud.setWord([], [], '');
+    this.guide.show(null);
+  }
+
   setGuideMode(mode: GuideMode): void {
     this.guide.mode = mode;
   }

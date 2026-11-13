@@ -1,7 +1,7 @@
 // Save versioning. Every schema change adds ONE entry to MIGRATIONS (from-version -> next version)
 // and bumps CURRENT_VERSION, plus a test in tests/unit/save-migrations.test.ts.
 
-export const CURRENT_VERSION = 7;
+export const CURRENT_VERSION = 8;
 
 type Rec = Record<string, unknown>;
 export type Migration = (raw: Rec) => Rec;
@@ -154,6 +154,18 @@ const v6ToV7: Migration = (raw) => {
   return { ...raw, version: 7, profiles };
 };
 
+/** v7 -> v8 (T28). Profiles gain `ladder`, the Ladder's high-score table, empty to start. */
+const v7ToV8: Migration = (raw) => {
+  const profiles = Array.isArray(raw.profiles)
+    ? raw.profiles.map((p) =>
+        typeof p === 'object' && p !== null && !Array.isArray(p)
+          ? { ladder: [], ...(p as Rec) }
+          : p,
+      )
+    : raw.profiles;
+  return { ...raw, version: 8, profiles };
+};
+
 export const MIGRATIONS: Readonly<Record<number, Migration>> = {
   0: v0ToV1,
   1: v1ToV2,
@@ -162,6 +174,7 @@ export const MIGRATIONS: Readonly<Record<number, Migration>> = {
   4: v4ToV5,
   5: v5ToV6,
   6: v6ToV7,
+  7: v7ToV8,
 };
 
 export function versionOf(raw: Rec): number {

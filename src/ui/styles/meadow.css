@@ -259,3 +259,75 @@
     transition: none;
   }
 }
+
+/* The Ladder: the bar under the chip is the climber's grip (techelet, warning-red when tiring), the
+   next word hides in a cloud bank or the fog, and the results card carries the high-score table. */
+.ladder .ladder__grip {
+  block-size: calc(var(--sp-1) * 1.5);
+}
+.ladder .ladder__grip > span {
+  background: var(--techelet);
+}
+.ladder .ladder__grip[data-low='true'] > span {
+  background: var(--err-fg);
+}
+.ladder .hud .hud-ahead {
+  transition:
+    opacity var(--t-panel) var(--ease),
+    filter var(--t-panel) var(--ease);
+}
+.ladder .hud[data-veil='dark'] .hud-ahead {
+  opacity: 0.06;
+  filter: blur(5px);
+}
+.ladder__table-wrap {
+  max-inline-size: 100%;
+  overflow-x: auto;
+  margin-block: var(--sp-3);
+}
+.ladder__table {
+  inline-size: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-ui);
+  font-size: var(--fs-14);
+  font-variant-numeric: tabular-nums;
+}
+.ladder__table caption {
+  text-align: start;
+  font-family: var(--font-display);
+  font-size: var(--fs-16);
+  padding-block-end: var(--sp-2);
+}
+.ladder__table th,
+.ladder__table td {
+  text-align: start;
+  padding-block: var(--sp-1);
+  padding-inline: var(--sp-2);
+  border-block-end: var(--border-w) solid var(--line);
+}
+.ladder__table th {
+  color: var(--ink-soft);
+  font-size: var(--fs-12);
+}
+.ladder__table tr.ladder__new td {
+  background: var(--gold-soft);
+  font-weight: 700;
+}
+@media (max-width: 420px) {
+  .ladder__table td:last-child,
+  .ladder__table th:last-child {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ladder .hud .hud-ahead {
+    transition: none;
+  }
+}
+.ladder .meadow__results .range__results-stats {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.ladder .meadow__results .stat {
+  min-inline-size: 0;
+  padding: var(--sp-2) var(--sp-3);
+}

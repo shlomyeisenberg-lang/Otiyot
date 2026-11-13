@@ -1786,15 +1786,70 @@
       "notes": "2026-11-13: taken over by a manual Fable chat on the new account (the previous run stopped at 22:02Z on 2026-11-12), then finished by a manual Opus chat."
     },
     "T28": {
-      "status": "pending",
-      "finished": "",
-      "pr": "",
-      "summary": "",
-      "changes": [],
-      "decisions": [],
+      "status": "done",
+      "finished": "2026-11-13",
+      "pr": "https://github.com/shlomyeisenberg-lang/Otiyot/pull/49",
+      "summary": "The Ladder, endless free play: the apprentice climbs a cedar stair round an endless tower of letter tiles above the clouds, every floor a short challenge borrowed from another region (gale, cloud bank, glass rungs, long words, a Blot swarm), with a grip that tires as he climbs, landings every fifth floor, score modifiers and a high-score table per profile.",
+      "changes": [
+        "src/scenes/ladder/plan.ts: pure climb logic: Climb lays out floors on demand from learned words that lean toward the weakest keys; six floor kinds drawn from the other scenes' mechanics; landings every 5 floors; the Grip model (feeding, streaks, slips, tiring faster with height up to a cap, Calm floor, Dyo's one catch, the fall); modifiers (fog, brittle, long, steep) and score multipliers; word and floor points; the top-10 table (addScore)",
+        "src/scenes/ladder/index.ts: LadderScene: an endless tower of parchment and sandstone tiles carved with the player's learned letters (a few in gold), a winding cedar stair with brass posts and a rope rail, three leapfrogging segments so the tower never ends, stone landings with pennants, a sea of clouds and passing clouds, wind streaks for gales, a cloud bank for lantern floors, crystal or amber planks for glass and long floors, ink Blots for swarm floors, the apprentice and Dyo, the faded-to-day-to-dusk sky with stars, the soft fall into the clouds and the resting view of the lit tower",
+        "src/scenes/ladder/palette.ts: faded, day and dusk skies for light and dark themes, and the scene's colors",
+        "src/ui/screens/ladder.ts: the #/ladder screen: endless typing through the climb, chip with floor, challenge, score, best and a grip bar, veiled next word on cloud floors and with fog, Escape panel with Rest here / level / difficulty / modifiers / new climb / home, streak drop when Dyo catches, results card with rank, floors, score, clean floors, rewards and the high-score table (new row marked); probe window.__otiyotLadder",
+        "src/ui/play.ts: PlayController.halt() ends an endless run from outside (strip emptied, guide resting)",
+        "src/save: schema v8, Profile.ladder (high-score table, max 10 rows, normalized and sorted) with migration v7 -> v8",
+        "src/story/ladder.ts: lines for Reb Ezra and Dyo in Hebrew and English",
+        "src/audio: the ladder music theme (G dorian, 4/4 at 108 bpm) and a new marimba voice in the synth",
+        "src/ui/app.ts, src/ui/shell.ts, src/ui/playable.ts: the ladder route, opened from the hub's map",
+        "src/ui/styles/meadow.css: grip bar, veil, high-score table styles (phone width hides the last column)",
+        "locales/en.json, locales/he.json: every new string in English and Hebrew",
+        "tests/unit/ladder.test.ts (26 tests incl. learned-letters-only on every level, difficulty and modifier, Hebrew, weak-key leaning, grip fairness over ten floors), tests/unit/save-migrations.test.ts (v7 -> v8), tests/e2e/ladder.spec.ts (Calm climb from the map, rest, table, climb again, home with no leaks; Steady climb with Dyo's catch and the fall), tests/e2e/sound.spec.ts (16 themes)",
+        "docs/ARCHITECTURE.md (data model v8 and section 7u), docs/DESIGN.md (high-score table, grip bar), CHANGELOG.md, ROADMAP.md tick"
+      ],
+      "decisions": [
+        {
+          "decision": "An endless climb ends when the grip gives out for good (after one catch by Dyo) or when the player rests; the height and score are banked either way and the run is never counted as failed",
+          "why": "Endless play needs a natural end that is not a soft-lock; resting is always possible from the Escape panel, and on Calm (no tiring) resting is the only end"
+        },
+        {
+          "decision": "Floors borrow the other scenes' mechanics as six kinds (steps, gale, lantern/cloud bank, glass, long, swarm) built on one grip model, never the same kind twice in a row, plain steps after every landing",
+          "why": "The task asks for challenges drawn from all mechanics; one grip number keeps it readable and testable"
+        },
+        {
+          "decision": "The grip tires 3% faster per floor, capped at twice the first floor's rate",
+          "why": "Pressure grows with height so endless runs end, but a typist at the difficulty's pace always climbs at least ten floors (unit-tested)"
+        },
+        {
+          "decision": "High scores are a new profile field (save v8) with a top-10 table, not history entries",
+          "why": "History has no score or floor field; a small table per profile is what the scene needs; the content rules forbid storing typed text and none is stored"
+        },
+        {
+          "decision": "Modifiers are picked before a climb and multiply the score; brittle and steep do nothing on Calm and are dropped there",
+          "why": "So Calm scores cannot be inflated by modifiers that have no effect"
+        },
+        {
+          "decision": "The tower's tiles show the player's own learned letters, never alef, he, vav, yod or lamed",
+          "why": "Makes it a tower of his letters; leaving those out means no holy Name can be spelled by chance across neighbouring tiles"
+        },
+        {
+          "decision": "Weak keys: each word is the best of three learned candidates by how many of the 4 weakest keys it holds",
+          "why": "Fully adaptive text without leaving the learned word library"
+        },
+        {
+          "decision": "Added a marimba voice to the synth for the theme's melody",
+          "why": "The music test requires every theme to have its own melody voice and all existing voices were taken"
+        },
+        {
+          "decision": "Added PlayController.halt() to the shared play controller",
+          "why": "An endless run has to stop the typing strip from outside when the climber falls or rests"
+        },
+        {
+          "decision": "Merged on the strength of the local checks (lint, typecheck, 691 unit tests, build, and the ladder, sound and hub end-to-end tests on desktop and phone)",
+          "why": "GitHub's check was still running after 15 minutes without a result (the last runs on main were cancelled or failed for the same reason)"
+        }
+      ],
       "manual_steps": [],
       "todo": [],
-      "notes": ""
+      "notes": "Score rewards (XP, glyphs, ink) are shown like every other scene; adding them to the wallet is T33. The table is per profile and local only; ghosts and leaderboards are T37."
     },
     "T29": {
       "status": "pending",
@@ -2034,6 +2089,15 @@
       "model": "Sonnet 5.5",
       "effort": "Medium",
       "prompt": "Otiyot project — GitHub repo shlomyeisenberg-lang/Otiyot. Task: Arena gauntlet (branch: idea-arena-gauntlet). Goal: once the Silent Arena is restored (all three trials beaten), add a \"Gauntlet\" button on the trials board (#/trials) that fights the Storm Hawk, the Glass Golem and the Long Tide back to back with one streak and one results card (total time, rank). 1. Read CLAUDE.md, docs/ARCHITECTURE.md (sections 7j and 7s), docs/DESIGN.md and only your own entry in docs/progress.json. Open src/ui/screens/arena.ts (bossScreen, BossConfig), src/ui/screens/trials.ts, src/scenes/arena/trials.ts and src/game/trials.ts. 2. Start from the latest main and create the branch idea-arena-gauntlet. 3. Work from start to finish without stopping for my approval; record important choices in docs/progress.json under a new feature entry. 4. Learned letters only, levels Easy/Standard/Hard, every difficulty, Hebrew and English strings in locales, no women and nothing sexy anywhere. Add unit tests for the logic and a Playwright smoke test. Run pnpm lint, typecheck, test and build. Update docs/progress.json and run node scripts/render-progress.mjs, push, open a pull request, wait for checks, squash-merge it into main yourself and delete the branch.",
+      "status": "idea"
+    },
+    {
+      "from": "T28",
+      "title": "Daily Ladder seed",
+      "why": "One shared seed per date for the Ladder (same floors and kinds for everyone on that day) makes a daily goal and pairs with the Daily Challenge mode.",
+      "model": "Sonnet 5.5",
+      "effort": "Medium",
+      "prompt": "Otiyot project — GitHub repo shlomyeisenberg-lang/Otiyot. Task: Daily Ladder seed (branch: idea-daily-ladder). Work from start to finish without stopping for approval. Read CLAUDE.md, docs/ARCHITECTURE.md (section 7u), docs/DESIGN.md and your entry in docs/progress.json. Add a 'Daily climb' button to the Ladder's Escape panel (src/ui/screens/ladder.ts) that starts a climb whose floor kinds and word choices come from a seeded random generator made from today's local date (src/scenes/ladder/plan.ts already takes rng); keep learned letters only and add a unit test that the same date gives the same first 10 floors and that every word uses learned keys. Mark daily climbs in the high-score table. Strings in locales/en.json and locales/he.json. Run pnpm lint, typecheck, test and build, update docs/progress.json (feature idea status built) and run node scripts/render-progress.mjs, open a pull request, merge it into main yourself and delete the branch.",
       "status": "idea"
     }
   ],

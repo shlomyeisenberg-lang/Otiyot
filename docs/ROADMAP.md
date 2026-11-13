@@ -381,7 +381,7 @@ One-pass review of Sonnet's T19; fix what is weak. Done when merged.
 - **Done when** The game can be finished from a fresh profile; the ending lands emotionally; no soft-locks.
 - **User must have ready** Nothing.
 
-### [ ] T28 · Scene: The Ladder (endless)
+### [x] T28 · Scene: The Ladder (endless)
 - **Branch** `t28-ladder`
 - **Model** Opus 5.5 · **Effort** Medium
 - **Goal** Build the "The Ladder (endless)" scene as a distinct, beautiful, exciting 3D level whose mechanic is: an endless climb where each floor is a short random challenge drawn from all mechanics, with modifiers and a high-score table

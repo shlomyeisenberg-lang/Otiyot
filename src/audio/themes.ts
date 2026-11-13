@@ -24,6 +24,7 @@ export type Voice =
   | 'pluck'
   | 'ney'
   | 'kalimba'
+  | 'marimba'
   | 'santur';
 /** Drum kits; each plays the same pattern letters with its own sounds. */
 export type Kit = 'darbuka' | 'frame' | 'taiko' | 'brush';
@@ -96,6 +97,7 @@ export type ThemeId =
   | 'atbash'
   | 'midbar'
   | 'caves'
+  | 'ladder'
   | 'boss'
   | 'final';
 export const THEME_IDS: readonly ThemeId[] = [
@@ -112,6 +114,7 @@ export const THEME_IDS: readonly ThemeId[] = [
   'atbash',
   'midbar',
   'caves',
+  'ladder',
   'boss',
   'final',
 ];
@@ -534,6 +537,38 @@ export const THEMES: Readonly<Record<ThemeId, ThemeSpec>> = {
     reverb: 0.62,
     brightness: 0.45,
     level: 0.9,
+  },
+
+  // The Ladder: an endless climb above the clouds, G dorian at 108 bpm in driving sixteenths.
+  // A marimba hops up the tune like feet on rungs, a santur shimmers the pulse like the wind in the
+  // clouds, strings hold a wide sky underneath and a darbuka keeps the climb going. Its sections
+  // rise as the climber does: each landing lifts the tune a step.
+  ladder: {
+    id: 'ladder',
+    nameKey: 'sound.theme.ladder',
+    seed: 2828,
+    bpm: 108,
+    beats: 4,
+    sub: 4,
+    root: 67,
+    mode: 'dorian',
+    swing: 0.04,
+    form: ['A', 'A', 'B', 'A', 'C'],
+    sections: {
+      A: { bars: 8, chords: [0, 0, 6, 6, 3, 3, 4, 4], register: 1, density: 0.5 },
+      B: { bars: 8, chords: [3, 3, 4, 4, 5, 5, 6, 6], register: 2, density: 0.6, transpose: 2 },
+      C: { bars: 8, chords: [0, 3, 4, 5, 3, 4, 6, 0], register: 3, density: 0.7, transpose: 5 },
+    },
+    voices: { drone: 'strings', pulse: 'santur', melody: 'marimba', counter: 'cello' },
+    kit: 'darbuka',
+    pulse: [0, -1, 1, 2, 3, -1, 2, 1, 0, -1, 1, 2, 3, 2, 1, -1],
+    counterOctave: -1,
+    drums: { base: 'D...T...D.k.T...', full: 'D.kTk.D.D.kTk.TS' },
+    cells: CELLS_16,
+    cadences: CAD_16,
+    reverb: 0.4,
+    brightness: 0.7,
+    level: 0.85,
   },
 
   // Boss: C freygish at full drive, taiko and cello ostinato. Four phases: each climbs, and the

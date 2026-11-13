@@ -330,6 +330,21 @@ export class Synth {
         }
         return;
       }
+      case 'marimba': {
+        // A marimba: a wooden bar under a soft mallet. A warm round tone with a woody knock on top
+        // (the fourth partial), bouncy and short, like footsteps on rungs going up.
+        const end = t + dur + 0.8;
+        for (const [ratio, amp, life] of [
+          [1, 0.13, 0.55],
+          [4, 0.04, 0.09],
+          [10, 0.012, 0.03],
+        ] as const) {
+          this.osc('sine', hz * ratio, t, end)
+            .connect(this.decay(t, amp * vel, life + dur * 0.15))
+            .connect(dest);
+        }
+        return;
+      }
       case 'pluck': {
         // A synth pluck: two detuned saws through a filter that snaps shut, like a code machine
         // ticking through its wheels. Short and bright, for neon arpeggios.
