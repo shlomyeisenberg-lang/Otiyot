@@ -1852,15 +1852,52 @@
       "notes": "Score rewards (XP, glyphs, ink) are shown like every other scene; adding them to the wallet is T33. The table is per profile and local only; ghosts and leaderboards are T37."
     },
     "T29": {
-      "status": "pending",
-      "finished": "",
-      "pr": "",
-      "summary": "",
-      "changes": [],
-      "decisions": [],
+      "status": "done",
+      "finished": "2026-11-13",
+      "pr": "https://github.com/shlomyeisenberg-lang/Otiyot/pull/50",
+      "summary": "The Game Room opens: the hub's door leads to an arcade lobby (3D Classics, New Generation, Quick Games) and the five 3D classics (Galaxy, Sefarim, Race, Arena, Tower) run in an iframe through a postMessage bridge. They use the profile's layout, language, theme, learned letters and weak keys, and keep their scores in the profile.",
+      "changes": [
+        "public/arcade/: arcade.html, bridge.js, arcade.css and the legacy games, keyboard, adaptive and typing files, css and three.js ported from reference/plugin-4.2.0 without rewriting the games",
+        "src/arcade/bridge.ts: pure payload (learned-letter word, sentence and paragraph banks, weak keys, theme) and message checks (ready, save, exit; blob size limit)",
+        "src/ui/screens/arcade.ts: the lobby (route #/arcade) with the five classics, best scores, the iframe host, save and exit handling; src/ui/styles/arcade.css",
+        "Hub: the Game Room door and station now open the arcade; the door sign shows the station name instead of 'soon'",
+        "locales en/he: arcade strings",
+        "tests: tests/unit/arcade.test.ts (learned letters only, never-empty banks, message and blob checks, best score) and tests/e2e/arcade.spec.ts (lobby, each of the five games launches and starts, layout is passed, scores reach the save)",
+        "docs: ARCHITECTURE section 6, ASSETS.md, CHANGELOG.md, ROADMAP tick"
+      ],
+      "decisions": [
+        {
+          "decision": "The games' own word, sentence and paragraph banks are replaced at start-up by words from Otiyot's library made of learned letters",
+          "why": "The learned-letters-only rule is binding and the old banks held words the player could not type yet"
+        },
+        {
+          "decision": "Hall of Sefarim keeps only items made of learned letters, drops women-related names (Nashim tractates, Ruth, Esther, Shir HaShirim, Chayei Sarah) and gets a 'Words I know' shelf",
+          "why": "Content rules (no women) and so that English-layout players, who cannot type Hebrew book names, still have a playable shelf"
+        },
+        {
+          "decision": "XP, achievements, daily limit and the old dashboard are stubbed out inside the arcade",
+          "why": "They belong to the old app; Otiyot has its own progression (T33)"
+        },
+        {
+          "decision": "New Generation and Quick Games show their games as 'soon' cards",
+          "why": "They are built in T30; the lobby shows all three groups as the task asks"
+        },
+        {
+          "decision": "The arcade's own key statistics stay inside the arcade blob and are not merged into the profile's key stats",
+          "why": "Keeps the change small; merging belongs to a later pass"
+        },
+        {
+          "decision": "postMessage targets '*' and the parent checks event.source",
+          "why": "The Otzaria plugin page has no stable origin; messages carry no secrets"
+        }
+      ],
       "manual_steps": [],
-      "todo": [],
-      "notes": ""
+      "todo": [
+        "T30: Letter Dash, Rhythm, Fortress, Word Rain, Storm and the perk/coin/daily layer",
+        "Feed the arcade's key results into the profile's key statistics and history (a later pass)",
+        "Run the Playwright test on the phone project for the games other than Galaxy (skipped there to save time)"
+      ],
+      "notes": "The arcade runs the owner's earlier code unchanged except for the bridge file; its HUD texts follow the UI language through the old t() helper."
     },
     "T30": {
       "status": "pending",

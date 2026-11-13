@@ -395,7 +395,7 @@ One-pass review of Sonnet's T19; fix what is weak. Done when merged.
 
 ## Phase 3 · Arcade, modes and progress
 
-### [ ] T29 · Arcade: host and the 3D classics
+### [x] T29 · Arcade: host and the 3D classics
 - **Branch** `t29-arcade-classics`
 - **Model** Sonnet 5.5 · **Effort** High
 - **Goal** Bring the earlier plugin's games into the hub's Game Room without rewriting them.

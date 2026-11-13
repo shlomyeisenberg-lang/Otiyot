@@ -29,6 +29,7 @@ import { midbarScreen } from './screens/midbar';
 import { cavesScreen } from './screens/caves';
 import { arenaScreen } from './screens/arena';
 import { scrollScreen } from './screens/scroll';
+import { arcadeScreen } from './screens/arcade';
 import { ladderScreen } from './screens/ladder';
 import { trialScreen, trialsScreen } from './screens/trials';
 import { meadowScreen } from './screens/meadow';
@@ -135,6 +136,7 @@ export class Shell {
       trial: trialScreen,
       scroll: scrollScreen,
       ladder: ladderScreen,
+      arcade: arcadeScreen,
       menu: mainMenuScreen,
       welcome: (ctx) => wizardScreen(ctx, 'welcome', () => (this.needsWelcome = false)),
       players: playersScreen,

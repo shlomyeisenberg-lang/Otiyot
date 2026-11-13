@@ -13,3 +13,5 @@ Every asset, font or library added to the game is listed here with its source an
 | postprocessing (screen effects library)        | `postprocessing` 6.39.6              | Zlib        | Bloom, god rays, SSAO, grading |
 
 Icons, the scribe portrait and the deckled paper edge are drawn in code (`src/ui/icons.ts`, `src/ui/components/feedback.ts`, `src/ui/shell.ts`); no image files. The 3D world, the characters, the sky and the letter texture are built in code as well (`src/engine`, `src/scenes`); no models or textures are shipped. All music and sound effects are synthesized live with Web Audio (`src/audio`); no audio files or samples are shipped.
+
+The arcade (`public/arcade/`) ships the earlier plugin's games as plain JavaScript and CSS (ported from `reference/plugin-4.2.0`, owner's own code) and its own copy of three.js (`public/arcade/js/vendor/three.min.js`, MIT, licence in `THREE-LICENSE.txt` beside it) because the old games use the global `THREE`. They draw everything in code and synthesize their sounds; no images or audio files.

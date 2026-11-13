@@ -173,9 +173,7 @@ export function buildInit(i: InitInput): ArcadeInit {
 }
 
 export type ArcadeMessage =
-  | { type: 'otiyot:ready' }
-  | { type: 'otiyot:save'; blob: ArcadeBlob }
-  | { type: 'otiyot:exit' };
+  { type: 'otiyot:ready' } | { type: 'otiyot:save'; blob: ArcadeBlob } | { type: 'otiyot:exit' };
 
 /** Checks a message from the page. Anything unexpected is ignored (returns null). */
 export function parseMessage(data: unknown): ArcadeMessage | null {

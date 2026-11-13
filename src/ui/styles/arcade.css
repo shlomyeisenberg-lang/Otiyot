@@ -1,0 +1,38 @@
+/* The Game Room lobby and the arcade frame (T29). */
+.arcade__group {
+  display: grid;
+  gap: var(--sp-3);
+  margin-block-start: var(--sp-5);
+}
+.arcade__grid {
+  display: grid;
+  gap: var(--sp-3);
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 14rem), 1fr));
+}
+.arcade__card {
+  display: grid;
+  gap: var(--sp-2);
+  align-content: start;
+}
+.arcade__card--later {
+  opacity: 0.7;
+}
+.arcade__icon {
+  font-size: var(--fs-28);
+}
+.arcade__best {
+  color: var(--ink-soft);
+  font-size: var(--fs-14);
+}
+.arcade__bar {
+  display: flex;
+  padding-block-end: var(--sp-2);
+}
+.arcade__frame {
+  inline-size: 100%;
+  block-size: min(78vh, 56rem);
+  min-block-size: 22rem;
+  border: var(--border-w) solid var(--line);
+  border-radius: var(--radius-2);
+  background: var(--page);
+}
