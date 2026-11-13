@@ -13,3 +13,4 @@ export * from './blots';
 export * from './regions';
 export * from './doors';
 export * from './trials';
+export * from './modes';

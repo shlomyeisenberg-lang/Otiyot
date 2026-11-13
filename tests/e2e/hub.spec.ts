@@ -102,8 +102,11 @@ test('the hub: walk by typing, open the map, take a lesson and come home', async
   await page.keyboard.press('Escape');
   await expect(map).toBeHidden();
 
-  // The practice slate opens the next lesson; typing it by the guide passes it.
+  // The practice slate opens the modes screen (T31); its "Next lesson" button leads to the
+  // course, where typing the lesson by the guide passes it.
   await walkTo(page, 'practice');
+  await expect(page.getByTestId('modes')).toBeVisible();
+  await page.getByRole('button', { name: 'Next lesson' }).click();
   await expect(page.getByTestId('lesson')).toBeVisible();
   expect((await lesson(page)).lessonId).toBe('L0-0');
   let keys = 0;
