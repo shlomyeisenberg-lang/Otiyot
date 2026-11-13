@@ -235,7 +235,7 @@ describe('normalisation', () => {
       meta: { legacyChecked: true, autoQuality: null },
     };
     const m = migrate(v6);
-    expect(m.version).toBe(7);
+    expect(m.version).toBe(CURRENT_VERSION);
     const save = normalizeSave(m, CURRENT_VERSION, counter(), 0);
     expect(save?.profiles[0]?.settings).toMatchObject({
       musicVolume: 0.2,
@@ -252,5 +252,45 @@ describe('normalisation', () => {
     const fixed = normalizeSave(bad, CURRENT_VERSION, counter(), 0)?.profiles[0]?.settings;
     expect(fixed?.textSpeed).toBe('normal');
     expect(fixed?.storyVoices).toBe(false);
+  });
+
+  it('v7 -> v8 adds the Ladder high-score table, empty, and keeps a valid one', () => {
+    const v7 = {
+      version: 7,
+      profiles: [
+        { id: 'a', name: 'A' },
+        {
+          id: 'b',
+          name: 'B',
+          ladder: [
+            { at: 2, score: 50, floors: 2, accuracy: 90, wpm: 12, difficulty: 'calm', level: 'easy', mods: [] },
+            { at: 1, score: 900, floors: 9, accuracy: 97, wpm: 20, difficulty: 'swift', level: 'hard', mods: ['fog'] },
+            'junk',
+          ],
+        },
+      ],
+      activeProfileId: 'a',
+      meta: { legacyChecked: true, autoQuality: null },
+    };
+    const m = migrate(v7);
+    expect(m.version).toBe(8);
+    const save = normalizeSave(m, CURRENT_VERSION, counter(), 0);
+    expect(save?.profiles[0]?.ladder).toEqual([]);
+    const table = save?.profiles[1]?.ladder ?? [];
+    expect(table.map((r) => r.score)).toEqual([900, 50]);
+    expect(table[0]?.mods).toEqual(['fog']);
+    const many = {
+      version: 8,
+      profiles: [
+        {
+          id: 'c',
+          ladder: Array.from({ length: 15 }, (_, i) => ({ at: i, score: i * 10, floors: i })),
+        },
+      ],
+    };
+    const fixed = normalizeSave(many, CURRENT_VERSION, counter(), 0)?.profiles[0]?.ladder ?? [];
+    expect(fixed).toHaveLength(10);
+    expect(fixed[0]?.score).toBe(140);
+    expect(fixed[0]?.difficulty).toBe('calm');
   });
 });

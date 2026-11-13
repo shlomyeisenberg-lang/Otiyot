@@ -74,6 +74,22 @@ export interface HistoryEntry {
   chars: number;
 }
 
+/** One climb of the Ladder in the profile's high-score table (T28). Never any typed text. */
+export interface LadderRecord {
+  at: number;
+  score: number;
+  /** Floors climbed. */
+  floors: number;
+  accuracy: number;
+  wpm: number;
+  difficulty: string;
+  level: string;
+  /** Modifiers the climb was made with. */
+  mods: string[];
+}
+
+export const MAX_LADDER = 10;
+
 export interface CustomList {
   name: string;
   language: LayoutId;
@@ -104,6 +120,8 @@ export interface Profile {
   arcade: JsonValue;
   /** The player's own word lists (typed in or imported from plain text). Words only, no typed history. */
   customLists: Record<string, CustomList>;
+  /** The Ladder's high-score table, best first (v8, T28). */
+  ladder: LadderRecord[];
   createdAt: number;
 }
 
@@ -166,6 +184,7 @@ export function createProfile(id: string, name: string, now: number): Profile {
     history: [],
     arcade: null,
     customLists: {},
+    ladder: [],
     createdAt: now,
   };
 }
@@ -325,6 +344,26 @@ function normalizeCustomLists(raw: unknown): Record<string, CustomList> {
   return out;
 }
 
+function normalizeLadder(raw: unknown): LadderRecord[] {
+  if (!Array.isArray(raw)) return [];
+  const out: LadderRecord[] = [];
+  for (const x of raw) {
+    if (!isRec(x)) continue;
+    out.push({
+      at: num(x.at, 0, 0),
+      score: Math.round(num(x.score, 0, 0)),
+      floors: Math.round(num(x.floors, 0, 0)),
+      accuracy: num(x.accuracy, 0, 0, 100),
+      wpm: num(x.wpm, 0, 0),
+      difficulty: typeof x.difficulty === 'string' ? x.difficulty : 'calm',
+      level: typeof x.level === 'string' ? x.level : 'easy',
+      mods: strList(x.mods),
+    });
+  }
+  out.sort((a, b) => b.score - a.score || b.floors - a.floors || a.at - b.at);
+  return out.slice(0, MAX_LADDER);
+}
+
 /** Turns anything into a valid Profile. `fallbackId` is used when the id is missing. */
 export function normalizeProfile(raw: unknown, fallbackId: string, now: number): Profile {
   const r = isRec(raw) ? raw : {};
@@ -355,6 +394,7 @@ export function normalizeProfile(raw: unknown, fallbackId: string, now: number):
     history: normalizeHistory(r.history),
     arcade: toJson(r.arcade ?? null),
     customLists: normalizeCustomLists(r.customLists),
+    ladder: normalizeLadder(r.ladder),
   };
 }
 
