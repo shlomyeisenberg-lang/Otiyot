@@ -59,7 +59,11 @@ export const DIFFICULTY_SCORE: Readonly<Record<DifficultyId, number>> = {
   fierce: 1.7,
   trial: 1.5,
 };
-export const LEVEL_SCORE: Readonly<Record<LevelId, number>> = { easy: 1, standard: 1.25, hard: 1.5 };
+export const LEVEL_SCORE: Readonly<Record<LevelId, number>> = {
+  easy: 1,
+  standard: 1.25,
+  hard: 1.5,
+};
 export const KIND_SCORE: Readonly<Record<FloorKind, number>> = {
   steps: 1,
   gale: 1.2,
@@ -156,7 +160,11 @@ export function tireRate(
 }
 
 /** What a slip costs on this floor. */
-export function slipCost(difficulty: DifficultyId, kind: FloorKind, mods: readonly ModifierId[]): number {
+export function slipCost(
+  difficulty: DifficultyId,
+  kind: FloorKind,
+  mods: readonly ModifierId[],
+): number {
   let s = SLIP[difficulty] ?? SLIP.steady;
   if (kind === 'glass') s *= GLASS_SLIP;
   if (mods.includes('brittle')) s *= BRITTLE_SLIP;
@@ -376,7 +384,13 @@ export class Climb {
       if (w !== null) this.words.push(w);
     }
     if (this.words.length === from) return null;
-    const floor: Floor = { number: n, kind, from, to: this.words.length, landing: n % LANDING_EVERY === 0 };
+    const floor: Floor = {
+      number: n,
+      kind,
+      from,
+      to: this.words.length,
+      landing: n % LANDING_EVERY === 0,
+    };
     this.floors.push(floor);
     return floor;
   }
@@ -384,7 +398,7 @@ export class Climb {
   /** Makes sure the climb holds at least `index + 1` words (laying out more floors as needed). */
   ensure(index: number): boolean {
     let guard = 0;
-    while (this.words.length <= index && guard++ < 50) if (!this.addFloor()) return false;
+    while (this.words.length <= index && guard++ < index + 50) if (!this.addFloor()) return false;
     return this.words.length > index;
   }
 
@@ -433,7 +447,12 @@ export function climbSource(climb: Climb): { next(): string } {
 // ---- the score -------------------------------------------------------------------------------
 
 /** Points for a finished word. */
-export function wordPoints(word: string, tier: number, kind: FloorKind, multiplier: number): number {
+export function wordPoints(
+  word: string,
+  tier: number,
+  kind: FloorKind,
+  multiplier: number,
+): number {
   const letters = [...word].length;
   const t = Math.max(0, Math.min(4, Math.floor(tier)));
   return Math.round(letters * 10 * (1 + t * 0.1) * KIND_SCORE[kind] * multiplier);

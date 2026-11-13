@@ -101,7 +101,13 @@ describe('the climb', () => {
     const offered = [...WORDS, 'zebra', 'quiz', 'hello world', '', 'dagz', 'שלום'];
     for (const level of LEVEL_IDS)
       for (const d of DIFFICULTY_IDS) {
-        const c = climb({ level, difficulty: d, mods: [...MODIFIERS], words: offered, letters: LETTERS });
+        const c = climb({
+          level,
+          difficulty: d,
+          mods: [...MODIFIERS],
+          words: offered,
+          letters: LETTERS,
+        });
         c.ensure(80);
         const keys = keysOf(LETTERS);
         for (const w of c.words) {
@@ -132,7 +138,8 @@ describe('the climb', () => {
     const weak = climb({ words: WORDS, weak: ['k'] });
     plain.ensure(120);
     weak.ensure(120);
-    const share = (c: Climb): number => c.words.filter((w) => w.includes('k')).length / c.words.length;
+    const share = (c: Climb): number =>
+      c.words.filter((w) => w.includes('k')).length / c.words.length;
     expect(share(weak)).toBeGreaterThan(share(plain));
     expect(weakScore('flask', ['k', 'f', 'z'])).toBe(2);
   });
@@ -295,7 +302,9 @@ describe('the grip', () => {
 describe('the score', () => {
   it('pays more for harder climbs and every modifier, and drops modifiers that mean nothing on Calm', () => {
     expect(scoreMultiplier('steady', 'easy', [])).toBe(1);
-    expect(scoreMultiplier('fierce', 'hard', [])).toBeGreaterThan(scoreMultiplier('steady', 'hard', []));
+    expect(scoreMultiplier('fierce', 'hard', [])).toBeGreaterThan(
+      scoreMultiplier('steady', 'hard', []),
+    );
     expect(scoreMultiplier('steady', 'easy', ['fog'])).toBeGreaterThan(1);
     expect(activeModifiers(['steep', 'fog', 'brittle'], DIFFICULTIES.calm)).toEqual(['fog']);
     expect(activeModifiers(['steep', 'fog'], DIFFICULTIES.swift)).toEqual(['fog', 'steep']);

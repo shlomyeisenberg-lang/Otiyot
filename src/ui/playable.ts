@@ -1,5 +1,5 @@
 // Which regions have a scene to play, and where each one opens. Every scene task adds its
-// region here when its scene is merged (T14 the Meadow, T15 the Cliffs, T17 the Forge, T18 the Shuk, T19 the Rail, T20 the Geniza, T21 Hermon, T22 the Station, T23 Atbash City, T24 the Midbar, T25 the Caves, T16 the Great Blot in the arena, T26 the Arena's three trials, T27 the Blank Scroll, ...); the hub's map
+// region here when its scene is merged (T14 the Meadow, T15 the Cliffs, T17 the Forge, T18 the Shuk, T19 the Rail, T20 the Geniza, T21 Hermon, T22 the Station, T23 Atbash City, T24 the Midbar, T25 the Caves, T16 the Great Blot in the arena, T26 the Arena's three trials, T27 the Blank Scroll, T28 the Ladder); the hub's map
 // shows the rest as "still being written". Also holds the lesson the hub asked for, so the
 // lesson screen knows what to open.
 
@@ -21,6 +21,7 @@ export const SCENE_ROUTES: Readonly<Partial<Record<RegionId, Route>>> = {
   blot: 'arena',
   arena: 'trials',
   scroll: 'scroll',
+  ladder: 'ladder',
 };
 
 export function playableRegions(): ReadonlySet<RegionId> {
