@@ -131,7 +131,8 @@ test.describe('Game Room', () => {
     await expect(frame.locator('.gp-shop')).toBeVisible({ timeout: 20_000 });
     await page.getByRole('button', { name: 'Back to the Game Room' }).click();
     await page.getByRole('button', { name: 'Daily challenge' }).click();
-    await expect(frame.locator('#g3Play')).toBeVisible({ timeout: 20_000 });
+    // The daily challenge starts straight in the game.
+    await expect(frame.locator('canvas').first()).toBeVisible({ timeout: 20_000 });
     expect(errors).toEqual([]);
   });
 

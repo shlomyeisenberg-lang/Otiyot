@@ -408,7 +408,7 @@ One-pass review of Sonnet's T19; fix what is weak. Done when merged.
 - **Done when** The five 3D classics launch from the Game Room, use the profile's layout and weak keys, and keep their best scores.
 - **User must have ready** Nothing.
 
-### [ ] T30 · Arcade: new-generation and quick games
+### [x] T30 · Arcade: new-generation and quick games
 - **Branch** `t30-arcade-newgen`
 - **Model** Sonnet 5.5 · **Effort** Medium
 - **Goal** The rest of the 16 games in the same lobby.
