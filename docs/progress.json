@@ -1723,9 +1723,9 @@
       "notes": "Try it on the live site: hub > map > The Silent Arena (opens at lesson level 6 once the Great Blot is beaten), or go straight to #/trials."
     },
     "T27": {
-      "status": "in_progress",
-      "finished": "",
-      "pr": "",
+      "status": "done",
+      "finished": "2026-11-12",
+      "pr": "https://github.com/shlomyeisenberg-lang/Otiyot/pull/47",
       "summary": "The story can now be finished: the Blank Scroll is a five-column crossing of white parchment that brings back every region, then a four-phase stand against the Keeper with Naftali and Reb Ezra calling words, an ending where the Keeper takes the quill and writes again, credits the player types, and New Game+.",
       "changes": [
         "src/game/boss.ts: erase option for a phase (the boss wins health back while you type, capped, slower on Calm; a clean weak point writes it all back), eraseRate, ERASE_CAP, CALM_ERASE, erasing, erasedShare",

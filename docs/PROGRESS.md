@@ -6,8 +6,8 @@ _Last updated 2026-11-12. This page is generated from `docs/progress.json`; to c
 
 ## Summary
 
-- ✅ **31** of **44** tasks done
-- 🛠️ 1 in progress · ⛔ 0 blocked · ⬜ 12 pending
+- ✅ **32** of **44** tasks done
+- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 12 pending
 - ⬜ **3** manual steps waiting for you
 - 💡 13 feature ideas open
 
@@ -90,7 +90,7 @@ Work done before or outside the numbered tasks.
 - ✅ T24 · Scene: The Long Midbar — 2026-11-12 · [PR #44](https://github.com/shlomyeisenberg-lang/Otiyot/pull/44)
 - ✅ T25 · Scene: The Lantern Caves — 2026-11-12 · [PR #45](https://github.com/shlomyeisenberg-lang/Otiyot/pull/45)
 - ✅ T26 · The Silent Arena: remaining bosses — 2026-11-12 · [PR #46](https://github.com/shlomyeisenberg-lang/Otiyot/pull/46)
-- 🛠️ T27 · The Blank Scroll and the Keeper
+- ✅ T27 · The Blank Scroll and the Keeper — 2026-11-12 · [PR #47](https://github.com/shlomyeisenberg-lang/Otiyot/pull/47)
 - ⬜ T28 · Scene: The Ladder (endless)
 - ⬜ T29 · Arcade: host and the 3D classics
 - ⬜ T30 · Arcade: new-generation and quick games
@@ -1317,9 +1317,9 @@ The Silent Arena now holds three more bosses, chosen from a trials board: the St
 
 Try it on the live site: hub > map > The Silent Arena (opens at lesson level 6 once the Great Blot is beaten), or go straight to #/trials.
 
-### 🛠️ T27 · The Blank Scroll and the Keeper
+### ✅ T27 · The Blank Scroll and the Keeper
 
-**Status:** In progress
+**Status:** Done · **Finished:** 2026-11-12 · **Pull request:** [PR #47](https://github.com/shlomyeisenberg-lang/Otiyot/pull/47)
 
 The story can now be finished: the Blank Scroll is a five-column crossing of white parchment that brings back every region, then a four-phase stand against the Keeper with Naftali and Reb Ezra calling words, an ending where the Keeper takes the quill and writes again, credits the player types, and New Game+.
 
