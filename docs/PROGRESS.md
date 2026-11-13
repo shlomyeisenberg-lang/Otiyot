@@ -92,7 +92,7 @@ Work done before or outside the numbered tasks.
 - ✅ T25 · Scene: The Lantern Caves — 2026-11-12 · [PR #45](https://github.com/shlomyeisenberg-lang/Otiyot/pull/45)
 - ✅ T26 · The Silent Arena: remaining bosses — 2026-11-12 · [PR #46](https://github.com/shlomyeisenberg-lang/Otiyot/pull/46)
 - ✅ T27 · The Blank Scroll and the Keeper — 2026-11-12 · [PR #47](https://github.com/shlomyeisenberg-lang/Otiyot/pull/47)
-- ✅ T28 · Scene: The Ladder (endless) — 2026-11-13 · PENDING
+- ✅ T28 · Scene: The Ladder (endless) — 2026-11-13 · [PR #49](https://github.com/shlomyeisenberg-lang/Otiyot/pull/49)
 - ⬜ T29 · Arcade: host and the 3D classics
 - ⬜ T30 · Arcade: new-generation and quick games
 - ⬜ T31 · Modes: Practice, Time Attack, Survival, Daily
@@ -1359,7 +1359,7 @@ The story can now be finished: the Blank Scroll is a five-column crossing of whi
 
 ### ✅ T28 · Scene: The Ladder (endless)
 
-**Status:** Done · **Finished:** 2026-11-13 · **Pull request:** PENDING
+**Status:** Done · **Finished:** 2026-11-13 · **Pull request:** [PR #49](https://github.com/shlomyeisenberg-lang/Otiyot/pull/49)
 
 The Ladder, endless free play: the apprentice climbs a cedar stair round an endless tower of letter tiles above the clouds, every floor a short challenge borrowed from another region (gale, cloud bank, glass rungs, long words, a Blot swarm), with a grip that tires as he climbs, landings every fifth floor, score modifiers and a high-score table per profile.
 

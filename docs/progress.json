@@ -1788,7 +1788,7 @@
     "T28": {
       "status": "done",
       "finished": "2026-11-13",
-      "pr": "PENDING",
+      "pr": "https://github.com/shlomyeisenberg-lang/Otiyot/pull/49",
       "summary": "The Ladder, endless free play: the apprentice climbs a cedar stair round an endless tower of letter tiles above the clouds, every floor a short challenge borrowed from another region (gale, cloud bank, glass rungs, long words, a Blot swarm), with a grip that tires as he climbs, landings every fifth floor, score modifiers and a high-score table per profile.",
       "changes": [
         "src/scenes/ladder/plan.ts: pure climb logic: Climb lays out floors on demand from learned words that lean toward the weakest keys; six floor kinds drawn from the other scenes' mechanics; landings every 5 floors; the Grip model (feeding, streaks, slips, tiring faster with height up to a cap, Calm floor, Dyo's one catch, the fall); modifiers (fog, brittle, long, steep) and score multipliers; word and floor points; the top-10 table (addScore)",
