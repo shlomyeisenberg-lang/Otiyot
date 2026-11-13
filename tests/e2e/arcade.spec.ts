@@ -40,13 +40,13 @@ async function openArcade(page: Page, layout: 'he' | 'en'): Promise<void> {
 }
 
 test.describe('Game Room', () => {
-  test('the lobby shows three groups and five playable classics', async ({ page }) => {
+  test('the lobby shows three groups and sixteen playable games', async ({ page }) => {
     const errors: string[] = [];
     page.on('pageerror', (e) => errors.push(e.message));
     await openArcade(page, 'en');
     await expect(page.locator('[data-group="classics"] .arcade__card')).toHaveCount(5);
-    await expect(page.locator('[data-group="newgen"] .arcade__card')).toHaveCount(3);
-    await expect(page.locator('[data-group="quick"] .arcade__card')).toHaveCount(2);
+    await expect(page.locator('[data-group="newgen"] .arcade__card')).toHaveCount(8);
+    await expect(page.locator('[data-group="quick"] .arcade__card')).toHaveCount(3);
     expect(errors).toEqual([]);
   });
 
@@ -74,6 +74,66 @@ test.describe('Game Room', () => {
       expect(errors).toEqual([]);
     });
   }
+
+  // The eleven games of T30: each launches in the frame and starts (3D ones from their menu).
+  const NEW3D = [
+    'runner',
+    'rhythm',
+    'fortress',
+    'galaxyPlus',
+    'towerPlus',
+    'arenaPlus',
+    'racePlus',
+    'sefarimPlus',
+  ];
+  for (const [i, id] of NEW3D.entries()) {
+    test(`${id} launches and starts a round`, async ({ page }, testInfo) => {
+      test.skip(testInfo.project.name !== 'desktop' && i > 0, 'one game is enough on the phone');
+      const errors: string[] = [];
+      page.on('pageerror', (e) => errors.push(e.message));
+      await openArcade(page, i % 2 === 0 ? 'en' : 'he');
+      await page.locator('[data-group="newgen"] .arcade__card').nth(i).getByRole('button').click();
+      const frame = page.frameLocator('.arcade__frame');
+      await expect(frame.locator('#g3Play')).toBeVisible({ timeout: 20_000 });
+      expect((await page.evaluate(() => window.__otiyotArcade))?.game).toBe(id);
+      await frame.locator('#g3Play').click();
+      await expect(frame.locator('canvas').first()).toBeVisible({ timeout: 20_000 });
+      await page.getByRole('button', { name: 'Back to the Game Room' }).click();
+      await expect(page.locator('.arcade__group')).toHaveCount(3);
+      expect(errors).toEqual([]);
+    });
+  }
+
+  for (const [i, id] of ['letterRain', 'wordRain', 'storm'].entries()) {
+    test(`${id} (2D) launches and starts`, async ({ page }, testInfo) => {
+      test.skip(testInfo.project.name !== 'desktop' && i > 0, 'one game is enough on the phone');
+      const errors: string[] = [];
+      page.on('pageerror', (e) => errors.push(e.message));
+      await openArcade(page, 'en');
+      await page.locator('[data-group="quick"] .arcade__card').nth(i).getByRole('button').click();
+      const frame = page.frameLocator('.arcade__frame');
+      await expect(frame.locator(i === 2 ? '.st-canvas' : '#gField')).toBeVisible({
+        timeout: 20_000,
+      });
+      expect((await page.evaluate(() => window.__otiyotArcade))?.game).toBe(id);
+      await page.getByRole('button', { name: 'Back to the Game Room' }).click();
+      await expect(page.locator('.arcade__group')).toHaveCount(3);
+      expect(errors).toEqual([]);
+    });
+  }
+
+  test('the daily challenge and the booster shop open', async ({ page }) => {
+    const errors: string[] = [];
+    page.on('pageerror', (e) => errors.push(e.message));
+    await openArcade(page, 'en');
+    await page.getByRole('button', { name: 'Booster shop' }).click();
+    const frame = page.frameLocator('.arcade__frame');
+    await expect(frame.locator('.gp-shop')).toBeVisible({ timeout: 20_000 });
+    await page.getByRole('button', { name: 'Back to the Game Room' }).click();
+    await page.getByRole('button', { name: 'Daily challenge' }).click();
+    await expect(frame.locator('#g3Play')).toBeVisible({ timeout: 20_000 });
+    expect(errors).toEqual([]);
+  });
 
   test('the frame is told the profile layout', async ({ page }) => {
     await openArcade(page, 'he');

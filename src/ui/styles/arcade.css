@@ -14,8 +14,23 @@
   gap: var(--sp-2);
   align-content: start;
 }
-.arcade__card--later {
-  opacity: 0.7;
+.arcade__extras {
+  display: grid;
+  gap: var(--sp-2);
+  margin-block-start: var(--sp-3);
+}
+.arcade__coins {
+  font-size: var(--fs-20);
+  font-weight: 700;
+}
+.arcade__extras-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+.arcade__hint {
+  color: var(--ink-soft);
+  font-size: var(--fs-14);
 }
 .arcade__icon {
   font-size: var(--fs-28);

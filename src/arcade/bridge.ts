@@ -8,11 +8,43 @@
 import type { LayoutId } from '../core';
 import { eligibleWords } from '../learn';
 
-export const ARCADE_GAMES = ['galaxy', 'sefarim', 'race', 'arena', 'tower'] as const;
-export type ArcadeGameId = (typeof ARCADE_GAMES)[number];
+/** The five 3D classics (T29). */
+export const CLASSIC_GAMES = ['galaxy', 'sefarim', 'race', 'arena', 'tower'] as const;
+/** New generation (T30): three new 3D games, the 2D storm and the five "+" versions. */
+export const NEWGEN_GAMES = [
+  'runner',
+  'rhythm',
+  'fortress',
+  'galaxyPlus',
+  'towerPlus',
+  'arenaPlus',
+  'racePlus',
+  'sefarimPlus',
+] as const;
+/** Quick games: the 2D rain games and the storm. */
+export const QUICK_GAMES = ['letterRain', 'wordRain', 'storm'] as const;
+/** All sixteen games. */
+export const ARCADE_GAMES = [...CLASSIC_GAMES, ...NEWGEN_GAMES, ...QUICK_GAMES] as const;
+/** What the page can be asked to start: a game, today's daily challenge or the booster shop. */
+export type ArcadeGameId = (typeof ARCADE_GAMES)[number] | 'daily' | 'shop';
 
 export function isArcadeGame(id: string): id is ArcadeGameId {
-  return (ARCADE_GAMES as readonly string[]).includes(id);
+  return id === 'daily' || id === 'shop' || (ARCADE_GAMES as readonly string[]).includes(id);
+}
+
+/** Where a game keeps its best score: 3D games in games3d.scores, 2D games as a number in games. */
+export const FLAT_BEST: Readonly<Record<string, string>> = {
+  letterRain: 'lettersBest',
+  wordRain: 'rainBest',
+  storm: 'stormBest',
+};
+
+/** Coins the player has collected (the PLUS wallet lives inside the games3d blob). */
+export function coinsOf(blob: unknown): number {
+  const plus = readBlob(blob).games3d.plus;
+  if (plus === null || typeof plus !== 'object') return 0;
+  const n = (plus as { coins?: unknown }).coins;
+  return typeof n === 'number' && Number.isFinite(n) && n > 0 ? Math.floor(n) : 0;
 }
 
 export interface ArcadeTheme {

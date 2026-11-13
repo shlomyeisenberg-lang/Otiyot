@@ -4,11 +4,17 @@
 // (public/arcade/arcade.html) through the bridge in src/arcade: the page is told the layout, the
 // language, the colours, the letters the player has learned and his weak keys, and every word it
 // may use is made of learned letters. The games' own scores and settings come back as the
-// profile's `arcade` blob. The other two groups open with T30.
+// profile's `arcade` blob. T30 adds the other eleven: the new generation (Letter Dash, Rhythm,
+// Fortress and the five "+" versions with perks, target letters and coins), the quick 2D games
+// (Letter Rain, Word Rain, Storm), the daily challenge and the booster shop.
 
 import {
-  ARCADE_GAMES,
+  CLASSIC_GAMES,
+  FLAT_BEST,
+  NEWGEN_GAMES,
+  QUICK_GAMES,
   buildInit,
+  coinsOf,
   parseMessage,
   readBlob,
   type ArcadeGameId,
@@ -16,24 +22,29 @@ import {
 } from '../../arcade';
 import { knownKeysOf, weakCharacters } from '../../learn';
 import type { AppContext, Screen } from '../app';
-import { button, panel, status } from '../components';
+import { button, panel } from '../components';
 import { h } from '../dom';
 import type { MessageKey } from '../i18n';
 import { frame } from './frame';
 import { resolveTheme, systemPrefersDark } from '../theme';
 
-const ICONS: Readonly<Record<ArcadeGameId, string>> = {
+const ICONS: Readonly<Record<string, string>> = {
   galaxy: '🚀',
   sefarim: '📚',
   race: '🏁',
   arena: '🔨',
   tower: '🏗️',
-};
-
-/** Games coming with T30, listed so the lobby shows all three groups. */
-const LATER: Readonly<Record<'newgen' | 'quick', readonly string[]>> = {
-  newgen: ['dash', 'rhythm', 'fortress'],
-  quick: ['rain', 'storm'],
+  runner: '🏃',
+  rhythm: '🎵',
+  fortress: '🏰',
+  galaxyPlus: '🚀',
+  towerPlus: '🏗️',
+  arenaPlus: '🔨',
+  racePlus: '🏎️',
+  sefarimPlus: '📚',
+  letterRain: '🔤',
+  wordRain: '🌧️',
+  storm: '⛈️',
 };
 
 interface ArcadeProbe {
@@ -53,6 +64,11 @@ declare global {
 
 /** The best score a game has kept, over every mode and difficulty (0: none yet). */
 export function bestScore(blob: unknown, id: string): number {
+  const flat = FLAT_BEST[id];
+  if (flat !== undefined) {
+    const n = readBlob(blob).games[flat];
+    return typeof n === 'number' && Number.isFinite(n) && n > 0 ? n : 0;
+  }
   const scores = readBlob(blob).games3d.scores;
   if (scores === null || typeof scores !== 'object') return 0;
   const byKey = (scores as Record<string, unknown>)[id];
@@ -150,6 +166,12 @@ export function arcadeScreen(ctx: AppContext): Screen {
     root.replaceChildren(lobby());
   }
 
+  function gameTitle(id: ArcadeGameId): string {
+    if (id === 'daily') return t.t('arcade.daily');
+    if (id === 'shop') return t.t('arcade.shop');
+    return t.t(`arcade.game.${id}.name` as MessageKey);
+  }
+
   function openGame(id: ArcadeGameId): void {
     gameId = id;
     probe.game = id;
@@ -157,7 +179,7 @@ export function arcadeScreen(ctx: AppContext): Screen {
     probe.ready = false;
     const f = h('iframe', {
       class: 'arcade__frame',
-      title: t.t(`arcade.game.${id}.name` as MessageKey),
+      title: gameTitle(id),
       src: `${import.meta.env.BASE_URL}arcade/arcade.html`,
       allow: 'autoplay',
     });
@@ -179,7 +201,7 @@ export function arcadeScreen(ctx: AppContext): Screen {
     );
   }
 
-  function card(id: ArcadeGameId): HTMLElement {
+  function card(id: Exclude<ArcadeGameId, 'daily' | 'shop'>): HTMLElement {
     const best = bestScore(ctx.profile.arcade, id);
     return panel(
       { class: 'arcade__card' },
@@ -198,14 +220,6 @@ export function arcadeScreen(ctx: AppContext): Screen {
     );
   }
 
-  function later(group: 'newgen' | 'quick', id: string): HTMLElement {
-    return panel(
-      { class: 'arcade__card arcade__card--later' },
-      h('h3', { text: t.t(`arcade.later.${id}` as MessageKey) }),
-      status(t.t('common.soon'), 'warn'),
-    );
-  }
-
   function lobby(): HTMLElement {
     const group = (key: 'classics' | 'newgen' | 'quick', cards: HTMLElement[]): HTMLElement =>
       h(
@@ -214,19 +228,41 @@ export function arcadeScreen(ctx: AppContext): Screen {
         h('h2', { text: t.t(`arcade.group.${key}` as MessageKey) }),
         h('div', { class: 'arcade__grid' }, ...cards),
       );
+    const coins = coinsOf(ctx.profile.arcade);
+    const extras = panel(
+      { class: 'arcade__extras' },
+      h('p', {
+        class: 'arcade__coins',
+        'data-coins': String(coins),
+        text: t.t('arcade.coins', { n: coins.toLocaleString() }),
+      }),
+      h(
+        'div',
+        { class: 'arcade__extras-buttons' },
+        button({
+          label: t.t('arcade.daily'),
+          variant: 'primary',
+          small: true,
+          onClick: () => openGame('daily'),
+        }),
+        button({ label: t.t('arcade.shop'), small: true, onClick: () => openGame('shop') }),
+      ),
+      h('p', { class: 'arcade__hint', text: t.t('arcade.extrasHint') }),
+    );
     return frame(
       { title: t.t('hub.station.gameRoom'), lead: t.t('arcade.lead') },
+      extras,
       group(
         'classics',
-        ARCADE_GAMES.map((id) => card(id)),
+        CLASSIC_GAMES.map((id) => card(id)),
       ),
       group(
         'newgen',
-        LATER.newgen.map((id) => later('newgen', id)),
+        NEWGEN_GAMES.map((id) => card(id)),
       ),
       group(
         'quick',
-        LATER.quick.map((id) => later('quick', id)),
+        QUICK_GAMES.map((id) => card(id)),
       ),
     );
   }
