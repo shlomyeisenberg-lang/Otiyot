@@ -419,7 +419,7 @@ One-pass review of Sonnet's T19; fix what is weak. Done when merged.
 - **Done when** All 16 games launch and save; the lobby shows them in three clear groups.
 - **User must have ready** Nothing.
 
-### [ ] T31 · Modes: Practice, Time Attack, Survival, Daily
+### [x] T31 · Modes: Practice, Time Attack, Survival, Daily
 - **Branch** `t31-modes`
 - **Model** Sonnet 5.5 · **Effort** Medium
 - **Goal** The non-story modes, built from existing scenes and kits.

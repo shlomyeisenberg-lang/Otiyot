@@ -127,7 +127,7 @@ test.describe('Modes', () => {
     // Time Attack on Calm: no clock, a quota of words, with the mirror and the fog.
     await page.getByRole('radio', { name: /Time Attack/ }).click();
     await page.locator('[data-field="difficulty"]').selectOption('calm');
-    await expect(page.getByText('20 words, no clock')).toBeVisible();
+    await expect(page.getByText(/20.*words, no clock/)).toBeVisible();
     await page.locator('[data-mod="mirror"]').click();
     await page.locator('[data-mod="fog"]').click();
     await page.getByRole('button', { name: 'Start' }).click();
@@ -145,6 +145,7 @@ test.describe('Modes', () => {
 
     // Survival on Steady: the grip drains with the clock and the run falls when it is gone.
     await page.getByRole('radio', { name: /Survival/ }).click();
+    await page.locator('[data-field="difficulty"]').selectOption('steady');
     await page.getByRole('button', { name: 'Start' }).click();
     await expect.poll(async () => (await probe(page)).view).toBe('run');
     await pressGuide(page);
@@ -162,7 +163,7 @@ test.describe('Modes', () => {
 
     // Daily Challenge: today's plan is shown, a fixed number of words, best kept for the date.
     await page.getByRole('radio', { name: /Daily Challenge/ }).click();
-    await expect(page.getByTestId('modes-daily')).toContainText('Your best today');
+    await expect(page.getByTestId('modes-daily')).toContainText('Not played today yet');
     await page.getByRole('button', { name: 'Start' }).click();
     await expect.poll(async () => (await probe(page)).view).toBe('run');
     expect((await probe(page)).goal).toBe(30);
@@ -171,6 +172,10 @@ test.describe('Modes', () => {
     expect(['crossed', 'quota', 'tired']).toContain(p.outcome);
     h = await history(page);
     expect(h.some((e) => /^mode:daily:\d{4}-\d{2}-\d{2}$/.test(e.mode))).toBe(true);
+
+    await modes.getByRole('button', { name: 'Choose another mode' }).click();
+    await page.getByRole('radio', { name: /Daily Challenge/ }).click();
+    await expect(page.getByTestId('modes-daily')).toContainText('Your best today');
 
     // Nothing typed is ever stored: only counts and statistics.
     for (const e of h)

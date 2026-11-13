@@ -369,7 +369,7 @@ export function modesScreen(ctx: AppContext): Screen {
       title: name(`modes.mode.${id}`),
       body: name(`modes.mode.${id}.body`),
       checked: id === choices.mode,
-      pickedText: t.t('modes.pick'),
+      pickedText: t.t('common.chosen'),
       onPick: () => {
         choices.mode = id;
         paintCards();
