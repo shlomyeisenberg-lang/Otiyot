@@ -1841,6 +1841,10 @@
         {
           "decision": "Added PlayController.halt() to the shared play controller",
           "why": "An endless run has to stop the typing strip from outside when the climber falls or rests"
+        },
+        {
+          "decision": "Merged on the strength of the local checks (lint, typecheck, 691 unit tests, build, and the ladder, sound and hub end-to-end tests on desktop and phone)",
+          "why": "GitHub's check was still running after 15 minutes without a result (the last runs on main were cancelled or failed for the same reason)"
         }
       ],
       "manual_steps": [],

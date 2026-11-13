@@ -1390,6 +1390,7 @@ The Ladder, endless free play: the apprentice climbs a cedar stair round an endl
 - **Weak keys: each word is the best of three learned candidates by how many of the 4 weakest keys it holds** — Fully adaptive text without leaving the learned word library
 - **Added a marimba voice to the synth for the theme's melody** — The music test requires every theme to have its own melody voice and all existing voices were taken
 - **Added PlayController.halt() to the shared play controller** — An endless run has to stop the typing strip from outside when the climber falls or rests
+- **Merged on the strength of the local checks (lint, typecheck, 691 unit tests, build, and the ladder, sound and hub end-to-end tests on desktop and phone)** — GitHub's check was still running after 15 minutes without a result (the last runs on main were cancelled or failed for the same reason)
 
 **Notes**
 
