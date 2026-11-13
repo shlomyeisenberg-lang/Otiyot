@@ -1904,9 +1904,9 @@
       "notes": "The arcade runs the owner's earlier code unchanged except for the bridge file; its HUD texts follow the UI language through the old t() helper."
     },
     "T30": {
-      "status": "in_progress",
+      "status": "done",
       "finished": "2026-11-13",
-      "pr": "",
+      "pr": "https://github.com/shlomyeisenberg-lang/Otiyot/pull/51",
       "summary": "The Game Room now holds all sixteen games in three groups. Letter Dash, Key Rhythm, Fortress of Words, the five \"+\" versions and the three quick 2D games (Letter Rain, Word Rain, Word Storm) run in the same arcade page, with coins, a booster shop and a daily challenge. Everything typed in them uses only learned letters.",
       "changes": [
         "public/arcade/js: plus.js (perks, target letters, coins, booster shop, daily challenge), plus-games.js, game3d-runner.js, game3d-rhythm.js, game3d-fortress.js, storm2d.js, and css/plus.css, ported from reference/plugin-4.2.0",
@@ -1937,6 +1937,10 @@
         {
           "decision": "Phone e2e runs one game per group only",
           "why": "Keeps the suite fast; each game is tested on desktop"
+        },
+        {
+          "decision": "Merged on the strength of passing local checks (lint, typecheck, 702 unit tests, build, arcade and hub e2e) after GitHub's check was still running 13 minutes after the push",
+          "why": "The task rules allow merging when CI does not report in time"
         }
       ],
       "manual_steps": [],
