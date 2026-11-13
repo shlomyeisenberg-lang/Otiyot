@@ -1,0 +1,65 @@
+# Auto-merger: a safety net in case a builder cannot merge its own pull request.
+# Every 30 minutes it squash-merges each open pull request that:
+#   - comes from a branch of this repository and is not a draft,
+#   - has no "hold" label (add that label to any PR you want left alone),
+#   - has no merge conflict,
+#   - has every check on its last commit finished and passing (a PR with no checks also counts),
+#   - had its last commit at least 20 minutes ago (so a builder still working is not cut off).
+# Then it deletes the branch. It only reads and merges; it never pushes code.
+# Run it by hand any time: Actions tab -> auto-merge -> Run workflow.
+name: auto-merge
+on:
+  schedule:
+    - cron: '7,37 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+  checks: read
+  statuses: read
+
+concurrency:
+  group: auto-merge
+  cancel-in-progress: false
+
+jobs:
+  merge:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Merge ready pull requests
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          MIN_AGE_MINUTES: '20'
+        run: |
+          set -u
+          now=$(date -u +%s)
+          prs=$(gh api "repos/$REPO/pulls?state=open&per_page=50" \
+            --jq ".[] | select(.draft == false) | select(.head.repo.full_name == \"$REPO\") | select([.labels[].name] | index(\"hold\") | not) | .number")
+          if [ -z "$prs" ]; then echo "No open pull requests to check."; exit 0; fi
+          for n in $prs; do
+            pr=$(gh api "repos/$REPO/pulls/$n")
+            sha=$(echo "$pr" | jq -r .head.sha)
+            ref=$(echo "$pr" | jq -r .head.ref)
+            mergeable=$(echo "$pr" | jq -r .mergeable)
+            if [ "$mergeable" != "true" ]; then echo "#$n: not mergeable yet ($mergeable), skipping."; continue; fi
+            when=$(gh api "repos/$REPO/commits/$sha" --jq .commit.committer.date)
+            age=$(( (now - $(date -u -d "$when" +%s)) / 60 ))
+            if [ "$age" -lt "$MIN_AGE_MINUTES" ]; then echo "#$n: last commit only $age min old, skipping."; continue; fi
+            bad=$(gh api "repos/$REPO/commits/$sha/check-runs?per_page=100" \
+              --jq '[.check_runs[] | select(.name != "merge") | select(.status != "completed" or (.conclusion != "success" and .conclusion != "skipped" and .conclusion != "neutral"))] | length')
+            if [ "$bad" != "0" ]; then echo "#$n: $bad check(s) running or failing, skipping."; continue; fi
+            state=$(gh api "repos/$REPO/commits/$sha/status" --jq .state)
+            total=$(gh api "repos/$REPO/commits/$sha/status" --jq .total_count)
+            if [ "$total" != "0" ] && [ "$state" != "success" ]; then echo "#$n: commit status is $state, skipping."; continue; fi
+            echo "#$n: ready, merging."
+            title=$(echo "$pr" | jq -r .title)
+            if gh api -X PUT "repos/$REPO/pulls/$n/merge" -f merge_method=squash -f commit_title="$title (#$n)" --silent; then
+              gh api -X DELETE "repos/$REPO/git/refs/heads/$ref" --silent || echo "#$n: merged; branch $ref not deleted."
+              echo "#$n: merged."
+            else
+              echo "#$n: merge refused."
+            fi
+          done
