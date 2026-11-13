@@ -36,13 +36,12 @@
   },
   "skipped": {},
   "last_failure": {
-    "handoff": "Opus builder 2026-11-13T17:17:46Z: T28 merged (PR #49); fire_trigger for the Sonnet builder (T29) was denied by the auto-mode permission classifier (Cowork Run Routine Now). Not retried. Sonnet hourly schedule (next 18:17Z) and the watchdog will pick T29 up."
+    "handoff": "Opus builder 2026-11-13T17:49Z: T29 (Sonnet) handoff fire_trigger denied again by the auto-mode permission classifier (Cowork Run Routine Now). Not retried. Sonnet schedule (next 18:17Z) and the watchdog will pick T29 up."
   },
   "final_email_sent": false,
   "handoffs": {
     "T22": "2026-11-12T06:33:30Z",
     "T23": "2026-11-12T08:58:10Z",
-    "T27": "2026-11-12T21:55:50.170Z",
-    "T29": "2026-11-13T17:48:12Z"
+    "T27": "2026-11-12T21:55:50.170Z"
   }
 }
