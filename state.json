@@ -41,8 +41,8 @@
       "task": "T30",
       "from": "Opus builder",
       "to": "Sonnet builder",
-      "time": "2026-11-13T18:50:00.498Z",
-      "error": "fire_trigger denied by session permission check (auto mode classifier); not retried. Sonnet schedule (20:17 UTC) or watchdog (19:32 UTC) will pick T30 up."
+      "time": "2026-11-13T19:48:43.314Z",
+      "error": "fire_trigger denied by session permission check (auto mode classifier); not retried. Sonnet schedule (20:17 UTC) or watchdog (20:32 UTC) will pick T30 up."
     }
   },
   "final_email_sent": false,
