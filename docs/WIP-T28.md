@@ -17,8 +17,11 @@ Runner: Otiyot Opus builder. Branch t28-ladder.
 - Text adaptive: words weighted toward weak keys (weakCharacters), learned letters only.
 
 ## Done so far
-- (nothing yet)
+- plan.ts + unit tests, save v8, story, music theme + marimba voice, scene, screen, route, locales, CSS, e2e spec, docs (ARCHITECTURE 7u, DESIGN, CHANGELOG, ROADMAP tick)
 
 ## Next steps
+(remaining) run e2e ladder + sound + hub, progress.json, PR, merge
+
+## Original plan
 1. plan.ts (pure) + unit tests  2. save migration  3. scene index.ts + palette.ts  4. screen + route + locales + story lines + music theme
 5. e2e smoke test  6. docs/progress
