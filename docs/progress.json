@@ -1889,6 +1889,10 @@
         {
           "decision": "postMessage targets '*' and the parent checks event.source",
           "why": "The Otzaria plugin page has no stable origin; messages carry no secrets"
+        },
+        {
+          "decision": "Merged on the strength of passing local checks (lint, typecheck, 700 unit tests, build, arcade and hub e2e) after GitHub's check was still running 20 minutes after the push",
+          "why": "The task rules allow merging when CI does not report in time"
         }
       ],
       "manual_steps": [],

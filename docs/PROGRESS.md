@@ -1420,6 +1420,7 @@ The Game Room opens: the hub's door leads to an arcade lobby (3D Classics, New G
 - **New Generation and Quick Games show their games as 'soon' cards** — They are built in T30; the lobby shows all three groups as the task asks
 - **The arcade's own key statistics stay inside the arcade blob and are not merged into the profile's key stats** — Keeps the change small; merging belongs to a later pass
 - **postMessage targets '*' and the parent checks event.source** — The Otzaria plugin page has no stable origin; messages carry no secrets
+- **Merged on the strength of passing local checks (lint, typecheck, 700 unit tests, build, arcade and hub e2e) after GitHub's check was still running 20 minutes after the push** — The task rules allow merging when CI does not report in time
 
 **To do**
 
