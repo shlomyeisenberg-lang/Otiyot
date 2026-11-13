@@ -248,3 +248,68 @@
   justify-content: center;
   margin-block-start: var(--sp-4);
 }
+
+/* The typed credits of the Blank Scroll (T27): a parchment column at the side of the view; a
+   line is inked for every word typed. */
+.credits {
+  position: absolute;
+  inset-block-start: calc(var(--sp-3) + 3.5rem);
+  inset-inline-end: var(--sp-4);
+  inline-size: min(26rem, 44vw);
+  display: grid;
+  gap: var(--sp-2);
+  padding: var(--sp-4);
+  border-radius: var(--r-lg);
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  border: 1px solid color-mix(in srgb, var(--gold) 55%, transparent);
+  box-shadow: var(--shadow-2);
+  z-index: 3;
+  pointer-events: none;
+}
+.credits[hidden] {
+  display: none;
+}
+.credits__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-20);
+  font-weight: 700;
+  color: var(--ink);
+}
+.credits__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: var(--sp-2);
+}
+.credits__line {
+  font-family: var(--font-display);
+  font-size: var(--fs-16);
+  line-height: 1.35;
+  color: var(--ink);
+  opacity: 0.14;
+  transform: translateY(0.25rem);
+  transition:
+    opacity var(--t-panel) var(--ease),
+    transform var(--t-panel) var(--ease);
+}
+.credits__line[data-shown='true'] {
+  opacity: 1;
+  transform: none;
+}
+.credits__line:first-child {
+  font-size: var(--fs-28);
+  font-weight: 700;
+}
+.credits__hint {
+  margin: 0;
+  font-size: var(--fs-14);
+  color: var(--ink-soft);
+}
+@media (prefers-reduced-motion: reduce) {
+  .credits__line {
+    transition: none;
+    transform: none;
+  }
+}
