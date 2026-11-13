@@ -1492,6 +1492,7 @@ The hub’s practice slate now opens a modes screen with Practice, Time Attack, 
 - **Practice custom text keeps only words made of learned keys** — The content rule is binding for every text a player types
 - **The practice slate leads to the modes screen; lessons stay one button away and on the map** — Modes need a hub entry and the slate is the practice corner
 - **The clock and the grip start on the first key, not on the first word shown** — Reading time should not cost the player anything
+- **Merged on the strength of passing local checks (lint, typecheck, 736 unit tests, build, modes and hub e2e) after GitHub's check was still running 16 minutes after the push** — The task rules allow merging when CI does not report in time (the end-to-end job is known to take close to half an hour)
 
 **To do**
 
