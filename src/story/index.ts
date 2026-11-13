@@ -18,3 +18,4 @@ export * from './atbash';
 export * from './midbar';
 export * from './caves';
 export * from './trials';
+export * from './scroll';

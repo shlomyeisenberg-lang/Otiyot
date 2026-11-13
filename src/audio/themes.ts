@@ -23,7 +23,8 @@ export type Voice =
   | 'glass'
   | 'pluck'
   | 'ney'
-  | 'kalimba';
+  | 'kalimba'
+  | 'santur';
 /** Drum kits; each plays the same pattern letters with its own sounds. */
 export type Kit = 'darbuka' | 'frame' | 'taiko' | 'brush';
 
@@ -95,7 +96,8 @@ export type ThemeId =
   | 'atbash'
   | 'midbar'
   | 'caves'
-  | 'boss';
+  | 'boss'
+  | 'final';
 export const THEME_IDS: readonly ThemeId[] = [
   'title',
   'hub',
@@ -111,6 +113,7 @@ export const THEME_IDS: readonly ThemeId[] = [
   'midbar',
   'caves',
   'boss',
+  'final',
 ];
 
 // Compound (6/8) cells: 6 steps per bar.
@@ -681,6 +684,106 @@ export const THEMES: Readonly<Record<ThemeId, ThemeSpec>> = {
     cadences: CAD_16,
     reverb: 0.3,
     brightness: 0.6,
+    level: 0.85,
+  },
+  // The final (T27): the Blank Scroll and the Keeper. D minor, slower than the boss theme.
+  final: {
+    id: 'final',
+    nameKey: 'sound.theme.final',
+    seed: 2727,
+    bpm: 116,
+    beats: 4,
+    sub: 4,
+    root: 62,
+    mode: 'minor',
+    swing: 0,
+    form: ['X1'],
+    sections: {
+      // The Blank Scroll (T27). The crossing: the tune almost bare at first (the page is empty),
+      // gaining a voice with every column. Then the Keeper: slow and low, the fire remembered,
+      // a long held silence, and the last phase at full drive a fourth up.
+      X1: {
+        bars: 8,
+        chords: [0, 0, 3, 0, 0, 3, 6, 0],
+        register: 3,
+        density: 0.3,
+        transpose: -5,
+        drums: { base: 'chime', full: 'base' },
+      },
+      X2: {
+        bars: 8,
+        chords: [0, 3, 6, 3, 0, 3, 1, 0],
+        register: 4,
+        density: 0.55,
+        transpose: -3,
+        drums: { base: 'base', full: 'gallop' },
+      },
+      X3: {
+        bars: 8,
+        chords: [3, 3, 0, 1, 6, 6, 1, 0],
+        register: 3,
+        density: 0.6,
+        transpose: -2,
+        drums: { base: 'swell', full: 'full' },
+      },
+      K1: {
+        bars: 8,
+        chords: [0, 0, 1, 1, 0, 0, 6, 6],
+        register: 2,
+        density: 0.35,
+        transpose: -4,
+        drums: { base: 'chime', full: 'base' },
+      },
+      K2: {
+        bars: 8,
+        chords: [3, 1, 3, 1, 0, 6, 1, 1],
+        register: 3,
+        density: 0.6,
+        transpose: -1,
+        drums: { base: 'base', full: 'full' },
+      },
+      K3: {
+        bars: 8,
+        chords: [0, 0, 0, 0, 3, 3, 1, 1],
+        register: 2,
+        density: 0.4,
+        transpose: 1,
+        drums: { base: 'swell', full: 'swell' },
+      },
+      K4: {
+        bars: 8,
+        chords: [0, 1, 3, 1, 0, 6, 1, 0],
+        register: 6,
+        density: 0.95,
+        transpose: 5,
+        drums: { base: 'full', full: 'storm' },
+      },
+    },
+    phases: {
+      cross1: ['X1'],
+      cross2: ['X2'],
+      cross3: ['X3'],
+      keeper1: ['K1'],
+      keeper2: ['K2'],
+      keeper3: ['K3'],
+      keeper4: ['K4'],
+    },
+    voices: { drone: 'strings', pulse: 'cello', melody: 'santur', counter: 'bell' },
+    kit: 'frame',
+    pulse: [0, 0, 3, 0, 0, 3, 0, 2, 0, 0, 3, 0, 1, 0, 2, 0],
+    counterOctave: 1,
+    drums: {
+      base: 'D.......D...T...',
+      full: 'D..kD...D.k.T..k',
+      storm: 'D.kDD.k.D.kDT.TT',
+      gallop: 'D.DkD.DkD.DkT.Tk',
+      chime: 'D.......S.......',
+      swell: 'D...k.k.D...T.kk',
+    },
+    cells: CELLS_16,
+    cadences: CAD_16,
+    reverb: 0.45,
+    brightness: 0.5,
     level: 0.85,
   },
 };

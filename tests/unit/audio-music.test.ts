@@ -138,33 +138,38 @@ describe('themes', () => {
 });
 
 describe('composer', () => {
-  it.each(THEME_IDS)('%s plays ten minutes in tune, in time and in range', (id) => {
-    const th = THEMES[id];
-    const grid = gridOf(th);
-    const forms = [th.form, ...Object.values(th.phases ?? {})];
-    for (const form of forms) {
-      const bars = play(th, TEN_MINUTES, form);
-      expect(bars.length).toBeGreaterThanOrEqual(200);
-      for (const [n, bar] of bars.entries()) {
-        const place = placeBar(th, form, n);
-        const shift = th.sections[place.section]?.transpose ?? 0;
-        const melody = bar.filter((e) => e.stem === 'melody');
-        expect(melody.length).toBeGreaterThan(0);
-        expect(melody.length).toBeLessThanOrEqual(grid);
-        for (const e of bar) {
-          expect(e.step).toBeGreaterThanOrEqual(0);
-          expect(e.step + e.len).toBeLessThanOrEqual(grid);
-          if (e.stem === 'perc') continue;
-          const pc = (((e.midi - th.root - shift) % 12) + 12) % 12;
-          expect(MODES[th.mode]).toContain(pc);
-          expect(e.midi).toBeGreaterThanOrEqual(24);
-          expect(e.midi).toBeLessThanOrEqual(100);
-          expect(e.vel).toBeGreaterThan(0);
-          expect(e.vel).toBeLessThanOrEqual(1);
+  it.each(THEME_IDS)(
+    '%s plays ten minutes in tune, in time and in range',
+    (id) => {
+      const th = THEMES[id];
+      const grid = gridOf(th);
+      const forms = [th.form, ...Object.values(th.phases ?? {})];
+      for (const form of forms) {
+        const bars = play(th, TEN_MINUTES, form);
+        expect(bars.length).toBeGreaterThanOrEqual(200);
+        for (const [n, bar] of bars.entries()) {
+          const place = placeBar(th, form, n);
+          const shift = th.sections[place.section]?.transpose ?? 0;
+          const melody = bar.filter((e) => e.stem === 'melody');
+          expect(melody.length).toBeGreaterThan(0);
+          expect(melody.length).toBeLessThanOrEqual(grid);
+          for (const e of bar) {
+            expect(e.step).toBeGreaterThanOrEqual(0);
+            expect(e.step + e.len).toBeLessThanOrEqual(grid);
+            if (e.stem === 'perc') continue;
+            const pc = (((e.midi - th.root - shift) % 12) + 12) % 12;
+            expect(MODES[th.mode]).toContain(pc);
+            expect(e.midi).toBeGreaterThanOrEqual(24);
+            expect(e.midi).toBeLessThanOrEqual(100);
+            expect(e.vel).toBeGreaterThan(0);
+            expect(e.vel).toBeLessThanOrEqual(1);
+          }
         }
       }
-    }
-  });
+      // The boss theme holds thirteen phase forms (about 3 s here, more on CI runners).
+    },
+    30_000,
+  );
 
   it('is deterministic: the same bar twice is the same notes', () => {
     for (const id of THEME_IDS) {

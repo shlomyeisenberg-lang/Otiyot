@@ -6,8 +6,8 @@ _Last updated 2026-11-13. This page is generated from `docs/progress.json`; to c
 
 ## Summary
 
-- ✅ **31** of **44** tasks done
-- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 13 pending
+- ✅ **32** of **44** tasks done
+- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 12 pending
 - ⬜ **3** manual steps waiting for you
 - 💡 13 feature ideas open
 
@@ -91,7 +91,7 @@ Work done before or outside the numbered tasks.
 - ✅ T24 · Scene: The Long Midbar — 2026-11-12 · [PR #44](https://github.com/shlomyeisenberg-lang/Otiyot/pull/44)
 - ✅ T25 · Scene: The Lantern Caves — 2026-11-12 · [PR #45](https://github.com/shlomyeisenberg-lang/Otiyot/pull/45)
 - ✅ T26 · The Silent Arena: remaining bosses — 2026-11-12 · [PR #46](https://github.com/shlomyeisenberg-lang/Otiyot/pull/46)
-- ⬜ T27 · The Blank Scroll and the Keeper
+- ✅ T27 · The Blank Scroll and the Keeper — 2026-11-12 · [PR #47](https://github.com/shlomyeisenberg-lang/Otiyot/pull/47)
 - ⬜ T28 · Scene: The Ladder (endless)
 - ⬜ T29 · Arcade: host and the 3D classics
 - ⬜ T30 · Arcade: new-generation and quick games
@@ -1318,11 +1318,44 @@ The Silent Arena now holds three more bosses, chosen from a trials board: the St
 
 Try it on the live site: hub > map > The Silent Arena (opens at lesson level 6 once the Great Blot is beaten), or go straight to #/trials.
 
-### ⬜ T27 · The Blank Scroll and the Keeper
+### ✅ T27 · The Blank Scroll and the Keeper
 
-**Status:** Pending
+**Status:** Done · **Finished:** 2026-11-12 · **Pull request:** [PR #47](https://github.com/shlomyeisenberg-lang/Otiyot/pull/47)
 
-_Not started._
+The story can now be finished: the Blank Scroll is a five-column crossing of white parchment that brings back every region, then a four-phase stand against the Keeper with Naftali and Reb Ezra calling words, an ending where the Keeper takes the quill and writes again, credits the player types, and New Game+.
+
+**What changed**
+
+- src/game/boss.ts: erase option for a phase (the boss wins health back while you type, capped, slower on Calm; a clean weak point writes it all back), eraseRate, ERASE_CAP, CALM_ERASE, erasing, erasedShare
+- src/scenes/scroll/plan.ts: BLANK_SCROLL (five crossing columns c1-c5 and the Keeper phases k1-k4), SCROLL_SIZES per level, planScroll from learned letters only, allyAt (Naftali and Reb Ezra take turns), planCredits
+- src/scenes/scroll/index.ts, drawings.ts, palette.ts: ScrollScene: parchment strip and rollers, 30 pop-up region drawings that ink in and take color, the white and its attacks, the archive with its great page that inks and is erased line by line, the Keeper, Naftali, Reb Ezra, Dyo, ending cues, credits stage; skies and grades for every phase in both themes
+- src/story/scroll.ts: phase lines, ally calls, the Keeper's lines and the ending cutscene in Hebrew and English
+- src/ui/screens/arena.ts: bossScreen made generic: own stage (BossStage), ally calls with portraits, typed credits after the ending
+- src/ui/screens/scroll.ts, src/ui/app.ts, src/ui/shell.ts, src/ui/playable.ts: route #/scroll from the map; a win records the scroll rank and sets the ngplus story flag
+- src/audio/themes.ts, src/audio/synth.ts: new music theme final (crossing and Keeper sections) and a santur voice
+- locales/en.json, locales/he.json: scroll.* strings, credit lines, sound.theme.final
+- src/ui/styles/arena.css: credits panel
+- tests/unit/scroll.test.ts: learned letters only (plan and credits, every layout, track, level, difficulty), sizes, allies, finishable on every difficulty, the eraser, both themes' skies, story lines family-safe, locales
+- tests/e2e/scroll.spec.ts: the whole final played start to finish (crossing, Keeper, ending, credits, results, New Game+), and the last phase from a checkpoint in Hebrew on the night theme
+
+**Decisions**
+
+- **The final is one boss-kit fight of nine phases on the arena's boss screen, staged by its own scene** — Reuses the tested boss kit (checkpoints, difficulty, ranks, no soft-locks) and every mechanic folds into its phase options
+- **Each crossing column folds earlier regions into kit options (heal, bursts with rests, tide, a long passage) instead of re-running each region's own scene** — One continuous run that stays fast and cannot break; the regions come back as drawings on the page
+- **The allies' typed prompts are the Keeper phases' weak points, alternating Naftali then Reb Ezra** — Gives them a real job in the fight without a new mechanic
+- **The Keeper's eraser is capped at half the phase (a little on Calm) and a clean call writes everything back** — Tense but always finishable on every difficulty
+- **New Game+ is the story flag ngplus, with no save migration** — Story flags are free-form already; what New Game+ changes is for a later task
+- **Credits are typed: one learned word writes each credit line, Esc skips** — The roadmap asks for typed credits, and learned letters only applies
+- **The last phase's night is lighter than first drawn (less ink in the sky, softer contrast and vignette)** — Play-testing showed the archive turning into black shapes on the night theme
+- **Four Hebrew story lines reworded (e.g. מחיקה איננה סוף instead of מחיקה היא לא סוף)** — The project's content filter blocks feminine pronouns in visible text, even grammatical ones
+
+**To do**
+
+- [ ] What New Game+ changes (harder levels, a new color, a second ending line) is not designed yet: it is only a flag for now
+
+**Notes**
+
+2026-11-13: taken over by a manual Fable chat on the new account (the previous run stopped at 22:02Z on 2026-11-12), then finished by a manual Opus chat.
 
 ### ⬜ T28 · Scene: The Ladder (endless)
 

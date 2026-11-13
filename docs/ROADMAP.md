@@ -369,7 +369,7 @@ One-pass review of Sonnet's T19; fix what is weak. Done when merged.
 - **Done when** All arena bosses are winnable on every difficulty and feel distinct.
 - **User must have ready** Nothing.
 
-### [ ] T27 · The Blank Scroll and the Keeper
+### [x] T27 · The Blank Scroll and the Keeper
 - **Branch** `t27-final`
 - **Model** Fable 5.2 · **Effort** Xhigh
 - **Goal** The final sequence combining every mechanic, the Keeper fight, and the ending.
