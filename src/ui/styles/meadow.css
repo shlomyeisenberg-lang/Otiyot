@@ -327,3 +327,7 @@
 .ladder .meadow__results .range__results-stats {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
+.ladder .meadow__results .stat {
+  min-inline-size: 0;
+  padding: var(--sp-2) var(--sp-3);
+}

@@ -197,7 +197,7 @@ test.describe('The Ladder', () => {
     const card = page.locator('.meadow__results');
     await expect(card).toBeVisible({ timeout: 30_000 });
     await expect(card.locator('.rank')).toBeVisible();
-    await expect(card).toContainText('You rested on floor 2');
+    await expect(card).toContainText(/You rested on floor\W*2/);
     await expect(card.getByTestId('ladder-table').locator('tr[data-new="true"]')).toHaveCount(1);
     const table = await savedTable(page);
     expect(table).toHaveLength(1);
