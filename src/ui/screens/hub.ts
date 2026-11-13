@@ -2,8 +2,7 @@
 // screen; every station carries a door word made of letters the player has learned, and typing
 // it walks the apprentice there and opens it: the desk (the map of the land: what is restored,
 // what is open, the levels, and what to learn first), the practice slate (the next lesson), the
-// trophy shelf (ranks), the shop and the journal (opening soon), the Game Room (an "opening
-// soon" sign until the arcade arrives), and the tool chest (settings). Reb Ezra and Dyo greet
+// trophy shelf (ranks), the shop and the journal (opening soon), the Game Room (the arcade, T29), and the tool chest (settings). Reb Ezra and Dyo greet
 // the player with a line that fits the moment. The same stations sit in a row at the bottom for
 // the mouse and screen readers, and they are all there is when the device cannot draw 3D.
 
@@ -40,7 +39,7 @@ const STATIONS: readonly StationId[] = [
   'settings',
 ];
 /** Stations whose rooms are built by later tasks: they say so in the world and in the panel. */
-const SOON: ReadonlySet<StationId> = new Set(['shop', 'journal', 'gameRoom']);
+const SOON: ReadonlySet<StationId> = new Set(['shop', 'journal']);
 /** Minutes of real time for one whole day in the house. */
 const DAY_MINUTES = 12;
 const LINE_MS = 9000;
@@ -278,6 +277,9 @@ export function hubScreen(ctx: AppContext): Screen {
       case 'settings':
         leave('settings');
         break;
+      case 'gameRoom':
+        leave('arcade');
+        break;
       case 'trophies':
         openTrophies();
         break;
@@ -286,7 +288,7 @@ export function hubScreen(ctx: AppContext): Screen {
     }
   }
 
-  function leave(route: 'lesson' | 'settings' | 'menu'): void {
+  function leave(route: 'lesson' | 'settings' | 'menu' | 'arcade'): void {
     probe.opened = route;
     leaving = window.setTimeout(() => ctx.go(route), 350);
   }
@@ -566,7 +568,7 @@ export function hubScreen(ctx: AppContext): Screen {
       fresh,
       naftali: statuses.find((x) => x.id === 'rail')?.restored === true,
       slate: letters.join(''),
-      soon: t.t('hub.soonSign'),
+      soon: t.t('hub.station.gameRoom'),
       rtl,
     });
     // The scene lists its stations in the same order as this screen.
