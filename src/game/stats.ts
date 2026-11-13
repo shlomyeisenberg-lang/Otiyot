@@ -147,7 +147,10 @@ export function keysMastered(profile: Profile): KeysMastered {
  * Heat per physical key code for the keyboard heatmap: 0 is fine, 1 is weakest. Keys with too
  * little data get no entry (they stay plain on the map).
  */
-export function keyHeat(profile: Profile, layout: LayoutId = profile.layout): Record<string, number> {
+export function keyHeat(
+  profile: Profile,
+  layout: LayoutId = profile.layout,
+): Record<string, number> {
   const heat: Record<string, number> = {};
   for (const k of keySkills(profile)) {
     if (k.mastery === null) continue;

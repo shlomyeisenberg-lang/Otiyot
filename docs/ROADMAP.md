@@ -431,7 +431,7 @@ One-pass review of Sonnet's T19; fix what is weak. Done when merged.
 - **Done when** Each mode starts from the hub, is completable, and records results in history.
 - **User must have ready** Nothing.
 
-### [ ] T32 · Statistics dashboard and journal
+### [x] T32 · Statistics dashboard and journal
 - **Branch** `t32-dashboard-journal`
 - **Model** Sonnet 5.5 · **Effort** Medium
 - **Goal** Show progress clearly, and collect lore and tips.

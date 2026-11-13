@@ -652,3 +652,125 @@
     transform: none;
   }
 }
+
+/* ---------- Statistics and journal (T32) ---------- */
+.stats__stack {
+  display: grid;
+  gap: var(--sp-5);
+}
+.stats__tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: var(--sp-3);
+}
+.stats__charts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: var(--sp-4);
+}
+.stats__section {
+  display: grid;
+  gap: var(--sp-3);
+}
+.stats__heading {
+  font-size: var(--fs-20);
+}
+.stats__empty {
+  padding-block: var(--sp-4);
+}
+.stats__errors,
+.stats__levels,
+.stats__achievements,
+.jr__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--sp-3);
+}
+.stats__achievements,
+.jr__list {
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+}
+.stats__error,
+.stats__level {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-3);
+  padding-block: var(--sp-2);
+  border-block-end: var(--border-w) solid var(--rule);
+}
+.stats__pair {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  direction: ltr;
+}
+.stats__count,
+.stats__level-stars {
+  color: var(--ink-soft);
+  font-size: var(--fs-14);
+  margin-inline-start: auto;
+}
+.stats__level-name {
+  flex: 1 1 10rem;
+}
+.stats__level-done {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+.stats__scroll {
+  overflow-x: auto;
+}
+.stats__table {
+  inline-size: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-14);
+}
+.stats__table th,
+.stats__table td {
+  padding: var(--sp-2) var(--sp-3);
+  text-align: start;
+  border-block-end: var(--border-w) solid var(--rule);
+  white-space: nowrap;
+}
+.stats__table th {
+  color: var(--ink-soft);
+  font-weight: 700;
+}
+.stats__num {
+  font-variant-numeric: tabular-nums;
+}
+.ach__head,
+.jr__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+}
+.ach__name,
+.jr__name {
+  font-size: var(--fs-16);
+}
+.ach__desc,
+.jr__body {
+  color: var(--ink-soft);
+  font-size: var(--fs-14);
+  text-wrap: pretty;
+  margin-block: var(--sp-2);
+}
+.ach:not(.ach--earned) .ach__name,
+.jr--locked .jr__name {
+  color: var(--ink-soft);
+}
+.page__sheet {
+  grid-template-columns: minmax(0, 1fr);
+}
+.stats__stack,
+.stats__section,
+.tabs,
+.tabs__panel {
+  min-inline-size: 0;
+}

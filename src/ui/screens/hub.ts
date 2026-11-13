@@ -2,7 +2,7 @@
 // screen; every station carries a door word made of letters the player has learned, and typing
 // it walks the apprentice there and opens it: the desk (the map of the land: what is restored,
 // what is open, the levels, and what to learn first), the practice slate (the next lesson), the
-// trophy shelf (ranks), the shop and the journal (opening soon), the Game Room (the arcade, T29), and the tool chest (settings). Reb Ezra and Dyo greet
+// trophy shelf (ranks), the shop (opening soon), the journal (T32), the Game Room (the arcade, T29), and the tool chest (settings). Reb Ezra and Dyo greet
 // the player with a line that fits the moment. The same stations sit in a row at the bottom for
 // the mouse and screen readers, and they are all there is when the device cannot draw 3D.
 
@@ -39,7 +39,7 @@ const STATIONS: readonly StationId[] = [
   'settings',
 ];
 /** Stations whose rooms are built by later tasks: they say so in the world and in the panel. */
-const SOON: ReadonlySet<StationId> = new Set(['shop', 'journal']);
+const SOON: ReadonlySet<StationId> = new Set(['shop']);
 /** Minutes of real time for one whole day in the house. */
 const DAY_MINUTES = 12;
 const LINE_MS = 9000;
@@ -282,12 +282,15 @@ export function hubScreen(ctx: AppContext): Screen {
       case 'trophies':
         openTrophies();
         break;
+      case 'journal':
+        leave('journal');
+        break;
       default:
         openSoon(id);
     }
   }
 
-  function leave(route: 'modes' | 'settings' | 'menu' | 'arcade'): void {
+  function leave(route: 'modes' | 'settings' | 'menu' | 'arcade' | 'journal'): void {
     probe.opened = route;
     leaving = window.setTimeout(() => ctx.go(route), 350);
   }
