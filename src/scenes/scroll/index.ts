@@ -378,7 +378,7 @@ export class ScrollScene implements GameScene {
     this.inkDark = ctx.theme === 'light' ? ctx.color('ink') : ctx.color('bg');
     this.errColor = ctx.color('err-fg');
 
-    ctx.audio.music('boss');
+    ctx.audio.music('final');
     ctx.audio.section('cross1');
     ctx.audio.intensity(0);
     ctx.audio.ambience('wind');
@@ -1058,7 +1058,7 @@ export class ScrollScene implements GameScene {
     this.keeperShare = 1 - (notches[CROSSING - 1] ?? 0.5);
     const first = fight.plan.phases[0]?.text ?? '';
     this.layLines(/[֐-׿]/.test(first));
-    this.ctx.audio.music('boss');
+    this.ctx.audio.music('final');
     this.setStage(stageOf(fight.phase), true);
     this.setPhaseLook(fight.phase, true);
     this.placePeople();

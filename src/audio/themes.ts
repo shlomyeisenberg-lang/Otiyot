@@ -23,7 +23,8 @@ export type Voice =
   | 'glass'
   | 'pluck'
   | 'ney'
-  | 'kalimba';
+  | 'kalimba'
+  | 'santur';
 /** Drum kits; each plays the same pattern letters with its own sounds. */
 export type Kit = 'darbuka' | 'frame' | 'taiko' | 'brush';
 
@@ -95,7 +96,8 @@ export type ThemeId =
   | 'atbash'
   | 'midbar'
   | 'caves'
-  | 'boss';
+  | 'boss'
+  | 'final';
 export const THEME_IDS: readonly ThemeId[] = [
   'title',
   'hub',
@@ -111,6 +113,7 @@ export const THEME_IDS: readonly ThemeId[] = [
   'midbar',
   'caves',
   'boss',
+  'final',
 ];
 
 // Compound (6/8) cells: 6 steps per bar.
@@ -649,6 +652,53 @@ export const THEMES: Readonly<Record<ThemeId, ThemeSpec>> = {
         transpose: 0,
         drums: { base: 'swell', full: 'storm' },
       },
+    },
+    phases: {
+      phase1: ['P1'],
+      phase2: ['P2'],
+      phase3: ['P3'],
+      phase4: ['P4'],
+      storm1: ['S1'],
+      storm2: ['S2'],
+      storm3: ['S3'],
+      glass1: ['G1'],
+      glass2: ['G2'],
+      glass3: ['G3'],
+      tide1: ['T1'],
+      tide2: ['T2'],
+      tide3: ['T3'],
+    },
+    voices: { drone: 'pad', pulse: 'cello', melody: 'strings', counter: 'bell' },
+    kit: 'taiko',
+    pulse: [0, 0, 3, 0, 0, 3, 0, 2, 0, 0, 3, 0, 1, 0, 2, 0],
+    counterOctave: 1,
+    drums: {
+      base: 'D.......D...T...',
+      full: 'D..kD...D.k.T..k',
+      storm: 'D.kDD.k.D.kDT.TT',
+      gallop: 'D.DkD.DkD.DkT.Tk',
+      chime: 'D.......S.......',
+      swell: 'D...k.k.D...T.kk',
+    },
+    cells: CELLS_16,
+    cadences: CAD_16,
+    reverb: 0.3,
+    brightness: 0.6,
+    level: 0.85,
+  },
+  // The final (T27): the Blank Scroll and the Keeper. D minor, slower than the boss theme.
+  final: {
+    id: 'final',
+    nameKey: 'sound.theme.final',
+    seed: 2727,
+    bpm: 116,
+    beats: 4,
+    sub: 4,
+    root: 62,
+    mode: 'minor',
+    swing: 0,
+    form: ['X1'],
+    sections: {
       // The Blank Scroll (T27). The crossing: the tune almost bare at first (the page is empty),
       // gaining a voice with every column. Then the Keeper: slow and low, the fire remembered,
       // a long held silence, and the last phase at full drive a fourth up.
@@ -717,22 +767,9 @@ export const THEMES: Readonly<Record<ThemeId, ThemeSpec>> = {
       keeper2: ['K2'],
       keeper3: ['K3'],
       keeper4: ['K4'],
-      phase1: ['P1'],
-      phase2: ['P2'],
-      phase3: ['P3'],
-      phase4: ['P4'],
-      storm1: ['S1'],
-      storm2: ['S2'],
-      storm3: ['S3'],
-      glass1: ['G1'],
-      glass2: ['G2'],
-      glass3: ['G3'],
-      tide1: ['T1'],
-      tide2: ['T2'],
-      tide3: ['T3'],
     },
-    voices: { drone: 'pad', pulse: 'cello', melody: 'strings', counter: 'bell' },
-    kit: 'taiko',
+    voices: { drone: 'strings', pulse: 'cello', melody: 'santur', counter: 'bell' },
+    kit: 'frame',
     pulse: [0, 0, 3, 0, 0, 3, 0, 2, 0, 0, 3, 0, 1, 0, 2, 0],
     counterOctave: 1,
     drums: {
@@ -745,8 +782,8 @@ export const THEMES: Readonly<Record<ThemeId, ThemeSpec>> = {
     },
     cells: CELLS_16,
     cadences: CAD_16,
-    reverb: 0.3,
-    brightness: 0.6,
+    reverb: 0.45,
+    brightness: 0.5,
     level: 0.85,
   },
 };

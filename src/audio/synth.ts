@@ -180,6 +180,21 @@ export class Synth {
         f.connect(g).connect(dest);
         return;
       }
+      case 'santur': {
+        // Hammered strings (T27, the final): two courses a hair apart, a bright strike that
+        // rings on and darkens.
+        const len = Math.min(1.8, dur + 0.9);
+        const end = t + len;
+        const f = this.filter('lowpass', 2600 + bright * 2400, 0.9);
+        f.frequency.setValueAtTime(6200, t);
+        f.frequency.exponentialRampToValueAtTime(1500, t + 0.35);
+        this.osc('sawtooth', hz, t, end, -5).connect(f);
+        this.osc('sawtooth', hz, t, end, 6).connect(f);
+        this.osc('sine', hz * 2, t, end).connect(f);
+        const g = this.decay(t, 0.06 * vel, len);
+        f.connect(g).connect(dest);
+        return;
+      }
       case 'flute': {
         const end = t + dur + 0.2;
         const o = this.osc('sine', hz, t, end);
