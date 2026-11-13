@@ -36,12 +36,19 @@
     "T29": 1
   },
   "skipped": {},
-  "last_failure": {},
+  "last_failure": {
+    "handoff": {
+      "task": "T30",
+      "from": "Opus builder",
+      "to": "Sonnet builder",
+      "time": "2026-11-13T18:50:00.498Z",
+      "error": "fire_trigger denied by session permission check (auto mode classifier); not retried. Sonnet schedule (20:17 UTC) or watchdog (19:32 UTC) will pick T30 up."
+    }
+  },
   "final_email_sent": false,
   "handoffs": {
     "T22": "2026-11-12T06:33:30Z",
     "T23": "2026-11-12T08:58:10Z",
-    "T27": "2026-11-12T21:55:50.170Z",
-    "T30": "2026-11-13T18:49:44Z"
+    "T27": "2026-11-12T21:55:50.170Z"
   }
 }
