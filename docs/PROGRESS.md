@@ -6,8 +6,8 @@ _Last updated 2026-11-13. This page is generated from `docs/progress.json`; to c
 
 ## Summary
 
-- ✅ **36** of **44** tasks done
-- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 8 pending
+- ✅ **37** of **44** tasks done
+- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 7 pending
 - ⬜ **3** manual steps waiting for you
 - 💡 14 feature ideas open
 
@@ -96,7 +96,7 @@ Work done before or outside the numbered tasks.
 - ✅ T29 · Arcade: host and the 3D classics — 2026-11-13 · [PR #50](https://github.com/shlomyeisenberg-lang/Otiyot/pull/50)
 - ✅ T30 · Arcade: new-generation and quick games — 2026-11-13 · [PR #51](https://github.com/shlomyeisenberg-lang/Otiyot/pull/51)
 - ✅ T31 · Modes: Practice, Time Attack, Survival, Daily — 2026-11-13 · [PR #52](https://github.com/shlomyeisenberg-lang/Otiyot/pull/52)
-- ⬜ T32 · Statistics dashboard and journal
+- ✅ T32 · Statistics dashboard and journal — 2026-11-13 · [PR #53](https://github.com/shlomyeisenberg-lang/Otiyot/pull/53)
 - ⬜ T33 · Progression, abilities, shop and cosmetics
 - ⬜ T34 · Art, lighting, VFX and music pass
 - ⬜ T35 · Full story: cutscenes and voice
@@ -1504,11 +1504,42 @@ The hub’s practice slate now opens a modes screen with Practice, Time Attack, 
 
 Daily plans use the local date and the learned letters, so two players on different lessons get the same scene and modifiers but different words.
 
-### ⬜ T32 · Statistics dashboard and journal
+### ✅ T32 · Statistics dashboard and journal
 
-**Status:** Pending
+**Status:** Done · **Finished:** 2026-11-13 · **Pull request:** [PR #53](https://github.com/shlomyeisenberg-lang/Otiyot/pull/53)
 
-_Not started._
+The main menu now has a Statistics page and the journal door in the House of the Scribe opens a real Journal. Statistics shows speed and accuracy over time, keys mastered, a keyboard heatmap, error patterns, time played, session history, both lesson tracks and sixteen achievements; the Journal holds people, places and tips that open as the story and course advance.
+
+**What changed**
+
+- src/game/stats.ts (new, pure): summarizeHistory, trendSeries, splitDuration, dayIndex, activityOf, keySkills, keysMastered, keyHeat, errorPatterns, trackSummary, sessionRows
+- src/game/achievements.ts (new, pure): sixteen achievements computed from the profile (nothing stored)
+- src/game/journal.ts and src/story/journal.ts (new): journalOf and journalCounts; people notes and tips in Hebrew and English
+- src/ui/screens/stats.ts and journal.ts (new); routes stats and journal in src/ui/app.ts and src/ui/shell.ts; Statistics item in src/ui/screens/mainMenu.ts
+- src/ui/screens/hub.ts: the journal station opens the Journal (no longer marked soon); hub.soon.journal removed from both locale files
+- src/ui/styles/screens.css: stats and journal styles, and a grid fix so wide tabs never push a page past a phone screen
+- locales/en.json and he.json: menu.stats*, stats.*, ach.* and journal.* strings
+- tests/unit/stats.test.ts (20 tests: aggregations, activity, heat, track summary, achievements, journal unlocks, clean text) and tests/e2e/stats.spec.ts (numbers in English, Hebrew, journal unlocks, desktop and phone)
+- docs: ARCHITECTURE (Statistics and journal), DESIGN, CHANGELOG, ROADMAP tick
+
+**Decisions**
+
+- **Achievements and journal unlocks are computed from the profile each time, with no new save fields or migration** — Everything needed is already saved, and rule changes can never lose or duplicate an award
+- **A key counts as mastered at 80 or more mastery (the existing charMastery score)** — Reuses the adaptive engine score so the dashboard agrees with what practice treats as strong
+- **Lessons tab shows the keyboard layout the player uses now, for both tracks** — Each layout keeps its own progress, so mixing them would double count
+- **Journal people: Ezra and Dyo open with the intro, Naftali when the Jaffa Line is restored, the Keeper when the Arena is restored; tips open by lesson level** — Matches when the player really meets them and never spoils later story early
+- **Journal tips mention no key names** — Keeps the learned-letters-only rule: no text ever asks for an unlearned letter
+- **Local checks were the gate for the e2e tests (run with the sandbox Chromium)** — Matches the standing rule that local checks are the real gate
+
+**To do**
+
+- [ ] The shop station is still marked soon (T33)
+- [ ] Achievements pay no glyphs or ink yet (wallet arrives in T33)
+- [ ] Story entries for later cutscenes (T35) can add more journal text
+
+**Notes**
+
+No save schema change. Hub e2e tests still pass.
 
 ### ⬜ T33 · Progression, abilities, shop and cosmetics
 
