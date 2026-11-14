@@ -77,27 +77,20 @@ export function earnedRow(
 /** The player's level and the bar to the next one (shop header, results). */
 export function levelBar(t: I18n, profile: Profile): HTMLElement {
   const info = levelOf(profile.progress.xp);
-  const bar = progressBar(
-    t.t('shop.levelBar', { level: info.level }),
-    Math.round(info.share * 100),
-    100,
-  );
+  const label =
+    info.need > 0
+      ? t.t('shop.levelOf', { level: info.level, into: info.into, need: info.need })
+      : t.t('shop.levelMax', { level: info.level });
+  const bar = progressBar(label, Math.round(info.share * 100), 100);
   return h(
     'div',
     { class: 'level-bar', 'data-level': info.level },
-    h('span', { class: 'level-bar__badge', text: String(info.level) }),
-    h(
-      'div',
-      { class: 'level-bar__body' },
-      h('span', {
-        class: 'level-bar__label',
-        text:
-          info.need > 0
-            ? t.t('shop.levelOf', { level: info.level, into: info.into, need: info.need })
-            : t.t('shop.levelMax', { level: info.level }),
-      }),
-      bar.el,
-    ),
+    h('span', {
+      class: 'level-bar__badge',
+      text: String(info.level),
+      'aria-label': t.t('shop.levelBar', { level: info.level }),
+    }),
+    h('div', { class: 'level-bar__body' }, bar.el),
   );
 }
 

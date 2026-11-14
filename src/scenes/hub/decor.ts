@@ -15,7 +15,7 @@ import { Parts } from './build';
 
 /** Where each decoration stands (x, z); the apprentice's paths stay clear of them. */
 export const DECOR_SPOTS: Readonly<Record<string, readonly [number, number]>> = {
-  'decor:lamp': [-5, 0.9],
+  'decor:lamp': [-2.7, 2.1],
   'decor:pomegranate': [1.6, 2.7],
   'decor:banners': [4.8, -4.7],
   'decor:map': [-8.86, 0.4],
@@ -170,9 +170,9 @@ export function buildDecor(
         solid.add(new TorusGeometry(0.82, 0.07, 5, 18).rotateX(Math.PI / 2), STONE, x, 0.43, z);
         solid.add(new CylinderGeometry(0.12, 0.18, 0.8, 8), STONE, x, 0.75, z, STONE_DARK);
         solid.add(new CylinderGeometry(0.38, 0.12, 0.16, 10), STONE, x, 1.15, z, STONE_DARK);
-        glow.add(new CylinderGeometry(0.76, 0.76, 0.03, 14), WATER, x, 0.38, z);
-        glow.add(new CylinderGeometry(0.32, 0.32, 0.03, 10), WATER, x, 1.22, z);
-        glow.add(new ConeGeometry(0.05, 0.35, 6), 0xbfe0ff, x, 1.4, z);
+        solid.add(new CylinderGeometry(0.76, 0.76, 0.03, 14), WATER, x, 0.38, z);
+        solid.add(new CylinderGeometry(0.32, 0.32, 0.03, 10), WATER, x, 1.22, z);
+        solid.add(new ConeGeometry(0.05, 0.35, 6), 0xbfe0ff, x, 1.4, z);
         break;
       }
       default:

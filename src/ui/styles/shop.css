@@ -16,7 +16,7 @@
   gap: var(--sp-3);
 }
 .shop-figure {
-  inline-size: 7.5rem;
+  inline-size: 9rem;
   block-size: auto;
   filter: drop-shadow(0 2px 0 var(--rule));
 }
@@ -43,15 +43,13 @@
   color: var(--on-gold);
   font-family: var(--font-display);
   font-size: var(--fs-28);
-  box-shadow: 0 0 0 3px var(--gold-soft), var(--shadow-1);
+  box-shadow:
+    0 0 0 3px var(--gold-soft),
+    var(--shadow-1);
 }
 .level-bar__body {
   display: grid;
   gap: var(--sp-1);
-}
-.level-bar__label {
-  font-size: var(--fs-14);
-  color: var(--ink-soft);
 }
 .level-bar .progress__fill {
   background: var(--gold);
@@ -117,7 +115,9 @@
 .shop-card--equipped .panel,
 .shop-card--made .panel {
   border-color: var(--gold);
-  box-shadow: 0 0 0 1px var(--gold-soft), var(--shadow-1);
+  box-shadow:
+    0 0 0 1px var(--gold-soft),
+    var(--shadow-1);
 }
 .shop-card--locked .panel,
 .shop-card--needsLevel .panel {

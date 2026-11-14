@@ -57,7 +57,10 @@ test.describe('Ink shop', () => {
     // The shelf: buy the linen robe; it is worn at once and the glyphs go down.
     const linen = page.locator('[data-item="robe:linen"]');
     await linen.getByRole('button', { name: 'Buy' }).click();
-    await expect(page.locator('[data-item="robe:linen"]')).toHaveAttribute('data-state', 'equipped');
+    await expect(page.locator('[data-item="robe:linen"]')).toHaveAttribute(
+      'data-state',
+      'equipped',
+    );
     await expect(page.getByTestId('wallet-glyphs')).toContainText('240');
     // Something above the player's level waits, with its level.
     await expect(page.locator('[data-item="robe:night"]')).toHaveAttribute('data-state', 'locked');
