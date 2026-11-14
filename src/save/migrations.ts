@@ -1,7 +1,7 @@
 // Save versioning. Every schema change adds ONE entry to MIGRATIONS (from-version -> next version)
 // and bumps CURRENT_VERSION, plus a test in tests/unit/save-migrations.test.ts.
 
-export const CURRENT_VERSION = 10;
+export const CURRENT_VERSION = 11;
 
 type Rec = Record<string, unknown>;
 export type Migration = (raw: Rec) => Rec;
@@ -203,6 +203,18 @@ const v8ToV9: Migration = (raw) => {
  */
 const v9ToV10: Migration = (raw) => ({ ...raw, version: 10 });
 
+/** v10 -> v11 (T37). Profiles gain `ghosts`, their ghost boards, empty to start. */
+const v10ToV11: Migration = (raw) => {
+  const profiles = Array.isArray(raw.profiles)
+    ? raw.profiles.map((p) =>
+        typeof p === 'object' && p !== null && !Array.isArray(p)
+          ? { ghosts: {}, ...(p as Rec) }
+          : p,
+      )
+    : raw.profiles;
+  return { ...raw, version: 11, profiles };
+};
+
 export const MIGRATIONS: Readonly<Record<number, Migration>> = {
   0: v0ToV1,
   1: v1ToV2,
@@ -214,6 +226,7 @@ export const MIGRATIONS: Readonly<Record<number, Migration>> = {
   7: v7ToV8,
   8: v8ToV9,
   9: v9ToV10,
+  10: v10ToV11,
 };
 
 export function versionOf(raw: Rec): number {
