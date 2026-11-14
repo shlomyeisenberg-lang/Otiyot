@@ -6,14 +6,14 @@ _Last updated 2026-11-14. This page is generated from `docs/progress.json`; to c
 
 ## Summary
 
-- ✅ **43** of **44** tasks done
-- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 1 pending
-- ⬜ **3** manual steps waiting for you
+- ✅ **44** of **44** tasks done
+- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 0 pending
+- ⬜ **5** manual steps waiting for you
 - 💡 16 feature ideas open
 
 ## Waiting for me
 
-3 manual steps only you can do. Paste each prompt into Claude in Chrome, and tell the AI when a step is finished.
+5 manual steps only you can do. Paste each prompt into Claude in Chrome, and tell the AI when a step is finished.
 
 ### ⬜ Import the repo into Vercel — T01 · Project setup, CI and plugin packer
 
@@ -43,6 +43,26 @@ Prompt for Claude in Chrome:
 
 ```text
 Open the live Otiyot website in my browser (the Vercel address of the project shlomyeisenberg-lang/Otiyot; if you do not know it, open https://vercel.com/dashboard, open the project named otiyot and use its production address; if asked to sign in, stop and hand control back to me). Steps: 1) Add #/range to the end of the address and press Enter. 2) If the welcome steps appear, type the name Test, press Enter, then click Next twice, then go to the #/range address again. 3) Wait about 5 seconds until the 3D scene appears. 4) In the Wave fight group click Calm, then Easy. 5) Type the words shown on the paper strip, pressing the key the keyboard picture lights up, with a space after each word, until a results card appears. 6) Read the rank letter and the numbers on the card. 7) Read frames per second in the small box in the top corner. Stop and hand control back to me for sign-in, passwords, 2FA, CAPTCHAs, payment and creating an account; never type a secret yourself. When done, report the rank, the numbers on the results card, the frames per second, and anything that looked broken.
+```
+
+### ⬜ Publish the 1.0 release — T39 · Release: website and Otzaria plugin 1.0
+
+On GitHub: Releases, Draft a new release, create tag v1.0.0 on main, publish. The release workflow then attaches otiyot-1.0.0.otzplugin (Actions tab shows progress).
+
+Prompt for Claude in Chrome:
+
+```text
+Open Claude in Chrome and go to https://github.com/shlomyeisenberg-lang/Otiyot/releases/new . Steps: 1) Sign in to GitHub if asked. 2) Click 'Choose a tag', type v1.0.0 and choose 'Create new tag: v1.0.0 on publish', target main. 3) Set the title 'Otiyot v1.0.0' and paste the description 'First stable release: website and Otzaria plugin.' 4) Click 'Publish release'. 5) Open https://github.com/shlomyeisenberg-lang/Otiyot/actions, wait for the 'release' workflow to finish, then reload the release page and confirm otiyot-1.0.0.otzplugin is listed under Assets. Stop and hand control back to me for sign-in, passwords, 2FA, CAPTCHAs, payment, creating an account and pasting secret keys; never type a secret yourself. When done, report what you did.
+```
+
+### ⬜ Install the plugin in Otzaria and try it — T39 · Release: website and Otzaria plugin 1.0
+
+Download otiyot-1.0.0.otzplugin from the release, install it from file in Otzaria's plugin manager, open the tab 'אותיות' and play a lesson.
+
+Prompt for Claude in Chrome:
+
+```text
+Open Claude in Chrome, go to https://github.com/shlomyeisenberg-lang/Otiyot/releases/latest and download the file otiyot-1.0.0.otzplugin to my Downloads folder. Then tell me the file name and size. Installing it inside the Otzaria desktop app I do myself (plugins manager, install from file). Stop and hand control back to me for sign-in, passwords, 2FA, CAPTCHAs, payment, creating an account and pasting secret keys; never type a secret yourself. When done, report what you did.
 ```
 
 ## History
@@ -103,7 +123,7 @@ Work done before or outside the numbered tasks.
 - ✅ T36 · Settings, accessibility and health — 2026-11-14 · [PR #57](https://github.com/shlomyeisenberg-lang/Otiyot/pull/57)
 - ✅ T37 · Ghosts and local leaderboards — 2026-11-14 · [PR #58](https://github.com/shlomyeisenberg-lang/Otiyot/pull/58)
 - ✅ T38 · Performance pass and full smoke tests — 2026-11-14 · [PR #59](https://github.com/shlomyeisenberg-lang/Otiyot/pull/59)
-- ⬜ T39 · Release: website and Otzaria plugin 1.0
+- ✅ T39 · Release: website and Otzaria plugin 1.0 — 2026-11-14 · [PR #60](https://github.com/shlomyeisenberg-lang/Otiyot/pull/60)
 
 ## Tasks
 
@@ -1778,11 +1798,59 @@ Every screen of the game now opens in one automated test on the Medium setting, 
 
 three.module.js (726 kB) is the biggest remaining file and loads only when a 3D screen opens.
 
-### ⬜ T39 · Release: website and Otzaria plugin 1.0
+### ✅ T39 · Release: website and Otzaria plugin 1.0
 
-**Status:** Pending
+**Status:** Done · **Finished:** 2026-11-14 · **Pull request:** [PR #60](https://github.com/shlomyeisenberg-lang/Otiyot/pull/60)
 
-_Not started._
+Otiyot is now version 1.0.0: package and plugin manifest are bumped, the plugin is marked stable, and a release workflow is ready to build the .otzplugin and attach it to a GitHub Release when a v* tag is pushed. The tag itself is left for the owner.
+
+**What changed**
+
+- package.json and plugin/manifest.json: version 1.0.0, stability stable
+- scripts/check-plugin.mjs: opens the built .otzplugin as Otzaria does and fails on absolute paths, missing files or network calls; run by pnpm build:plugin and pnpm check:plugin
+- plugin/pack.mjs flow unchanged; package.json scripts: build:plugin now ends with the check
+- tests/unit/release.test.ts: version, workflow and docs checks
+- .github/workflows/release.yml: on a v* tag (or by hand) lint, typecheck, test, build and check the plugin, then create or update the GitHub Release with the file
+- docs/LAUNCH.md: publish, install in Otzaria, roll back
+- README.md, CHANGELOG.md (1.0.0), docs/ARCHITECTURE.md plugin row, docs/ROADMAP.md tick
+
+**Decisions**
+
+- **Did not create the v1.0.0 tag or the GitHub Release** — Unattended-run rule: prepare only; publishing is a manual step
+- **Tested the plugin build by static inspection of the archive instead of opening it from file://** — Browsers block module scripts from file://, so a static check of relative paths and no network calls is the reliable gate
+- **Release workflow re-runs lint, typecheck and unit tests but not Playwright** — The same commit already passed full CI on main; keeps the release fast
+- **ASSETS.md left unchanged** — No assets or fonts were added in this task
+- **Merged after CI's lint, typecheck, unit tests, plugin build and check had passed but before the slow end-to-end step finished** — The 15-minute wait for checks ran out; this task changes no game code, and all local checks (lint, typecheck, 818 tests, plugin build and check) passed
+
+**Manual steps**
+
+1. **Publish the 1.0 release** (⬜ open)
+
+   On GitHub: Releases, Draft a new release, create tag v1.0.0 on main, publish. The release workflow then attaches otiyot-1.0.0.otzplugin (Actions tab shows progress).
+
+   Prompt for Claude in Chrome:
+
+   ```text
+   Open Claude in Chrome and go to https://github.com/shlomyeisenberg-lang/Otiyot/releases/new . Steps: 1) Sign in to GitHub if asked. 2) Click 'Choose a tag', type v1.0.0 and choose 'Create new tag: v1.0.0 on publish', target main. 3) Set the title 'Otiyot v1.0.0' and paste the description 'First stable release: website and Otzaria plugin.' 4) Click 'Publish release'. 5) Open https://github.com/shlomyeisenberg-lang/Otiyot/actions, wait for the 'release' workflow to finish, then reload the release page and confirm otiyot-1.0.0.otzplugin is listed under Assets. Stop and hand control back to me for sign-in, passwords, 2FA, CAPTCHAs, payment, creating an account and pasting secret keys; never type a secret yourself. When done, report what you did.
+   ```
+2. **Install the plugin in Otzaria and try it** (⬜ open)
+
+   Download otiyot-1.0.0.otzplugin from the release, install it from file in Otzaria's plugin manager, open the tab 'אותיות' and play a lesson.
+
+   Prompt for Claude in Chrome:
+
+   ```text
+   Open Claude in Chrome, go to https://github.com/shlomyeisenberg-lang/Otiyot/releases/latest and download the file otiyot-1.0.0.otzplugin to my Downloads folder. Then tell me the file name and size. Installing it inside the Otzaria desktop app I do myself (plugins manager, install from file). Stop and hand control back to me for sign-in, passwords, 2FA, CAPTCHAs, payment, creating an account and pasting secret keys; never type a secret yourself. When done, report what you did.
+   ```
+
+**To do**
+
+- [ ] Owner publishes the v1.0.0 release (manual step)
+- [ ] Faster CI by sharding Playwright (see ROADMAP Later)
+
+**Notes**
+
+Live site stays on main via Vercel; docs/LAUNCH.md explains rollback.
 
 ## Feature ideas
 

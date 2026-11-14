@@ -25,7 +25,7 @@ Story, characters and the scene list are in `docs/GAME_DESIGN.md`. Look and feel
 | Saves | `SaveStore` interface with two adapters: `localStorage` (web) and `Otzaria.call('storage.get'/'storage.set')` (plugin) | Same game, two homes |
 | Tests | Vitest (logic), Playwright (one smoke test per scene, 1280×720 and 375px menus) | CI proves every scene loads |
 | Hosting | Vercel static (preview per branch, `main` = live) | Same as Vodock; free plan |
-| Plugin | `pnpm build:plugin` → relative-path build + `plugin/manifest.json` zipped to `dist-plugin/otiyot-<version>.otzplugin` | Otzaria loads `index.html` from a folder, offline |
+| Plugin | `pnpm build:plugin` → relative-path build + `plugin/manifest.json` zipped to `dist-plugin/otiyot-<version>.otzplugin`, then checked by `scripts/check-plugin.mjs`; a `v*` tag runs `.github/workflows/release.yml` (see `docs/LAUNCH.md`) | Otzaria loads `index.html` from a folder, offline |
 
 Env vars: none. There are no secrets in this project.
 
