@@ -24,6 +24,7 @@ function savedPlayer(
   p.story.ranks.meadow = 3;
   p.story.ranks.cliffs = 3;
   p.story.flags.intro = true;
+  p.story.flags['ch:blot.start'] = true;
   p.story.flags.hub = true;
   Object.assign(p.story.flags, flags);
   let done = 0;

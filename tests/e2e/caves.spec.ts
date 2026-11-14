@@ -20,6 +20,7 @@ function savedPlayer(lessons = 90): string {
   p.story.ranks.cliffs = 3;
   p.story.ranks.blot = 3;
   p.story.flags.intro = true;
+  p.story.flags['ch:caves.start'] = true;
   p.story.flags.hub = true;
   let done = 0;
   const t = getTrack(p.track);

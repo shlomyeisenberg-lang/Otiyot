@@ -109,7 +109,7 @@ export function recordRegionRank(profile: Profile, id: RegionId, rank: RunRank):
 
 // ---- what is open --------------------------------------------------------------------------
 
-function isRestored(profile: Profile, id: RegionId): boolean {
+export function isRestored(profile: Profile, id: RegionId): boolean {
   return rankFromNumber(profile.story.ranks[id]) !== null;
 }
 

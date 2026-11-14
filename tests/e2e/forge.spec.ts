@@ -23,6 +23,7 @@ function savedPlayer(): string {
   p.story.ranks.blot = 3;
   p.story.flags.numberRow = true;
   p.story.flags.intro = true;
+  p.story.flags['ch:forge.start'] = true;
   p.story.flags.hub = true;
   let done = 0;
   const t = getTrack(p.track);

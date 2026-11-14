@@ -19,6 +19,7 @@ function savedPlayer(lessons = 60): string {
   p.story.ranks.cliffs = 3;
   p.story.ranks.blot = 3;
   p.story.flags.intro = true;
+  p.story.flags['ch:rail.start'] = true;
   p.story.flags.hub = true;
   let done = 0;
   const t = getTrack(p.track);

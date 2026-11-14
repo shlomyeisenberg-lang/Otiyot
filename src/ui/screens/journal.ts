@@ -4,7 +4,8 @@
 // files. Locked entries say what opens them.
 
 import { journalCounts, journalOf, REGIONS, type PersonEntry, type PlaceEntry } from '../../game';
-import { CAST, PEOPLE_NOTES, TIPS } from '../../story';
+import { CAST, CHAPTERS, PEOPLE_NOTES, TIPS } from '../../story';
+import { chapterSeen, wantChapter } from '../chapterQueue';
 import type { AppContext, Screen } from '../app';
 import { button, panel, status, tabs } from '../components';
 import { h } from '../dom';
@@ -97,11 +98,43 @@ export function journalScreen(ctx: AppContext): Screen {
       }),
     );
 
+  const story = (): HTMLElement => {
+    const seen = CHAPTERS.filter((c) => chapterSeen(ctx.profile, c.id));
+    if (seen.length === 0) return h('p', { class: 'jr__body', text: t.t('journal.storyEmpty') });
+    return list(
+      ...seen.map((c) =>
+        h(
+          'li',
+          { class: 'jr jr--open', 'data-entry': `chapter-${c.id}` },
+          panel(
+            {},
+            h(
+              'div',
+              { class: 'jr__head' },
+              h('h3', { class: 'jr__name', text: c.scene.title[lang] }),
+              status(regionName(c.region), 'ok'),
+            ),
+            button({
+              label: t.t('journal.storyReplay'),
+              variant: 'quiet',
+              small: true,
+              onClick: () => {
+                wantChapter(c.id, 'journal');
+                ctx.go('chapter');
+              },
+            }),
+          ),
+        ),
+      ),
+    );
+  };
+
   const tb = tabs(
     [
       { id: 'people', label: t.t('journal.tabPeople'), content: people },
       { id: 'places', label: t.t('journal.tabPlaces'), content: places },
       { id: 'tips', label: t.t('journal.tabTips'), content: tips },
+      { id: 'story', label: t.t('journal.tabStory'), content: story },
     ],
     t.t('journal.tabs'),
     lastTab,

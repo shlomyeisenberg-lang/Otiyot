@@ -17,6 +17,7 @@ function savedPlayer(): string {
   p.settings.textSpeed = 'fast';
   p.story.ranks.meadow = 3;
   p.story.flags.intro = true;
+  p.story.flags['ch:cliffs.start'] = true;
   p.story.flags.hub = true;
   let done = 0;
   const t = getTrack(p.track);
