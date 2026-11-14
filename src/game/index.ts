@@ -14,3 +14,6 @@ export * from './regions';
 export * from './doors';
 export * from './trials';
 export * from './modes';
+export * from './stats';
+export * from './achievements';
+export * from './journal';

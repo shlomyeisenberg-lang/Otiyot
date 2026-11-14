@@ -20,3 +20,4 @@ export * from './caves';
 export * from './trials';
 export * from './scroll';
 export * from './ladder';
+export * from './journal';

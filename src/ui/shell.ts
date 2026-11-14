@@ -44,6 +44,8 @@ import { settingsScreen } from './screens/settings';
 import { soundScreen } from './screens/sound';
 import { titleScreen } from './screens/title';
 import { trackScreen } from './screens/track';
+import { statsScreen } from './screens/stats';
+import { journalScreen } from './screens/journal';
 import { wizardScreen } from './screens/wizard';
 import { applyTheme, nextTheme } from './theme';
 
@@ -146,6 +148,8 @@ export class Shell {
       track: trackScreen,
       layout: layoutScreen,
       settings: settingsScreen,
+      stats: statsScreen,
+      journal: journalScreen,
       pause: mainMenuScreen,
       range: rangeScreen,
       sound: soundScreen,

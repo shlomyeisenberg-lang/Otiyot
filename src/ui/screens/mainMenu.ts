@@ -46,6 +46,12 @@ export function mainMenuScreen(ctx: AppContext): Screen {
       onChoose: () => ctx.go('layout'),
     },
     {
+      id: 'stats',
+      label: t.t('menu.stats'),
+      hint: t.t('menu.statsHint'),
+      onChoose: () => ctx.go('stats'),
+    },
+    {
       id: 'settings',
       label: t.t('menu.settings'),
       hint: t.t('menu.settingsHint'),
