@@ -50,6 +50,22 @@
 .hud-combo.is-bump .hud-combo__value {
   animation: combo-bump var(--t-panel) var(--ease);
 }
+.hud-combo::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 3px solid var(--mat);
+  box-shadow: 0 0 var(--sp-4) var(--glow);
+  opacity: 0;
+  pointer-events: none;
+}
+.hud-combo.is-tierup::after {
+  animation: combo-tierup 0.7s var(--ease) both;
+}
+.hud-combo.is-tierup .hud-combo__value {
+  animation: combo-tierup-value 0.7s var(--ease);
+}
 .hud-combo__ring {
   position: absolute;
   inset: 0;
@@ -111,6 +127,23 @@
 }
 .hud-combo[data-tier='4'] .hud-combo__ring {
   animation: combo-light 1.6s linear infinite;
+}
+
+@keyframes combo-tierup {
+  0% {
+    opacity: 0.95;
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.9);
+  }
+}
+@keyframes combo-tierup-value {
+  30% {
+    transform: scale(1.4);
+    filter: brightness(1.35);
+  }
 }
 
 @keyframes combo-bump {
@@ -743,13 +776,30 @@
 @media (prefers-reduced-motion: reduce) {
   .kg__key.is-next .kg__cap,
   .hud-l[data-state='next']::after,
-  .hud-combo[data-tier='4'] .hud-combo__ring {
+  .hud-combo[data-tier='4'] .hud-combo__ring,
+  .hud-combo.is-tierup .hud-combo__value {
     animation: none;
+  }
+  .hud-combo.is-tierup::after {
+    animation-name: combo-tierup-calm;
   }
 }
 :root[data-motion='reduce'] .kg__key.is-next .kg__cap,
 :root[data-motion='reduce'] .hud-l[data-state='next']::after,
 :root[data-motion='reduce'] .hud-strip.is-stumble,
-:root[data-motion='reduce'] .hud-combo[data-tier='4'] .hud-combo__ring {
+:root[data-motion='reduce'] .hud-combo[data-tier='4'] .hud-combo__ring,
+:root[data-motion='reduce'] .hud-combo.is-tierup .hud-combo__value {
   animation: none;
+}
+:root[data-motion='reduce'] .hud-combo.is-tierup::after {
+  animation-name: combo-tierup-calm;
+}
+/* Reduce motion: the ring only glows in its new color, it does not grow. */
+@keyframes combo-tierup-calm {
+  0% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+  }
 }

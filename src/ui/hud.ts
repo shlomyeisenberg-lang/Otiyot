@@ -145,6 +145,7 @@ export class Hud implements HudPort {
     const grew = combo > this.shownCombo;
     this.shownCombo = combo;
     const tier = comboTier(combo);
+    const before = Number(this.combo.dataset.tier ?? '0');
     this.combo.dataset.tier = String(tier);
     this.combo.classList.toggle('is-shown', combo >= COMBO_SHOWN);
     this.comboValue.textContent = String(combo);
@@ -155,6 +156,12 @@ export class Hud implements HudPort {
       this.combo.classList.remove('is-bump');
       void this.combo.offsetWidth;
       this.combo.classList.add('is-bump');
+    }
+    // A new tier (T34): the ring flares in its new material, the same moment the 3D halo bursts.
+    if (grew && tier > before && tier > 0) {
+      this.combo.classList.remove('is-tierup');
+      void this.combo.offsetWidth;
+      this.combo.classList.add('is-tierup');
     }
   }
 

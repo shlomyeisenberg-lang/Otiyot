@@ -1113,6 +1113,7 @@ export class MeadowScene implements GameScene {
   /** The music builds with the combo tier; a new tier rings a chime. */
   private hearTier(tier: number): void {
     if (tier > this.heardTier) {
+      this.feedback.tierUp(tier);
       this.ctx.audio.play('tier', tier);
       this.dyo.cheer(2 + tier);
       // A new tier sends a gust of petals up from the garden.

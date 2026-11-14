@@ -1034,6 +1034,7 @@ export class LadderScene implements GameScene {
 
   private hearTier(tier: number): void {
     if (tier > this.heardTier) {
+      this.feedback.tierUp(tier);
       this.ctx.audio.play('tier', tier);
       this.dyo.cheer(2 + tier);
     }

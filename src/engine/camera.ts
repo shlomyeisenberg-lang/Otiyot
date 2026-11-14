@@ -213,6 +213,10 @@ export class CameraRig {
       cam.position.y += noise1(t, 5) * 0.12 * s;
       this.trauma = Math.max(0, this.trauma - dt * 1.6);
     }
+    // The floor again, after the push-in and the shake have moved the lens: a hard hit near the
+    // ground must never dip the camera through it (T34).
+    const under = this.groundAt(cam.position.x, cam.position.z) + 0.3;
+    if (cam.position.y < under) cam.position.y = under;
     cam.updateMatrixWorld();
   }
 
