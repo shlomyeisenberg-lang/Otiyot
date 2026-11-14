@@ -2147,15 +2147,66 @@
       "notes": "Everything about prices, levels and abilities is data at the top of src/game/progression.ts, so tuning is one file. The 2D figure in the shop uses the catalogue colors directly, like the 3D palette."
     },
     "T34": {
-      "status": "pending",
+      "status": "in_progress",
       "finished": "",
       "pr": "",
-      "summary": "",
-      "changes": [],
-      "decisions": [],
+      "summary": "A polish pass over every scene: one shared, escalating tier-up flourish (3D halo, ring, lean-in, tint, and a flare on the HUD combo ring), camera fixes so it never carries one scene's ground into the next or dips through the floor, and new music so every place has its own tune (a calm study theme for lessons and Practice, an accordion theme for the Game Room, region themes for Time Attack, Survival and the Daily). Each scene was played in Chromium and looked at; the weak spots found were fixed and the checklist per scene is recorded below.",
+      "changes": [
+        "src/game/feedback.ts: TypingFeedback.tierUp(tier) and the pure tierFlourish(tier): a halo of sparks in the tier material (ink, techelet, silver, gold, light), a ring of light, a short push-in, a soft tint from silver up; called from hearTier in all 15 play scenes (meadow, cliffs, forge, shuk, rail, geniza, hermon, station, atbash, midbar, caves, arena, scroll, ladder, range)",
+        "src/ui/hud.ts + src/ui/styles/hud.css: the combo ring flares (is-tierup) when the streak reaches a new tier; reduce motion: a glow only",
+        "src/engine/scene.ts: the scene manager resets rig.groundAt (and colliders) when a scene unloads",
+        "src/engine/camera.ts: the camera floor is applied again after push-in and shake",
+        "src/scenes/hermon/index.ts and src/scenes/hub/index.ts: the camera rig gets the scene ground (no dipping into ridges or the house floor)",
+        "src/audio/synth.ts: two new voices, accordion and musicbox",
+        "src/audio/themes.ts: new themes study (C dorian waltz, 84 bpm, music box) and arcade (A freygish freylekhs, 126 bpm, accordion); regionTheme(region) and modeTheme(mode, region)",
+        "src/ui/screens/lesson.ts and src/ui/screens/modes.ts: lessons and Practice play study; Time Attack, Survival and the Daily play the theme of their region; back in the modes lobby, study again",
+        "src/ui/screens/arcade.ts: the Game Room lobby plays arcade, silent while an iframe game runs (the games have their own sound)",
+        "locales/en.json and locales/he.json: names and moods of the two new themes for the sound room",
+        "src/scenes/cliffs/index.ts: waterfall streaks are thinner, dimmer and see-through, and thin out as the camera passes them",
+        "src/scenes/rail/index.ts and palette.ts: the train lamp is a warm touch by day (full at night); a softer dawn grade and greener grass so the restored plain is no longer flat yellow",
+        "src/scenes/caves/index.ts: the word banner rides higher and further ahead, so it never hides the apprentice and his lantern",
+        "src/ui/styles/meadow.css: results-card stats share the card width instead of spilling over its edge (all story scenes)",
+        "tests/unit/polish.test.ts: every region has a theme, no two regions share one except the Arena pair, mode themes, the new themes, and the flourish grows at every tier",
+        "docs/ARCHITECTURE.md (camera rig, 3D feedback, themes), CHANGELOG.md, docs/ROADMAP.md (T34 ticked)"
+      ],
+      "decisions": [
+        {
+          "decision": "Kept the scenes' own art and only fixed what the play-through showed was weak, instead of repainting scenes",
+          "why": "Every scene was built and reviewed in its own task; a broad repaint in one pass risks breaking tested scenes. The shared parts (tier-up, camera, music) give the consistency the task asks for"
+        },
+        {
+          "decision": "One tier-up flourish in TypingFeedback for every scene, on top of each scene's own touch (petals, fountain, thrust)",
+          "why": "The roadmap asks for escalating combo visuals consistent everywhere; a shared function guarantees that and new scenes get it for free"
+        },
+        {
+          "decision": "Silver and the top tier's white-gold are fixed colors in feedback.ts",
+          "why": "The theme tokens have gold, ink and techelet but no silver or light; the HUD mixes them from tokens in CSS, the 3D halo needs a plain hex"
+        },
+        {
+          "decision": "Two new instruments (accordion, musicbox) for the two new themes",
+          "why": "The music test requires every theme to have its own melody voice, and all sixteen were taken"
+        },
+        {
+          "decision": "Time Attack, Survival and the Daily play their region's theme; Practice and lessons play the calm study theme",
+          "why": "A run set in the Shuk should sound like the Shuk; drills should feel calm, not like a test"
+        },
+        {
+          "decision": "The Game Room lobby music stops while a classic game runs",
+          "why": "The legacy games play their own sound in their iframe; two tunes at once would clash"
+        },
+        {
+          "decision": "Screenshots taken in software WebGL at the low preset",
+          "why": "The cloud machine has no GPU; low keeps a full play-through of every scene within time. Composition, color and readability show the same at any preset"
+        }
+      ],
       "manual_steps": [],
-      "todo": [],
-      "notes": ""
+      "todo": [
+        "Opening a region by its address before it is open (for example #/forge without the number row) sends you to the house but the ink wipe can stay half-drawn; the map never offers such a door, so players do not meet it",
+        "Hermon: the eagle's wings in the rider's view are long flat planks; a feathered silhouette would look finer",
+        "Atbash City: the cipher sign above the gate is small at a distance",
+        "Not checked on a real GPU at high and ultra; the performance budgets were not re-measured (T38 does the full performance pass)"
+      ],
+      "notes": "Playtest checklist per scene (fun / readable / teaching / fair / no homework), played in Chromium at 1280x720: Meadow pass (bright, flowers bloom with the streak); Cliffs fixed (waterfalls bloomed into white slabs next to the camera) then pass; Forge not reachable from the test save (number row), unchanged; Shuk pass (night market reads well, lanterns glow); Rail fixed (restored plain flat yellow, headlamp flooding the ground by day) then pass; Geniza pass (light shafts and tide read well); Hermon pass, camera now kept above the ridges; Station pass; Atbash pass (cipher sign small, in todo); Midbar pass (the sandstorm hiding the next word is the intended challenge); Caves fixed (banner hid the apprentice) then pass; Arena pass (four phases readable, health bar clear); Blank Scroll pass; Ladder pass; Hub pass (camera floor added). All scenes: shared tier-up flourish, results card fits, own music."
     },
     "T35": {
       "status": "pending",
