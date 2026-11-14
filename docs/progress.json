@@ -2047,6 +2047,10 @@
         {
           "decision": "Local checks were the gate for the e2e tests (run with the sandbox Chromium)",
           "why": "Matches the standing rule that local checks are the real gate"
+        },
+        {
+          "decision": "Merged on the strength of passing local checks (lint, typecheck, 756 unit tests, build, e2e) because the GitHub check was still running after more than 15 minutes",
+          "why": "The task rules make local checks the real gate and set a 15 minute wait for GitHub"
         }
       ],
       "manual_steps": [],

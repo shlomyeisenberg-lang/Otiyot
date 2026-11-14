@@ -1530,6 +1530,7 @@ The main menu now has a Statistics page and the journal door in the House of the
 - **Journal people: Ezra and Dyo open with the intro, Naftali when the Jaffa Line is restored, the Keeper when the Arena is restored; tips open by lesson level** — Matches when the player really meets them and never spoils later story early
 - **Journal tips mention no key names** — Keeps the learned-letters-only rule: no text ever asks for an unlearned letter
 - **Local checks were the gate for the e2e tests (run with the sandbox Chromium)** — Matches the standing rule that local checks are the real gate
+- **Merged on the strength of passing local checks (lint, typecheck, 756 unit tests, build, e2e) because the GitHub check was still running after more than 15 minutes** — The task rules make local checks the real gate and set a 15 minute wait for GitHub
 
 **To do**
 
