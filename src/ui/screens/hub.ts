@@ -2,7 +2,7 @@
 // screen; every station carries a door word made of letters the player has learned, and typing
 // it walks the apprentice there and opens it: the desk (the map of the land: what is restored,
 // what is open, the levels, and what to learn first), the practice slate (the next lesson), the
-// trophy shelf (ranks), the shop (opening soon), the journal (T32), the Game Room (the arcade, T29), and the tool chest (settings). Reb Ezra and Dyo greet
+// trophy shelf (ranks), the ink shop (T33), the journal (T32), the Game Room (the arcade, T29), and the tool chest (settings). Reb Ezra and Dyo greet
 // the player with a line that fits the moment. The same stations sit in a row at the bottom for
 // the mouse and screen readers, and they are all there is when the device cannot draw 3D.
 
@@ -21,10 +21,11 @@ import {
 } from '../../game/regions';
 import { eligibleWords, findNextLesson, getProgress, getTrack, knownKeysOf } from '../../learn';
 import type { HubScene, StationId } from '../../scenes/hub';
-import { apprenticeLook, CAST, fillLine, hubLine, partOfDay, type HubMoment } from '../../story';
+import { CAST, fillLine, hubLine, partOfDay, type HubMoment } from '../../story';
 import type { AppContext, Screen } from '../app';
 import { button, dialogueBox, openModal, rankBadge, status, type ModalHandle } from '../components';
 import { h } from '../dom';
+import { decorShown, dressOf, dressedLook, shopItem } from '../../game/progression';
 import type { MessageKey } from '../i18n';
 import { playableRegions, SCENE_ROUTES, wantLesson } from '../playable';
 import type { Stage3d } from '../stage3d';
@@ -39,7 +40,7 @@ const STATIONS: readonly StationId[] = [
   'settings',
 ];
 /** Stations whose rooms are built by later tasks: they say so in the world and in the panel. */
-const SOON: ReadonlySet<StationId> = new Set(['shop']);
+const SOON: ReadonlySet<StationId> = new Set<StationId>([]);
 /** Minutes of real time for one whole day in the house. */
 const DAY_MINUTES = 12;
 const LINE_MS = 9000;
@@ -285,12 +286,15 @@ export function hubScreen(ctx: AppContext): Screen {
       case 'journal':
         leave('journal');
         break;
+      case 'shop':
+        leave('shop');
+        break;
       default:
         openSoon(id);
     }
   }
 
-  function leave(route: 'modes' | 'settings' | 'menu' | 'arcade' | 'journal'): void {
+  function leave(route: 'modes' | 'settings' | 'menu' | 'arcade' | 'journal' | 'shop'): void {
     probe.opened = route;
     leaving = window.setTimeout(() => ctx.go(route), 350);
   }
@@ -561,7 +565,7 @@ export function hubScreen(ctx: AppContext): Screen {
     tmp = new three.Vector3();
     const beacons = statuses.map((x) => (x.restored ? 'restored' : x.open ? 'open' : 'locked'));
     const sc = new Scene({
-      look: apprenticeLook(profile.avatar),
+      look: dressedLook(profile),
       hour: new Date().getHours() + new Date().getMinutes() / 60,
       dayMinutes: DAY_MINUTES,
       restoredBefore: Math.max(0, before),
@@ -572,6 +576,9 @@ export function hubScreen(ctx: AppContext): Screen {
       slate: letters.join(''),
       soon: t.t('hub.station.gameRoom'),
       rtl,
+      decor: decorShown(profile),
+      decorColors: (id) => shopItem(id)?.colors ?? [],
+      dyo: dressOf(profile).ink,
     });
     // The scene lists its stations in the same order as this screen.
     if (STATION_IDS.join() !== STATIONS.join()) throw new Error('hub stations out of order');

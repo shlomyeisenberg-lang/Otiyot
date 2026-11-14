@@ -39,6 +39,9 @@ export interface CharacterLook {
   beard?: number;
   /** Carries a quill in the right hand (the scribe). */
   quill?: boolean;
+  /** The quill's feather and shaft colors (default: a white goose feather, an ink-dark shaft). */
+  feather?: number;
+  shaft?: number;
   /** 1 = adult (about 1.75 units tall). */
   height?: number;
   /** Starts the idle sway at a different moment, so a crowd does not breathe in step. */
@@ -230,8 +233,12 @@ export class Character {
     this.quillTip.position.set(0, -0.33, 0.04);
     if (look.quill) {
       const quill = merged([
-        paint(new CylinderGeometry(0.004, 0.012, 0.3, 4), look.ink).translate(0, 0.15, 0),
-        paint(new CylinderGeometry(0.035, 0.008, 0.3, 4), 0xf4ecd8)
+        paint(new CylinderGeometry(0.004, 0.012, 0.3, 4), look.shaft ?? look.ink).translate(
+          0,
+          0.15,
+          0,
+        ),
+        paint(new CylinderGeometry(0.035, 0.008, 0.3, 4), look.feather ?? 0xf4ecd8)
           .scale(1, 1, 0.25)
           .translate(0, -0.12, 0),
       ]).rotateX(1.9);

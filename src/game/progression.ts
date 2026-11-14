@@ -4,6 +4,7 @@
 // every few runs, one skill point per level, and a shelf that fills as the player climbs.
 
 import type { Profile } from '../save';
+import { apprenticeLook, type ApprenticeLook } from '../story/cast';
 import type { ComboPolicy } from './combo';
 import type { DifficultyId } from './difficulty';
 import type { LevelId } from './levels';
@@ -188,7 +189,6 @@ export function activeAbilities(profile: Profile): AbilityId[] {
 // ---------------------------------------------------------------------------------------------
 // Second Wind: a combo policy wrapper. Pure; the play controller feeds it words.
 
-
 export class SecondWind implements ComboPolicy {
   /** The streak that was lost and can still come back (0 = none). */
   lost = 0;
@@ -251,32 +251,177 @@ export interface ShopItem {
  */
 export const ITEMS: readonly ShopItem[] = [
   // Robes.
-  { id: 'robe:linen', slot: 'robe', level: 2, cost: { glyphs: 60, ink: 0 }, colors: [0xd8c7a0, 0x9e8a62, 0x6e5a3a] },
-  { id: 'robe:cedar', slot: 'robe', level: 3, cost: { glyphs: 90, ink: 0 }, colors: [0x7a5a3a, 0x3e2c1c, 0xe6c36a] },
-  { id: 'robe:sea', slot: 'robe', level: 5, cost: { glyphs: 140, ink: 10 }, colors: [0x2e8a8a, 0x15484a, 0xf0e2c0] },
-  { id: 'robe:pomegranate', slot: 'robe', level: 7, cost: { glyphs: 200, ink: 20 }, colors: [0x9a2a3a, 0x4e1420, 0xe0b354] },
-  { id: 'robe:night', slot: 'robe', level: 10, cost: { glyphs: 280, ink: 30 }, colors: [0x23284a, 0x0f1226, 0xe0b354] },
-  { id: 'robe:royal', slot: 'robe', level: 6, crafted: true, cost: { glyphs: 0, ink: 80 }, colors: [0x1f5fa8, 0x0f2f5a, 0xf4d27a] },
+  {
+    id: 'robe:linen',
+    slot: 'robe',
+    level: 2,
+    cost: { glyphs: 60, ink: 0 },
+    colors: [0xd8c7a0, 0x9e8a62, 0x6e5a3a],
+  },
+  {
+    id: 'robe:cedar',
+    slot: 'robe',
+    level: 3,
+    cost: { glyphs: 90, ink: 0 },
+    colors: [0x7a5a3a, 0x3e2c1c, 0xe6c36a],
+  },
+  {
+    id: 'robe:sea',
+    slot: 'robe',
+    level: 5,
+    cost: { glyphs: 140, ink: 10 },
+    colors: [0x2e8a8a, 0x15484a, 0xf0e2c0],
+  },
+  {
+    id: 'robe:pomegranate',
+    slot: 'robe',
+    level: 7,
+    cost: { glyphs: 200, ink: 20 },
+    colors: [0x9a2a3a, 0x4e1420, 0xe0b354],
+  },
+  {
+    id: 'robe:night',
+    slot: 'robe',
+    level: 10,
+    cost: { glyphs: 280, ink: 30 },
+    colors: [0x23284a, 0x0f1226, 0xe0b354],
+  },
+  {
+    id: 'robe:royal',
+    slot: 'robe',
+    level: 6,
+    crafted: true,
+    cost: { glyphs: 0, ink: 80 },
+    colors: [0x1f5fa8, 0x0f2f5a, 0xf4d27a],
+  },
   // Quills.
-  { id: 'quill:hawk', slot: 'quill', level: 2, gift: true, cost: { glyphs: 0, ink: 0 }, colors: [0x8a5a32, 0x2a1a10] },
-  { id: 'quill:dove', slot: 'quill', level: 3, cost: { glyphs: 50, ink: 0 }, colors: [0xb9bcc4, 0x3a3a44] },
-  { id: 'quill:peacock', slot: 'quill', level: 6, cost: { glyphs: 160, ink: 15 }, colors: [0x1f8a72, 0x15306a] },
-  { id: 'quill:raven', slot: 'quill', level: 9, cost: { glyphs: 220, ink: 25 }, colors: [0x1c1c26, 0x5a4f86] },
-  { id: 'quill:gold', slot: 'quill', level: 4, crafted: true, cost: { glyphs: 0, ink: 40 }, colors: [0xf0c050, 0x8a5a12] },
+  {
+    id: 'quill:hawk',
+    slot: 'quill',
+    level: 2,
+    gift: true,
+    cost: { glyphs: 0, ink: 0 },
+    colors: [0x8a5a32, 0x2a1a10],
+  },
+  {
+    id: 'quill:dove',
+    slot: 'quill',
+    level: 3,
+    cost: { glyphs: 50, ink: 0 },
+    colors: [0xb9bcc4, 0x3a3a44],
+  },
+  {
+    id: 'quill:peacock',
+    slot: 'quill',
+    level: 6,
+    cost: { glyphs: 160, ink: 15 },
+    colors: [0x1f8a72, 0x15306a],
+  },
+  {
+    id: 'quill:raven',
+    slot: 'quill',
+    level: 9,
+    cost: { glyphs: 220, ink: 25 },
+    colors: [0x1c1c26, 0x5a4f86],
+  },
+  {
+    id: 'quill:gold',
+    slot: 'quill',
+    level: 4,
+    crafted: true,
+    cost: { glyphs: 0, ink: 40 },
+    colors: [0xf0c050, 0x8a5a12],
+  },
   // Inks (the nib, and Dyo, who lives in the inkwell, takes the color).
-  { id: 'ink:sepia', slot: 'ink', level: 3, gift: true, cost: { glyphs: 0, ink: 0 }, colors: [0x5a3418, 0x9a6a3a] },
-  { id: 'ink:techelet', slot: 'ink', level: 4, cost: { glyphs: 40, ink: 15 }, colors: [0x1f5fa8, 0x7ab4f0] },
-  { id: 'ink:crimson', slot: 'ink', level: 6, cost: { glyphs: 60, ink: 25 }, colors: [0x8a1f2a, 0xe0707a] },
-  { id: 'ink:emerald', slot: 'ink', level: 8, cost: { glyphs: 80, ink: 35 }, colors: [0x1f6a3a, 0x7ad09a] },
-  { id: 'ink:gold', slot: 'ink', level: 8, crafted: true, cost: { glyphs: 0, ink: 120 }, colors: [0xb8862b, 0xffe08a] },
+  {
+    id: 'ink:sepia',
+    slot: 'ink',
+    level: 3,
+    gift: true,
+    cost: { glyphs: 0, ink: 0 },
+    colors: [0x5a3418, 0x9a6a3a],
+  },
+  {
+    id: 'ink:techelet',
+    slot: 'ink',
+    level: 4,
+    cost: { glyphs: 40, ink: 15 },
+    colors: [0x1f5fa8, 0x7ab4f0],
+  },
+  {
+    id: 'ink:crimson',
+    slot: 'ink',
+    level: 6,
+    cost: { glyphs: 60, ink: 25 },
+    colors: [0x8a1f2a, 0xe0707a],
+  },
+  {
+    id: 'ink:emerald',
+    slot: 'ink',
+    level: 8,
+    cost: { glyphs: 80, ink: 35 },
+    colors: [0x1f6a3a, 0x7ad09a],
+  },
+  {
+    id: 'ink:gold',
+    slot: 'ink',
+    level: 8,
+    crafted: true,
+    cost: { glyphs: 0, ink: 120 },
+    colors: [0xb8862b, 0xffe08a],
+  },
   // Decorations for the House of the Scribe.
-  { id: 'decor:lamp', slot: 'decor', level: 2, cost: { glyphs: 70, ink: 0 }, colors: [0xb8862b, 0xffd27a] },
-  { id: 'decor:pomegranate', slot: 'decor', level: 4, cost: { glyphs: 120, ink: 5 }, colors: [0x3e6a2a, 0xb02a2a] },
-  { id: 'decor:banners', slot: 'decor', level: 5, gift: true, cost: { glyphs: 0, ink: 0 }, colors: [0x1f5fa8, 0xb8862b, 0x9a2a3a, 0x2f6b3a] },
-  { id: 'decor:map', slot: 'decor', level: 7, cost: { glyphs: 180, ink: 10 }, colors: [0xe8d8b0, 0x8a5a32] },
-  { id: 'decor:chimes', slot: 'decor', level: 9, cost: { glyphs: 150, ink: 20 }, colors: [0xc8a050, 0x8a6a2a] },
-  { id: 'decor:dovecote', slot: 'decor', level: 11, cost: { glyphs: 260, ink: 30 }, colors: [0xe8e0d0, 0x8a7a6a] },
-  { id: 'decor:fountain', slot: 'decor', level: 10, crafted: true, cost: { glyphs: 0, ink: 150 }, colors: [0xd8cdb4, 0x5fa4e8] },
+  {
+    id: 'decor:lamp',
+    slot: 'decor',
+    level: 2,
+    cost: { glyphs: 70, ink: 0 },
+    colors: [0xb8862b, 0xffd27a],
+  },
+  {
+    id: 'decor:pomegranate',
+    slot: 'decor',
+    level: 4,
+    cost: { glyphs: 120, ink: 5 },
+    colors: [0x3e6a2a, 0xb02a2a],
+  },
+  {
+    id: 'decor:banners',
+    slot: 'decor',
+    level: 5,
+    gift: true,
+    cost: { glyphs: 0, ink: 0 },
+    colors: [0x1f5fa8, 0xb8862b, 0x9a2a3a, 0x2f6b3a],
+  },
+  {
+    id: 'decor:map',
+    slot: 'decor',
+    level: 7,
+    cost: { glyphs: 180, ink: 10 },
+    colors: [0xe8d8b0, 0x8a5a32],
+  },
+  {
+    id: 'decor:chimes',
+    slot: 'decor',
+    level: 9,
+    cost: { glyphs: 150, ink: 20 },
+    colors: [0xc8a050, 0x8a6a2a],
+  },
+  {
+    id: 'decor:dovecote',
+    slot: 'decor',
+    level: 11,
+    cost: { glyphs: 260, ink: 30 },
+    colors: [0xe8e0d0, 0x8a7a6a],
+  },
+  {
+    id: 'decor:fountain',
+    slot: 'decor',
+    level: 10,
+    crafted: true,
+    cost: { glyphs: 0, ink: 150 },
+    colors: [0xd8cdb4, 0x5fa4e8],
+  },
 ];
 
 export function shopItem(id: string): ShopItem | undefined {
@@ -334,7 +479,10 @@ export function equipItem(profile: Profile, id: string | null, slot: ItemSlot): 
 /** Decorations shown in the house (all owned ones, unless the player put one away). */
 export function decorShown(profile: Profile): string[] {
   return ITEMS.filter(
-    (i) => i.slot === 'decor' && owns(profile, i.id) && profile.cosmetics.equipped[`hide:${i.id}`] !== 'yes',
+    (i) =>
+      i.slot === 'decor' &&
+      owns(profile, i.id) &&
+      profile.cosmetics.equipped[`hide:${i.id}`] !== 'yes',
   ).map((i) => i.id);
 }
 
@@ -386,7 +534,8 @@ export const RECIPES: readonly Recipe[] = [
   { makes: 'decor:fountain', from: 'decor:pomegranate', letters: 10 },
 ];
 
-export type RecipeState = 'made' | 'ready' | 'needsPiece' | 'needsLetters' | 'needsInk' | 'needsLevel';
+export type RecipeState =
+  'made' | 'ready' | 'needsPiece' | 'needsLetters' | 'needsInk' | 'needsLevel';
 
 export function recipeState(profile: Profile, r: Recipe): RecipeState {
   const item = shopItem(r.makes);
@@ -597,4 +746,19 @@ export function bankLesson(
   profile.wallet.glyphs += glyphs;
   addXp(profile, xp, gain);
   return gain;
+}
+
+/** The player's apprentice as he is dressed now: his own look with the robe and quill on. */
+export function dressedLook(profile: Profile): ApprenticeLook {
+  const base = apprenticeLook(profile.avatar);
+  const d = dressOf(profile);
+  const [robe, hem, trim] = d.robe ?? [base.robe, base.hem, base.trim];
+  return {
+    ...base,
+    robe: robe ?? base.robe,
+    hem: hem ?? base.hem,
+    trim: trim ?? base.trim,
+    feather: d.quill[0] ?? base.feather,
+    shaft: d.ink[0] ?? base.shaft,
+  };
 }

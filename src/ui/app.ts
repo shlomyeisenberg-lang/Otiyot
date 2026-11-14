@@ -37,6 +37,7 @@ export type Route =
   | 'settings'
   | 'stats'
   | 'journal'
+  | 'shop'
   | 'pause'
   | 'styleguide'
   | 'range'
@@ -111,6 +112,7 @@ export const PARENT: Readonly<Record<Route, Route | null>> = {
   settings: 'menu',
   stats: 'menu',
   journal: 'hub',
+  shop: 'hub',
   pause: 'menu',
   styleguide: 'menu',
   range: 'menu',

@@ -9,7 +9,8 @@ import { DIFFICULTIES, DIFFICULTY_IDS, type DifficultyId } from '../../game/diff
 import { LEVEL_IDS, LEVELS, levelWordSource, levelsFor, type LevelId } from '../../game/levels';
 import { knownKeysOf } from '../../learn';
 import { recordRegionRank, regionMode, regionStatuses } from '../../game/regions';
-import { rewardsOf, type RunRewards } from '../../game/results';
+import { rewardsOf, type RunRewards, type RunStats } from '../../game/results';
+import { bankRun, dressedLook, perksOf, type RunGain } from '../../game/progression';
 import type { Engine, SceneManager } from '../../engine';
 import type { ShukScene } from '../../scenes/shuk';
 import {
@@ -20,10 +21,11 @@ import {
   type ChapterId,
   type ShukPlan,
 } from '../../scenes/shuk/plan';
-import { apprenticeLook, CAST, shukLine, type ShukMoment } from '../../story';
+import { CAST, shukLine, type ShukMoment } from '../../story';
 import type { AppContext, Screen } from '../app';
 import { button, dialogueBox, rankBadge, statTile, status } from '../components';
 import { h } from '../dom';
+import { earnedRow } from '../earned';
 import type { MessageKey } from '../i18n';
 import { PlayController, type RunEnd } from '../play';
 import { resolveTheme } from '../theme';
@@ -211,7 +213,15 @@ export function shukScreen(ctx: AppContext): Screen {
   let lastMajor = -Infinity;
   let lineCount = 0;
 
-  const play = new PlayController(t, layout, settings, settings.keyboardGuide);
+  /** What the last run put into the profile (T33): levels, gifts, a hidden letter. */
+  let gain: RunGain | null = null;
+  const play = new PlayController(
+    t,
+    layout,
+    settings,
+    settings.keyboardGuide,
+    perksOf(ctx.profile),
+  );
   view.append(play.hud.el, results);
 
   // --- Lines from Reb Ezra and Dyo. A small remark never talks over a chapter's line.
@@ -309,24 +319,28 @@ export function shukScreen(ctx: AppContext): Screen {
     const m = end.metrics;
     const accuracy = m.accuracy;
     const wpm = Math.round(m.netWpm);
-    const r = rewardsOf(
-      {
-        accuracy,
-        wpm,
-        bestCombo: end.bestCombo,
-        words: end.words,
-        perfect: perfectWords,
-        broken: end.words,
-        smudges: 0,
-        failed,
-      },
-      DIFFICULTIES[difficulty],
-      level,
-    );
+    const runStats: RunStats = {
+      accuracy,
+      wpm,
+      bestCombo: end.bestCombo,
+      words: end.words,
+      perfect: perfectWords,
+      broken: end.words,
+      smudges: 0,
+      failed,
+    };
+    const r = rewardsOf(runStats, DIFFICULTIES[difficulty], level);
     probe.results = { ...r, accuracy, wpm, failed };
     firstRestore = !failed && (ctx.profile.story.ranks.shuk ?? 0) === 0;
     // Saved at once, so leaving during the celebration loses nothing.
     ctx.saves.update((p) => {
+      gain = bankRun(p, {
+        region: 'shuk',
+        stats: runStats,
+        rewards: r,
+        difficulty: difficulty,
+        level: level,
+      });
       p.history.push({
         at: Date.now(),
         track: p.track,
@@ -487,13 +501,7 @@ export function shukScreen(ctx: AppContext): Screen {
         }),
         statTile({ label: t.t('shuk.results.haggles'), value: scene?.hagglesWon ?? 0 }),
       ),
-      h(
-        'div',
-        { class: 'range__results-earned' },
-        statTile({ label: t.t('range.results.xp'), value: `+${r.xp}`, gold: true }),
-        statTile({ label: t.t('range.results.glyphs'), value: `+${r.glyphs}`, gold: true }),
-        statTile({ label: t.t('range.results.ink'), value: `+${r.ink}`, gold: true }),
-      ),
+      earnedRow(t, r, gain),
       suggested !== level
         ? h('p', {
             class: 'range__results-note',
@@ -587,7 +595,7 @@ export function shukScreen(ctx: AppContext): Screen {
     const rng = new eng.Rng((Date.now() % 100000) + 7);
     rngNext = () => rng.next();
     scene = new mod.ShukScene({
-      look: apprenticeLook(profile.avatar),
+      look: dressedLook(profile),
     });
     scene.onMoment = (moment) => {
       say(moment, true);

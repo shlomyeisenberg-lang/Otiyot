@@ -70,7 +70,14 @@ import { colorAt, Grip, LANDING_EVERY, type Climb, type Floor, type FloorKind } 
 
 export interface LadderSetup {
   /** The apprentice's robe (the profile's avatar). */
-  look: { robe: number; hem: number; trim: number; headwear: 'cap' | 'hat' | 'turban' };
+  look: {
+    robe: number;
+    hem: number;
+    trim: number;
+    headwear: 'cap' | 'hat' | 'turban';
+    feather?: number;
+    shaft?: number;
+  };
   /** Letters to carve on the tower's tiles (the player's learned letters). */
   letters: string;
 }
@@ -846,6 +853,8 @@ export class LadderScene implements GameScene {
       skin: TINT.skin,
       ink: TINT.ink,
       headwear: l.headwear,
+      feather: l.feather,
+      shaft: l.shaft,
       height: 0.94,
       seed: 8,
     });

@@ -71,7 +71,14 @@ import {
 
 export interface HermonSetup {
   /** Nothing about the apprentice shows in the rider's view; kept for the shared scene shape. */
-  look: { robe: number; hem: number; trim: number; headwear: 'cap' | 'hat' | 'turban' };
+  look: {
+    robe: number;
+    hem: number;
+    trim: number;
+    headwear: 'cap' | 'hat' | 'turban';
+    feather?: number;
+    shaft?: number;
+  };
 }
 
 /** Things the screen may want to say something about. */

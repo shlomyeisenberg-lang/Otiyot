@@ -71,7 +71,14 @@ import {
 
 export interface GenizaSetup {
   /** The apprentice's robe (the profile's avatar). */
-  look: { robe: number; hem: number; trim: number; headwear: 'cap' | 'hat' | 'turban' };
+  look: {
+    robe: number;
+    hem: number;
+    trim: number;
+    headwear: 'cap' | 'hat' | 'turban';
+    feather?: number;
+    shaft?: number;
+  };
 }
 
 /** Things the screen may want to say something about. */
@@ -361,6 +368,8 @@ export class GenizaScene implements GameScene {
       skin: TINT.skin,
       ink: TINT.ink,
       headwear: l.headwear,
+      feather: l.feather,
+      shaft: l.shaft,
       quill: true,
       height: 0.92,
       seed: 4,

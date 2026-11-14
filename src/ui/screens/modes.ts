@@ -58,6 +58,8 @@ import {
   toggle,
 } from '../components';
 import { h } from '../dom';
+import { earnedRow } from '../earned';
+import { bankLesson, perksOf, type RunGain } from '../../game/progression';
 import type { MessageKey } from '../i18n';
 import { PlayController, type RunEnd } from '../play';
 import { wantLesson } from '../playable';
@@ -135,7 +137,13 @@ export function modesScreen(ctx: AppContext): Screen {
   window.__otiyotModes = probe;
 
   const settings = ctx.profile.settings;
-  const play = new PlayController(t, ctx.profile.layout, settings, settings.keyboardGuide);
+  const play = new PlayController(
+    t,
+    ctx.profile.layout,
+    settings,
+    settings.keyboardGuide,
+    perksOf(ctx.profile),
+  );
   const root = h('section', {
     class: 'modes',
     'data-testid': 'modes',
@@ -675,7 +683,11 @@ export function modesScreen(ctx: AppContext): Screen {
     const fresh = kindOfRun !== 'practice';
     const prefix = kindOfRun === 'daily' ? historyKey : `mode:${kindOfRun}:`;
     const before = fresh ? bestScoreOf(ctx.profile.history, prefix) : 0;
+    let gain: RunGain | null = null;
+    const okRun =
+      outcome === null || outcome === 'time' || outcome === 'quota' || outcome === 'crossed';
     ctx.saves.update((p) => {
+      gain = bankLesson(p, m.keystrokes, m.accuracy, okRun);
       // Every key feeds the adaptive engine; only statistics are kept, never the text.
       let prev: string | undefined;
       let at = 0;
@@ -716,7 +728,7 @@ export function modesScreen(ctx: AppContext): Screen {
       outcome === null || outcome === 'time' || outcome === 'quota' || outcome === 'crossed';
     ctx.audio.play(ok ? 'success' : 'ui-error');
     setMeter();
-    showDone(end, outcome, score, score > before && before > 0);
+    showDone(end, outcome, score, score > before && before > 0, gain);
   }
 
   function showDone(
@@ -724,6 +736,7 @@ export function modesScreen(ctx: AppContext): Screen {
     outcome: RunOutcome | null,
     score: number,
     newBest: boolean,
+    gain: RunGain | null = null,
   ): void {
     const m = end.metrics;
     const ok =
@@ -753,6 +766,7 @@ export function modesScreen(ctx: AppContext): Screen {
       tiles.push(statTile({ label: t.t('modes.words', { n: end.words }), value: end.words }));
     }
     body.push(h('div', { class: 'modes__stats' }, ...tiles));
+    if (gain) body.push(earnedRow(t, gain, gain));
     if (newBest) body.push(h('p', { class: 'modes__newbest', text: t.t('modes.newBest') }));
     const again = button({ label: t.t('modes.again'), variant: 'primary', onClick: begin });
     again.append(keycap('Enter', 'plain', 'sm'));

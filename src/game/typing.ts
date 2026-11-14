@@ -73,6 +73,8 @@ export interface DriverOptions {
   mode?: 'endless' | 'once';
   /** How the streak reacts to errors (soft breaks, Steady Hand). Default: an error resets it. */
   combo?: ComboPolicy;
+  /** Words kept ready after the current one (1 normally; 2 with the Echo ability, T33). */
+  ahead?: number;
 }
 
 /** Combo thresholds: the meter changes material at each one (ink, techelet, silver, gold, light). */
@@ -240,6 +242,11 @@ export class TypingDriver {
     return true;
   }
 
+  /** The word `n` places after the lookahead ('' when there is none). Echo shows `peek(1)`. */
+  peek(n: number): string {
+    return this.queue[n] ?? '';
+  }
+
   /** Sets the streak from outside (a Blot reached the scribe). Never raises the best combo. */
   setCombo(combo: number): void {
     this.combo = Math.max(0, Math.floor(combo));
@@ -289,7 +296,8 @@ export class TypingDriver {
 
   private fill(): void {
     // Endless sources give a word or a short line at a time; a lesson gives all of it at once.
-    for (let tries = 0; tries < 8 && this.queue.length < 2; tries++) {
+    const want = 1 + Math.max(1, this.opts.ahead ?? 1);
+    for (let tries = 0; tries < 8 && this.queue.length < want; tries++) {
       const text = this.source.next().trim();
       for (const w of text.split(/\s+/)) if (w) this.queue.push(w);
       if (this.mode === 'once') break;
@@ -297,7 +305,9 @@ export class TypingDriver {
   }
 
   private load(): TypingSession {
-    if (this.mode === 'endless' && this.queue.length < 2) this.fill();
+    if (this.mode === 'endless' && this.queue.length < 1 + Math.max(1, this.opts.ahead ?? 1)) {
+      this.fill();
+    }
     this.word = this.queue.shift() ?? '';
     this.lookahead = this.queue[0] ?? '';
     // The space after a word is part of it: pressing it is what finishes the word. The last

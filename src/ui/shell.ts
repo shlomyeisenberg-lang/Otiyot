@@ -46,6 +46,7 @@ import { titleScreen } from './screens/title';
 import { trackScreen } from './screens/track';
 import { statsScreen } from './screens/stats';
 import { journalScreen } from './screens/journal';
+import { shopScreen } from './screens/shop';
 import { wizardScreen } from './screens/wizard';
 import { applyTheme, nextTheme } from './theme';
 
@@ -150,6 +151,7 @@ export class Shell {
       settings: settingsScreen,
       stats: statsScreen,
       journal: journalScreen,
+      shop: shopScreen,
       pause: mainMenuScreen,
       range: rangeScreen,
       sound: soundScreen,
