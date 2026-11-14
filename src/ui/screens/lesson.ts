@@ -256,6 +256,8 @@ export function lessonScreen(ctx: AppContext): Screen {
   };
   raf = requestAnimationFrame(tick);
 
+  // T34: lessons have their own quiet theme, the scribe's desk.
+  ctx.audio.music('study');
   begin(takeWantedLesson());
 
   return {

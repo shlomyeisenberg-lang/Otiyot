@@ -6,5 +6,5 @@ Done so far
 
 Next steps
 - Screenshot tour of every scene (tests/tour, not committed), fix weak composition/lighting/readability.
-- Music: a calm 'study' theme for lessons/practice and an 'arcade' theme for the Game Room lobby.
+- DONE: study theme (lessons, Practice), arcade theme (Game Room lobby, silent while an iframe game runs), modes runs play their setting region theme; tests in tests/unit/polish.test.ts.
 - Unit tests, docs, progress.json checklist per scene, PR, merge.

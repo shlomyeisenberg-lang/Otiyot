@@ -358,6 +358,35 @@ export class Synth {
         f.connect(g).connect(dest);
         return;
       }
+      case 'accordion': {
+        // An accordion (T34, the Game Room): two reeds a few cents apart beating against each
+        // other, a quick bellows swell into each note and a bright reedy edge. Festive and close.
+        const end = t + dur + 0.2;
+        const f = this.filter('lowpass', 1800 + bright * 2200, 0.8);
+        for (const d of [-8, 8]) this.osc('sawtooth', hz, t, end, d).connect(f);
+        const o = this.osc('square', hz * 2, t, end, 3);
+        const og = ctx.createGain();
+        og.gain.value = 0.35;
+        o.connect(og).connect(f);
+        const g = this.env(t, 0.06 * vel, 0.03, Math.max(0, dur - 0.05), 0.14);
+        f.connect(g).connect(dest);
+        return;
+      }
+      case 'musicbox': {
+        // A music box (T34, the scribe's desk): a tiny steel comb, plucked. A high glassy ping
+        // with a faint shimmer above, ringing on softly: patient and kind, never busy.
+        const end = t + dur + 1.6;
+        for (const [ratio, amp, life] of [
+          [1, 0.09, 1.4],
+          [3, 0.02, 0.4],
+          [6.3, 0.008, 0.08],
+        ] as const) {
+          this.osc('sine', hz * ratio, t, end)
+            .connect(this.decay(t, amp * vel, life + dur * 0.2))
+            .connect(dest);
+        }
+        return;
+      }
       case 'bell': {
         const len = Math.min(3, dur + 2);
         const end = t + len;

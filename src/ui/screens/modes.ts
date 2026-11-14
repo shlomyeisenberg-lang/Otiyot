@@ -6,6 +6,7 @@
 // to the profile's history (statistics only, never the text) and feeds the adaptive engine.
 
 import type { TypedKey } from '../../core';
+import { modeTheme } from '../../audio/themes';
 import { DIFFICULTIES, type DifficultyId } from '../../game/difficulty';
 import { LEVELS, levelWordSource, type LevelId } from '../../game/levels';
 import {
@@ -511,6 +512,7 @@ export function modesScreen(ctx: AppContext): Screen {
     lobbyView.replaceChildren(lobby());
     root.classList.remove('modes--fog');
     show('lobby');
+    ctx.audio.music('study');
     probe.ended = false;
     probe.outcome = null;
     startBtn.focus();
@@ -620,6 +622,8 @@ export function modesScreen(ctx: AppContext): Screen {
     modsEl.replaceChildren(...mods.map((m) => status(name(`modes.mod.${m}`), 'gold')));
     probe.region = region;
     probe.mods = mods.join(',');
+    // T34: Practice keeps the desk's quiet tune; the other runs play their setting's own theme.
+    ctx.audio.music(modeTheme(kindOfRun, region));
     probe.goal = rule.goalWords;
     play.begin(source, 'endless', language, {
       hardcore: diff.failOnError,
@@ -806,6 +810,7 @@ export function modesScreen(ctx: AppContext): Screen {
   startBtn.addEventListener('click', begin);
   lobbyView.replaceChildren(lobby());
   show('lobby');
+  ctx.audio.music('study');
 
   return {
     el: root,
