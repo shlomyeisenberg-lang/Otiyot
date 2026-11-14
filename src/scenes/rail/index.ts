@@ -50,6 +50,7 @@ import {
 import { tierIntensity } from '../../audio/composer';
 import { Dyo } from '../../game/dyo';
 import { TypingFeedback } from '../../game/feedback';
+import { ghostProgress } from '../../game/ghosts';
 import { SKY, TINT } from './palette';
 import {
   bendCarried,
@@ -87,6 +88,9 @@ const SIGN_Y = 3.6;
 const BANNER_AHEAD = 12;
 /** How far to the side the rival's track runs, and where the signals stand. */
 const RIVAL_SIDE = 4.6;
+/** The ghost train runs on the other side of the apprentice's track. */
+const GHOST_SIDE = -4.6;
+const GHOST_OPACITY = 0.38;
 const SIGNAL_SIDE = -3.4;
 const UP = new Vector3(0, 1, 0);
 /** How many steam puffs per second at no boost and at full boost. */
@@ -143,6 +147,11 @@ export class RailScene implements GameScene {
 
   private mine!: Train;
   private rival!: Train;
+  /** The translucent train of the best earlier run (T37); hidden when there is none. */
+  private ghostTrain!: Train;
+  private ghostMarks: readonly number[] = [];
+  private ghostClock = 0;
+  private sGhost = 0;
   private sleepers!: InstancedMesh;
   private plates!: InstancedMesh;
   private field!: LetterField;
@@ -316,7 +325,18 @@ export class RailScene implements GameScene {
     this.buildStationLamps();
     this.mine = this.buildTrain(TINT.steel, TINT.brass);
     this.rival = this.buildTrain(TINT.rival, TINT.cream);
-    root.add(this.mine.root, this.rival.root);
+    this.ghostTrain = this.buildTrain(TINT.steel, TINT.cream);
+    this.ghostTrain.root.visible = false;
+    this.ghostTrain.lamp.visible = false;
+    this.ghostTrain.root.traverse((o) => {
+      const m = (o as Mesh).material as (Material & { opacity: number }) | undefined;
+      if (m && 'opacity' in m) {
+        m.transparent = true;
+        m.opacity = GHOST_OPACITY;
+        m.depthWrite = false;
+      }
+    });
+    root.add(this.mine.root, this.rival.root, this.ghostTrain.root);
 
     this.headLight = new PointLight(TINT.lamp, 0, 26, 1.5);
     root.add(this.headLight);
@@ -745,6 +765,8 @@ export class RailScene implements GameScene {
     this.letters = 1;
     this.sMine = 0;
     this.sRival = 0;
+    this.sGhost = 0;
+    this.ghostClock = 0;
     this.ghost = [];
     this.runStart = -1;
     this.spoken = false;
@@ -754,6 +776,19 @@ export class RailScene implements GameScene {
     this.beacon.visible = false;
     this.orbit = 0;
     this.ctx.audio.intensity(0);
+  }
+
+  /** Races the apprentice against the best earlier run: its finish times, or null for none. */
+  setGhost(marks: readonly number[] | null): void {
+    this.ghostMarks = marks ?? [];
+    this.ghostTrain.root.visible = this.ghostMarks.length > 0;
+    this.sGhost = 0;
+    this.ghostClock = 0;
+  }
+
+  /** How many stretches the ghost has finished (a fraction while it is in one); -1 with no ghost. */
+  get ghostAt(): number {
+    return this.ghostMarks.length === 0 ? -1 : this.sGhost / STRETCH_LENGTH;
   }
 
   /** A new run with this plan (the screen calls it before the first key, and for every retry). */
@@ -814,6 +849,7 @@ export class RailScene implements GameScene {
     if (!this.track) return;
     this.poseTrain(this.mine, 0, 0);
     this.poseTrain(this.rival, 0, RIVAL_SIDE);
+    this.poseTrain(this.ghostTrain, 0, GHOST_SIDE);
     pointAt(this.track, 0, this.pt);
     this.ezra.root.position.set(this.pt.x - 6.5, 0, this.pt.z + 2);
     this.ezra.root.rotation.y = Math.atan2(5.5, -3);
@@ -1009,6 +1045,16 @@ export class RailScene implements GameScene {
     this.boostShown = damp(this.boostShown, this.boost, 4, dt);
     const pm = this.poseTrain(this.mine, this.sMine, 0);
     this.poseTrain(this.rival, this.sRival, RIVAL_SIDE);
+    if (this.ghostMarks.length > 0) {
+      if (this.runStart >= 0) this.ghostClock += dt * 1000;
+      const n = this.ghostMarks.length;
+      const done = ghostProgress(this.ghostMarks, this.ghostClock) >= n;
+      const stretches = done ? total + 1.2 : (ghostProgress(this.ghostMarks, this.ghostClock) * total) / n;
+      const prevGhost = this.sGhost;
+      this.sGhost = damp(this.sGhost, stretches * STRETCH_LENGTH, done ? 0.8 : 6, dt);
+      this.poseTrain(this.ghostTrain, this.sGhost, GHOST_SIDE);
+      for (const wheel of this.ghostTrain.wheels) wheel.rotation.x -= (this.sGhost - prevGhost) / 0.55;
+    }
     // Wheels turn with the distance covered; a little lean into the bend.
     for (const wheel of this.mine.wheels) wheel.rotation.x -= dMine / 0.55;
     for (const wheel of this.rival.wheels) wheel.rotation.x -= dRival / 0.55;

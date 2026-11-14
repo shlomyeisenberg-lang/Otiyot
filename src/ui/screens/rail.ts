@@ -8,6 +8,8 @@ import { ComboRules } from '../../game/combo';
 import { DIFFICULTIES, DIFFICULTY_IDS, type DifficultyId } from '../../game/difficulty';
 import { LEVEL_IDS, LEVELS, levelWordSource, levelsFor, type LevelId } from '../../game/levels';
 import { knownKeysOf } from '../../learn';
+import { addToBoard, bestGhost, boardKey, makeRecord } from '../../game/ghosts';
+import { dailyScore } from '../../game/modes';
 import { recordRegionRank, regionMode, regionStatuses } from '../../game/regions';
 import { rewardsOf, type RunRewards, type RunStats } from '../../game/results';
 import { bankRun, dressedLook, perksOf, type RunGain } from '../../game/progression';
@@ -59,6 +61,9 @@ interface RailProbe {
   ahead: boolean;
   /** When each stretch was finished (ms since the first key): the data of a later ghost. */
   ghost: readonly number[];
+  /** The ghost raced this run (its score), or null; and the place the run took on the board. */
+  ghostScore: number | null;
+  board: { place: number; newBest: boolean } | null;
   level: LevelId;
   difficulty: DifficultyId;
   levels: LevelId[];
@@ -170,6 +175,8 @@ export function railScreen(ctx: AppContext): Screen {
     signals: 0,
     ahead: true,
     ghost: [],
+    ghostScore: null,
+    board: null,
     level,
     difficulty,
     levels: openLevels,
@@ -309,6 +316,11 @@ export function railScreen(ctx: AppContext): Screen {
     probe.text = plan.text;
     probe.keys = [...keys].join('');
     scene.begin(plan);
+    ghostKey = boardKey('rail', `${level}:${difficulty}`);
+    const rival = bestGhost(ctx.profile, ghostKey);
+    scene.setGhost(rival?.marks ?? null);
+    probe.ghostScore = rival?.score ?? null;
+    probe.board = null;
     const text = plan.text;
     play.begin({ next: () => text }, 'once', layout, {
       hardcore: d.failOnError ? true : undefined,
@@ -316,6 +328,8 @@ export function railScreen(ctx: AppContext): Screen {
     });
     sync();
   };
+
+  let ghostKey = '';
 
   const finish = (end: RunEnd): void => {
     if (!plan || over) return;
@@ -355,7 +369,25 @@ export function railScreen(ctx: AppContext): Screen {
         durationMs: Math.round(m.elapsedMs),
         chars: m.keystrokes,
       });
-      if (!failed) recordRegionRank(p, 'rail', r.rank);
+      if (!failed) {
+        recordRegionRank(p, 'rail', r.rank);
+        // The finish times of this run (never any text) go on the board; the best one is the ghost.
+        probe.board = addToBoard(
+          p,
+          ghostKey,
+          makeRecord(
+            {
+              score: dailyScore(wpm, accuracy),
+              wpm,
+              accuracy,
+              durationMs: m.elapsedMs,
+              marks: scene?.ghostTrace ?? [],
+            },
+            p.name,
+            Date.now(),
+          ),
+        );
+      }
     });
     void ctx.saves.flush();
     openLevels = levelsFor(ctx.profile);
@@ -509,6 +541,14 @@ export function railScreen(ctx: AppContext): Screen {
           value: t.t(scene?.ahead ? 'rail.results.ahead' : 'rail.results.behind'),
         }),
       ),
+      probe.board && probe.board.place > 0
+        ? h('p', {
+            class: 'range__results-note',
+            text: probe.board.newBest
+              ? t.t('ghost.newBest')
+              : t.t('ghost.place', { place: probe.board.place }),
+          })
+        : '',
       earnedRow(t, r, gain),
       suggested !== level
         ? h('p', {
