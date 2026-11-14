@@ -291,7 +291,7 @@ describe('normalisation', () => {
       meta: { legacyChecked: true, autoQuality: null },
     };
     const m = migrate(v7);
-    expect(m.version).toBe(8);
+    expect(m.version).toBe(CURRENT_VERSION);
     const save = normalizeSave(m, CURRENT_VERSION, counter(), 0);
     expect(save?.profiles[0]?.ladder).toEqual([]);
     const table = save?.profiles[1]?.ladder ?? [];

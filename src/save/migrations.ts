@@ -1,7 +1,7 @@
 // Save versioning. Every schema change adds ONE entry to MIGRATIONS (from-version -> next version)
 // and bumps CURRENT_VERSION, plus a test in tests/unit/save-migrations.test.ts.
 
-export const CURRENT_VERSION = 8;
+export const CURRENT_VERSION = 9;
 
 type Rec = Record<string, unknown>;
 export type Migration = (raw: Rec) => Rec;
@@ -166,6 +166,36 @@ const v7ToV8: Migration = (raw) => {
   return { ...raw, version: 8, profiles };
 };
 
+/**
+ * v8 -> v9 (T33). Profiles gain `progress` (XP, skills, abilities off, hidden letters). Play
+ * from before progression existed still counts: one XP per ten characters in the history, and a
+ * glyph per forty, so a returning player can visit the shop at once.
+ */
+const v8ToV9: Migration = (raw) => {
+  const profiles = Array.isArray(raw.profiles)
+    ? raw.profiles.map((p) => {
+        if (typeof p !== 'object' || p === null || Array.isArray(p)) return p;
+        const rec = p as Rec;
+        if (typeof rec.progress === 'object' && rec.progress !== null) return rec;
+        let chars = 0;
+        if (Array.isArray(rec.history)) {
+          for (const e of rec.history) {
+            const c = typeof e === 'object' && e !== null ? (e as Rec).chars : 0;
+            if (typeof c === 'number' && Number.isFinite(c) && c > 0) chars += c;
+          }
+        }
+        const w = typeof rec.wallet === 'object' && rec.wallet !== null ? (rec.wallet as Rec) : {};
+        const glyphs = typeof w.glyphs === 'number' && Number.isFinite(w.glyphs) ? w.glyphs : 0;
+        return {
+          ...rec,
+          wallet: { ...w, glyphs: glyphs + Math.round(chars / 40) },
+          progress: { xp: Math.round(chars / 10), skills: [], off: [], secrets: [] },
+        };
+      })
+    : raw.profiles;
+  return { ...raw, version: 9, profiles };
+};
+
 export const MIGRATIONS: Readonly<Record<number, Migration>> = {
   0: v0ToV1,
   1: v1ToV2,
@@ -175,6 +205,7 @@ export const MIGRATIONS: Readonly<Record<number, Migration>> = {
   5: v5ToV6,
   6: v6ToV7,
   7: v7ToV8,
+  8: v8ToV9,
 };
 
 export function versionOf(raw: Rec): number {

@@ -122,7 +122,16 @@ export interface Profile {
   customLists: Record<string, CustomList>;
   /** The Ladder's high-score table, best first (v8, T28). */
   ladder: LadderRecord[];
+  /** XP, learned skills, abilities switched off, and the scenes whose hidden letter is found (v9, T33). */
+  progress: ProgressState;
   createdAt: number;
+}
+
+export interface ProgressState {
+  xp: number;
+  skills: string[];
+  off: string[];
+  secrets: string[];
 }
 
 export interface SaveMeta {
@@ -185,6 +194,7 @@ export function createProfile(id: string, name: string, now: number): Profile {
     arcade: null,
     customLists: {},
     ladder: [],
+    progress: { xp: 0, skills: [], off: [], secrets: [] },
     createdAt: now,
   };
 }
@@ -372,6 +382,7 @@ export function normalizeProfile(raw: unknown, fallbackId: string, now: number):
   const story = isRec(r.story) ? r.story : {};
   const wallet = isRec(r.wallet) ? r.wallet : {};
   const cosmetics = isRec(r.cosmetics) ? r.cosmetics : {};
+  const progress = isRec(r.progress) ? r.progress : {};
   return {
     ...base,
     avatar: typeof r.avatar === 'string' && r.avatar.length > 0 ? r.avatar : base.avatar,
@@ -395,6 +406,12 @@ export function normalizeProfile(raw: unknown, fallbackId: string, now: number):
     arcade: toJson(r.arcade ?? null),
     customLists: normalizeCustomLists(r.customLists),
     ladder: normalizeLadder(r.ladder),
+    progress: {
+      xp: num(progress.xp, 0, 0),
+      skills: strList(progress.skills),
+      off: strList(progress.off),
+      secrets: strList(progress.secrets),
+    },
   };
 }
 
