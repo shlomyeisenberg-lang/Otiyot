@@ -1,8 +1,18 @@
-// Settings skeleton: display, sound and typing options that already exist in the save. Later tasks
-// add their own rows here (T36 fills in the rest of accessibility and health).
+// Settings: display, accessibility, graphics, sound, typing, health and keys. Every control calls
+// updateSettings, which saves and re-applies theme, language and sound at once; scenes read the
+// rest (shake, flash, quality) when they start.
 
 import type { BackspacePolicy, NiqqudMode } from '../../core';
-import type { KeyboardGuideMode, Settings, TextSpeed, ThemeChoice } from '../../save';
+import { QUALITY_NAMES, type QualityChoice } from '../../engine/quality';
+import { DIFFICULTY_IDS, type DifficultyId } from '../../game/difficulty';
+import {
+  BREAK_CHOICES,
+  MENU_KEYS,
+  type KeyboardGuideMode,
+  type Settings,
+  type TextSpeed,
+  type ThemeChoice,
+} from '../../save';
 import { TEXT_SPEEDS } from '../../story';
 import type { AppContext, Screen } from '../app';
 import { button, field, select, slider, tabs, toggle } from '../components';
@@ -70,12 +80,83 @@ export function settingsScreen(ctx: AppContext): Screen {
       {},
       field({ label: t.t('settings.language'), hint: t.t('settings.languageHint') }, language),
       field({ label: t.t('settings.theme') }, theme),
+      field({ label: t.t('settings.textSpeed'), hint: t.t('settings.textSpeedHint') }, speed),
+    );
+  };
+
+  const percentRow = (key: 'shake' | 'flash', label: MessageKey, hint: MessageKey): HTMLElement => {
+    const sl = slider({
+      min: 0,
+      max: 100,
+      step: 10,
+      value: Math.round(cur()[key] * 100),
+      format: (v) => `${v}%`,
+      onChange: (v) => ctx.updateSettings({ [key]: v / 100 }),
+    });
+    sl.el.dataset.setting = key;
+    return field({ label: t.t(label), hint: t.t(hint) }, sl.el, sl.value);
+  };
+
+  const access = (): HTMLElement =>
+    h(
+      'div',
+      {},
       switchRow('colorblind', 'settings.colorblind', 'settings.colorblindHint'),
       switchRow('highContrast', 'settings.highContrast', 'settings.highContrastHint'),
       switchRow('largeText', 'settings.largeText', 'settings.largeTextHint'),
       switchRow('dyslexiaFont', 'settings.dyslexia', 'settings.dyslexiaHint'),
       switchRow('reducedMotion', 'settings.reducedMotion', 'settings.reducedMotionHint'),
-      field({ label: t.t('settings.textSpeed'), hint: t.t('settings.textSpeedHint') }, speed),
+      percentRow('shake', 'settings.shake', 'settings.shakeHint'),
+      percentRow('flash', 'settings.flash', 'settings.flashHint'),
+      switchRow('captions', 'settings.captions', 'settings.captionsHint'),
+    );
+
+  const graphics = (): HTMLElement => {
+    const choices: QualityChoice[] = ['auto', ...QUALITY_NAMES];
+    const quality = select<QualityChoice>(
+      choices.map((v) => ({ value: v, label: t.t(`settings.quality.${v}`) })),
+      cur().quality,
+      (v) => ctx.updateSettings({ quality: v }),
+    );
+    quality.dataset.setting = 'quality';
+    return h(
+      'div',
+      {},
+      field({ label: t.t('settings.quality'), hint: t.t('settings.qualityHint') }, quality),
+      h(
+        'div',
+        { class: 'page__actions' },
+        button({ label: t.t('settings.rangeButton'), onClick: () => ctx.go('range') }),
+      ),
+    );
+  };
+
+  const health = (): HTMLElement => {
+    const breaks = select<string>(
+      BREAK_CHOICES.map((m) => ({ value: String(m), label: t.t(`settings.break.${m}`) })),
+      String(cur().breakMinutes),
+      (v) => ctx.updateSettings({ breakMinutes: Number(v) }),
+    );
+    breaks.dataset.setting = 'breakMinutes';
+    return h(
+      'div',
+      {},
+      field({ label: t.t('settings.break'), hint: t.t('settings.breakHint') }, breaks),
+      switchRow('postureTips', 'settings.posture', 'settings.postureHint'),
+    );
+  };
+
+  const keys = (): HTMLElement => {
+    const menuKey = select<string>(
+      MENU_KEYS.map((k) => ({ value: k, label: t.t(`settings.menuKey.${k}`) })),
+      cur().menuKey,
+      (v) => ctx.updateSettings({ menuKey: v }),
+    );
+    menuKey.dataset.setting = 'menuKey';
+    return h(
+      'div',
+      {},
+      field({ label: t.t('settings.menuKey'), hint: t.t('settings.menuKeyHint') }, menuKey),
     );
   };
 
@@ -120,6 +201,12 @@ export function settingsScreen(ctx: AppContext): Screen {
       (v) => ctx.updateSettings({ keyboardGuide: v }),
     );
     guide.dataset.setting = 'keyboardGuide';
+    const difficulty = select<DifficultyId>(
+      DIFFICULTY_IDS.map((v) => ({ value: v, label: t.t(`range.difficulty.${v}`) })),
+      cur().difficulty,
+      (v) => ctx.updateSettings({ difficulty: v }),
+    );
+    difficulty.dataset.setting = 'difficulty';
     return h(
       'div',
       {},
@@ -129,6 +216,10 @@ export function settingsScreen(ctx: AppContext): Screen {
       ),
       field({ label: t.t('settings.backspace'), hint: t.t('settings.backspaceHint') }, backspace),
       field({ label: t.t('settings.niqqud'), hint: t.t('settings.niqqudHint') }, niqqud),
+      field(
+        { label: t.t('settings.difficulty'), hint: t.t('settings.difficultyHint') },
+        difficulty,
+      ),
       switchRow('hardcore', 'settings.hardcore', 'settings.hardcoreHint'),
       h(
         'div',
@@ -142,8 +233,12 @@ export function settingsScreen(ctx: AppContext): Screen {
   const tb = tabs(
     [
       { id: 'display', label: t.t('settings.display'), content: display },
+      { id: 'access', label: t.t('settings.tabs.access'), content: access },
+      { id: 'graphics', label: t.t('settings.tabs.graphics'), content: graphics },
       { id: 'sound', label: t.t('settings.sound'), content: sound },
       { id: 'typing', label: t.t('settings.typing'), content: typing },
+      { id: 'health', label: t.t('settings.tabs.health'), content: health },
+      { id: 'keys', label: t.t('settings.tabs.keys'), content: keys },
     ],
     t.t('settings.tabs'),
     lastTab,

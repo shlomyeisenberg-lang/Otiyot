@@ -590,6 +590,9 @@
   font-size: var(--fs-14);
   margin-block-start: var(--sp-1);
 }
+:root[data-captions='off'] .dialogue__sub {
+  display: none;
+}
 .dialogue__next {
   display: flex;
   align-items: center;

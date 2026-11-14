@@ -625,6 +625,8 @@ export function cavesScreen(ctx: AppContext): Screen {
       engine = await eng.Engine.create(view, {
         quality: eng.resolveQuality(settings.quality, auto),
         reducedMotion: settings.reducedMotion,
+        shake: settings.shake,
+        flash: settings.flash,
       });
     } catch (err) {
       fail(err instanceof eng.NoWebGLError ? 'range.noWebgl' : 'range.failed');

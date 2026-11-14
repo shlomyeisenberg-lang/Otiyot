@@ -81,6 +81,8 @@ describe('theme', () => {
     largeText: false,
     dyslexiaFont: false,
     reducedMotion: false,
+    captions: true,
+    storyVoices: false,
   } as const;
 
   it('auto follows the device, explicit choices win', () => {
@@ -106,6 +108,7 @@ describe('theme', () => {
       'data-text': undefined,
       'data-font': undefined,
       'data-motion': undefined,
+      'data-captions': undefined,
     });
     expect(
       themeAttributes(
@@ -116,6 +119,8 @@ describe('theme', () => {
           largeText: true,
           dyslexiaFont: true,
           reducedMotion: true,
+          captions: false,
+          storyVoices: false,
         },
         false,
       ),
@@ -126,6 +131,7 @@ describe('theme', () => {
       'data-text': 'large',
       'data-font': 'dyslexia',
       'data-motion': 'reduce',
+      'data-captions': 'off',
     });
   });
 });

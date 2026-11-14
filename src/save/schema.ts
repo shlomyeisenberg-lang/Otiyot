@@ -2,6 +2,7 @@
 // Typed text is never stored, only statistics.
 
 import type { BackspacePolicy, LayoutId, NiqqudMode } from '../core';
+import { DIFFICULTY_IDS, type DifficultyId } from '../game/difficulty';
 import { isQualityName, type QualityChoice, type QualityName } from '../engine/quality';
 
 export type JsonValue =
@@ -37,7 +38,24 @@ export interface Settings {
   textSpeed: TextSpeed;
   /** Read story lines aloud with the device's own voices (v7, T12). Off by default. */
   storyVoices: boolean;
+  /** Camera shake and screen flashes, 0..1 (v10, T36). Reduce motion still turns both off. */
+  shake: number;
+  flash: number;
+  /** Translation lines under story text (v10). Always shown while story voices are on. */
+  captions: boolean;
+  /** Minutes of play between break reminders; 0 = off (v10). */
+  breakMinutes: number;
+  /** Add a posture tip to every break reminder (v10). */
+  postureTips: boolean;
+  /** The key (KeyboardEvent.code) that pauses and goes back, besides Escape (v10). */
+  menuKey: string;
+  /** The difficulty the modes screen starts on (v10). */
+  difficulty: DifficultyId;
 }
+
+export const BREAK_CHOICES = [0, 15, 20, 30, 45, 60] as const;
+/** Keys that can be the pause / back key. None of them types a character. */
+export const MENU_KEYS = ['Escape', 'F1', 'F2', 'F3', 'F4', 'Pause'] as const;
 
 export type TextSpeed = 'slow' | 'normal' | 'fast' | 'instant';
 
@@ -172,6 +190,13 @@ export function defaultSettings(): Settings {
     keyboardGuide: 'keys',
     textSpeed: 'normal',
     storyVoices: false,
+    shake: 1,
+    flash: 1,
+    captions: true,
+    breakMinutes: 30,
+    postureTips: true,
+    menuKey: 'Escape',
+    difficulty: 'steady',
   };
 }
 
@@ -290,6 +315,13 @@ function normalizeSettings(raw: unknown): Settings {
         ? r.textSpeed
         : d.textSpeed,
     storyVoices: r.storyVoices === true,
+    shake: num(r.shake, d.shake, 0, 1),
+    flash: num(r.flash, d.flash, 0, 1),
+    captions: r.captions === false ? false : d.captions,
+    breakMinutes: BREAK_CHOICES.find((m) => m === r.breakMinutes) ?? d.breakMinutes,
+    postureTips: r.postureTips === false ? false : d.postureTips,
+    menuKey: MENU_KEYS.find((k) => k === r.menuKey) ?? d.menuKey,
+    difficulty: DIFFICULTY_IDS.find((k) => k === r.difficulty) ?? d.difficulty,
   };
 }
 

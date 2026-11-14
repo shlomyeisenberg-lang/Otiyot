@@ -26,6 +26,8 @@ export async function mountScene(
   const engine = await eng.Engine.create(view, {
     quality,
     reducedMotion: settings.reducedMotion,
+    shake: settings.shake,
+    flash: settings.flash,
   });
   const wipe = new eng.InkWipe();
   wipe.reducedMotion = settings.reducedMotion;

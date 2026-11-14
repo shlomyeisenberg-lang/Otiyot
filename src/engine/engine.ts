@@ -20,10 +20,18 @@ import {
 } from './quality';
 import { VfxKit } from './vfx';
 
+function clampUnit(v: number): number {
+  return Number.isFinite(v) ? Math.min(1, Math.max(0, v)) : 1;
+}
+
 export interface EngineOptions {
   quality: QualityName;
   /** Reduce motion: no shake, flashes, push-ins or hit-stop (fades stay). */
   reducedMotion?: boolean;
+  /** How much camera shake the player wants, 0..1 (default 1). */
+  shake?: number;
+  /** How much screen flash the player wants, 0..1 (default 1). */
+  flash?: number;
 }
 
 export interface FrameStats {
@@ -131,7 +139,7 @@ export class Engine {
       programs: 0,
       quality: this.preset.name,
     };
-    this.setReducedMotion(o.reducedMotion === true);
+    this.setReducedMotion(o.reducedMotion === true, o.shake, o.flash);
     this.atmosphere.setQuality(this.preset);
     this.post.build(this.scene, this.camera, this.atmosphere.sunDisc, this.preset);
     this.observer = new ResizeObserver(() => this.resize());
@@ -150,11 +158,12 @@ export class Engine {
     }
   }
 
-  setReducedMotion(reduced: boolean): void {
+  /** Reduce motion turns everything off; the shake and flash sliders (0..1) scale the rest. */
+  setReducedMotion(reduced: boolean, shake = 1, flash = 1): void {
     const k = reduced ? 0 : 1;
-    this.rig.shakeScale = k;
+    this.rig.shakeScale = k * clampUnit(shake);
     this.rig.pushScale = k;
-    this.post.flashScale = k;
+    this.post.flashScale = k * clampUnit(flash);
     this.post.chromaScale = k;
     this.vfx.hitStopScale = k;
   }
