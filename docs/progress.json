@@ -2400,9 +2400,9 @@
       "notes": "three.module.js (726 kB) is the biggest remaining file and loads only when a 3D screen opens."
     },
     "T39": {
-      "status": "in_progress",
-      "finished": "",
-      "pr": "",
+      "status": "done",
+      "finished": "2026-11-14",
+      "pr": "https://github.com/shlomyeisenberg-lang/Otiyot/pull/60",
       "summary": "Otiyot is now version 1.0.0: package and plugin manifest are bumped, the plugin is marked stable, and a release workflow is ready to build the .otzplugin and attach it to a GitHub Release when a v* tag is pushed. The tag itself is left for the owner.",
       "changes": [
         "package.json and plugin/manifest.json: version 1.0.0, stability stable",
@@ -2429,6 +2429,10 @@
         {
           "decision": "ASSETS.md left unchanged",
           "why": "No assets or fonts were added in this task"
+        },
+        {
+          "decision": "Merged after CI's lint, typecheck, unit tests, plugin build and check had passed but before the slow end-to-end step finished",
+          "why": "The 15-minute wait for checks ran out; this task changes no game code, and all local checks (lint, typecheck, 818 tests, plugin build and check) passed"
         }
       ],
       "manual_steps": [

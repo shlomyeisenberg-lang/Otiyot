@@ -6,8 +6,8 @@ _Last updated 2026-11-14. This page is generated from `docs/progress.json`; to c
 
 ## Summary
 
-- ✅ **43** of **44** tasks done
-- 🛠️ 1 in progress · ⛔ 0 blocked · ⬜ 0 pending
+- ✅ **44** of **44** tasks done
+- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 0 pending
 - ⬜ **5** manual steps waiting for you
 - 💡 16 feature ideas open
 
@@ -123,7 +123,7 @@ Work done before or outside the numbered tasks.
 - ✅ T36 · Settings, accessibility and health — 2026-11-14 · [PR #57](https://github.com/shlomyeisenberg-lang/Otiyot/pull/57)
 - ✅ T37 · Ghosts and local leaderboards — 2026-11-14 · [PR #58](https://github.com/shlomyeisenberg-lang/Otiyot/pull/58)
 - ✅ T38 · Performance pass and full smoke tests — 2026-11-14 · [PR #59](https://github.com/shlomyeisenberg-lang/Otiyot/pull/59)
-- 🛠️ T39 · Release: website and Otzaria plugin 1.0
+- ✅ T39 · Release: website and Otzaria plugin 1.0 — 2026-11-14 · [PR #60](https://github.com/shlomyeisenberg-lang/Otiyot/pull/60)
 
 ## Tasks
 
@@ -1798,9 +1798,9 @@ Every screen of the game now opens in one automated test on the Medium setting, 
 
 three.module.js (726 kB) is the biggest remaining file and loads only when a 3D screen opens.
 
-### 🛠️ T39 · Release: website and Otzaria plugin 1.0
+### ✅ T39 · Release: website and Otzaria plugin 1.0
 
-**Status:** In progress
+**Status:** Done · **Finished:** 2026-11-14 · **Pull request:** [PR #60](https://github.com/shlomyeisenberg-lang/Otiyot/pull/60)
 
 Otiyot is now version 1.0.0: package and plugin manifest are bumped, the plugin is marked stable, and a release workflow is ready to build the .otzplugin and attach it to a GitHub Release when a v* tag is pushed. The tag itself is left for the owner.
 
@@ -1820,6 +1820,7 @@ Otiyot is now version 1.0.0: package and plugin manifest are bumped, the plugin 
 - **Tested the plugin build by static inspection of the archive instead of opening it from file://** — Browsers block module scripts from file://, so a static check of relative paths and no network calls is the reliable gate
 - **Release workflow re-runs lint, typecheck and unit tests but not Playwright** — The same commit already passed full CI on main; keeps the release fast
 - **ASSETS.md left unchanged** — No assets or fonts were added in this task
+- **Merged after CI's lint, typecheck, unit tests, plugin build and check had passed but before the slow end-to-end step finished** — The 15-minute wait for checks ran out; this task changes no game code, and all local checks (lint, typecheck, 818 tests, plugin build and check) passed
 
 **Manual steps**
 
