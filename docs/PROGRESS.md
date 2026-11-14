@@ -1566,6 +1566,7 @@ Every run, lesson and mode now earns XP, glyphs and ink that are kept, with leve
 - locales/en.json and he.json: shop, ability, earned and secret strings (about 160 each)
 - tests/unit/progression.test.ts (new, 19 tests: curve, banking, skills and perks, combo effects, Second Wind, Echo, shop, crafting, decor, catalogue texts, hidden letters, the two-hour balance simulation, migration v9); tests/e2e/shop.spec.ts (new: buy, wear, learn, craft, letters, Hebrew RTL, phone width); save-migrations test follows CURRENT_VERSION
 - Docs: ARCHITECTURE (data model v9, new section 7v), DESIGN (shop components), GAME_DESIGN (progression as built), CHANGELOG, ROADMAP ticked
+- tests/e2e/atbash.spec.ts: the periodic cipher check ignores the finished run (pre-existing race)
 
 **Decisions**
 
@@ -1581,6 +1582,7 @@ Every run, lesson and mode now earns XP, glyphs and ink that are kept, with leve
 - **Glyphs are the main price, ink is scarcer and is the price of crafting and fancy items** — Matches GAME_DESIGN: glyphs come from accuracy, ink from streaks
 - **The shop is its own page (#/shop) reached from the hub shelf, like the journal** — Four tabs of cards do not fit a modal on a phone; the page works at 375px
 - **Merged on the strength of local lint, typecheck, unit tests, build and the shop/hub/meadow/fight/modes/stats smoke tests if GitHub checks do not report in time** — Run rules for unattended builders
+- **Fixed a race in tests/e2e/atbash.spec.ts: the cipher check now skips the moment the run has ended** — When the last key landed on every fifth key the test read the finished run (no next sign) and failed about one run in five; reproduced locally (ended: true, 15 of 15 words). Not a game bug
 
 **To do**
 

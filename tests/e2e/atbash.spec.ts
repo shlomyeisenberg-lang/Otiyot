@@ -203,7 +203,8 @@ test.describe('Atbash City', () => {
         // The signs and the gates only ever come back.
         expect(now.signs).toBeGreaterThanOrEqual(lastSigns);
         expect(now.opened).toBeGreaterThanOrEqual(lastOpened);
-        if (now.word) expect(now.cipher).toBe(atbash(now.word));
+        // Once the last word is typed the sign has nothing more to show.
+        if (now.word && !now.ended) expect(now.cipher).toBe(atbash(now.word));
         lastSigns = now.signs;
         lastOpened = now.opened;
       }

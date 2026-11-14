@@ -2082,7 +2082,8 @@
         "src/ui/styles/shop.css (new): shop header, level bar, wallet pills, item cards, skill tree, letter tiles, earned row",
         "locales/en.json and he.json: shop, ability, earned and secret strings (about 160 each)",
         "tests/unit/progression.test.ts (new, 19 tests: curve, banking, skills and perks, combo effects, Second Wind, Echo, shop, crafting, decor, catalogue texts, hidden letters, the two-hour balance simulation, migration v9); tests/e2e/shop.spec.ts (new: buy, wear, learn, craft, letters, Hebrew RTL, phone width); save-migrations test follows CURRENT_VERSION",
-        "Docs: ARCHITECTURE (data model v9, new section 7v), DESIGN (shop components), GAME_DESIGN (progression as built), CHANGELOG, ROADMAP ticked"
+        "Docs: ARCHITECTURE (data model v9, new section 7v), DESIGN (shop components), GAME_DESIGN (progression as built), CHANGELOG, ROADMAP ticked",
+        "tests/e2e/atbash.spec.ts: the periodic cipher check ignores the finished run (pre-existing race)"
       ],
       "decisions": [
         {
@@ -2132,6 +2133,10 @@
         {
           "decision": "Merged on the strength of local lint, typecheck, unit tests, build and the shop/hub/meadow/fight/modes/stats smoke tests if GitHub checks do not report in time",
           "why": "Run rules for unattended builders"
+        },
+        {
+          "decision": "Fixed a race in tests/e2e/atbash.spec.ts: the cipher check now skips the moment the run has ended",
+          "why": "When the last key landed on every fifth key the test read the finished run (no next sign) and failed about one run in five; reproduced locally (ended: true, 15 of 15 words). Not a game bug"
         }
       ],
       "manual_steps": [],
