@@ -469,7 +469,7 @@ One-pass review of Sonnet's T19; fix what is weak. Done when merged.
 - **Done when** No scene feels like homework or looks unfinished; checklist recorded per scene in the progress log.
 - **User must have ready** Nothing.
 
-### [ ] T35 · Full story: cutscenes and voice
+### [x] T35 · Full story: cutscenes and voice
 - **Branch** `t35-story-full`
 - **Model** Sonnet 5.5 · **Effort** High
 - **Goal** The complete three-act arc told through cutscenes, banter and the journal.

@@ -2214,15 +2214,47 @@
       "notes": "Playtest checklist per scene (fun / readable / teaching / fair / no homework), played in Chromium at 1280x720: Meadow pass (bright, flowers bloom with the streak); Cliffs fixed (waterfalls bloomed into white slabs next to the camera) then pass; Forge not reachable from the test save (number row), unchanged; Shuk pass (night market reads well, lanterns glow); Rail fixed (restored plain flat yellow, headlamp flooding the ground by day) then pass; Geniza pass (light shafts and tide read well); Hermon pass, camera now kept above the ridges; Station pass; Atbash pass (cipher sign small, in todo); Midbar pass (the sandstorm hiding the next word is the intended challenge); Caves fixed (banner hid the apprentice) then pass; Arena pass (four phases readable, health bar clear); Blank Scroll pass; Ladder pass; Hub pass (camera floor added). All scenes: shared tier-up flourish, results card fits, own music."
     },
     "T35": {
-      "status": "pending",
-      "finished": "",
-      "pr": "",
-      "summary": "",
-      "changes": [],
-      "decisions": [],
+      "status": "done",
+      "finished": "2026-11-14",
+      "pr": "PR_URL",
+      "summary": "Every region now has a short story chapter before it opens and after it is first restored, in Hebrew and English, with captions, optional per-character voices, Skip, and a Story tab in the journal to watch them again. Naftali's arc, Reb Ezra letting go, the Keeper's scorched pages and Dyo's running jokes run through all three acts.",
+      "changes": [
+        "src/story/chapters.ts: 25 chapters (start and restored for the story regions) in both languages, plus chapter lookups, flags and the Act Three card",
+        "src/ui/screens/chapter.ts: the new 'chapter' screen (title and act cards, dialogue box with portrait, captions for screen readers, Enter to continue, Esc to skip, voices through StoryVoice, remembers the chapter in story flags)",
+        "src/ui/chapterQueue.ts: which chapter plays next; enterRegion plays a region's first-time chapter before its scene",
+        "src/ui/screens/hub.ts: the map's Play and Continue buttons go through enterRegion; a 'new chapter' button shows when a restoration chapter is unseen",
+        "src/ui/screens/journal.ts: a Story tab listing the chapters seen with Watch again",
+        "src/ui/app.ts, src/ui/shell.ts, src/game/regions.ts (isRestored exported), src/ui/styles/hub.css, locales/en.json, locales/he.json",
+        "tests/unit/chapters.test.ts and tests/e2e/chapter.spec.ts; docs: GAME_DESIGN, ROADMAP, CHANGELOG"
+      ],
+      "decisions": [
+        {
+          "decision": "Chapters are 2D (dialogue over parchment), not 3D cutscenes",
+          "why": "Keeps the work inside this task, loads instantly and works without 3D; the opening and the boss victories already have staged 3D cutscenes."
+        },
+        {
+          "decision": "The restoration chapter waits behind a button in the hub instead of playing automatically",
+          "why": "An automatic redirect would interrupt the hub, and it broke the existing hub test; the player chooses when to watch."
+        },
+        {
+          "decision": "Act Two and Act Three title cards show on the first region of that act the player enters, not on a fixed region",
+          "why": "Scenes unlock by course progress, so the first Act Two region differs per player."
+        },
+        {
+          "decision": "Chapters only play for players who have seen the opening",
+          "why": "The story should not start before its first scene."
+        },
+        {
+          "decision": "Voices stay on the device's own speech engine and off by default (existing setting)",
+          "why": "No network requests and no assets; the per-character pitch and pace already exist in CAST."
+        }
+      ],
       "manual_steps": [],
-      "todo": [],
-      "notes": ""
+      "todo": [
+        "Chapters have no 3D staging (camera shots); an upgrade could stage the key ones.",
+        "The Blot, Arena trial and Scroll restorations rely on their own in-scene victory cutscenes, so they have no separate restored chapter."
+      ],
+      "notes": "Story lines are never typed, so the learned-letters rule does not apply; a unit test checks both languages are present and the content rules (men only, nothing unseemly)."
     },
     "T36": {
       "status": "pending",

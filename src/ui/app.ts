@@ -8,6 +8,7 @@ import type { I18n, Lang } from './i18n';
 export type Route =
   | 'title'
   | 'intro'
+  | 'chapter'
   | 'hub'
   | 'lesson'
   | 'modes'
@@ -83,6 +84,7 @@ export type ScreenFactory = (ctx: AppContext) => Screen;
 export const PARENT: Readonly<Record<Route, Route | null>> = {
   title: null,
   intro: null,
+  chapter: null,
   hub: 'menu',
   lesson: 'hub',
   modes: 'hub',

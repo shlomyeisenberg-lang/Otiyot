@@ -27,6 +27,7 @@ import { button, dialogueBox, openModal, rankBadge, status, type ModalHandle } f
 import { h } from '../dom';
 import { decorShown, dressOf, dressedLook, shopItem } from '../../game/progression';
 import type { MessageKey } from '../i18n';
+import { enterRegion, pendingRestoration, wantChapter } from '../chapterQueue';
 import { playableRegions, SCENE_ROUTES, wantLesson } from '../playable';
 import type { Stage3d } from '../stage3d';
 
@@ -356,7 +357,7 @@ export function hubScreen(ctx: AppContext): Screen {
             small: true,
             onClick: () => {
               modal?.close();
-              ctx.go(play);
+              enterRegion(ctx, st.id, play);
             },
           }),
         );
@@ -420,7 +421,7 @@ export function hubScreen(ctx: AppContext): Screen {
             variant: 'primary',
             onClick: () => {
               modal?.close();
-              ctx.go(go);
+              enterRegion(ctx, next.id, go);
             },
           }),
         );
@@ -605,6 +606,22 @@ export function hubScreen(ctx: AppContext): Screen {
     }, 900);
   };
   void boot().catch(flat);
+
+  // A region restored since the player was last here: its chapter waits behind a button (once).
+  const owed = pendingRestoration(profile);
+  if (owed) {
+    const read = button({
+      label: t.t('hub.chapter.new'),
+      variant: 'primary',
+      small: true,
+      onClick: () => {
+        wantChapter(owed.id, 'hub');
+        ctx.go('chapter');
+      },
+    });
+    read.dataset.action = 'new-chapter';
+    el.append(h('div', { class: 'hub__chapter' }, read));
+  }
 
   return {
     el,

@@ -603,3 +603,11 @@
     transition: none;
   }
 }
+
+/* The button for a chapter that has not been read yet (T35). */
+.hub__chapter {
+  position: absolute;
+  inset-block-start: var(--sp-3);
+  inset-inline-start: var(--sp-3);
+  z-index: 3;
+}

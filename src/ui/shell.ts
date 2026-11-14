@@ -33,6 +33,7 @@ import { arcadeScreen } from './screens/arcade';
 import { ladderScreen } from './screens/ladder';
 import { trialScreen, trialsScreen } from './screens/trials';
 import { meadowScreen } from './screens/meadow';
+import { chapterScreen } from './screens/chapter';
 import { introScreen } from './screens/intro';
 import { lessonScreen } from './screens/lesson';
 import { modesScreen } from './screens/modes';
@@ -122,6 +123,7 @@ export class Shell {
     this.screens = {
       title: (ctx) => titleScreen(ctx, this.needsWelcome),
       intro: introScreen,
+      chapter: chapterScreen,
       hub: hubScreen,
       lesson: lessonScreen,
       modes: modesScreen,

@@ -1238,5 +1238,10 @@
   "secret.caves": "Keep the lantern burning: twenty-five perfect words.",
   "secret.arena": "The arena cheers the very best: rank S on Swift or harder.",
   "secret.scroll": "The last page is signed by a sure hand: rank A or better.",
-  "secret.ladder": "At the top of the tower: sixty words in one climb."
+  "secret.ladder": "At the top of the tower: sixty words in one climb.",
+  "chapter.label": "A chapter of the story",
+  "journal.tabStory": "Story",
+  "journal.storyEmpty": "The chapters you have seen will be kept here, so you can read them again.",
+  "journal.storyReplay": "Watch again",
+  "hub.chapter.new": "A new chapter is waiting"
 }
