@@ -6,8 +6,8 @@ _Last updated 2026-11-14. This page is generated from `docs/progress.json`; to c
 
 ## Summary
 
-- ✅ **38** of **44** tasks done
-- 🛠️ 1 in progress · ⛔ 0 blocked · ⬜ 5 pending
+- ✅ **39** of **44** tasks done
+- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 5 pending
 - ⬜ **3** manual steps waiting for you
 - 💡 16 feature ideas open
 
@@ -98,7 +98,7 @@ Work done before or outside the numbered tasks.
 - ✅ T31 · Modes: Practice, Time Attack, Survival, Daily — 2026-11-13 · [PR #52](https://github.com/shlomyeisenberg-lang/Otiyot/pull/52)
 - ✅ T32 · Statistics dashboard and journal — 2026-11-13 · [PR #53](https://github.com/shlomyeisenberg-lang/Otiyot/pull/53)
 - ✅ T33 · Progression, abilities, shop and cosmetics — 2026-11-14 · [PR #54](https://github.com/shlomyeisenberg-lang/Otiyot/pull/54)
-- 🛠️ T34 · Art, lighting, VFX and music pass
+- ✅ T34 · Art, lighting, VFX and music pass — 2026-11-14 · [PR #55](https://github.com/shlomyeisenberg-lang/Otiyot/pull/55)
 - ⬜ T35 · Full story: cutscenes and voice
 - ⬜ T36 · Settings, accessibility and health
 - ⬜ T37 · Ghosts and local leaderboards
@@ -1593,9 +1593,9 @@ Every run, lesson and mode now earns XP, glyphs and ink that are kept, with leve
 
 Everything about prices, levels and abilities is data at the top of src/game/progression.ts, so tuning is one file. The 2D figure in the shop uses the catalogue colors directly, like the 3D palette.
 
-### 🛠️ T34 · Art, lighting, VFX and music pass
+### ✅ T34 · Art, lighting, VFX and music pass
 
-**Status:** In progress
+**Status:** Done · **Finished:** 2026-11-14 · **Pull request:** [PR #55](https://github.com/shlomyeisenberg-lang/Otiyot/pull/55)
 
 A polish pass over every scene: one shared, escalating tier-up flourish (3D halo, ring, lean-in, tint, and a flare on the HUD combo ring), camera fixes so it never carries one scene's ground into the next or dips through the floor, and new music so every place has its own tune (a calm study theme for lessons and Practice, an accordion theme for the Game Room, region themes for Time Attack, Survival and the Daily). Each scene was played in Chromium and looked at; the weak spots found were fixed and the checklist per scene is recorded below.
 
@@ -1627,6 +1627,7 @@ A polish pass over every scene: one shared, escalating tier-up flourish (3D halo
 - **Time Attack, Survival and the Daily play their region's theme; Practice and lessons play the calm study theme** — A run set in the Shuk should sound like the Shuk; drills should feel calm, not like a test
 - **The Game Room lobby music stops while a classic game runs** — The legacy games play their own sound in their iframe; two tunes at once would clash
 - **Screenshots taken in software WebGL at the low preset** — The cloud machine has no GPU; low keeps a full play-through of every scene within time. Composition, color and readability show the same at any preset
+- **Marked T34 done in the same pull request that merges it** — The log must be in the PR; the PR is merged by this run right after the checks
 
 **To do**
 

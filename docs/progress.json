@@ -2147,9 +2147,9 @@
       "notes": "Everything about prices, levels and abilities is data at the top of src/game/progression.ts, so tuning is one file. The 2D figure in the shop uses the catalogue colors directly, like the 3D palette."
     },
     "T34": {
-      "status": "in_progress",
-      "finished": "",
-      "pr": "",
+      "status": "done",
+      "finished": "2026-11-14",
+      "pr": "https://github.com/shlomyeisenberg-lang/Otiyot/pull/55",
       "summary": "A polish pass over every scene: one shared, escalating tier-up flourish (3D halo, ring, lean-in, tint, and a flare on the HUD combo ring), camera fixes so it never carries one scene's ground into the next or dips through the floor, and new music so every place has its own tune (a calm study theme for lessons and Practice, an accordion theme for the Game Room, region themes for Time Attack, Survival and the Daily). Each scene was played in Chromium and looked at; the weak spots found were fixed and the checklist per scene is recorded below.",
       "changes": [
         "src/game/feedback.ts: TypingFeedback.tierUp(tier) and the pure tierFlourish(tier): a halo of sparks in the tier material (ink, techelet, silver, gold, light), a ring of light, a short push-in, a soft tint from silver up; called from hearTier in all 15 play scenes (meadow, cliffs, forge, shuk, rail, geniza, hermon, station, atbash, midbar, caves, arena, scroll, ladder, range)",
@@ -2197,6 +2197,10 @@
         {
           "decision": "Screenshots taken in software WebGL at the low preset",
           "why": "The cloud machine has no GPU; low keeps a full play-through of every scene within time. Composition, color and readability show the same at any preset"
+        },
+        {
+          "decision": "Marked T34 done in the same pull request that merges it",
+          "why": "The log must be in the PR; the PR is merged by this run right after the checks"
         }
       ],
       "manual_steps": [],
