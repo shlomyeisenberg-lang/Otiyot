@@ -2312,7 +2312,7 @@
     "T37": {
       "status": "done",
       "finished": "2026-11-14",
-      "pr": "",
+      "pr": "https://github.com/shlomyeisenberg-lang/Otiyot/pull/58",
       "summary": "Finished Jaffa Line runs, Time Attacks and Daily Challenges now take a place on a local board of your five best, and the best one comes back as a ghost to race. The Statistics page has a Records tab with your boards and this device's boards, and ghosts can be exported to and imported from a small file.",
       "changes": [
         "src/game/ghosts.ts: GhostRecorder (finish times only), ghostProgress, addToBoard (best five), bestGhost, deviceBoard, export/parse of otiyot-ghost files with strict cleaning (pure logic)",

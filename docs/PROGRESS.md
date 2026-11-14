@@ -101,7 +101,7 @@ Work done before or outside the numbered tasks.
 - ✅ T34 · Art, lighting, VFX and music pass — 2026-11-14 · [PR #55](https://github.com/shlomyeisenberg-lang/Otiyot/pull/55)
 - ✅ T35 · Full story: cutscenes and voice — 2026-11-14 · [PR #56](https://github.com/shlomyeisenberg-lang/Otiyot/pull/56)
 - ✅ T36 · Settings, accessibility and health — 2026-11-14 · [PR #57](https://github.com/shlomyeisenberg-lang/Otiyot/pull/57)
-- ✅ T37 · Ghosts and local leaderboards — 2026-11-14
+- ✅ T37 · Ghosts and local leaderboards — 2026-11-14 · [PR #58](https://github.com/shlomyeisenberg-lang/Otiyot/pull/58)
 - ⬜ T38 · Performance pass and full smoke tests
 - ⬜ T39 · Release: website and Otzaria plugin 1.0
 
@@ -1713,7 +1713,7 @@ Local e2e ran with a Chromium of the older build (executable path override), set
 
 ### ✅ T37 · Ghosts and local leaderboards
 
-**Status:** Done · **Finished:** 2026-11-14
+**Status:** Done · **Finished:** 2026-11-14 · **Pull request:** [PR #58](https://github.com/shlomyeisenberg-lang/Otiyot/pull/58)
 
 Finished Jaffa Line runs, Time Attacks and Daily Challenges now take a place on a local board of your five best, and the best one comes back as a ghost to race. The Statistics page has a Records tab with your boards and this device's boards, and ghosts can be exported to and imported from a small file.
 
