@@ -6,8 +6,8 @@ _Last updated 2026-11-14. This page is generated from `docs/progress.json`; to c
 
 ## Summary
 
-- ✅ **42** of **44** tasks done
-- 🛠️ 1 in progress · ⛔ 0 blocked · ⬜ 1 pending
+- ✅ **43** of **44** tasks done
+- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 1 pending
 - ⬜ **3** manual steps waiting for you
 - 💡 16 feature ideas open
 
@@ -102,7 +102,7 @@ Work done before or outside the numbered tasks.
 - ✅ T35 · Full story: cutscenes and voice — 2026-11-14 · [PR #56](https://github.com/shlomyeisenberg-lang/Otiyot/pull/56)
 - ✅ T36 · Settings, accessibility and health — 2026-11-14 · [PR #57](https://github.com/shlomyeisenberg-lang/Otiyot/pull/57)
 - ✅ T37 · Ghosts and local leaderboards — 2026-11-14 · [PR #58](https://github.com/shlomyeisenberg-lang/Otiyot/pull/58)
-- 🛠️ T38 · Performance pass and full smoke tests — 2026-11-14
+- ✅ T38 · Performance pass and full smoke tests — 2026-11-14 · [PR #59](https://github.com/shlomyeisenberg-lang/Otiyot/pull/59)
 - ⬜ T39 · Release: website and Otzaria plugin 1.0
 
 ## Tasks
@@ -1747,9 +1747,9 @@ Finished Jaffa Line runs, Time Attacks and Daily Challenges now take a place on 
 
 Nothing typed is ever stored: a ghost is the times at which each word was finished.
 
-### 🛠️ T38 · Performance pass and full smoke tests
+### ✅ T38 · Performance pass and full smoke tests
 
-**Status:** In progress · **Finished:** 2026-11-14
+**Status:** Done · **Finished:** 2026-11-14 · **Pull request:** [PR #59](https://github.com/shlomyeisenberg-lang/Otiyot/pull/59)
 
 Every screen of the game now opens in one automated test on the Medium setting, is typed at for ten seconds and must stay silent, within 150 draw calls and 300,000 triangles, and free its graphics memory when you leave. Screens now load only when opened, cutting the first download from 796 kB to about 285 kB of script.
 
