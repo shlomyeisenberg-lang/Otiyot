@@ -43,6 +43,14 @@ import {
   type RunOutcome,
 } from '../../game/modes';
 import { regionStatuses, type RegionId } from '../../game/regions';
+import {
+  addToBoard,
+  bestGhost,
+  boardKey,
+  ghostProgress,
+  GhostRecorder,
+  makeRecord,
+} from '../../game/ghosts';
 import { rankOf } from '../../game/results';
 import { knownKeysOf, recordKeystroke } from '../../learn';
 import type { AppContext, Screen } from '../app';
@@ -86,6 +94,10 @@ interface ModesProbe {
   score: number;
   saved: number;
   empty: boolean;
+  /** Words the ghost has finished now (-1 with no ghost), its score, and the place this run took. */
+  ghostWords: number;
+  ghostScore: number | null;
+  board: { place: number; newBest: boolean } | null;
   /** Test hook: moves the run's clock forward by this many seconds. */
   step: (seconds: number) => void;
 }
@@ -133,6 +145,9 @@ export function modesScreen(ctx: AppContext): Screen {
     score: 0,
     saved: 0,
     empty: false,
+    ghostWords: -1,
+    ghostScore: null,
+    board: null,
     step: () => {},
   };
   window.__otiyotModes = probe;
@@ -433,7 +448,8 @@ export function modesScreen(ctx: AppContext): Screen {
     { class: 'modes__meter', role: 'progressbar', 'aria-valuemin': '0', 'aria-valuemax': '100' },
     meterFill,
   );
-  const meterWrap = h('div', { class: 'modes__meter-wrap' }, meterLabel, meterEl);
+  const ghostEl = h('p', { class: 'modes__run-sub modes__ghost', hidden: true });
+  const meterWrap = h('div', { class: 'modes__meter-wrap' }, meterLabel, meterEl, ghostEl);
   const head = h('header', { class: 'modes__run-head' }, titleEl, subEl, modsEl, meterWrap);
   const done = h('div', { class: 'modes__done', hidden: true, role: 'dialog' });
   const runView = h('div', { class: 'modes__run', hidden: true }, head, play.hud.el);
@@ -452,6 +468,11 @@ export function modesScreen(ctx: AppContext): Screen {
   let suddenAt = -1;
   let suddenDone = false;
   let focusLine = '';
+  // T37: the finish time of every word (never any text) and the best earlier run to race.
+  const recorder = new GhostRecorder();
+  let ghostMs = 0;
+  let ghostMarks: readonly number[] = [];
+  let ghostKey = '';
 
   const clock = (): number => performance.now();
 
@@ -481,6 +502,13 @@ export function modesScreen(ctx: AppContext): Screen {
     }
     meterFill.style.inlineSize = `${Math.max(0, Math.min(100, pct))}%`;
     meterEl.setAttribute('aria-valuenow', String(Math.round(pct)));
+    probe.ghostWords = ghostMarks.length > 0 ? ghostProgress(ghostMarks, ghostMs) : -1;
+    if (ghostMarks.length > 0) {
+      ghostEl.hidden = false;
+      ghostEl.textContent = `${t.t('ghost.ghostBar')}: ${t.t('modes.words', { n: Math.floor(probe.ghostWords) })}`;
+    } else {
+      ghostEl.hidden = true;
+    }
     probe.words = s.words;
     probe.grip = s.grip === null ? null : Math.round(s.grip);
     probe.timeLeft = s.timeLeftMs === null ? null : Math.round(s.timeLeftMs);
@@ -534,6 +562,12 @@ export function modesScreen(ctx: AppContext): Screen {
     probe.score = 0;
     probe.outcome = null;
     probe.empty = false;
+    probe.board = null;
+    probe.ghostScore = null;
+    recorder.reset();
+    ghostMs = 0;
+    ghostMarks = [];
+    ghostKey = '';
     probe.guide = settings.keyboardGuide;
     play.setGuideMode(settings.keyboardGuide);
     done.hidden = true;
@@ -612,6 +646,12 @@ export function modesScreen(ctx: AppContext): Screen {
       language,
     );
     run = new ModeRun(rule);
+    if (kindOfRun === 'timeattack' || kindOfRun === 'daily') {
+      ghostKey = boardKey(kindOfRun, historyKey);
+      const rival = bestGhost(ctx.profile, ghostKey);
+      ghostMarks = rival?.marks ?? [];
+      probe.ghostScore = rival?.score ?? null;
+    }
     const view2 = viewOf(mods);
     root.classList.toggle('modes--fog', view2.fog);
     titleEl.textContent =
@@ -639,6 +679,7 @@ export function modesScreen(ctx: AppContext): Screen {
     keys.push(k);
     if (run && !finishedRun) {
       started = true;
+      recorder.key(ghostMs);
       run.key(k.correct);
     }
     sync();
@@ -647,6 +688,7 @@ export function modesScreen(ctx: AppContext): Screen {
   play.onWord = (w) => {
     if (run && !finishedRun) {
       run.word(w.perfect);
+      recorder.word(ghostMs);
       if (!suddenDone && suddenAt >= 0 && run.state.words >= suddenAt) {
         suddenDone = true;
         play.setGuideMode('off');
@@ -706,6 +748,26 @@ export function modesScreen(ctx: AppContext): Screen {
         p.keys = r.keys;
         p.srs = r.srs;
         prev = k.expected;
+      }
+      if (ghostKey !== '' && okRun) {
+        probe.board = addToBoard(
+          p,
+          ghostKey,
+          makeRecord(
+            {
+              score:
+                kindOfRun === 'daily'
+                  ? dailyScore(Math.round(m.netWpm), m.accuracy)
+                  : modeScore(m.keystrokes, m.accuracy),
+              wpm: Math.round(m.netWpm),
+              accuracy: m.accuracy,
+              durationMs: m.elapsedMs,
+              marks: recorder.trace(),
+            },
+            p.name,
+            now,
+          ),
+        );
       }
       p.history.push({
         at: now,
@@ -772,6 +834,16 @@ export function modesScreen(ctx: AppContext): Screen {
     body.push(h('div', { class: 'modes__stats' }, ...tiles));
     if (gain) body.push(earnedRow(t, gain, gain));
     if (newBest) body.push(h('p', { class: 'modes__newbest', text: t.t('modes.newBest') }));
+    if (probe.board && probe.board.place > 0) {
+      body.push(
+        h('p', {
+          class: 'modes__newbest',
+          text: probe.board.newBest
+            ? t.t('ghost.newBest')
+            : t.t('ghost.place', { place: probe.board.place }),
+        }),
+      );
+    }
     const again = button({ label: t.t('modes.again'), variant: 'primary', onClick: begin });
     again.append(keycap('Enter', 'plain', 'sm'));
     const lobbyBtn = button({ label: t.t('modes.lobby'), onClick: toLobby });
@@ -791,6 +863,7 @@ export function modesScreen(ctx: AppContext): Screen {
     if (view !== 'run') return;
     play.frame(now);
     if (run && started && !finishedRun) {
+      ghostMs += now - last;
       run.tick(now - last);
       setMeter();
       finishIfEnded();
@@ -802,6 +875,7 @@ export function modesScreen(ctx: AppContext): Screen {
   probe.step = (seconds: number): void => {
     if (!run || finishedRun) return;
     started = true;
+    ghostMs += seconds * 1000;
     run.tick(seconds * 1000);
     setMeter();
     finishIfEnded();

@@ -108,6 +108,24 @@ export interface LadderRecord {
 
 export const MAX_LADDER = 10;
 
+/** One line of a ghost board (v11, T37): the numbers of a run and when it finished each word. */
+export interface GhostRecord {
+  at: number;
+  /** Whose run it was (a friend's name for an imported ghost). */
+  name: string;
+  score: number;
+  wpm: number;
+  accuracy: number;
+  durationMs: number;
+  /** Milliseconds since the first key at which each word was finished. Never any typed text. */
+  marks: number[];
+  imported: boolean;
+}
+
+export const MAX_BOARD = 5;
+export const MAX_BOARDS = 40;
+export const MAX_GHOST_MARKS = 300;
+
 export interface CustomList {
   name: string;
   language: LayoutId;
@@ -142,6 +160,8 @@ export interface Profile {
   ladder: LadderRecord[];
   /** XP, learned skills, abilities switched off, and the scenes whose hidden letter is found (v9, T33). */
   progress: ProgressState;
+  /** Ghost boards by key, best line first (v11, T37). */
+  ghosts: Record<string, GhostRecord[]>;
   createdAt: number;
 }
 
@@ -220,6 +240,7 @@ export function createProfile(id: string, name: string, now: number): Profile {
     customLists: {},
     ladder: [],
     progress: { xp: 0, skills: [], off: [], secrets: [] },
+    ghosts: {},
     createdAt: now,
   };
 }
@@ -406,6 +427,38 @@ function normalizeLadder(raw: unknown): LadderRecord[] {
   return out.slice(0, MAX_LADDER);
 }
 
+export function normalizeGhosts(raw: unknown): Record<string, GhostRecord[]> {
+  const out: Record<string, GhostRecord[]> = {};
+  if (!isRec(raw)) return out;
+  for (const [key, list] of Object.entries(raw).slice(0, MAX_BOARDS)) {
+    if (!Array.isArray(list) || key.length > 120) continue;
+    const lines: GhostRecord[] = [];
+    for (const x of list) {
+      if (!isRec(x)) continue;
+      const marks = Array.isArray(x.marks)
+        ? x.marks
+            .filter((m): m is number => typeof m === 'number' && Number.isFinite(m) && m >= 0)
+            .slice(0, MAX_GHOST_MARKS)
+            .map(Math.round)
+        : [];
+      if (marks.length === 0) continue;
+      lines.push({
+        at: num(x.at, 0, 0),
+        name: cleanName(x.name),
+        score: Math.round(num(x.score, 0, 0)),
+        wpm: Math.round(num(x.wpm, 0, 0)),
+        accuracy: num(x.accuracy, 0, 0, 100),
+        durationMs: Math.round(num(x.durationMs, 0, 0)),
+        marks,
+        imported: x.imported === true,
+      });
+    }
+    lines.sort((a, b) => b.score - a.score || a.at - b.at);
+    if (lines.length > 0) out[key] = lines.slice(0, MAX_BOARD);
+  }
+  return out;
+}
+
 /** Turns anything into a valid Profile. `fallbackId` is used when the id is missing. */
 export function normalizeProfile(raw: unknown, fallbackId: string, now: number): Profile {
   const r = isRec(raw) ? raw : {};
@@ -438,6 +491,7 @@ export function normalizeProfile(raw: unknown, fallbackId: string, now: number):
     arcade: toJson(r.arcade ?? null),
     customLists: normalizeCustomLists(r.customLists),
     ladder: normalizeLadder(r.ladder),
+    ghosts: normalizeGhosts(r.ghosts),
     progress: {
       xp: num(progress.xp, 0, 0),
       skills: strList(progress.skills),

@@ -67,6 +67,9 @@ interface Probe {
   signals: number;
   ahead: boolean;
   ghost: number[];
+  ghostScore: number | null;
+  ghostAt: number;
+  board: { place: number; newBest: boolean } | null;
   lamps: number;
   restored: boolean;
   line: string;
@@ -194,6 +197,9 @@ test.describe('Jaffa Line', () => {
     expect(p.ahead).toBe(true);
     expect(p.lead).toBeGreaterThan(0);
     expect(p.ghost).toHaveLength(p.total);
+    // The first finished run takes the board's first place; there was no ghost to race.
+    expect(p.board?.place).toBe(1);
+    expect(p.ghostScore).toBeNull();
     expect(p.results?.failed).toBe(false);
     expect(['S', 'A']).toContain(p.results?.rank);
     const card = page.locator('.meadow__results');

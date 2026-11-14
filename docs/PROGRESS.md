@@ -6,8 +6,8 @@ _Last updated 2026-11-14. This page is generated from `docs/progress.json`; to c
 
 ## Summary
 
-- ✅ **41** of **44** tasks done
-- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 3 pending
+- ✅ **42** of **44** tasks done
+- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 2 pending
 - ⬜ **3** manual steps waiting for you
 - 💡 16 feature ideas open
 
@@ -101,7 +101,7 @@ Work done before or outside the numbered tasks.
 - ✅ T34 · Art, lighting, VFX and music pass — 2026-11-14 · [PR #55](https://github.com/shlomyeisenberg-lang/Otiyot/pull/55)
 - ✅ T35 · Full story: cutscenes and voice — 2026-11-14 · [PR #56](https://github.com/shlomyeisenberg-lang/Otiyot/pull/56)
 - ✅ T36 · Settings, accessibility and health — 2026-11-14 · [PR #57](https://github.com/shlomyeisenberg-lang/Otiyot/pull/57)
-- ⬜ T37 · Ghosts and local leaderboards
+- ✅ T37 · Ghosts and local leaderboards — 2026-11-14 · [PR #58](https://github.com/shlomyeisenberg-lang/Otiyot/pull/58)
 - ⬜ T38 · Performance pass and full smoke tests
 - ⬜ T39 · Release: website and Otzaria plugin 1.0
 
@@ -1711,11 +1711,41 @@ Settings now has seven tabs (display, accessibility, graphics, sound, typing, he
 
 Local e2e ran with a Chromium of the older build (executable path override), settings and shell tests pass on desktop and phone widths.
 
-### ⬜ T37 · Ghosts and local leaderboards
+### ✅ T37 · Ghosts and local leaderboards
 
-**Status:** Pending
+**Status:** Done · **Finished:** 2026-11-14 · **Pull request:** [PR #58](https://github.com/shlomyeisenberg-lang/Otiyot/pull/58)
 
-_Not started._
+Finished Jaffa Line runs, Time Attacks and Daily Challenges now take a place on a local board of your five best, and the best one comes back as a ghost to race. The Statistics page has a Records tab with your boards and this device's boards, and ghosts can be exported to and imported from a small file.
+
+**What changed**
+
+- src/game/ghosts.ts: GhostRecorder (finish times only), ghostProgress, addToBoard (best five), bestGhost, deviceBoard, export/parse of otiyot-ghost files with strict cleaning (pure logic)
+- src/save/schema.ts, migrations.ts: save version 11; Profile.ghosts boards with normalizeGhosts (MAX_BOARD 5, MAX_BOARDS 40, MAX_GHOST_MARKS 300)
+- src/scenes/rail/index.ts: translucent ghost train on the left side of the track (setGhost, ghostAt), moved by its own clock that starts with the first key
+- src/ui/screens/rail.ts: loads the best ghost for rail|level:difficulty, writes the finished run to the board, shows place or new best on the results card
+- src/ui/screens/modes.ts: records word finish times, shows the ghost's word count under the meter for Time Attack and the Daily, writes the board and shows place or new best
+- src/ui/screens/records.ts and stats.ts: new Records tab (board picker, this profile and this device tables, export per line, import file)
+- locales/en.json, he.json: ghost.* strings in both languages
+- tests/unit/ghosts.test.ts; tests/e2e/ghosts.spec.ts; rail.spec.ts and modes.spec.ts check the board place
+- docs: ARCHITECTURE (save v11, ghosts), CHANGELOG, ROADMAP ticked
+
+**Decisions**
+
+- **One score per board decides the best run: the Daily score (speed weighted by accuracy cubed) for the Jaffa Line and the Daily, the mode score for Time Attack** — These are the scores the game already shows, so the ghost is the run that would top the board
+- **Survival and Practice get no ghost** — The task named the rail race, Time Attack and the Daily; Survival has no fixed length to compare
+- **The Daily's board is per date (its history key)** — Only the same date has the same words, so only then is a ghost a fair rival
+- **Records live as a tab on the Statistics page instead of a new route** — Keeps the menus small and the page already hosts the player's numbers
+- **Cross-profile board is worked out from every profile's own boards, not stored** — Nothing extra to keep in sync; deleting a profile removes its lines
+- **Ghost files are only numbers and a name and are cleaned hard on import; an imported line counts on the board like any other** — A file from a friend is untrusted; sharing needs no text or account
+- **Checks run on the strength of local lint, typecheck, unit tests, build and the rail, modes, stats, settings and ghost end-to-end tests** — Same local gate as the other tasks
+
+**To do**
+
+- [ ] Ghost for Survival and a rail ghost on a phone-sized layout were not separately checked beyond the shared smoke tests
+
+**Notes**
+
+Nothing typed is ever stored: a ghost is the times at which each word was finished.
 
 ### ⬜ T38 · Performance pass and full smoke tests
 

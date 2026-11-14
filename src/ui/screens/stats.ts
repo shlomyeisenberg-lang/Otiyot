@@ -32,6 +32,7 @@ import { h } from '../dom';
 import type { I18n, MessageKey } from '../i18n';
 import { frame } from './frame';
 import { layoutName, trackName } from './names';
+import { recordsPanel } from './records';
 
 let lastTab = 'overview';
 
@@ -311,6 +312,7 @@ export function statsScreen(ctx: AppContext): Screen {
       { id: 'lessons', label: t.t('stats.tabLessons'), content: lessons },
       { id: 'history', label: t.t('stats.tabHistory'), content: history },
       { id: 'achievements', label: t.t('stats.tabAchievements'), content: achievements },
+      { id: 'records', label: t.t('ghost.title'), content: () => recordsPanel(ctx) },
     ],
     t.t('stats.tabs'),
     lastTab,
