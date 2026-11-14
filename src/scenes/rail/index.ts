@@ -270,7 +270,8 @@ export class RailScene implements GameScene {
     ctx.post.setGrade(
       ctx.theme === 'dark'
         ? { exposure: 1.25, saturation: 1.15, vignette: 0.55, godRays: 0.5 }
-        : { exposure: 1.05, saturation: 1.2, vignette: 0.4, godRays: 0.6 },
+        : // T34: a softer dawn; the restored plain read as flat yellow at 1.2.
+          { exposure: 1.02, saturation: 1.06, vignette: 0.4, godRays: 0.6 },
     );
     ctx.rig.groundAt = () => 0;
 
