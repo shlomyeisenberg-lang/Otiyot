@@ -1,6 +1,6 @@
 {
   "name": "otiyot",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "packageManager": "pnpm@10.28.0",
@@ -10,7 +10,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
-    "build:plugin": "pnpm build && node plugin/pack.mjs",
+    "build:plugin": "pnpm build && node plugin/pack.mjs && node scripts/check-plugin.mjs",
+    "check:plugin": "node scripts/check-plugin.mjs",
     "preview": "vite preview --port 4173",
     "lint": "eslint . && prettier --check .",
     "format": "prettier --write .",

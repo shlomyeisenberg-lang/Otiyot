@@ -519,7 +519,7 @@ One-pass review of Sonnet's T19; fix what is weak. Done when merged.
 - **Done when** CI runs the whole suite green and docs/PERF.md lists every scene within budget.
 - **User must have ready** Nothing.
 
-### [ ] T39 · Release: website and Otzaria plugin 1.0
+### [x] T39 · Release: website and Otzaria plugin 1.0
 - **Branch** `t39-release`
 - **Model** Sonnet 5.5 · **Effort** Medium
 - **Goal** A finished 1.0 on the live link and as an installable plugin file.

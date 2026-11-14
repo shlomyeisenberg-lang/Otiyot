@@ -1,6 +1,8 @@
 # Changelog
 
-## Unreleased
+## 1.0.0
+
+- Version 1.0. Otiyot is finished: the website and the Otzaria plugin are the same build, now numbered 1.0.0 and marked stable. A new release workflow builds the plugin file and attaches it to a GitHub Release when a version tag is pushed, and a plugin check opens the built file the way Otzaria does and fails if anything points outside the plugin or reaches for the network. docs/LAUNCH.md explains how to install the plugin in Otzaria and how to roll back.
 
 - Faster start and a performance check. The game now loads each place only when you open it, so the first page is less than half its old size (about 285 kB instead of 796 kB of script before compressing) and the title appears sooner. A new test opens every screen of the game on the Medium graphics setting, types at it for ten seconds, and fails if anything prints an error, draws more than 150 objects or 300,000 triangles at once, or leaves graphics memory behind. Every place passes; the numbers are in docs/PERF.md.
 
