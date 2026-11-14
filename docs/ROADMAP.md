@@ -496,7 +496,7 @@ One-pass review of Sonnet's T19; fix what is weak. Done when merged.
 
 ## Phase 6 · Launch
 
-### [ ] T37 · Ghosts and local leaderboards
+### [x] T37 · Ghosts and local leaderboards
 - **Branch** `t37-ghosts`
 - **Model** Sonnet 5.5 · **Effort** Medium
 - **Goal** Race your own best runs.

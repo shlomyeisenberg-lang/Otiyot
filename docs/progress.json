@@ -2310,15 +2310,56 @@
       "notes": "Local e2e ran with a Chromium of the older build (executable path override), settings and shell tests pass on desktop and phone widths."
     },
     "T37": {
-      "status": "pending",
-      "finished": "",
+      "status": "done",
+      "finished": "2026-11-14",
       "pr": "",
-      "summary": "",
-      "changes": [],
-      "decisions": [],
+      "summary": "Finished Jaffa Line runs, Time Attacks and Daily Challenges now take a place on a local board of your five best, and the best one comes back as a ghost to race. The Statistics page has a Records tab with your boards and this device's boards, and ghosts can be exported to and imported from a small file.",
+      "changes": [
+        "src/game/ghosts.ts: GhostRecorder (finish times only), ghostProgress, addToBoard (best five), bestGhost, deviceBoard, export/parse of otiyot-ghost files with strict cleaning (pure logic)",
+        "src/save/schema.ts, migrations.ts: save version 11; Profile.ghosts boards with normalizeGhosts (MAX_BOARD 5, MAX_BOARDS 40, MAX_GHOST_MARKS 300)",
+        "src/scenes/rail/index.ts: translucent ghost train on the left side of the track (setGhost, ghostAt), moved by its own clock that starts with the first key",
+        "src/ui/screens/rail.ts: loads the best ghost for rail|level:difficulty, writes the finished run to the board, shows place or new best on the results card",
+        "src/ui/screens/modes.ts: records word finish times, shows the ghost's word count under the meter for Time Attack and the Daily, writes the board and shows place or new best",
+        "src/ui/screens/records.ts and stats.ts: new Records tab (board picker, this profile and this device tables, export per line, import file)",
+        "locales/en.json, he.json: ghost.* strings in both languages",
+        "tests/unit/ghosts.test.ts; tests/e2e/ghosts.spec.ts; rail.spec.ts and modes.spec.ts check the board place",
+        "docs: ARCHITECTURE (save v11, ghosts), CHANGELOG, ROADMAP ticked"
+      ],
+      "decisions": [
+        {
+          "decision": "One score per board decides the best run: the Daily score (speed weighted by accuracy cubed) for the Jaffa Line and the Daily, the mode score for Time Attack",
+          "why": "These are the scores the game already shows, so the ghost is the run that would top the board"
+        },
+        {
+          "decision": "Survival and Practice get no ghost",
+          "why": "The task named the rail race, Time Attack and the Daily; Survival has no fixed length to compare"
+        },
+        {
+          "decision": "The Daily's board is per date (its history key)",
+          "why": "Only the same date has the same words, so only then is a ghost a fair rival"
+        },
+        {
+          "decision": "Records live as a tab on the Statistics page instead of a new route",
+          "why": "Keeps the menus small and the page already hosts the player's numbers"
+        },
+        {
+          "decision": "Cross-profile board is worked out from every profile's own boards, not stored",
+          "why": "Nothing extra to keep in sync; deleting a profile removes its lines"
+        },
+        {
+          "decision": "Ghost files are only numbers and a name and are cleaned hard on import; an imported line counts on the board like any other",
+          "why": "A file from a friend is untrusted; sharing needs no text or account"
+        },
+        {
+          "decision": "Checks run on the strength of local lint, typecheck, unit tests, build and the rail, modes, stats, settings and ghost end-to-end tests",
+          "why": "Same local gate as the other tasks"
+        }
+      ],
       "manual_steps": [],
-      "todo": [],
-      "notes": ""
+      "todo": [
+        "Ghost for Survival and a rail ghost on a phone-sized layout were not separately checked beyond the shared smoke tests"
+      ],
+      "notes": "Nothing typed is ever stored: a ghost is the times at which each word was finished."
     },
     "T38": {
       "status": "pending",

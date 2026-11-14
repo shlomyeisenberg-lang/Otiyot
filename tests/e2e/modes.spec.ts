@@ -47,6 +47,7 @@ interface Probe {
   guide: string;
   ended: boolean;
   outcome: string | null;
+  board: { place: number; newBest: boolean } | null;
   score: number;
   saved: number;
   empty: boolean;
@@ -137,6 +138,8 @@ test.describe('Modes', () => {
     await typeToEnd(page);
     let p = await probe(page);
     expect(p.outcome).toBe('quota');
+    // T37: a finished Time Attack takes a place on its ghost board.
+    expect(p.board?.place).toBe(1);
     expect(p.words).toBe(20);
     expect(p.score).toBeGreaterThan(0);
     h = await history(page);

@@ -63,6 +63,8 @@ interface RailProbe {
   ghost: readonly number[];
   /** The ghost raced this run (its score), or null; and the place the run took on the board. */
   ghostScore: number | null;
+  /** Stretches the ghost train has finished now (-1: no ghost). */
+  ghostAt: number;
   board: { place: number; newBest: boolean } | null;
   level: LevelId;
   difficulty: DifficultyId;
@@ -176,6 +178,7 @@ export function railScreen(ctx: AppContext): Screen {
     ahead: true,
     ghost: [],
     ghostScore: null,
+    ghostAt: -1,
     board: null,
     level,
     difficulty,
@@ -203,6 +206,7 @@ export function railScreen(ctx: AppContext): Screen {
     signals: { get: () => scene?.signalsOpen ?? 0, enumerable: true },
     ahead: { get: () => scene?.ahead ?? true, enumerable: true },
     ghost: { get: () => scene?.ghostTrace ?? [], enumerable: true },
+    ghostAt: { get: () => scene?.ghostAt ?? -1, enumerable: true },
     restored: { get: () => scene?.restored ?? false, enumerable: true },
   });
   window.__otiyotRail = probe;
