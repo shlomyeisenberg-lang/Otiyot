@@ -82,6 +82,12 @@ function deckleFilter(): SVGElement {
   return svg;
 }
 
+declare global {
+  interface Window {
+    __otiyotHealth?: (seconds: number) => void;
+  }
+}
+
 /** Seconds between looks at the break timer. */
 const HEALTH_TICK_S = 5;
 
@@ -205,6 +211,8 @@ export class Shell {
     // The player's own pause key becomes Escape before anything else sees it.
     this.win.document.addEventListener('keydown', (ev) => this.rebindMenuKey(ev), true);
     this.win.setInterval(() => this.healthTick(HEALTH_TICK_S), HEALTH_TICK_S * 1000);
+    // For the browser test: lets it "play" for a while without waiting.
+    this.win.__otiyotHealth = (seconds: number) => this.healthTick(seconds);
     this.listenForSound();
     this.win
       .matchMedia?.('(prefers-color-scheme: dark)')

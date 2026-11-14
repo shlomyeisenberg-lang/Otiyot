@@ -109,6 +109,7 @@ test('menus answer to typed letters, arrows, Enter and Esc in Hebrew', async ({ 
   // Dark theme and high contrast from the settings, then Esc back to the menu.
   await page.locator('[data-setting="theme"]').selectOption('dark');
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  await page.getByRole('tab', { name: 'נגישות' }).click();
   const contrast = page.locator('[data-setting="highContrast"]');
   await contrast.click();
   await expect(page.locator('html')).toHaveAttribute('data-contrast', 'high');
