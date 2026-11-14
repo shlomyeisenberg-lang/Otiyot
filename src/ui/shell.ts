@@ -15,39 +15,14 @@ import { button, toastHost, topModal } from './components';
 import { h, isTextEntry, s } from './dom';
 import { bdi, I18n, otherLang, type Lang } from './i18n';
 import { icon, type IconName } from './icons';
+import { lazyScreen } from './lazyScreen';
 import { layoutScreen } from './screens/layout';
-import { hubScreen } from './screens/hub';
-import { cliffsScreen } from './screens/cliffs';
-import { forgeScreen } from './screens/forge';
-import { shukScreen } from './screens/shuk';
-import { railScreen } from './screens/rail';
-import { genizaScreen } from './screens/geniza';
-import { hermonScreen } from './screens/hermon';
-import { stationScreen } from './screens/station';
-import { atbashScreen } from './screens/atbash';
-import { midbarScreen } from './screens/midbar';
-import { cavesScreen } from './screens/caves';
-import { arenaScreen } from './screens/arena';
-import { scrollScreen } from './screens/scroll';
-import { arcadeScreen } from './screens/arcade';
-import { ladderScreen } from './screens/ladder';
-import { trialScreen, trialsScreen } from './screens/trials';
-import { meadowScreen } from './screens/meadow';
-import { chapterScreen } from './screens/chapter';
-import { introScreen } from './screens/intro';
-import { lessonScreen } from './screens/lesson';
-import { modesScreen } from './screens/modes';
 import { mainMenuScreen } from './screens/mainMenu';
 import { openPauseMenu } from './screens/pause';
 import { playersScreen } from './screens/players';
-import { rangeScreen } from './screens/range';
 import { settingsScreen } from './screens/settings';
-import { soundScreen } from './screens/sound';
 import { titleScreen } from './screens/title';
 import { trackScreen } from './screens/track';
-import { statsScreen } from './screens/stats';
-import { journalScreen } from './screens/journal';
-import { shopScreen } from './screens/shop';
 import { wizardScreen } from './screens/wizard';
 import { actsAsEscape, BreakTimer, reminderKeys } from './health';
 import { applyTheme, nextTheme } from './theme';
@@ -134,28 +109,88 @@ export class Shell {
     this.needsWelcome = o.loaded.source === 'fresh' && !o.loaded.legacyImported;
     this.screens = {
       title: (ctx) => titleScreen(ctx, this.needsWelcome),
-      intro: introScreen,
-      chapter: chapterScreen,
-      hub: hubScreen,
-      lesson: lessonScreen,
-      modes: modesScreen,
-      meadow: meadowScreen,
-      cliffs: cliffsScreen,
-      forge: forgeScreen,
-      shuk: shukScreen,
-      rail: railScreen,
-      geniza: genizaScreen,
-      hermon: hermonScreen,
-      station: stationScreen,
-      atbash: atbashScreen,
-      midbar: midbarScreen,
-      caves: cavesScreen,
-      arena: arenaScreen,
-      trials: trialsScreen,
-      trial: trialScreen,
-      scroll: scrollScreen,
-      ladder: ladderScreen,
-      arcade: arcadeScreen,
+      intro: lazyScreen(async () => (await import('./screens/intro')).introScreen, {
+        full: true,
+        ownsMusic: true,
+      }),
+      chapter: lazyScreen(async () => (await import('./screens/chapter')).chapterScreen, {
+        full: true,
+        ownsMusic: true,
+      }),
+      hub: lazyScreen(async () => (await import('./screens/hub')).hubScreen, {
+        full: true,
+        ownsMusic: true,
+      }),
+      lesson: lazyScreen(async () => (await import('./screens/lesson')).lessonScreen, {
+        full: true,
+      }),
+      modes: lazyScreen(async () => (await import('./screens/modes')).modesScreen, { full: true }),
+      meadow: lazyScreen(async () => (await import('./screens/meadow')).meadowScreen, {
+        full: true,
+        ownsMusic: true,
+      }),
+      cliffs: lazyScreen(async () => (await import('./screens/cliffs')).cliffsScreen, {
+        full: true,
+        ownsMusic: true,
+      }),
+      forge: lazyScreen(async () => (await import('./screens/forge')).forgeScreen, {
+        full: true,
+        ownsMusic: true,
+      }),
+      shuk: lazyScreen(async () => (await import('./screens/shuk')).shukScreen, {
+        full: true,
+        ownsMusic: true,
+      }),
+      rail: lazyScreen(async () => (await import('./screens/rail')).railScreen, {
+        full: true,
+        ownsMusic: true,
+      }),
+      geniza: lazyScreen(async () => (await import('./screens/geniza')).genizaScreen, {
+        full: true,
+        ownsMusic: true,
+      }),
+      hermon: lazyScreen(async () => (await import('./screens/hermon')).hermonScreen, {
+        full: true,
+        ownsMusic: true,
+      }),
+      station: lazyScreen(async () => (await import('./screens/station')).stationScreen, {
+        full: true,
+        ownsMusic: true,
+      }),
+      atbash: lazyScreen(async () => (await import('./screens/atbash')).atbashScreen, {
+        full: true,
+        ownsMusic: true,
+      }),
+      midbar: lazyScreen(async () => (await import('./screens/midbar')).midbarScreen, {
+        full: true,
+        ownsMusic: true,
+      }),
+      caves: lazyScreen(async () => (await import('./screens/caves')).cavesScreen, {
+        full: true,
+        ownsMusic: true,
+      }),
+      arena: lazyScreen(async () => (await import('./screens/arena')).arenaScreen, {
+        full: true,
+        ownsMusic: true,
+      }),
+      trials: lazyScreen(async () => (await import('./screens/trials')).trialsScreen, {
+        wide: true,
+      }),
+      trial: lazyScreen(async () => (await import('./screens/trials')).trialScreen, {
+        full: true,
+        ownsMusic: true,
+      }),
+      scroll: lazyScreen(async () => (await import('./screens/scroll')).scrollScreen, {
+        full: true,
+        ownsMusic: true,
+      }),
+      ladder: lazyScreen(async () => (await import('./screens/ladder')).ladderScreen, {
+        full: true,
+        ownsMusic: true,
+      }),
+      arcade: lazyScreen(async () => (await import('./screens/arcade')).arcadeScreen, {
+        wide: true,
+      }),
       menu: mainMenuScreen,
       welcome: (ctx) => wizardScreen(ctx, 'welcome', () => (this.needsWelcome = false)),
       players: playersScreen,
@@ -163,12 +198,20 @@ export class Shell {
       track: trackScreen,
       layout: layoutScreen,
       settings: settingsScreen,
-      stats: statsScreen,
-      journal: journalScreen,
-      shop: shopScreen,
+      stats: lazyScreen(async () => (await import('./screens/stats')).statsScreen, { wide: true }),
+      journal: lazyScreen(async () => (await import('./screens/journal')).journalScreen, {
+        wide: true,
+      }),
+      shop: lazyScreen(async () => (await import('./screens/shop')).shopScreen, { wide: true }),
       pause: mainMenuScreen,
-      range: rangeScreen,
-      sound: soundScreen,
+      range: lazyScreen(async () => (await import('./screens/range')).rangeScreen, {
+        full: true,
+        ownsMusic: true,
+      }),
+      sound: lazyScreen(async () => (await import('./screens/sound')).soundScreen, {
+        wide: true,
+        ownsMusic: true,
+      }),
       ...o.extraScreens,
     };
     const saves = this.saves;
