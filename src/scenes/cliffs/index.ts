@@ -1149,7 +1149,12 @@ export class CliffsScene implements GameScene {
         this.v.set(cx + side * d, y, z + spread * 2.4);
         this.q.identity();
         const len = 0.8 + (0.7 * ((i * 5) % 7)) / 7;
-        this.s.set(1, len * flow, 1);
+        // T34: streaks thin out as the camera climbs past them, so a fall right beside the lens
+        // never fills the screen with glowing slabs.
+        const cam = this.ctx.rig.camera.position;
+        const near = Math.hypot(this.v.x - cam.x, this.v.z - cam.z);
+        const keep = near > 11 ? 1 : near < 6 ? 0 : (near - 6) / 5;
+        this.s.set(keep, len * flow * keep, keep);
         this.m4.compose(this.v, this.q, this.s);
         this.falls.setMatrixAt(idx, this.m4);
       }
