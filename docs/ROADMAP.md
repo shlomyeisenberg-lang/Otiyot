@@ -507,7 +507,7 @@ One-pass review of Sonnet's T19; fix what is weak. Done when merged.
 - **Done when** A ghost of the best run appears on replay and beating it updates the board.
 - **User must have ready** Nothing.
 
-### [ ] T38 · Performance pass and full smoke tests
+### [x] T38 · Performance pass and full smoke tests
 - **Branch** `t38-perf-tests`
 - **Model** Sonnet 5.5 · **Effort** High
 - **Goal** Prove every scene loads and stays within budget.

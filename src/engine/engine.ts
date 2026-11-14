@@ -151,7 +151,10 @@ export class Engine {
   static async create(host: HTMLElement, o: EngineOptions): Promise<Engine> {
     const atlas = await LetterAtlas.create();
     try {
-      return new Engine(host, atlas, o);
+      const engine = new Engine(host, atlas, o);
+      // A read-only window for the performance test (tests/e2e/perf.spec.ts); nothing in the game reads it.
+      (globalThis as { __otiyotEngine?: Engine }).__otiyotEngine = engine;
+      return engine;
     } catch (err) {
       atlas.dispose();
       throw err;
@@ -294,6 +297,8 @@ export class Engine {
     if (this.disposed) return { geometries: 0, textures: 0, programs: 0 };
     this.stop();
     this.disposed = true;
+    const hook = globalThis as { __otiyotEngine?: Engine };
+    if (hook.__otiyotEngine === this) delete hook.__otiyotEngine;
     this.observer.disconnect();
     this.onUpdate = null;
     this.onFrame = null;
