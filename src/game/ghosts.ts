@@ -32,7 +32,8 @@ export class GhostRecorder {
   /** Call when a word is finished. */
   word(now: number): void {
     if (this.t0 < 0) return;
-    if (this.marks.length < MAX_GHOST_MARKS) this.marks.push(Math.max(0, Math.round(now - this.t0)));
+    if (this.marks.length < MAX_GHOST_MARKS)
+      this.marks.push(Math.max(0, Math.round(now - this.t0)));
   }
 
   reset(): void {
@@ -59,13 +60,18 @@ export function ghostProgress(marks: readonly number[], ms: number): number {
 }
 
 /** True when `a` should rank above `b`: the higher score wins, the earlier run breaks a tie. */
-export function ranksAbove(a: Pick<GhostRecord, 'score' | 'at'>, b: Pick<GhostRecord, 'score' | 'at'>): boolean {
+export function ranksAbove(
+  a: Pick<GhostRecord, 'score' | 'at'>,
+  b: Pick<GhostRecord, 'score' | 'at'>,
+): boolean {
   return a.score > b.score || (a.score === b.score && a.at < b.at);
 }
 
 /** The line a run adds to a board. */
 export function makeRecord(
-  input: Pick<GhostRecord, 'score' | 'wpm' | 'accuracy' | 'durationMs'> & { marks: readonly number[] },
+  input: Pick<GhostRecord, 'score' | 'wpm' | 'accuracy' | 'durationMs'> & {
+    marks: readonly number[];
+  },
   name: string,
   at: number,
 ): GhostRecord {

@@ -1049,11 +1049,14 @@ export class RailScene implements GameScene {
       if (this.runStart >= 0) this.ghostClock += dt * 1000;
       const n = this.ghostMarks.length;
       const done = ghostProgress(this.ghostMarks, this.ghostClock) >= n;
-      const stretches = done ? total + 1.2 : (ghostProgress(this.ghostMarks, this.ghostClock) * total) / n;
+      const stretches = done
+        ? total + 1.2
+        : (ghostProgress(this.ghostMarks, this.ghostClock) * total) / n;
       const prevGhost = this.sGhost;
       this.sGhost = damp(this.sGhost, stretches * STRETCH_LENGTH, done ? 0.8 : 6, dt);
       this.poseTrain(this.ghostTrain, this.sGhost, GHOST_SIDE);
-      for (const wheel of this.ghostTrain.wheels) wheel.rotation.x -= (this.sGhost - prevGhost) / 0.55;
+      for (const wheel of this.ghostTrain.wheels)
+        wheel.rotation.x -= (this.sGhost - prevGhost) / 0.55;
     }
     // Wheels turn with the distance covered; a little lean into the bend.
     for (const wheel of this.mine.wheels) wheel.rotation.x -= dMine / 0.55;
