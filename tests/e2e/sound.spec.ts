@@ -3,6 +3,7 @@
 // streak brings the stems in on the bar, and the volume settings are saved.
 
 import { expect, test, type Page } from '@playwright/test';
+import { THEME_IDS } from '../../src/audio/themes';
 
 const SAVE = {
   version: 5,
@@ -45,7 +46,7 @@ const status = (page: Page): Promise<Status> =>
 test('every theme makes clean sound, and layers add to it', async ({ page }, info) => {
   test.skip(info.project.name === 'phone', 'Rendering is the same on every screen size');
   await open(page, '/#/sound');
-  await expect(page.locator('.sound__theme')).toHaveCount(16);
+  await expect(page.locator('.sound__theme')).toHaveCount(THEME_IDS.length);
   const results = await page.evaluate(async () => {
     const p = window.__otiyotSound;
     if (!p) throw new Error('no sound room');
@@ -79,6 +80,8 @@ test('every theme makes clean sound, and layers add to it', async ({ page }, inf
       'caves',
       'ladder',
       'boss',
+      'study',
+      'arcade',
     ] as const) {
       const low = measure(await p.render(id, 8, 0, 16000));
       const high = measure(await p.render(id, 8, 1, 16000));
@@ -157,5 +160,5 @@ test('settings save all four volumes and open the sound room', async ({ page }) 
   expect((await saved()).voiceVolume).toBeCloseTo(0.9);
   await page.getByRole('button', { name: 'Open the sound room' }).click();
   await expect(page).toHaveURL(/#\/sound$/);
-  await expect(page.locator('.sound__theme')).toHaveCount(16);
+  await expect(page.locator('.sound__theme')).toHaveCount(THEME_IDS.length);
 });

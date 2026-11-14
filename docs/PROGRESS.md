@@ -1617,6 +1617,7 @@ A polish pass over every scene: one shared, escalating tier-up flourish (3D halo
 - src/ui/styles/meadow.css: results-card stats share the card width instead of spilling over its edge (all story scenes)
 - tests/unit/polish.test.ts: every region has a theme, no two regions share one except the Arena pair, mode themes, the new themes, and the flourish grows at every tier
 - docs/ARCHITECTURE.md (camera rig, 3D feedback, themes), CHANGELOG.md, docs/ROADMAP.md (T34 ticked)
+- tests/e2e/sound.spec.ts: the sound room counts THEME_IDS instead of a fixed 16, and checks that study and arcade make clean sound and build
 
 **Decisions**
 

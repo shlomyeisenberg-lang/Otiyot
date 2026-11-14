@@ -2167,7 +2167,8 @@
         "src/scenes/caves/index.ts: the word banner rides higher and further ahead, so it never hides the apprentice and his lantern",
         "src/ui/styles/meadow.css: results-card stats share the card width instead of spilling over its edge (all story scenes)",
         "tests/unit/polish.test.ts: every region has a theme, no two regions share one except the Arena pair, mode themes, the new themes, and the flourish grows at every tier",
-        "docs/ARCHITECTURE.md (camera rig, 3D feedback, themes), CHANGELOG.md, docs/ROADMAP.md (T34 ticked)"
+        "docs/ARCHITECTURE.md (camera rig, 3D feedback, themes), CHANGELOG.md, docs/ROADMAP.md (T34 ticked)",
+        "tests/e2e/sound.spec.ts: the sound room counts THEME_IDS instead of a fixed 16, and checks that study and arcade make clean sound and build"
       ],
       "decisions": [
         {
