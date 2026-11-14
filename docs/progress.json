@@ -2362,15 +2362,42 @@
       "notes": "Nothing typed is ever stored: a ghost is the times at which each word was finished."
     },
     "T38": {
-      "status": "pending",
-      "finished": "",
+      "status": "in_progress",
+      "finished": "2026-11-14",
       "pr": "",
-      "summary": "",
-      "changes": [],
-      "decisions": [],
+      "summary": "Every screen of the game now opens in one automated test on the Medium setting, is typed at for ten seconds and must stay silent, within 150 draw calls and 300,000 triangles, and free its graphics memory when you leave. Screens now load only when opened, cutting the first download from 796 kB to about 285 kB of script.",
+      "changes": [
+        "tests/e2e/perf.spec.ts: opens 20 3D routes and 13 plain routes with an everything-unlocked player on medium, scripted typing for 10 s, fails on console/page errors, over-budget draw calls or triangles, or an engine left after leaving",
+        "src/ui/lazyScreen.ts + src/ui/shell.ts: 27 screens load on demand through lazyScreen (main script 796 kB to 285 kB, 241 kB to 102 kB gzip)",
+        "src/engine/engine.ts: Engine.create publishes globalThis.__otiyotEngine (cleared on dispose) for the performance test",
+        "scripts/perf-report.mjs and docs/PERF.md: per-scene draw calls, triangles, GPU objects, heap change, and the bundle size table",
+        "tests/unit/lazy-screen.test.ts: the lazy wrapper (traits at once, passes calls on, builds nothing after leaving)",
+        ".gitignore: perf-results; docs: ARCHITECTURE section 7, CHANGELOG, ROADMAP ticked"
+      ],
+      "decisions": [
+        {
+          "decision": "No scene needed a performance fix",
+          "why": "The worst measured scene is 135 draw calls and 98,774 triangles on medium, inside the 150 / 300,000 budget."
+        },
+        {
+          "decision": "Existing per-scene specs serve as the soft-lock check (each types a whole run on Calm by following the guide); the new spec adds the all-screens error and budget check",
+          "why": "A second bot per scene would repeat them and double CI time."
+        },
+        {
+          "decision": "Frame time and fps are not asserted",
+          "why": "CI draws in software, so fps there says nothing about real graphics cards."
+        },
+        {
+          "decision": "Lazy loading is done with a holder wrapper that keeps the shell's layout traits (full, wide, ownsMusic) known up front",
+          "why": "The shell sets stage layout and music before the code arrives."
+        }
+      ],
       "manual_steps": [],
-      "todo": [],
-      "notes": ""
+      "todo": [
+        "Forge could not be measured: it opens only when the number row is taught and no lesson teaches it yet. Measure it when one does.",
+        "Heap growth is coarse in Chromium (reads 0 kB); a real GC profile would need a headed run."
+      ],
+      "notes": "three.module.js (726 kB) is the biggest remaining file and loads only when a 3D screen opens."
     },
     "T39": {
       "status": "pending",

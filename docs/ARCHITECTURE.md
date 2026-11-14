@@ -103,6 +103,8 @@ The legacy games are kept as they are (plain JS, global `THREE`) under `public/a
 
 Target 60 fps at 1080p on integrated graphics (Intel Iris Xe). Presets low / medium / high / ultra change: pixel ratio cap, shadow map size (one cascaded sun on high+, blob shadows on low), post FX set, particle counts, fog quality. Default is picked by a 2-second benchmark on first run. Budgets per scene on medium: ≤ 150 draw calls, ≤ 300k triangles, no allocations in `update()`. Instancing for anything repeated. Every scene disposes what it creates.
 
+Measured per scene in `docs/PERF.md` (T38): `tests/e2e/perf.spec.ts` opens every route on medium, types for ten seconds, and fails on any console error, over-budget draw calls or triangles, or an engine left alive after leaving. Run `pnpm build && pnpm test:e2e perf.spec.ts && node scripts/perf-report.mjs` to refresh the report. Screens are loaded on demand: `src/ui/lazyScreen.ts` wraps a screen's dynamic import so the shell stays small (new screens are added the same way in `shell.ts`). `Engine.create` also publishes the newest engine as `globalThis.__otiyotEngine` (removed on dispose) for that test only.
+
 ## 7b. 3D engine kit (T08)
 
 Everything a scene needs lives in `src/engine` and is imported from `src/engine/index.ts`. A scene never creates a renderer, a light rig or a shader of its own.

@@ -1,10 +1,10 @@
-// Turns test-results/perf.json (written by tests/e2e/perf.spec.ts) and the build output in dist/
+// Turns perf-results/perf.json (written by tests/e2e/perf.spec.ts) and the build output in dist/
 // into docs/PERF.md. Run after `pnpm build && pnpm test:e2e perf.spec.ts`.
 import { readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
 import { gzipSync } from 'node:zlib';
 
 const BUDGET = { drawCalls: 150, triangles: 300_000 };
-const rows = JSON.parse(readFileSync('test-results/perf.json', 'utf8'));
+const rows = JSON.parse(readFileSync('perf-results/perf.json', 'utf8'));
 const kb = (n) => `${(n / 1024).toFixed(1)} kB`;
 
 const lines = [
@@ -24,7 +24,9 @@ for (const r of rows) {
 }
 lines.push(
   '',
-  'JS heap change is the growth of the page’s heap over the ten seconds of typing, a rough check that nothing allocates without end (the browser collects garbage on its own schedule, so small swings are normal). Every screen is also checked to free its engine on leaving.',
+  'JS heap change is the growth of the page’s heap over the ten seconds of typing, a rough check that nothing allocates without end (Chromium reports the heap in coarse steps, so 0 kB means no step up, not exactly zero). Every screen is also checked to free its engine on leaving.',
+  '',
+  'The `chapter` and `forge` routes show the House of the Scribe because a story chapter plays only when one is queued and the Forge opens only once the number row is taught, so the numbers match `hub`. The Forge itself could not be measured here: it opens only when the number row is taught, which no lesson does yet. Measure it when a lesson opens it.',
   '',
   '## Bundle size',
   '',
@@ -38,7 +40,7 @@ const files = readdirSync(dir)
   .filter((f) => f.endsWith('.js'))
   .map((f) => {
     const buf = readFileSync(`${dir}/${f}`);
-    return { f: f.replace(/-[A-Za-z0-9_]{8}\.js$/, '.js'), raw: statSync(`${dir}/${f}`).size, gz: gzipSync(buf).length };
+    return { f: f.replace(/-[\w-]{8}\.js$/, '.js'), raw: statSync(`${dir}/${f}`).size, gz: gzipSync(buf).length };
   })
   .sort((a, b) => b.raw - a.raw);
 for (const x of files) lines.push(`| ${x.f} | ${kb(x.raw)} | ${kb(x.gz)} |`);

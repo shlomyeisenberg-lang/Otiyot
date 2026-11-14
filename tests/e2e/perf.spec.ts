@@ -2,9 +2,9 @@
 // by a player who has everything unlocked, left to run, and typed at for ten seconds. The test
 // fails on any console error or page error, on a scene over budget (150 draw calls, 300k
 // triangles, ARCHITECTURE section 7), and on GPU objects left behind after leaving. Numbers go
-// to test-results/perf.json; `node scripts/perf-report.mjs` turns them into docs/PERF.md.
+// to perf-results/perf.json; `node scripts/perf-report.mjs` turns them into docs/PERF.md.
 
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { expect, test, type Page } from '@playwright/test';
 import { getTrack, recordLessonResult } from '../../src/learn';
 import { createProfile } from '../../src/save';
@@ -99,7 +99,18 @@ interface Sample {
   quality: string;
   heapGrowthKB: number | null;
 }
-const results: Sample[] = [];
+/** Keeps every sample in perf-results/perf.json (merged by route, so a restarted worker loses nothing). */
+function record(sample: Sample): void {
+  const file = 'perf-results/perf.json';
+  const all: Sample[] = existsSync(file)
+    ? (JSON.parse(readFileSync(file, 'utf8')) as Sample[])
+    : [];
+  const rest = all.filter((s) => s.route !== sample.route);
+  rest.push(sample);
+  rest.sort((a, b) => SCENES.indexOf(a.route as never) - SCENES.indexOf(b.route as never));
+  mkdirSync('perf-results', { recursive: true });
+  writeFileSync(file, JSON.stringify(rest, null, 2));
+}
 
 interface Hook {
   stats: Omit<Sample, 'route' | 'heapGrowthKB'>;
@@ -156,7 +167,7 @@ test.describe('Every screen', () => {
       expect(last, `${route} has no engine`).not.toBeNull();
       const s = last as Hook['stats'];
       const worst = peak ?? s;
-      results.push({
+      record({
         route,
         ...s,
         drawCalls: Math.max(worst.drawCalls, s.drawCalls),
@@ -199,10 +210,4 @@ test.describe('Every screen', () => {
       expect(errors, `${route} console errors`).toEqual([]);
     });
   }
-
-  test.afterAll(() => {
-    if (results.length === 0) return;
-    mkdirSync('test-results', { recursive: true });
-    writeFileSync('test-results/perf.json', JSON.stringify(results, null, 2));
-  });
 });
