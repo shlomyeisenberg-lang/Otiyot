@@ -2064,7 +2064,7 @@
     "T33": {
       "status": "done",
       "finished": "2026-11-14",
-      "pr": "",
+      "pr": "https://github.com/shlomyeisenberg-lang/Otiyot/pull/54",
       "summary": "Every run, lesson and mode now earns XP, glyphs and ink that are kept, with levels, a small skill tree of abilities that change how runs play, an Ink Shop in the House of the Scribe (robes, quills, inks, decorations, crafting) and one hidden letter to find in every scene. The apprentice wears what you buy in every scene, Dyo takes the ink color, and decorations stand in the house.",
       "changes": [
         "src/game/progression.ts (new, pure): XP curve (xpToNext, xpForLevel, levelOf), skill tree SKILLS (Eye, Hand, Heart; 9 nodes), skillState, learnSkill, toggleSkill, perksOf/Perks, SecondWind combo wrapper, shop catalogue ITEMS (robes, quills, inks, decorations with level, price, colors, gifts), buyItem, equipItem, toggleDecor, decorShown, dressOf, dressedLook, crafting RECIPES/recipeState/craft, hidden letters SECRETS (one per scene), bankRun and bankLesson (wallet, XP, level gifts, shelf news, letters)",

@@ -97,7 +97,7 @@ Work done before or outside the numbered tasks.
 - ✅ T30 · Arcade: new-generation and quick games — 2026-11-13 · [PR #51](https://github.com/shlomyeisenberg-lang/Otiyot/pull/51)
 - ✅ T31 · Modes: Practice, Time Attack, Survival, Daily — 2026-11-13 · [PR #52](https://github.com/shlomyeisenberg-lang/Otiyot/pull/52)
 - ✅ T32 · Statistics dashboard and journal — 2026-11-13 · [PR #53](https://github.com/shlomyeisenberg-lang/Otiyot/pull/53)
-- ✅ T33 · Progression, abilities, shop and cosmetics — 2026-11-14
+- ✅ T33 · Progression, abilities, shop and cosmetics — 2026-11-14 · [PR #54](https://github.com/shlomyeisenberg-lang/Otiyot/pull/54)
 - ⬜ T34 · Art, lighting, VFX and music pass
 - ⬜ T35 · Full story: cutscenes and voice
 - ⬜ T36 · Settings, accessibility and health
@@ -1544,7 +1544,7 @@ No save schema change. Hub e2e tests still pass.
 
 ### ✅ T33 · Progression, abilities, shop and cosmetics
 
-**Status:** Done · **Finished:** 2026-11-14
+**Status:** Done · **Finished:** 2026-11-14 · **Pull request:** [PR #54](https://github.com/shlomyeisenberg-lang/Otiyot/pull/54)
 
 Every run, lesson and mode now earns XP, glyphs and ink that are kept, with levels, a small skill tree of abilities that change how runs play, an Ink Shop in the House of the Scribe (robes, quills, inks, decorations, crafting) and one hidden letter to find in every scene. The apprentice wears what you buy in every scene, Dyo takes the ink color, and decorations stand in the house.
 
