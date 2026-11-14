@@ -2297,6 +2297,10 @@
         {
           "decision": "The graphics tab picks the preset and links to the test range instead of repeating its benchmark",
           "why": "The range screen already measures and picks; one place to do it."
+        },
+        {
+          "decision": "Merged on the strength of the local checks (lint, typecheck, 799 unit tests, build, settings and shell e2e on desktop and phone) after GitHub's check was still running at 15 minutes",
+          "why": "The build rules allow merging after 15 minutes of waiting; the CI e2e job often takes 17 to 45 minutes."
         }
       ],
       "manual_steps": [],

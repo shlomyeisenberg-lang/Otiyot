@@ -1701,6 +1701,7 @@ Settings now has seven tabs (display, accessibility, graphics, sound, typing, he
 - **Translation lines can be turned off, but stay on while story lines are read aloud** — Captions for every voice line is an accessibility rule in DESIGN.
 - **Shake and flash changes reach a running 3D scene the next time a scene starts** — Settings is its own screen, so no scene is running while it is open; the display options (theme, contrast, text size, captions) do change at once.
 - **The graphics tab picks the preset and links to the test range instead of repeating its benchmark** — The range screen already measures and picks; one place to do it.
+- **Merged on the strength of the local checks (lint, typecheck, 799 unit tests, build, settings and shell e2e on desktop and phone) after GitHub's check was still running at 15 minutes** — The build rules allow merging after 15 minutes of waiting; the CI e2e job often takes 17 to 45 minutes.
 
 **To do**
 
