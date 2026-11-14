@@ -97,7 +97,9 @@ The practice slate in the hub opens the modes screen (T31). **Practice**: weak k
 
 ## Progression and economy
 
-XP and levels. Currencies: **glyphs** (earned by accuracy) and **ink** (earned by combos). Abilities, e.g. *Echo* (shows one more word ahead), *Steady Hand* (absorbs one error per combo), *Second Wind*. A small skill tree, cosmetics (quills, ink colors, robes), hub decorations. Ranks S/A/B/C per scene from accuracy first, speed second. Five difficulties: Calm (no timers) · Steady · Swift · Fierce · Sofer's Trial (errors fail), each trading time pressure, error cost, word complexity and enemy pace.
+XP and levels. Currencies: **glyphs** (earned by accuracy) and **ink** (earned by combos). Abilities, e.g. *Echo* (shows one more word ahead), *Steady Hand* (absorbs one error per combo), *Second Wind*. A small skill tree, cosmetics (quills, ink colors, robes), hub decorations. Ranks S/A/B/C per scene from accuracy first, speed second.
+
+As built (T33): a level every few runs early on (100 XP, then 60 more for each level), one skill point per level for a tree of three short branches: **the Eye** (Echo: one more word ahead; Gilded Quill: a glyph per perfect word; Scholar's Eye: +15% XP), **the Hand** (Steady Hand: one slip per tier is caught; Warm Hands: runs start at the second combo tier; Steady Hand II: two slips) and **the Heart** (Soft Fall: a slip costs one tier less; Second Wind: once a run a broken streak comes back with the next perfect word; Deep Inkwell: +25% ink). In-run abilities can be switched off in the shop. Lessons and modes also give XP. The ink shop sells robes, quills, inks (Dyo, who lives in the inkwell, takes its color) and things for the house; a few come free as level gifts; four finer pieces are crafted from a piece you own, hidden letters and ink. **Hidden letters**: every scene hides one letter, found by playing it a particular way; Dyo's riddles in the shop hint at how. Five difficulties: Calm (no timers) · Steady · Swift · Fierce · Sofer's Trial (errors fail), each trading time pressure, error cost, word complexity and enemy pace.
 
 ## Health
 

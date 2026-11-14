@@ -443,7 +443,7 @@ One-pass review of Sonnet's T19; fix what is weak. Done when merged.
 - **Done when** After a few sessions the dashboard shows correct numbers (unit-tested aggregations) in both languages.
 - **User must have ready** Nothing.
 
-### [ ] T33 · Progression, abilities, shop and cosmetics
+### [x] T33 · Progression, abilities, shop and cosmetics
 - **Branch** `t33-progression`
 - **Model** Opus 5.5 · **Effort** Medium
 - **Goal** A light, readable progression that makes the player want one more run.
