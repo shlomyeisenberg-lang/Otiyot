@@ -602,10 +602,16 @@ export class CliffsScene implements GameScene {
 
   private buildFalls(): void {
     const { materials: kit, tracker, root } = this.ctx;
-    const streak = new BoxGeometry(0.62, 1.5, 0.12);
+    const streak = new BoxGeometry(0.44, 1.5, 0.1);
+    // T34: softer water. At full glow (1.05, unfogged) the streaks bloomed into white slabs;
+    // dimmer and a little see-through they read as falling water against the rock.
+    const water = kit.ink(TINT.foam, 0.66);
+    water.transparent = true;
+    water.opacity = 0.72;
+    water.depthWrite = false;
     this.falls = new InstancedMesh(
       tracker.track(streak),
-      tracker.track(kit.ink(TINT.foam, 1.05)),
+      tracker.track(water),
       SECTIONS * FALL_STREAKS,
     );
     this.falls.count = SECTIONS * FALL_STREAKS;
@@ -1153,7 +1159,7 @@ export class CliffsScene implements GameScene {
         // never fills the screen with glowing slabs.
         const cam = this.ctx.rig.camera.position;
         const near = Math.hypot(this.v.x - cam.x, this.v.z - cam.z);
-        const keep = near > 11 ? 1 : near < 6 ? 0 : (near - 6) / 5;
+        const keep = near > 15 ? 1 : near < 7 ? 0 : (near - 7) / 8;
         this.s.set(keep, len * flow * keep, keep);
         this.m4.compose(this.v, this.q, this.s);
         this.falls.setMatrixAt(idx, this.m4);
