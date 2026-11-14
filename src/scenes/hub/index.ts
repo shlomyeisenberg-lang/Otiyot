@@ -49,6 +49,7 @@ import {
 import { Dyo } from '../../game/dyo';
 import type { ApprenticeLook } from '../../story';
 import { archWall, paintBy, Parts } from './build';
+import { buildDecor } from './decor';
 import { BEACON_SPOTS, EDGE_Z, heightAt, landGeometry } from './land';
 import { DAY, TINT } from './palette';
 
@@ -110,6 +111,11 @@ export interface HubSetup {
   /** The word on the Game Room's sign ("soon"), in the player's language. */
   soon: string;
   rtl: boolean;
+  /** Decorations the player owns (T33: the ink shop), and their colors. */
+  decor?: readonly string[];
+  decorColors?: (id: string) => readonly number[];
+  /** Dyo takes the color of the ink in the inkwell: [body, shine] (T33). */
+  dyo?: readonly number[];
 }
 
 export interface HubProbe {
@@ -118,13 +124,22 @@ export interface HubProbe {
   hour: number;
   restored: number;
   litBeacons: number;
+  /** Decorations standing in the house (T33). */
+  decor: number;
 }
 
 const ORDER = STATION_IDS;
 
 export class HubScene implements GameScene {
   readonly id = 'hub';
-  readonly probe: HubProbe = { at: null, walking: false, hour: 0, restored: 0, litBeacons: 0 };
+  readonly probe: HubProbe = {
+    at: null,
+    walking: false,
+    hour: 0,
+    restored: 0,
+    litBeacons: 0,
+    decor: 0,
+  };
   /** The apprentice reached a station. */
   onArrive: ((id: StationId) => void) | null = null;
 
@@ -286,6 +301,7 @@ export class HubScene implements GameScene {
     this.buildCourtyard();
     this.buildBeacons();
     this.buildSigns();
+    this.buildDecor();
 
     // --- The people.
     const l = this.setup.look;
@@ -296,6 +312,8 @@ export class HubScene implements GameScene {
       skin: TINT.skin,
       ink: TINT.ink,
       headwear: l.headwear,
+      feather: l.feather,
+      shaft: l.shaft,
       quill: true,
       height: 0.92,
       seed: 2,
@@ -337,8 +355,8 @@ export class HubScene implements GameScene {
       this.naftali = n;
     }
     this.dyo = new Dyo(kit, {
-      body: TINT.dyo,
-      shine: TINT.dyoShine,
+      body: this.setup.dyo?.[0] ?? TINT.dyo,
+      shine: this.setup.dyo?.[1] ?? TINT.dyoShine,
       eye: TINT.dyoEye,
       pupil: TINT.ink,
     });
@@ -1015,6 +1033,44 @@ export class HubScene implements GameScene {
       this.medals.setColorAt(i, this.col);
     }
     root.add(this.medals);
+  }
+
+  /** The decorations bought in the ink shop (T33): one lit mesh and one that glows. */
+  private buildDecor(): void {
+    const ids = this.setup.decor ?? [];
+    if (ids.length === 0) return;
+    const { materials: kit, tracker, root } = this.ctx;
+    const solid = new Parts();
+    const glow = new Parts();
+    buildDecor(ids, solid, glow, this.setup.decorColors ?? (() => []));
+    const sm = solid.merge();
+    if (sm) {
+      const m = new Mesh(
+        tracker.track(sm),
+        tracker.track(kit.surface({ vertexColors: true, restore: false })),
+      );
+      kit.caster(m);
+      m.receiveShadow = true;
+      m.name = 'decor';
+      root.add(m);
+    }
+    const gm = glow.merge();
+    if (gm) {
+      const m = new Mesh(
+        tracker.track(gm),
+        tracker.track(
+          kit.surface({
+            vertexColors: true,
+            restore: false,
+            emissive: TINT.lamp,
+            emissiveIntensity: 0.9,
+          }),
+        ),
+      );
+      m.name = 'decor-glow';
+      root.add(m);
+    }
+    this.probe.decor = ids.length;
   }
 
   /** The courtyard: flagstones, the low wall over the valley, the olive tree, the well, the pots. */

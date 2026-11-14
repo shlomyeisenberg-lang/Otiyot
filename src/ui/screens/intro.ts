@@ -5,10 +5,11 @@
 // Without 3D, the same story is told over the parchment, line by line.
 
 import type { IntroScene } from '../../scenes/intro';
-import { ACT_ONE, apprenticeLook, CAST, CutscenePlayer, INTRO, type Beat } from '../../story';
+import { ACT_ONE, CAST, CutscenePlayer, INTRO, type Beat } from '../../story';
 import { HUB, type AppContext, type Screen } from '../app';
 import { button, dialogueBox, keycap } from '../components';
 import { h } from '../dom';
+import { dressedLook } from '../../game/progression';
 import type { Stage3d } from '../stage3d';
 import { StoryVoice } from '../voice';
 
@@ -181,7 +182,7 @@ export function introScreen(ctx: AppContext): Screen {
       import('../stage3d'),
     ]);
     if (disposed) return;
-    const s = new IntroScene(apprenticeLook(ctx.profile.avatar));
+    const s = new IntroScene(dressedLook(ctx.profile));
     s.direct(player);
     scene = s;
     try {

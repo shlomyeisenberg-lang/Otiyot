@@ -4,7 +4,8 @@
 // "a scene never reads the keyboard"). Every screen that runs a scene uses it.
 
 import { resolveTypedChar, type Finger, type LayoutId, type Metrics, type TypedKey } from '../core';
-import type { ComboPolicy } from '../game/combo';
+import { ComboRules, type ComboPolicy } from '../game/combo';
+import { NO_PERKS, SecondWind, type Perks } from '../game/progression';
 import type { Targeting } from '../game/combat';
 import type { TypingView } from '../engine/scene';
 import { HintCoach, type CoachTip } from '../game/hints';
@@ -76,6 +77,7 @@ export class PlayController {
   private driver: TypingDriver | null = null;
   private targeting: Targeting | null = null;
   private hideAhead = false;
+  private wind: SecondWind | null = null;
   private coach = new HintCoach();
   private lastStats = -Infinity;
 
@@ -84,6 +86,8 @@ export class PlayController {
     private layout: LayoutId,
     private readonly settings: Pick<Settings, 'backspace' | 'hardcore' | 'niqqud'>,
     guideMode: GuideMode = 'keys',
+    /** The player's learned abilities (T33): Echo, Steady Hand, Warm Hands, Soft Fall, Second Wind. */
+    readonly perks: Perks = NO_PERKS,
   ) {
     const t = i18n;
     this.hud = new Hud({
@@ -152,16 +156,32 @@ export class PlayController {
     this.coach = new HintCoach();
     this.targeting = run.targeting ?? null;
     this.hideAhead = run.hideLookahead ?? false;
+    const hardcore = run.hardcore ?? this.settings.hardcore;
+    // Abilities work in runs with combo rules (scenes, fights, modes); a lesson stays plain
+    // apart from Echo. The Sofer's Trial keeps its one rule: the first error ends the run.
+    const p = this.perks;
+    let combo = run.combo;
+    if (combo instanceof ComboRules && !hardcore) {
+      combo.grant(p.steadyHand, p.softer);
+      if (p.steadyHand > 0 && !combo.onAbsorb) {
+        combo.onAbsorb = () => this.hud.announce(this.i18n.t('ability.steady.absorb'));
+      }
+    }
+    this.wind = combo && p.secondWind && !hardcore ? new SecondWind(combo) : null;
+    if (this.wind) combo = this.wind;
     this.driver = new TypingDriver(source, {
       layout,
       mode,
       backspace: this.settings.backspace,
-      hardcore: run.hardcore ?? this.settings.hardcore,
+      hardcore,
       niqqud: this.settings.niqqud,
-      combo: run.combo,
+      combo,
+      ahead: p.ahead,
     });
     this.autoTarget();
-    this.hud.setCombo(0);
+    const start = run.combo && !hardcore ? p.startCombo : 0;
+    if (start > 0) this.driver.setCombo(start);
+    this.hud.setCombo(start);
     this.hud.setStats(0, 100);
     this.hud.setProgress(mode === 'once' ? 0 : -1);
     this.showWord();
@@ -208,6 +228,12 @@ export class PlayController {
     }
     this.hud.setCombo(d.combo);
     if (r.word) {
+      const back = this.wind?.onWord(r.word.perfect, d.combo) ?? null;
+      if (back !== null) {
+        d.setCombo(back);
+        this.hud.setCombo(d.combo);
+        this.hud.announce(this.i18n.t('ability.second.back'));
+      }
       this.target?.onWord(r.word.word, r.word.perfect);
       this.onWord?.(r.word);
       if (d.mode === 'once') this.hud.setProgress(d.progress);
@@ -298,7 +324,9 @@ export class PlayController {
   private showWord(): void {
     const d = this.driver;
     if (!d) return;
-    this.hud.setWord(d.letters, d.states, this.hideAhead ? '' : d.lookahead);
+    const echo = this.perks.ahead > 1 ? d.peek(1) : '';
+    const ahead = echo && d.lookahead ? `${d.lookahead} ${echo}` : d.lookahead;
+    this.hud.setWord(d.letters, d.states, this.hideAhead ? '' : ahead);
     this.guide.show(d.guide());
   }
 

@@ -320,6 +320,8 @@ export class IntroScene implements GameScene {
       skin: TINT.skin,
       ink: TINT.ink,
       headwear: l.headwear,
+      feather: l.feather,
+      shaft: l.shaft,
       height: 0.92,
       seed: 2,
     });

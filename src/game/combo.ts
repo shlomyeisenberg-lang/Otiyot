@@ -40,8 +40,8 @@ export function dropTiers(combo: number, tiers: number): number {
 }
 
 export class ComboRules implements ComboPolicy {
-  readonly errorTiers: number;
-  readonly steadyHand: number;
+  errorTiers: number;
+  steadyHand: number;
   /** Errors Steady Hand can still absorb in this streak. */
   charges: number;
   /** Errors absorbed in the whole run. */
@@ -54,6 +54,18 @@ export class ComboRules implements ComboPolicy {
     this.errorTiers = o.errorTiers ?? 1;
     this.steadyHand = Math.max(0, Math.floor(o.steadyHand ?? 0));
     this.charges = this.steadyHand;
+  }
+
+  /**
+   * Abilities (T33): Steady Hand charges per tier and Soft Fall (an error costs `softer` tiers
+   * fewer, never below 0). Only raises what the difficulty gave.
+   */
+  grant(steadyHand: number, softer: number): void {
+    if (steadyHand > this.steadyHand) {
+      this.steadyHand = Math.floor(steadyHand);
+      this.charges = this.steadyHand;
+    }
+    if (softer > 0) this.errorTiers = Math.max(0, this.errorTiers - Math.floor(softer));
   }
 
   onHit(combo: number): void {

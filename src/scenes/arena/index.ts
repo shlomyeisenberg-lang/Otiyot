@@ -81,7 +81,14 @@ import {
 
 export interface ArenaSetup {
   /** The apprentice's robe (the profile's avatar). */
-  look: { robe: number; hem: number; trim: number; headwear: 'cap' | 'hat' | 'turban' };
+  look: {
+    robe: number;
+    hem: number;
+    trim: number;
+    headwear: 'cap' | 'hat' | 'turban';
+    feather?: number;
+    shaft?: number;
+  };
   /** Who stands on the stage (T26): the Great Blot (default) or one of the three trials. */
   boss?: BossLookId;
 }
@@ -562,6 +569,8 @@ export class ArenaScene implements GameScene {
       skin: TINT.skin,
       ink: TINT.ink,
       headwear: l.headwear,
+      feather: l.feather,
+      shaft: l.shaft,
       quill: true,
       height: 0.92,
       seed: 4,

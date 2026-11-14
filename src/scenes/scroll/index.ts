@@ -67,7 +67,14 @@ import { allyAt, CROSSING, isKeeperPhase, type Ally } from './plan';
 
 export interface ScrollSetup {
   /** The apprentice's robe (the profile's avatar). */
-  look: { robe: number; hem: number; trim: number; headwear: 'cap' | 'hat' | 'turban' };
+  look: {
+    robe: number;
+    hem: number;
+    trim: number;
+    headwear: 'cap' | 'hat' | 'turban';
+    feather?: number;
+    shaft?: number;
+  };
 }
 
 // --- The lay of the scroll. It runs away from the camera along -z.
@@ -474,6 +481,8 @@ export class ScrollScene implements GameScene {
       skin: TINT.skin,
       ink: TINT.ink,
       headwear: l.headwear,
+      feather: l.feather,
+      shaft: l.shaft,
       quill: true,
       height: 0.92,
       seed: 4,

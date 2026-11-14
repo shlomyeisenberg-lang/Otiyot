@@ -20,6 +20,8 @@ import type { TypedKey } from '../../core';
 import type { AppContext, Screen } from '../app';
 import { button, keycap, statTile, status } from '../components';
 import { h } from '../dom';
+import { earnedRow } from '../earned';
+import { bankLesson, perksOf, type RunGain } from '../../game/progression';
 import { PlayController, type RunEnd } from '../play';
 import { takeWantedLesson } from '../playable';
 
@@ -67,7 +69,13 @@ export function lessonScreen(ctx: AppContext): Screen {
   };
   window.__otiyotLesson = probe;
 
-  const play = new PlayController(t, profile.layout, settings, settings.keyboardGuide);
+  const play = new PlayController(
+    t,
+    profile.layout,
+    settings,
+    settings.keyboardGuide,
+    perksOf(profile),
+  );
   const title = h('h1', { class: 'lesson__title' });
   const tip = h('p', { class: 'lesson__tip' });
   const head = h(
@@ -145,6 +153,7 @@ export function lessonScreen(ctx: AppContext): Screen {
     const before = knownKeysOf(ctx.profile);
     const m = end.metrics;
     let passed = false;
+    let gain: RunGain | null = null;
     const now = Date.now();
     ctx.saves.update((p) => {
       // Every key feeds the adaptive engine; only statistics are kept, never the text.
@@ -167,6 +176,7 @@ export function lessonScreen(ctx: AppContext): Screen {
         accuracy: m.accuracy,
         stars: m.accuracy >= 98 ? 3 : m.accuracy >= 94 ? 2 : m.accuracy >= 90 ? 1 : 0,
       }).passed;
+      gain = bankLesson(p, m.keystrokes, m.accuracy, passed);
       p.history.push({
         at: now,
         track: p.track,
@@ -182,10 +192,15 @@ export function lessonScreen(ctx: AppContext): Screen {
     probe.newKeys = [...after].filter((c) => !before.has(c)).join('');
     probe.passed = passed;
     ctx.audio.play(passed ? 'success' : 'ui-error');
-    showEnd(end, passed, probe.newKeys);
+    showEnd(end, passed, probe.newKeys, gain);
   }
 
-  function showEnd(end: RunEnd | null, passed = false, fresh = ''): void {
+  function showEnd(
+    end: RunEnd | null,
+    passed = false,
+    fresh = '',
+    gain: RunGain | null = null,
+  ): void {
     const m = end?.metrics;
     const body: HTMLElement[] = [];
     if (m) {
@@ -213,6 +228,7 @@ export function lessonScreen(ctx: AppContext): Screen {
           ),
         );
       }
+      if (gain) body.push(earnedRow(t, gain, gain));
       if (!passed) body.push(h('p', { class: 'lesson__note', text: t.t('lesson.needs') }));
     } else {
       body.push(h('p', { class: 'lesson__note', text: t.t('lesson.allDoneBody') }));

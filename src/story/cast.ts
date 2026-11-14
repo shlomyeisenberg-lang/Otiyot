@@ -63,13 +63,48 @@ export interface ApprenticeLook {
   hem: number;
   trim: number;
   headwear: 'cap' | 'hat' | 'turban';
+  /** The quill's feather and shaft, and the ink on its nib (T33: the shop changes them). */
+  feather: number;
+  shaft: number;
 }
 
 export const APPRENTICE_LOOKS: readonly ApprenticeLook[] = [
-  { id: 'scribe', robe: 0x3a78c8, hem: 0x1f4a86, trim: 0xe6c36a, headwear: 'cap' },
-  { id: 'olive', robe: 0x6f8a3a, hem: 0x3c4c1e, trim: 0xf0e2c0, headwear: 'cap' },
-  { id: 'clay', robe: 0xb05c44, hem: 0x5a2c22, trim: 0xf0e2c0, headwear: 'turban' },
-  { id: 'dusk', robe: 0x5a4f86, hem: 0x2e2850, trim: 0xe0b354, headwear: 'hat' },
+  {
+    id: 'scribe',
+    robe: 0x3a78c8,
+    hem: 0x1f4a86,
+    trim: 0xe6c36a,
+    headwear: 'cap',
+    feather: 0xf4ecd8,
+    shaft: 0x14100c,
+  },
+  {
+    id: 'olive',
+    robe: 0x6f8a3a,
+    hem: 0x3c4c1e,
+    trim: 0xf0e2c0,
+    headwear: 'cap',
+    feather: 0xf4ecd8,
+    shaft: 0x14100c,
+  },
+  {
+    id: 'clay',
+    robe: 0xb05c44,
+    hem: 0x5a2c22,
+    trim: 0xf0e2c0,
+    headwear: 'turban',
+    feather: 0xf4ecd8,
+    shaft: 0x14100c,
+  },
+  {
+    id: 'dusk',
+    robe: 0x5a4f86,
+    hem: 0x2e2850,
+    trim: 0xe0b354,
+    headwear: 'hat',
+    feather: 0xf4ecd8,
+    shaft: 0x14100c,
+  },
 ];
 
 /** The look for a profile's avatar id (the first look when the id is unknown). */

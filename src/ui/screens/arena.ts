@@ -22,7 +22,8 @@ import {
 } from '../../game/boss';
 import type { BossDef } from '../../game/boss';
 import { recordRegionRank, regionMode, regionStatuses, type RegionId } from '../../game/regions';
-import { rewardsOf, type RunRank, type RunRewards } from '../../game/results';
+import { rewardsOf, type RunRank, type RunRewards, type RunStats } from '../../game/results';
+import { bankRun, dressedLook, perksOf, type RunGain } from '../../game/progression';
 import type { Metrics } from '../../core';
 import type { Engine, GameScene, SceneManager } from '../../engine';
 import type { Profile } from '../../save';
@@ -30,7 +31,6 @@ import type { BossLookId } from '../../scenes/arena/palette';
 import { GREAT_BLOT, planGreatBlot, type BlotInput } from '../../scenes/arena/plan';
 import {
   ACT_TWO,
-  apprenticeLook,
   type ApprenticeLook,
   arenaLine,
   BLOT_VICTORY,
@@ -44,6 +44,7 @@ import {
 import type { AppContext, Route, Screen } from '../app';
 import { button, dialogueBox, rankBadge, statTile, status } from '../components';
 import { h } from '../dom';
+import { earnedRow } from '../earned';
 import type { MessageKey } from '../i18n';
 import { PlayController, type RunEnd } from '../play';
 import { resolveTheme } from '../theme';
@@ -463,7 +464,15 @@ export function bossScreen(ctx: AppContext, cfg: BossConfig): Screen {
   let creditsTimer = 0;
   const weakSaid = new Set<string>();
 
-  const play = new PlayController(t, layout, settings, settings.keyboardGuide);
+  /** What the last run put into the profile (T33): levels, gifts, a hidden letter. */
+  let gain: RunGain | null = null;
+  const play = new PlayController(
+    t,
+    layout,
+    settings,
+    settings.keyboardGuide,
+    perksOf(ctx.profile),
+  );
   view.append(play.hud.el, results);
 
   // --- Lines from Reb Ezra and Dyo. A small remark never talks over a phase's line.
@@ -753,24 +762,28 @@ export function bossScreen(ctx: AppContext, cfg: BossConfig): Screen {
     const m = mergeMetrics(parts);
     const accuracy = m.accuracy;
     const wpm = Math.round(m.netWpm);
-    const r = rewardsOf(
-      {
-        accuracy,
-        wpm,
-        bestCombo,
-        words: wordsAll,
-        perfect: perfectWords,
-        broken: fight?.parried ?? 0,
-        smudges: fight?.landed ?? 0,
-        failed,
-      },
-      DIFFICULTIES[difficulty],
-      level,
-    );
+    const runStats: RunStats = {
+      accuracy,
+      wpm,
+      bestCombo,
+      words: wordsAll,
+      perfect: perfectWords,
+      broken: fight?.parried ?? 0,
+      smudges: fight?.landed ?? 0,
+      failed,
+    };
+    const r = rewardsOf(runStats, DIFFICULTIES[difficulty], level);
     probe.results = { ...r, accuracy, wpm, failed };
     firstRestore = !failed && !cfg.beaten(ctx.profile);
     winNote = null;
     ctx.saves.update((p) => {
+      gain = bankRun(p, {
+        region: cfg.region,
+        stats: runStats,
+        rewards: r,
+        difficulty: difficulty,
+        level: level,
+      });
       p.history.push({
         at: Date.now(),
         track: p.track,
@@ -1096,13 +1109,7 @@ export function bossScreen(ctx: AppContext, cfg: BossConfig): Screen {
         statTile({ label: t.t('range.results.combo'), value: bestCombo }),
         statTile({ label: t.t('arena.results.parried'), value: fight?.parried ?? 0 }),
       ),
-      h(
-        'div',
-        { class: 'range__results-earned' },
-        statTile({ label: t.t('range.results.xp'), value: `+${r.xp}`, gold: true }),
-        statTile({ label: t.t('range.results.glyphs'), value: `+${r.glyphs}`, gold: true }),
-        statTile({ label: t.t('range.results.ink'), value: `+${r.ink}`, gold: true }),
-      ),
+      earnedRow(t, r, gain),
       suggested !== level
         ? h('p', {
             class: 'range__results-note',
@@ -1220,7 +1227,7 @@ export function bossScreen(ctx: AppContext, cfg: BossConfig): Screen {
     play.target = manager;
     const rng = new eng.Rng((Date.now() % 100000) + 16);
     rngNext = () => rng.next();
-    scene = make(apprenticeLook(profile.avatar));
+    scene = make(dressedLook(profile));
     scene.onStep = step;
     scene.onTransitionEnd = afterTransition;
 

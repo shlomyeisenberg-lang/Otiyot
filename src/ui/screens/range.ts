@@ -15,13 +15,15 @@ import {
   suggestLevel,
   type LevelId,
 } from '../../game/levels';
-import { rewardsOf, type RunRewards } from '../../game/results';
+import { rewardsOf, type RunRewards, type RunStats } from '../../game/results';
+import { bankRun, perksOf, type RunGain } from '../../game/progression';
 import type { Engine, QualityChoice, QualityName, SceneManager, TextStyle } from '../../engine';
 import type { WordSource } from '../../game/typing';
 import type { RangeDemo, RangeScene } from '../../scenes/range';
 import type { AppContext, Screen } from '../app';
 import { button, keycap, rankBadge, statTile, status } from '../components';
 import { h } from '../dom';
+import { earnedRow } from '../earned';
 import type { MessageKey } from '../i18n';
 import { GUIDE_MODES } from '../keyboardGuide';
 import { PlayController, type RunEnd } from '../play';
@@ -137,7 +139,15 @@ export function rangeScreen(ctx: AppContext): Screen {
   let cleanup: (() => void) | null = null;
   let mode: RunMode = 'lesson';
   let rngNext: () => number = Math.random;
-  const play = new PlayController(t, ctx.profile.layout, settings, settings.keyboardGuide);
+  /** What the last run put into the profile (T33): levels, gifts, a hidden letter. */
+  let gain: RunGain | null = null;
+  const play = new PlayController(
+    t,
+    ctx.profile.layout,
+    settings,
+    settings.keyboardGuide,
+    perksOf(ctx.profile),
+  );
   const done = h('div', { class: 'range__done', hidden: true, role: 'status' });
   const results = h('div', { class: 'range__results', hidden: true, role: 'dialog' });
   view.append(play.hud.el, done, results);
@@ -270,23 +280,27 @@ export function rangeScreen(ctx: AppContext): Screen {
     const m = d.metrics(now);
     const accuracy = Math.round(d.accuracy() * 10) / 10;
     const wpm = Math.round(m.netWpm);
-    const r = rewardsOf(
-      {
-        accuracy,
-        wpm,
-        bestCombo: d.bestCombo,
-        words: d.wordsDone,
-        perfect: fight.perfect,
-        broken: fight.broken,
-        smudges: fight.smudges,
-        failed,
-      },
-      DIFFICULTIES[difficulty],
-      level,
-    );
+    const runStats: RunStats = {
+      accuracy,
+      wpm,
+      bestCombo: d.bestCombo,
+      words: d.wordsDone,
+      perfect: fight.perfect,
+      broken: fight.broken,
+      smudges: fight.smudges,
+      failed,
+    };
+    const r = rewardsOf(runStats, DIFFICULTIES[difficulty], level);
     probe.results = { ...r, accuracy, wpm, failed };
     // Statistics only (never typed text): they feed the level suggestion.
     ctx.saves.update((p) => {
+      gain = bankRun(p, {
+        region: '',
+        stats: runStats,
+        rewards: r,
+        difficulty: difficulty,
+        level: level,
+      });
       p.history.push({
         at: Date.now(),
         track: p.track,
@@ -339,13 +353,7 @@ export function rangeScreen(ctx: AppContext): Screen {
           value: t.t('range.results.ofTotal', { n: fight.broken, total: fight.total }),
         }),
       ),
-      h(
-        'div',
-        { class: 'range__results-earned' },
-        statTile({ label: t.t('range.results.xp'), value: `+${r.xp}`, gold: true }),
-        statTile({ label: t.t('range.results.glyphs'), value: `+${r.glyphs}`, gold: true }),
-        statTile({ label: t.t('range.results.ink'), value: `+${r.ink}`, gold: true }),
-      ),
+      earnedRow(t, r, gain),
       fight.smudges > 0
         ? h('p', {
             class: 'range__results-note',

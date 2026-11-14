@@ -2,14 +2,14 @@
 
 # Otiyot — Progress
 
-_Last updated 2026-11-13. This page is generated from `docs/progress.json`; to change it, edit the JSON and run `node scripts/render-progress.mjs`._
+_Last updated 2026-11-14. This page is generated from `docs/progress.json`; to change it, edit the JSON and run `node scripts/render-progress.mjs`._
 
 ## Summary
 
-- ✅ **37** of **44** tasks done
-- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 7 pending
+- ✅ **38** of **44** tasks done
+- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 6 pending
 - ⬜ **3** manual steps waiting for you
-- 💡 14 feature ideas open
+- 💡 16 feature ideas open
 
 ## Waiting for me
 
@@ -97,7 +97,7 @@ Work done before or outside the numbered tasks.
 - ✅ T30 · Arcade: new-generation and quick games — 2026-11-13 · [PR #51](https://github.com/shlomyeisenberg-lang/Otiyot/pull/51)
 - ✅ T31 · Modes: Practice, Time Attack, Survival, Daily — 2026-11-13 · [PR #52](https://github.com/shlomyeisenberg-lang/Otiyot/pull/52)
 - ✅ T32 · Statistics dashboard and journal — 2026-11-13 · [PR #53](https://github.com/shlomyeisenberg-lang/Otiyot/pull/53)
-- ⬜ T33 · Progression, abilities, shop and cosmetics
+- ✅ T33 · Progression, abilities, shop and cosmetics — 2026-11-14 · [PR #54](https://github.com/shlomyeisenberg-lang/Otiyot/pull/54)
 - ⬜ T34 · Art, lighting, VFX and music pass
 - ⬜ T35 · Full story: cutscenes and voice
 - ⬜ T36 · Settings, accessibility and health
@@ -1542,11 +1542,56 @@ The main menu now has a Statistics page and the journal door in the House of the
 
 No save schema change. Hub e2e tests still pass.
 
-### ⬜ T33 · Progression, abilities, shop and cosmetics
+### ✅ T33 · Progression, abilities, shop and cosmetics
 
-**Status:** Pending
+**Status:** Done · **Finished:** 2026-11-14 · **Pull request:** [PR #54](https://github.com/shlomyeisenberg-lang/Otiyot/pull/54)
 
-_Not started._
+Every run, lesson and mode now earns XP, glyphs and ink that are kept, with levels, a small skill tree of abilities that change how runs play, an Ink Shop in the House of the Scribe (robes, quills, inks, decorations, crafting) and one hidden letter to find in every scene. The apprentice wears what you buy in every scene, Dyo takes the ink color, and decorations stand in the house.
+
+**What changed**
+
+- src/game/progression.ts (new, pure): XP curve (xpToNext, xpForLevel, levelOf), skill tree SKILLS (Eye, Hand, Heart; 9 nodes), skillState, learnSkill, toggleSkill, perksOf/Perks, SecondWind combo wrapper, shop catalogue ITEMS (robes, quills, inks, decorations with level, price, colors, gifts), buyItem, equipItem, toggleDecor, decorShown, dressOf, dressedLook, crafting RECIPES/recipeState/craft, hidden letters SECRETS (one per scene), bankRun and bankLesson (wallet, XP, level gifts, shelf news, letters)
+- Save v9 (src/save/schema.ts, migrations.ts): profile.progress {xp, skills, off, secrets}; the v8->v9 migration counts earlier play (1 XP per 10 characters, 1 glyph per 40)
+- src/game/combo.ts: ComboRules.grant(steadyHand, softer) for Steady Hand and Soft Fall; errorTiers and steadyHand are now settable
+- src/game/typing.ts: DriverOptions.ahead keeps more words ready; TypingDriver.peek(n)
+- src/ui/play.ts: PlayController takes the player perks: Echo (two words ahead), Steady Hand, Soft Fall, Warm Hands (start at combo 10), Second Wind; HUD announces an absorbed slip and the second wind; off in the Sofer's Trial
+- Every scene screen (meadow, cliffs, forge, shuk, rail, geniza, hermon, station, atbash, midbar, caves, the boss screens arena/trials/scroll, ladder, range): banks the run with bankRun inside the save update, passes perks to PlayController, shows earnedRow on the results card, and builds the apprentice from dressedLook
+- src/ui/screens/lesson.ts and modes.ts: bankLesson after every lesson and mode run; the earned row on their end cards; Echo in lessons
+- src/ui/earned.ts (new): earnedRow (XP, glyphs, ink, ability bonus, level up with point and gifts, hidden letter found) and levelBar
+- src/ui/screens/shop.ts (new, #/shop): the Ink Shop with an SVG apprentice in his worn colors and Dyo, level bar, wallet, tabs Shelf, Crafting, Skills, Hidden letters; route added in app.ts and shell.ts
+- src/ui/screens/hub.ts: the shop station opens the Ink Shop (no longer "soon"); passes decorations and the ink color to the hub scene
+- src/scenes/hub/decor.ts (new) and hub/index.ts: decorations in the house (brass lamp, pomegranate tree, pennants, map, wind chimes, dovecote with doves, fountain) as one lit and one glowing mesh; Dyo in the ink color; probe.decor
+- src/story/cast.ts and src/engine/character.ts: ApprenticeLook and CharacterLook carry the quill feather and shaft colors; every scene passes them to the apprentice
+- src/ui/styles/shop.css (new): shop header, level bar, wallet pills, item cards, skill tree, letter tiles, earned row
+- locales/en.json and he.json: shop, ability, earned and secret strings (about 160 each)
+- tests/unit/progression.test.ts (new, 19 tests: curve, banking, skills and perks, combo effects, Second Wind, Echo, shop, crafting, decor, catalogue texts, hidden letters, the two-hour balance simulation, migration v9); tests/e2e/shop.spec.ts (new: buy, wear, learn, craft, letters, Hebrew RTL, phone width); save-migrations test follows CURRENT_VERSION
+- Docs: ARCHITECTURE (data model v9, new section 7v), DESIGN (shop components), GAME_DESIGN (progression as built), CHANGELOG, ROADMAP ticked
+- tests/e2e/atbash.spec.ts: the periodic cipher check ignores the finished run (pre-existing race)
+
+**Decisions**
+
+- **XP per level is 100, then 60 more each level (level 2 at 100 XP, level 10 at 3,060)** — The balance test plays two hours of lessons and Calm runs: a first level within ten minutes, a new level at least every 20 minutes, level 8 to 16 after two hours
+- **Lessons and modes earn XP too (bankLesson), not only scenes** — A new player spends much of the first hours in lessons; without it the first hour would have almost no unlocks
+- **Earlier play counts: the migration gives 1 XP per 10 characters and 1 glyph per 40 from the history** — Players who played before T33 should not start from zero; statistics are already stored, so nothing new is needed
+- **Six in-run abilities (Echo, Steady Hand, Steady Hand II, Warm Hands, Soft Fall, Second Wind) and three economy ones (Gilded Quill, Scholar's Eye, Deep Inkwell) in a 3x3 tree** — The roadmap asks for Echo, Steady Hand, Second Wind and three more that change how runs feel; three short branches stay readable
+- **In-run abilities can be switched off; they are ignored in the Sofer's Trial; lessons only get Echo** — Purists can play plain, the Trial keeps its one rule, and lessons stay a clean measure of learning
+- **Abilities are wired once in PlayController (perks as a constructor argument) instead of in each scene** — Every scene, fight and mode gets them with one line, and new scenes cannot forget them
+- **Cosmetics: robe colors, the quill (feather and shaft) and the ink color, which also colors Dyo in the house** — They show on the 3D apprentice in every scene with no new models; Dyo lives in the inkwell, so the ink is his color
+- **Hidden letters are found by playing a scene a particular way (a riddle per scene) and shown on the results card, not as an object to find in the 3D world** — One rule set covers all 15 scenes without touching each scene, and the riddles give a reason to replay on other levels and difficulties
+- **Crafting keeps the piece you start from and needs found hidden letters plus ink** — Nothing is lost by crafting, and the letters become useful, not only a collection
+- **Glyphs are the main price, ink is scarcer and is the price of crafting and fancy items** — Matches GAME_DESIGN: glyphs come from accuracy, ink from streaks
+- **The shop is its own page (#/shop) reached from the hub shelf, like the journal** — Four tabs of cards do not fit a modal on a phone; the page works at 375px
+- **Merged on the strength of local lint, typecheck, unit tests, build and the shop/hub/meadow/fight/modes/stats smoke tests if GitHub checks do not report in time** — Run rules for unattended builders
+- **Fixed a race in tests/e2e/atbash.spec.ts: the cipher check now skips the moment the run has ended** — When the last key landed on every fifth key the test read the finished run (no next sign) and failed about one run in five; reproduced locally (ended: true, 15 of 15 words). Not a game bug
+
+**To do**
+
+- [ ] Hidden letters do not yet glimmer inside the 3D scenes; they appear on the results card and in the shop (see feature idea)
+- [ ] Balance numbers are first estimates; T34 or a playtest may tune prices and the XP curve (all in src/game/progression.ts)
+
+**Notes**
+
+Everything about prices, levels and abilities is data at the top of src/game/progression.ts, so tuning is one file. The 2D figure in the shop uses the catalogue colors directly, like the 3D palette.
 
 ### ⬜ T34 · Art, lighting, VFX and music pass
 
@@ -1764,6 +1809,30 @@ Build prompt:
 
 ```text
 Otiyot project — GitHub repo shlomyeisenberg-lang/Otiyot. Task: Daily Ladder seed (branch: idea-daily-ladder). Work from start to finish without stopping for approval. Read CLAUDE.md, docs/ARCHITECTURE.md (section 7u), docs/DESIGN.md and your entry in docs/progress.json. Add a 'Daily climb' button to the Ladder's Escape panel (src/ui/screens/ladder.ts) that starts a climb whose floor kinds and word choices come from a seeded random generator made from today's local date (src/scenes/ladder/plan.ts already takes rng); keep learned letters only and add a unit test that the same date gives the same first 10 floors and that every word uses learned keys. Mark daily climbs in the high-score table. Strings in locales/en.json and locales/he.json. Run pnpm lint, typecheck, test and build, update docs/progress.json (feature idea status built) and run node scripts/render-progress.mjs, open a pull request, merge it into main yourself and delete the branch.
+```
+
+### 💡 A glimmer of the hidden letter in each scene (from T33)
+
+**Status:** idea · **Model:** Opus 5.5 · **Effort:** High
+
+Finding a letter becomes a moment inside the world (a golden letter rises from the place) instead of only a line on the results card
+
+Build prompt:
+
+```text
+Otiyot project — GitHub repo shlomyeisenberg-lang/Otiyot. Task: idea-letter-glimmer (branch idea-letter-glimmer). Work from start to finish without stopping for my approval. Read CLAUDE.md, docs/ARCHITECTURE.md (section 7v), docs/DESIGN.md and only your own entry in docs/progress.json. Goal: when a run finds its scene's hidden letter (bankRun returns gain.letter, src/game/progression.ts), show it in the 3D scene before the results card: the letter rises in gold from the scene's focal point with a short sweep of light, using the engine's letter atlas and VFX kit, then flies toward the camera and fades. Add one shared helper in src/engine or src/game used by every scene screen (one call each), respect reduced motion, no allocations in update(). Add a unit test for any logic and extend tests/e2e/shop.spec.ts or a scene smoke test. Run pnpm lint, typecheck, test and build, update docs and add your entry in docs/progress.json, run node scripts/render-progress.mjs, open a pull request, wait for checks, squash-merge it into main yourself and delete the branch.
+```
+
+### 💡 3D try-on mirror in the Ink Shop (from T33)
+
+**Status:** idea · **Model:** Sonnet 5.5 · **Effort:** Medium
+
+See the real 3D apprentice turn slowly in a robe or with a quill before buying it
+
+Build prompt:
+
+```text
+Otiyot project — GitHub repo shlomyeisenberg-lang/Otiyot. Task: idea-shop-mirror (branch idea-shop-mirror). Work from start to finish without stopping for my approval. Read CLAUDE.md, docs/ARCHITECTURE.md (sections 7f and 7v), docs/DESIGN.md and only your own entry in docs/progress.json. Goal: in src/ui/screens/shop.ts replace the SVG figure with a small 3D view (mountScene from src/ui/stage3d.ts) of the apprentice built with the engine Character from dressedLook, turning slowly with Dyo beside him; hovering or focusing a robe, quill or ink card previews it on him without buying. Keep the SVG as the fallback when there is no WebGL and on low quality. Dispose everything. Add a Playwright check in tests/e2e/shop.spec.ts. Run pnpm lint, typecheck, test and build, update docs and add your entry in docs/progress.json, run node scripts/render-progress.mjs, open a pull request, wait for checks, squash-merge it into main yourself and delete the branch.
 ```
 
 ## Notes

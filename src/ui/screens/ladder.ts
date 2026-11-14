@@ -20,7 +20,8 @@ import {
 } from '../../game/levels';
 import { knownKeysOf, learnedWordSource, weakCharacters } from '../../learn';
 import { regionMode, regionStatuses } from '../../game/regions';
-import { rewardsOf, type RunRewards } from '../../game/results';
+import { rewardsOf, type RunRewards, type RunStats } from '../../game/results';
+import { bankRun, dressedLook, perksOf, type RunGain } from '../../game/progression';
 import type { Engine, SceneManager } from '../../engine';
 import type { LadderScene } from '../../scenes/ladder';
 import {
@@ -35,10 +36,11 @@ import {
   type LadderScore,
   type ModifierId,
 } from '../../scenes/ladder/plan';
-import { apprenticeLook, CAST, ladderLine, type LadderMoment } from '../../story';
+import { CAST, ladderLine, type LadderMoment } from '../../story';
 import type { AppContext, Screen } from '../app';
 import { button, dialogueBox, rankBadge, statTile, status } from '../components';
 import { h } from '../dom';
+import { earnedRow } from '../earned';
 import type { MessageKey } from '../i18n';
 import { PlayController, type RunEnd } from '../play';
 import { resolveTheme } from '../theme';
@@ -240,7 +242,15 @@ export function ladderScreen(ctx: AppContext): Screen {
   let lineCount = 0;
   let place = -1;
 
-  const play = new PlayController(t, layout, settings, settings.keyboardGuide);
+  /** What the last run put into the profile (T33): levels, gifts, a hidden letter. */
+  let gain: RunGain | null = null;
+  const play = new PlayController(
+    t,
+    layout,
+    settings,
+    settings.keyboardGuide,
+    perksOf(ctx.profile),
+  );
   view.append(play.hud.el, results);
 
   function say(moment: LadderMoment, minor = false): void {
@@ -378,20 +388,17 @@ export function ladderScreen(ctx: AppContext): Screen {
     const accuracy = m?.accuracy ?? 100;
     const wpm = Math.round(m?.netWpm ?? 0);
     const floors = scene?.floorsDone ?? 0;
-    const r = rewardsOf(
-      {
-        accuracy,
-        wpm,
-        bestCombo: d?.bestCombo ?? 0,
-        words: d?.wordsDone ?? 0,
-        perfect: perfectWords,
-        broken: cleanFloors,
-        smudges: scene?.slips ?? 0,
-        failed: false,
-      },
-      DIFFICULTIES[difficulty],
-      level,
-    );
+    const runStats: RunStats = {
+      accuracy,
+      wpm,
+      bestCombo: d?.bestCombo ?? 0,
+      words: d?.wordsDone ?? 0,
+      perfect: perfectWords,
+      broken: cleanFloors,
+      smudges: scene?.slips ?? 0,
+      failed: false,
+    };
+    const r = rewardsOf(runStats, DIFFICULTIES[difficulty], level);
     const entry: LadderScore = {
       at: Date.now(),
       score,
@@ -403,6 +410,13 @@ export function ladderScreen(ctx: AppContext): Screen {
       mods: [...climb.mods],
     };
     ctx.saves.update((p) => {
+      gain = bankRun(p, {
+        region: 'ladder',
+        stats: runStats,
+        rewards: r,
+        difficulty: difficulty,
+        level: level,
+      });
       if ((m?.keystrokes ?? 0) > 0)
         p.history.push({
           at: entry.at,
@@ -643,13 +657,7 @@ export function ladderScreen(ctx: AppContext): Screen {
           gold: cleanFloors > 0 && cleanFloors === r.floors,
         }),
       ),
-      h(
-        'div',
-        { class: 'range__results-earned' },
-        statTile({ label: t.t('range.results.xp'), value: `+${r.xp}`, gold: true }),
-        statTile({ label: t.t('range.results.glyphs'), value: `+${r.glyphs}`, gold: true }),
-        statTile({ label: t.t('range.results.ink'), value: `+${r.ink}`, gold: true }),
-      ),
+      earnedRow(t, r, gain),
       table(),
       suggested !== level
         ? h('p', {
@@ -737,7 +745,7 @@ export function ladderScreen(ctx: AppContext): Screen {
     const rng = new eng.Rng((Date.now() % 100000) + 28);
     rngNext = () => rng.next();
     scene = new mod.LadderScene({
-      look: apprenticeLook(profile.avatar),
+      look: dressedLook(profile),
       letters: [...knownKeysOf(profile)].join(''),
     });
     scene.onMoment = (moment) => {
