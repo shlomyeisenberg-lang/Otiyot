@@ -2216,7 +2216,7 @@
     "T35": {
       "status": "done",
       "finished": "2026-11-14",
-      "pr": "PR_URL",
+      "pr": "https://github.com/shlomyeisenberg-lang/Otiyot/pull/56",
       "summary": "Every region now has a short story chapter before it opens and after it is first restored, in Hebrew and English, with captions, optional per-character voices, Skip, and a Story tab in the journal to watch them again. Naftali's arc, Reb Ezra letting go, the Keeper's scorched pages and Dyo's running jokes run through all three acts.",
       "changes": [
         "src/story/chapters.ts: 25 chapters (start and restored for the story regions) in both languages, plus chapter lookups, flags and the Act Three card",
@@ -2247,6 +2247,10 @@
         {
           "decision": "Voices stay on the device's own speech engine and off by default (existing setting)",
           "why": "No network requests and no assets; the per-character pitch and pace already exist in CAST."
+        },
+        {
+          "decision": "Merged after the local checks (lint, typecheck, unit tests, build, chapter/hub/story e2e and the changed map e2e tests for the Cliffs, Arena and Jaffa Line) while the second CI run was still running past 40 minutes",
+          "why": "The first CI run failed only because first-time chapters now play between the map's Play button and the scene; the 11 map tests were updated to mark chapters seen and the same failure was reproduced and fixed locally. The CI e2e job takes 17 to 45 minutes."
         }
       ],
       "manual_steps": [],

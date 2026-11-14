@@ -99,7 +99,7 @@ Work done before or outside the numbered tasks.
 - ✅ T32 · Statistics dashboard and journal — 2026-11-13 · [PR #53](https://github.com/shlomyeisenberg-lang/Otiyot/pull/53)
 - ✅ T33 · Progression, abilities, shop and cosmetics — 2026-11-14 · [PR #54](https://github.com/shlomyeisenberg-lang/Otiyot/pull/54)
 - ✅ T34 · Art, lighting, VFX and music pass — 2026-11-14 · [PR #55](https://github.com/shlomyeisenberg-lang/Otiyot/pull/55)
-- ✅ T35 · Full story: cutscenes and voice — 2026-11-14 · PR_URL
+- ✅ T35 · Full story: cutscenes and voice — 2026-11-14 · [PR #56](https://github.com/shlomyeisenberg-lang/Otiyot/pull/56)
 - ⬜ T36 · Settings, accessibility and health
 - ⬜ T37 · Ghosts and local leaderboards
 - ⬜ T38 · Performance pass and full smoke tests
@@ -1643,7 +1643,7 @@ Playtest checklist per scene (fun / readable / teaching / fair / no homework), p
 
 ### ✅ T35 · Full story: cutscenes and voice
 
-**Status:** Done · **Finished:** 2026-11-14 · **Pull request:** PR_URL
+**Status:** Done · **Finished:** 2026-11-14 · **Pull request:** [PR #56](https://github.com/shlomyeisenberg-lang/Otiyot/pull/56)
 
 Every region now has a short story chapter before it opens and after it is first restored, in Hebrew and English, with captions, optional per-character voices, Skip, and a Story tab in the journal to watch them again. Naftali's arc, Reb Ezra letting go, the Keeper's scorched pages and Dyo's running jokes run through all three acts.
 
@@ -1664,6 +1664,7 @@ Every region now has a short story chapter before it opens and after it is first
 - **Act Two and Act Three title cards show on the first region of that act the player enters, not on a fixed region** — Scenes unlock by course progress, so the first Act Two region differs per player.
 - **Chapters only play for players who have seen the opening** — The story should not start before its first scene.
 - **Voices stay on the device's own speech engine and off by default (existing setting)** — No network requests and no assets; the per-character pitch and pace already exist in CAST.
+- **Merged after the local checks (lint, typecheck, unit tests, build, chapter/hub/story e2e and the changed map e2e tests for the Cliffs, Arena and Jaffa Line) while the second CI run was still running past 40 minutes** — The first CI run failed only because first-time chapters now play between the map's Play button and the scene; the 11 map tests were updated to mark chapters seen and the same failure was reproduced and fixed locally. The CI e2e job takes 17 to 45 minutes.
 
 **To do**
 
