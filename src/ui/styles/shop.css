@@ -1,0 +1,394 @@
+/* The Ink Shop (T33): header with the apprentice, the shelf, crafting, the skill tree and the
+   hidden letters; and what a run earned on every results card. Tokens only. */
+
+.shop-head {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: var(--sp-4);
+  padding: var(--sp-3) var(--sp-4);
+  background: var(--surface-2);
+  border: var(--border-w) solid var(--line);
+  border-radius: var(--radius-2);
+}
+.shop-head__body {
+  display: grid;
+  gap: var(--sp-3);
+}
+.shop-figure {
+  inline-size: 7.5rem;
+  block-size: auto;
+  filter: drop-shadow(0 2px 0 var(--rule));
+}
+.shop-figure__shadow {
+  fill: var(--rule);
+}
+.shop-figure__eye {
+  fill: var(--ink);
+}
+
+.level-bar {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: var(--sp-3);
+}
+.level-bar__badge {
+  display: grid;
+  place-items: center;
+  inline-size: 3rem;
+  block-size: 3rem;
+  border-radius: var(--radius-pill);
+  background: var(--gold);
+  color: var(--on-gold);
+  font-family: var(--font-display);
+  font-size: var(--fs-28);
+  box-shadow: 0 0 0 3px var(--gold-soft), var(--shadow-1);
+}
+.level-bar__body {
+  display: grid;
+  gap: var(--sp-1);
+}
+.level-bar__label {
+  font-size: var(--fs-14);
+  color: var(--ink-soft);
+}
+.level-bar .progress__fill {
+  background: var(--gold);
+}
+
+.shop-wallet {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+.shop-wallet__item {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--sp-2);
+  padding: var(--sp-1) var(--sp-3);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  border: var(--border-w) solid var(--line);
+}
+.shop-wallet__label {
+  font-size: var(--fs-12);
+  color: var(--ink-soft);
+}
+.shop-wallet__item strong {
+  font-size: var(--fs-20);
+  color: var(--gold-deep);
+  font-variant-numeric: tabular-nums;
+}
+
+.shop-lead {
+  margin: 0 0 var(--sp-3);
+  color: var(--ink-soft);
+}
+.shop-shelf {
+  display: grid;
+  gap: var(--sp-5);
+}
+.shop-group__title {
+  margin: 0 0 var(--sp-2);
+  font-family: var(--font-display);
+  font-size: var(--fs-20);
+  color: var(--gold-deep);
+}
+.shop-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+  gap: var(--sp-3);
+}
+.shop-card .panel {
+  display: grid;
+  gap: var(--sp-2);
+  block-size: 100%;
+  align-content: start;
+  transition: transform var(--t-feedback) var(--ease);
+}
+.shop-card--buy .panel:hover,
+.shop-card--ready .panel:hover {
+  transform: translateY(-2px);
+}
+.shop-card--equipped .panel,
+.shop-card--made .panel {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 1px var(--gold-soft), var(--shadow-1);
+}
+.shop-card--locked .panel,
+.shop-card--needsLevel .panel {
+  border-style: dashed;
+  border-color: var(--fade);
+  background: var(--surface-2);
+}
+.shop-card--locked .shop-card__name,
+.shop-card--locked .shop-card__body {
+  color: var(--ink-soft);
+}
+.shop-card__head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.shop-card__name {
+  margin: 0;
+  font-size: var(--fs-16);
+}
+.shop-card__body {
+  margin: 0;
+  font-size: var(--fs-14);
+  color: var(--ink-soft);
+}
+.shop-card__foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  margin-block-start: auto;
+}
+.shop-card__why {
+  font-size: var(--fs-12);
+  color: var(--ink-soft);
+}
+.shop-card--locked .shop-swatch {
+  filter: grayscale(1);
+  opacity: 0.55;
+}
+.shop-swatch {
+  display: inline-flex;
+  flex: none;
+}
+.shop-swatch__dot {
+  inline-size: 1.1rem;
+  block-size: 1.1rem;
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--surface);
+  box-shadow: 0 0 0 1px var(--line);
+}
+.shop-swatch__dot + .shop-swatch__dot {
+  margin-inline-start: -0.4rem;
+}
+.shop-needs {
+  margin: 0;
+  padding-inline-start: var(--sp-4);
+  font-size: var(--fs-14);
+}
+
+/* The skill tree: three branches side by side, steps joined by a line. */
+.skill-tree {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: var(--sp-4);
+}
+.skill-branch__title {
+  margin: 0 0 var(--sp-2);
+  font-family: var(--font-display);
+  font-size: var(--fs-20);
+  text-align: center;
+}
+.skill-branch--eye .skill-branch__title {
+  color: var(--techelet);
+}
+.skill-branch--hand .skill-branch__title {
+  color: var(--gold-deep);
+}
+.skill-branch--heart .skill-branch__title {
+  color: var(--err-fg);
+}
+.skill-branch__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--sp-3);
+  position: relative;
+}
+.skill-branch__list::before {
+  content: '';
+  position: absolute;
+  inset-block: var(--sp-4);
+  inset-inline-start: calc(1.25rem - 1px);
+  border-inline-start: 2px dotted var(--line);
+}
+.skill {
+  position: relative;
+  display: grid;
+  grid-template-columns: 2.5rem minmax(0, 1fr);
+  gap: var(--sp-2);
+  align-items: start;
+}
+.skill__step {
+  display: grid;
+  place-items: center;
+  inline-size: 2.5rem;
+  block-size: 2.5rem;
+  border-radius: var(--radius-pill);
+  background: var(--surface-2);
+  border: 2px dashed var(--fade);
+  color: var(--ink-soft);
+  font-family: var(--font-display);
+  font-size: var(--fs-20);
+  z-index: 1;
+}
+.skill__body {
+  padding: var(--sp-2) var(--sp-3);
+  border: var(--border-w) solid var(--line);
+  border-radius: var(--radius-2);
+  background: var(--surface);
+  display: grid;
+  gap: var(--sp-1);
+}
+.skill__name {
+  margin: 0;
+  font-size: var(--fs-16);
+}
+.skill__desc {
+  margin: 0;
+  font-size: var(--fs-14);
+  color: var(--ink-soft);
+}
+.skill__foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+}
+.skill--learned .skill__step {
+  background: var(--gold);
+  border: 2px solid var(--gold-deep);
+  color: var(--on-gold);
+  box-shadow: 0 0 0 3px var(--gold-soft);
+}
+.skill--learned .skill__body {
+  border-color: var(--gold);
+}
+.skill--ready .skill__step {
+  border: 2px solid var(--techelet);
+  color: var(--techelet);
+  animation: skill-ready 1.6s var(--ease) infinite alternate;
+}
+.skill--ready .skill__body {
+  border-color: var(--techelet);
+}
+.skill--off .skill__step {
+  background: var(--surface-2);
+  border: 2px solid var(--gold-deep);
+  color: var(--gold-deep);
+}
+.skill--needsLevel .skill__name,
+.skill--needsPrev .skill__name {
+  color: var(--ink-soft);
+}
+@keyframes skill-ready {
+  to {
+    box-shadow: 0 0 0 5px var(--techelet-soft);
+  }
+}
+
+/* Hidden letters: gold tiles once found, dashed with a riddle until then. */
+.letter-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+  gap: var(--sp-3);
+}
+.letter-tile {
+  display: grid;
+  justify-items: center;
+  text-align: center;
+  gap: var(--sp-1);
+  padding: var(--sp-3);
+  border: 2px dashed var(--fade);
+  border-radius: var(--radius-2);
+  background: var(--surface-2);
+}
+.letter-tile__glyph {
+  font-family: var(--font-display);
+  font-size: var(--fs-40);
+  line-height: 1.1;
+  color: var(--fade);
+}
+.letter-tile__place {
+  font-weight: 700;
+}
+.letter-tile__hint {
+  font-size: var(--fs-12);
+  color: var(--ink-soft);
+}
+.letter-tile--found {
+  border: 2px solid var(--gold);
+  background: var(--surface);
+  box-shadow: 0 0 0 3px var(--gold-soft);
+}
+.letter-tile--found .letter-tile__glyph {
+  color: var(--gold-deep);
+  text-shadow: 0 0 14px var(--gold-glow);
+}
+
+/* What a run earned (results cards, lessons, modes). */
+.earned {
+  display: grid;
+  gap: var(--sp-2);
+}
+.earned__bonus,
+.earned__note {
+  margin: 0;
+  font-size: var(--fs-14);
+  color: var(--ink-soft);
+}
+.earned__level {
+  display: grid;
+  justify-items: center;
+  gap: var(--sp-1);
+  text-align: center;
+  animation: earned-pop var(--t-cinematic) var(--ease) both;
+}
+.earned__letter {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-2) var(--sp-3);
+  border: var(--border-w) solid var(--gold);
+  border-radius: var(--radius-2);
+  background: var(--gold-soft);
+  animation: earned-pop var(--t-cinematic) var(--ease) both;
+}
+.earned__glyph {
+  font-family: var(--font-display);
+  font-size: var(--fs-40);
+  line-height: 1;
+  color: var(--gold-deep);
+  text-shadow: 0 0 16px var(--gold-glow);
+}
+.earned__letter-text {
+  display: grid;
+  font-size: var(--fs-14);
+}
+@keyframes earned-pop {
+  from {
+    transform: scale(0.85);
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .earned__level,
+  .earned__letter,
+  .skill--ready .skill__step {
+    animation: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .shop-head {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+  }
+}
