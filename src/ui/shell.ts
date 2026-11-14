@@ -49,6 +49,7 @@ import { statsScreen } from './screens/stats';
 import { journalScreen } from './screens/journal';
 import { shopScreen } from './screens/shop';
 import { wizardScreen } from './screens/wizard';
+import { actsAsEscape, BreakTimer, reminderKeys } from './health';
 import { applyTheme, nextTheme } from './theme';
 
 const THEME_ICON: Record<Settings['theme'], IconName> = {
@@ -80,6 +81,15 @@ function deckleFilter(): SVGElement {
   );
   return svg;
 }
+
+declare global {
+  interface Window {
+    __otiyotHealth?: (seconds: number) => void;
+  }
+}
+
+/** Seconds between looks at the break timer. */
+const HEALTH_TICK_S = 5;
 
 /** Menus: drone, harp and melody, no drums. */
 const MENU_INTENSITY = 0.3;
@@ -114,6 +124,8 @@ export class Shell {
   private readonly audio: AudioEngine;
   /** True while the player moves with the keyboard (focus changes then tick softly). */
   private keyboardNav = false;
+  private readonly breaks = new BreakTimer(0);
+  private reminders = 0;
 
   constructor(o: ShellOptions) {
     this.root = o.root;
@@ -196,6 +208,11 @@ export class Shell {
     this.applySettings();
     this.win.addEventListener('hashchange', () => this.render());
     this.win.document.addEventListener('keydown', (ev) => this.onKey(ev));
+    // The player's own pause key becomes Escape before anything else sees it.
+    this.win.document.addEventListener('keydown', (ev) => this.rebindMenuKey(ev), true);
+    this.win.setInterval(() => this.healthTick(HEALTH_TICK_S), HEALTH_TICK_S * 1000);
+    // For the browser test: lets it "play" for a while without waiting.
+    this.win.__otiyotHealth = (seconds: number) => this.healthTick(seconds);
     this.listenForSound();
     this.win
       .matchMedia?.('(prefers-color-scheme: dark)')
@@ -356,6 +373,34 @@ export class Shell {
     this.bar.replaceChildren(start, end);
     const skip = this.root.querySelector('.skip');
     if (skip) skip.textContent = t.t('app.skip');
+  }
+
+  private rebindMenuKey(ev: KeyboardEvent): void {
+    if (!actsAsEscape(ev.code, this.saves.activeProfile.settings.menuKey)) return;
+    ev.preventDefault();
+    ev.stopImmediatePropagation();
+    if (ev.repeat) return;
+    const target = ev.target ?? this.win.document;
+    target.dispatchEvent(
+      new KeyboardEvent('keydown', {
+        key: 'Escape',
+        code: 'Escape',
+        bubbles: true,
+        cancelable: true,
+      }),
+    );
+  }
+
+  /** Adds play time and, when it is due, Dyo's gentle break reminder (never during the story). */
+  private healthTick(seconds: number): void {
+    const settings = this.saves.activeProfile.settings;
+    this.breaks.setMinutes(settings.breakMinutes);
+    const quiet = this.route === 'title' || this.route === 'welcome' || this.route === 'intro';
+    if (quiet || this.win.document.visibilityState === 'hidden') return;
+    if (!this.breaks.tick(seconds)) return;
+    const keys = reminderKeys(settings.postureTips, this.reminders++);
+    const tip = keys.tip ? ` ${this.i18n.t(keys.tip)}` : '';
+    this.toast.show(`${this.i18n.t(keys.title)}${tip}`, 'gold', 12000);
   }
 
   private onKey(ev: KeyboardEvent): void {

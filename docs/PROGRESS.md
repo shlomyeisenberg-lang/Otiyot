@@ -6,8 +6,8 @@ _Last updated 2026-11-14. This page is generated from `docs/progress.json`; to c
 
 ## Summary
 
-- ✅ **40** of **44** tasks done
-- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 4 pending
+- ✅ **41** of **44** tasks done
+- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 3 pending
 - ⬜ **3** manual steps waiting for you
 - 💡 16 feature ideas open
 
@@ -100,7 +100,7 @@ Work done before or outside the numbered tasks.
 - ✅ T33 · Progression, abilities, shop and cosmetics — 2026-11-14 · [PR #54](https://github.com/shlomyeisenberg-lang/Otiyot/pull/54)
 - ✅ T34 · Art, lighting, VFX and music pass — 2026-11-14 · [PR #55](https://github.com/shlomyeisenberg-lang/Otiyot/pull/55)
 - ✅ T35 · Full story: cutscenes and voice — 2026-11-14 · [PR #56](https://github.com/shlomyeisenberg-lang/Otiyot/pull/56)
-- ⬜ T36 · Settings, accessibility and health
+- ✅ T36 · Settings, accessibility and health — 2026-11-14 · [PR #57](https://github.com/shlomyeisenberg-lang/Otiyot/pull/57)
 - ⬜ T37 · Ghosts and local leaderboards
 - ⬜ T38 · Performance pass and full smoke tests
 - ⬜ T39 · Release: website and Otzaria plugin 1.0
@@ -1675,11 +1675,41 @@ Every region now has a short story chapter before it opens and after it is first
 
 Story lines are never typed, so the learned-letters rule does not apply; a unit test checks both languages are present and the content rules (men only, nothing unseemly).
 
-### ⬜ T36 · Settings, accessibility and health
+### ✅ T36 · Settings, accessibility and health
 
-**Status:** Pending
+**Status:** Done · **Finished:** 2026-11-14 · **Pull request:** [PR #57](https://github.com/shlomyeisenberg-lang/Otiyot/pull/57)
 
-_Not started._
+Settings now has seven tabs (display, accessibility, graphics, sound, typing, health, keys) and every option changes the game at once and is saved. New: camera shake and screen flash sliders, optional translation lines, a graphics preset, a starting difficulty, Dyo's break and posture reminders, and your own pause key.
+
+**What changed**
+
+- src/save/schema.ts, migrations.ts: save version 10; settings gain shake, flash, captions, breakMinutes, postureTips, menuKey and difficulty (with BREAK_CHOICES and MENU_KEYS)
+- src/ui/screens/settings.ts: tabs Display, Accessibility, Graphics, Sound, Typing, Health, Keys; the accessibility switches moved to their own tab
+- src/ui/health.ts: BreakTimer, actsAsEscape, captionsOn, reminderKeys (pure logic)
+- src/ui/shell.ts: break reminder as a toast from Dyo (every 5 s check, not on the title, welcome or intro), the player's pause key becomes Escape, test hook window.__otiyotHealth
+- src/ui/theme.ts and components.css: data-captions='off' hides the translation line (never while story voices are on)
+- src/engine/engine.ts and every 3D screen: shake and flash sliders scale the camera shake and the screen flash; reduce motion still turns both off
+- src/ui/screens/modes.ts: the modes screen starts on the difficulty chosen in settings
+- locales/en.json, he.json: all new strings in both languages
+- tests/unit/settings-a11y.test.ts, tests/e2e/settings.spec.ts (tabs through every tab, saves, pause key, reminder); tests/e2e/shell.spec.ts and ui-tokens.test.ts updated
+- docs: ARCHITECTURE (save v10, shell), DESIGN (Accessibility), CHANGELOG, ROADMAP ticked
+
+**Decisions**
+
+- **Break reminders are on by default at 30 minutes, with posture tips** — The brief says reminders can be turned off on request, so they start on; old saves get the same default.
+- **Rebinding is a list of keys that never type a character (F1 to F4, Pause) beside Escape, which always works** — Letters are needed for typing; a free-choice key could break a typing scene, and keeping Escape means a player can never lock himself out.
+- **Translation lines can be turned off, but stay on while story lines are read aloud** — Captions for every voice line is an accessibility rule in DESIGN.
+- **Shake and flash changes reach a running 3D scene the next time a scene starts** — Settings is its own screen, so no scene is running while it is open; the display options (theme, contrast, text size, captions) do change at once.
+- **The graphics tab picks the preset and links to the test range instead of repeating its benchmark** — The range screen already measures and picks; one place to do it.
+- **Merged on the strength of the local checks (lint, typecheck, 799 unit tests, build, settings and shell e2e on desktop and phone) after GitHub's check was still running at 15 minutes** — The build rules allow merging after 15 minutes of waiting; the CI e2e job often takes 17 to 45 minutes.
+
+**To do**
+
+- [ ] Rebinding of the in-scene typing controls was left out on purpose: letters must stay the letters on the keyboard.
+
+**Notes**
+
+Local e2e ran with a Chromium of the older build (executable path override), settings and shell tests pass on desktop and phone widths.
 
 ### ⬜ T37 · Ghosts and local leaderboards
 

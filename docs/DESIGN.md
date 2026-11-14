@@ -73,4 +73,4 @@ In the build (T10): stems come in by combo tier (ink: drone and soft harp; teche
 
 ## Accessibility
 
-Status is always color + icon + word. Visible focus ring in `--techelet`. Keyboard-only everywhere. Screen-reader labels on menus. Captions for every voice line. Options: reduce motion, shake and flash sliders, colorblind palettes, high contrast, large text, dyslexia-friendly font, text speed.
+Status is always color + icon + word. Visible focus ring in `--techelet`. Keyboard-only everywhere. Screen-reader labels on menus. Captions for every voice line. Options: reduce motion, shake and flash sliders, colorblind palettes, high contrast, large text, dyslexia-friendly font, text speed, optional translation lines (always on while story lines are read aloud). Settings tabs: Display, Accessibility, Graphics, Sound, Typing, Health (break and posture reminders from Dyo), Keys (one extra pause / back key besides Escape). All live in `src/ui/screens/settings.ts`; every control is a labelled native `select`, `input` or button.

@@ -482,7 +482,7 @@ One-pass review of Sonnet's T19; fix what is weak. Done when merged.
 
 ## Phase 5 · Settings and accessibility
 
-### [ ] T36 · Settings, accessibility and health
+### [x] T36 · Settings, accessibility and health
 - **Branch** `t36-settings-a11y`
 - **Model** Sonnet 5.5 · **Effort** Medium
 - **Goal** Every option in DESIGN 'Accessibility' and the brief's settings, working.

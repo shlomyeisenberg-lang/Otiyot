@@ -1,12 +1,20 @@
 // Applies the display settings to <html> as data attributes; tokens.css does the rest.
 
 import type { Settings, ThemeChoice } from '../save';
+import { captionsOn } from './health';
 
 export type ResolvedTheme = 'light' | 'dark';
 
 export type DisplaySettings = Pick<
   Settings,
-  'theme' | 'colorblind' | 'highContrast' | 'largeText' | 'dyslexiaFont' | 'reducedMotion'
+  | 'theme'
+  | 'colorblind'
+  | 'highContrast'
+  | 'largeText'
+  | 'dyslexiaFont'
+  | 'reducedMotion'
+  | 'captions'
+  | 'storyVoices'
 >;
 
 /** 'auto' follows the device. */
@@ -32,6 +40,7 @@ export function themeAttributes(
     'data-text': d.largeText ? 'large' : undefined,
     'data-font': d.dyslexiaFont ? 'dyslexia' : undefined,
     'data-motion': d.reducedMotion ? 'reduce' : undefined,
+    'data-captions': captionsOn(d) ? undefined : 'off',
   };
 }
 

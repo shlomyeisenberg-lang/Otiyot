@@ -1,7 +1,7 @@
 // Save versioning. Every schema change adds ONE entry to MIGRATIONS (from-version -> next version)
 // and bumps CURRENT_VERSION, plus a test in tests/unit/save-migrations.test.ts.
 
-export const CURRENT_VERSION = 9;
+export const CURRENT_VERSION = 10;
 
 type Rec = Record<string, unknown>;
 export type Migration = (raw: Rec) => Rec;
@@ -196,6 +196,13 @@ const v8ToV9: Migration = (raw) => {
   return { ...raw, version: 9, profiles };
 };
 
+/**
+ * v9 -> v10 (T36). Settings gain shake, flash, captions, breakMinutes, postureTips, menuKey and
+ * difficulty. Nothing to rewrite: normalizeSettings fills each with its default, so a player who
+ * never opened settings keeps breaks on at 30 minutes and everything else as it was.
+ */
+const v9ToV10: Migration = (raw) => ({ ...raw, version: 10 });
+
 export const MIGRATIONS: Readonly<Record<number, Migration>> = {
   0: v0ToV1,
   1: v1ToV2,
@@ -206,6 +213,7 @@ export const MIGRATIONS: Readonly<Record<number, Migration>> = {
   6: v6ToV7,
   7: v7ToV8,
   8: v8ToV9,
+  9: v9ToV10,
 };
 
 export function versionOf(raw: Rec): number {

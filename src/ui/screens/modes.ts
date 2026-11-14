@@ -174,7 +174,7 @@ export function modesScreen(ctx: AppContext): Screen {
       custom: '',
       region: regions[0] ?? 'meadow',
       level: levels()[0] ?? 'easy',
-      difficulty: 'steady',
+      difficulty: ctx.profile.settings.difficulty,
       mods: new Set(),
     };
   };
