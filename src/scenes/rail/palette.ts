@@ -11,7 +11,7 @@ export const SKY: Readonly<Record<ThemeName, Sky>> = {
     skyTop: 0x7fa4d8,
     skyHorizon: 0xf6c8a0,
     sun: 0xffd9a0,
-    sunIntensity: 3.4,
+    sunIntensity: 3,
     sunFrom: [0.9, 0.35, -0.6],
     fillSky: 0xcfe0f4,
     fillGround: 0xb59a78,
@@ -42,7 +42,7 @@ export const SKY: Readonly<Record<ThemeName, Sky>> = {
 /** Colors of the things on the line. */
 export const TINT = {
   // Land.
-  grassA: 0x9aa65a,
+  grassA: 0x8a9f5c,
   grassB: 0xc2b270,
   sand: 0xd8c08e,
   ballast: 0x8a7e72,

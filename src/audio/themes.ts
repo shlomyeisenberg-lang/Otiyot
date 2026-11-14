@@ -25,7 +25,9 @@ export type Voice =
   | 'ney'
   | 'kalimba'
   | 'marimba'
-  | 'santur';
+  | 'santur'
+  | 'accordion'
+  | 'musicbox';
 /** Drum kits; each plays the same pattern letters with its own sounds. */
 export type Kit = 'darbuka' | 'frame' | 'taiko' | 'brush';
 
@@ -99,7 +101,9 @@ export type ThemeId =
   | 'caves'
   | 'ladder'
   | 'boss'
-  | 'final';
+  | 'final'
+  | 'study'
+  | 'arcade';
 export const THEME_IDS: readonly ThemeId[] = [
   'title',
   'hub',
@@ -117,6 +121,8 @@ export const THEME_IDS: readonly ThemeId[] = [
   'ladder',
   'boss',
   'final',
+  'study',
+  'arcade',
 ];
 
 // Compound (6/8) cells: 6 steps per bar.
@@ -130,6 +136,17 @@ const CELLS_6 = [
   [-1, 1, 1, 3],
 ] as const;
 const CAD_6 = [[6], [3, 3], [2, 1, 3]] as const;
+
+// Simple triple (3/4 in eighths) cells: 6 steps per bar, felt in three (T34, the study theme).
+const CELLS_3_4 = [
+  [2, 2, 2],
+  [4, 2],
+  [2, 4],
+  [3, 1, 2],
+  [1, 1, 2, 2],
+  [-2, 2, 2],
+] as const;
+const CAD_3_4 = [[6], [4, 2], [2, 4]] as const;
 
 // Simple (4/4 in eighths) cells: 8 steps per bar.
 const CELLS_8 = [
@@ -821,6 +838,65 @@ export const THEMES: Readonly<Record<ThemeId, ThemeSpec>> = {
     brightness: 0.5,
     level: 0.85,
   },
+  // The scribe's desk (T34): lessons and Practice. A calm C dorian waltz at 84, a music
+  // box over soft harp, no drums until the streak asks for a brush. Patient music that never
+  // feels like homework.
+  study: {
+    id: 'study',
+    nameKey: 'sound.theme.study',
+    seed: 3434,
+    bpm: 84,
+    beats: 3,
+    sub: 2,
+    root: 72,
+    mode: 'dorian',
+    swing: 0.06,
+    form: ['A', 'B', 'A', 'C'],
+    sections: {
+      A: { bars: 8, chords: [0, 0, 3, 3, 6, 6, 0, 0], register: 1, density: 0.35 },
+      B: { bars: 8, chords: [3, 3, 4, 4, 5, 5, 6, 6], register: 2, density: 0.45 },
+      C: { bars: 8, chords: [5, 3, 0, 0, 3, 4, 0, 0], register: 1, density: 0.3, transpose: -2 },
+    },
+    voices: { drone: 'pad', pulse: 'harp', melody: 'musicbox', counter: 'cello' },
+    kit: 'brush',
+    pulse: [0, 2, 3, 1, 2, 3],
+    counterOctave: -1,
+    drums: { base: '......', full: 'D.S.S.' },
+    cells: CELLS_3_4,
+    cadences: CAD_3_4,
+    reverb: 0.45,
+    brightness: 0.5,
+    level: 0.8,
+  },
+
+  // The Game Room (T34): a quick, cheeky freylekhs in A freygish at 126, an accordion leading,
+  // kanun chords bouncing underneath and a darbuka on the off-beats. The arcade lobby's own tune.
+  arcade: {
+    id: 'arcade',
+    nameKey: 'sound.theme.arcade',
+    seed: 3535,
+    bpm: 126,
+    beats: 4,
+    sub: 2,
+    root: 57,
+    mode: 'freygish',
+    swing: 0.12,
+    form: ['A', 'A', 'B', 'A'],
+    sections: {
+      A: { bars: 8, chords: [0, 0, 6, 0, 0, 0, 1, 0], register: 4, density: 0.7 },
+      B: { bars: 8, chords: [3, 3, 0, 0, 6, 6, 1, 1], register: 5, density: 0.8 },
+    },
+    voices: { drone: 'pad', pulse: 'kanun', melody: 'accordion', counter: 'violin' },
+    kit: 'frame',
+    pulse: [0, 2, -1, 3, 0, 2, -1, 3],
+    counterOctave: -1,
+    drums: { base: 'D.T.D.T.', full: 'D.TkD.TS' },
+    cells: CELLS_8,
+    cadences: CAD_8,
+    reverb: 0.22,
+    brightness: 0.8,
+    level: 0.8,
+  },
 };
 
 /** Grid steps in one bar. */
@@ -831,6 +907,27 @@ export function gridOf(t: ThemeSpec): number {
 /** Seconds in one bar. With sub 3 the beat is a dotted quarter (compound time). */
 export function barSeconds(t: ThemeSpec): number {
   return (t.beats * 60) / t.bpm;
+}
+
+/**
+ * The theme a region plays (T34): its own, the boss theme for the Great Blot and the Arena, the
+ * final theme for the Blank Scroll. Unknown regions get the scribe's desk.
+ */
+export function regionTheme(region: string): ThemeId {
+  if (region === 'blot' || region === 'arena') return 'boss';
+  if (region === 'scroll') return 'final';
+  if (region === 'study' || region === 'arcade' || region === 'title' || region === 'hub') {
+    return 'study';
+  }
+  return isThemeId(region) ? region : 'study';
+}
+
+/**
+ * The theme for a run in the modes room: Practice is quiet study at the desk; Time Attack,
+ * Survival and the Daily play the theme of the region they are set in.
+ */
+export function modeTheme(mode: string, region: string): ThemeId {
+  return mode === 'practice' ? 'study' : regionTheme(region);
 }
 
 export function isThemeId(v: string): v is ThemeId {

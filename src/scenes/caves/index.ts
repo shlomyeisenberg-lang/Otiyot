@@ -1153,6 +1153,7 @@ export class CavesScene implements GameScene {
   /** The music builds with the combo tier; a new tier rings a chime. */
   private hearTier(tier: number): void {
     if (tier > this.heardTier) {
+      this.feedback.tierUp(tier);
       this.ctx.audio.play('tier', tier);
       this.dyo.cheer(2 + tier);
     }
@@ -1483,9 +1484,10 @@ export class CavesScene implements GameScene {
     const fx = Math.sin(yaw);
     const fz = Math.cos(yaw);
 
-    // The word: on a banner ahead of the apprentice.
+    // The word: on a banner ahead of the apprentice, high enough (T34) that it never hides his
+    // head and lantern from the camera behind him.
     const a = this.text.anchor;
-    a.set(app.x + fx * 2.8, app.y + 2.35, app.z + fz * 2.8);
+    a.set(app.x + fx * 3.3, app.y + 2.95, app.z + fz * 3.3);
     if (typing.letters !== this.shownLetters) {
       this.shownLetters = typing.letters;
       const n = typing.letters.length;

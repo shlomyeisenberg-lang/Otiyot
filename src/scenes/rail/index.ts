@@ -270,7 +270,8 @@ export class RailScene implements GameScene {
     ctx.post.setGrade(
       ctx.theme === 'dark'
         ? { exposure: 1.25, saturation: 1.15, vignette: 0.55, godRays: 0.5 }
-        : { exposure: 1.05, saturation: 1.2, vignette: 0.4, godRays: 0.6 },
+        : // T34: a softer dawn; the restored plain read as flat yellow at 1.2.
+          { exposure: 1.02, saturation: 1.06, vignette: 0.4, godRays: 0.6 },
     );
     ctx.rig.groundAt = () => 0;
 
@@ -868,6 +869,7 @@ export class RailScene implements GameScene {
   /** The music builds with the combo tier; a new tier rings a chime and a burst of boost. */
   private hearTier(tier: number): void {
     if (tier > this.heardTier) {
+      this.feedback.tierUp(tier);
       this.ctx.audio.play('tier', tier);
       this.dyo.cheer(2 + tier);
       this.mine.root.getWorldPosition(this.w);
@@ -1013,7 +1015,10 @@ export class RailScene implements GameScene {
     const lampGlow = 1.2 + this.boostShown * 2.4;
     (this.mine.lamp.material as Material & { opacity?: number }).opacity = 1;
     this.mine.lamp.scale.setScalar(0.9 + this.boostShown * 0.9 + Math.sin(this.time * 9) * 0.04);
-    this.headLight.intensity = (this.finished ? 5 : lampGlow * 2) * 2;
+    // T34: by day the lamp is a warm touch on the rails, not a yellow flood across the plain;
+    // at night it is the train's own light and keeps its full reach.
+    const daylight = this.ctx.theme === 'light' ? 0.28 : 1;
+    this.headLight.intensity = (this.finished ? 5 : lampGlow * 2) * 2 * daylight;
     this.mine.lamp.getWorldPosition(this.w);
     this.headLight.position.set(this.w.x, this.w.y + 0.8, this.w.z);
 

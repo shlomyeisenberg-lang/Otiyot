@@ -3,7 +3,11 @@
 //                  impact that grows with the combo tier;
 //   wrong key   -> a short stumble (tiny shake) and a desaturate flicker: the world loses its
 //                  color for a blink and gets it back. Never blocks, never punishes;
-//   word done   -> a full impact and a ring of gold.
+//   word done   -> a full impact and a ring of gold;
+//   new tier    -> (T34) one flourish every scene shares, bigger at every tier: a halo in the
+//                  tier's material (ink, techelet, silver, gold, light) bursts from the last
+//                  letter, a ring of light opens around it, the lens leans in, and from silver
+//                  up the screen breathes the tier's color.
 // With reduce-motion on, shake, chroma and hit-stop are already off in the engine; the flicker
 // becomes one soft, slow dip.
 
@@ -30,6 +34,28 @@ export interface FeedbackPorts {
 }
 
 const STROKES = 6;
+
+/** Silver and the white-gold of the top tier, the two tier materials the theme has no token for. */
+const SILVER = 0xdfe6ee;
+const LIGHT = 0xfff1c9;
+
+/** The flourish for reaching `tier` (1..4): how big and how bright. Pure, so it is tested. */
+export function tierFlourish(tier: number): {
+  count: number;
+  speed: number;
+  ring: number;
+  push: number;
+  flash: number;
+} {
+  const t = Math.max(1, Math.min(4, Math.floor(tier)));
+  return {
+    count: 18 + t * 12,
+    speed: 3 + t * 1.1,
+    ring: 2 + t * 0.9,
+    push: 0.12 + t * 0.07,
+    flash: t >= 2 ? 0.08 + (t - 2) * 0.06 : 0,
+  };
+}
 const STROKE_TIME = 0.11;
 
 interface Stroke {
@@ -53,6 +79,13 @@ export class TypingFeedback {
   private readonly sparks: BurstStyle[];
   private readonly ink: BurstStyle;
   private readonly ring: BurstStyle;
+  /** One halo per tier (index 0 unused: nobody reaches tier 0). */
+  private readonly halos: BurstStyle[];
+  private readonly tierColors: readonly number[];
+  private lastX = 0;
+  private lastY = 1;
+  private lastZ = 0;
+  private lastSize = 1;
 
   constructor(
     ports: FeedbackPorts,
@@ -99,6 +132,22 @@ export class TypingFeedback {
       gravity: 1.5,
       radius: 0.3,
     });
+    this.tierColors = [colors.ink, colors.techelet, SILVER, colors.gold, LIGHT];
+    this.halos = [0, 1, 2, 3, 4].map((tier) => {
+      const f = tierFlourish(tier);
+      const c = this.tierColors[tier] as number;
+      return burstStyle({
+        count: f.count,
+        color: c,
+        color2: tier >= 3 ? colors.techelet : c,
+        intensity: 2 + tier * 0.4,
+        speed: [f.speed * 0.5, f.speed],
+        life: [0.6, 1.2 + tier * 0.1],
+        size: [0.07, 0.15 + tier * 0.02],
+        gravity: -0.6,
+        radius: 0.25,
+      });
+    });
   }
 
   /** A correct key: the letter at (x, y, z), `size` tall, was just written. `tier` 0..4. */
@@ -112,6 +161,10 @@ export class TypingFeedback {
     s.y = y;
     s.z = z;
     s.size = size;
+    this.lastX = x;
+    this.lastY = y;
+    this.lastZ = z;
+    this.lastSize = size;
     this.emitStroke(s);
     this.vfx.burst(this.sparks[Math.min(4, Math.max(0, tier))] as BurstStyle, x, y, z, 0, 1, 0);
     this.vfx.burst(this.ink, x, y - size * 0.3, z, 0, -1, 0, true);
@@ -132,6 +185,23 @@ export class TypingFeedback {
     this.vfx.burst(this.ring, x, y, z, 0, 1, 0);
     this.vfx.shockwave(x, y, z, perfect ? 3.2 : 2.2, this.colors.gold, 0.6, false, 1.6);
     this.vfx.impact(perfect ? 0.5 : 0.3, this.colors.gold);
+  }
+
+  /**
+   * The streak just reached a new combo `tier` (1..4): the same flourish in every scene, from the
+   * last letter written (or from (x, y, z) when given). Reduce motion keeps the halo and drops
+   * the lean and the screen tint (the engine scales both to zero).
+   */
+  tierUp(tier: number, x = this.lastX, y = this.lastY, z = this.lastZ): void {
+    if (tier < 1) return;
+    const t = Math.min(4, Math.floor(tier));
+    const f = tierFlourish(t);
+    const color = this.tierColors[t] as number;
+    this.vfx.burst(this.halos[t] as BurstStyle, x, y + this.lastSize * 0.2, z, 0, 1, 0);
+    this.vfx.shockwave(x, y - this.lastSize * 0.4, z, f.ring, color, 0.7, false, 1.2 + t * 0.2);
+    this.rig.pushIn(f.push, 0.18 + t * 0.05);
+    if (f.flash > 0) this.vfx.flash(color, f.flash, 0.3 + t * 0.05);
+    this.post.pulseChroma(0.2 + 0.1 * t);
   }
 
   /** Once per drawn frame (real time). Allocates nothing. */

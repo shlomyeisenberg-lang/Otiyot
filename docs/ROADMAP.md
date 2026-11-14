@@ -457,7 +457,7 @@ One-pass review of Sonnet's T19; fix what is weak. Done when merged.
 
 ## Phase 4 · Polish
 
-### [ ] T34 · Art, lighting, VFX and music pass
+### [x] T34 · Art, lighting, VFX and music pass
 - **Branch** `t34-polish-pass`
 - **Model** Opus 5.5 · **Effort** Xhigh
 - **Goal** Raise every scene to the same top standard.

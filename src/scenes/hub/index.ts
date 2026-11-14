@@ -223,6 +223,7 @@ export class HubScene implements GameScene {
     this.sky.fade = ctx.color('fade');
     this.sky.ink = ctx.color('gold');
     ctx.atmosphere.groundAt = (x, z) => heightAt(x, z);
+    ctx.rig.groundAt = (x, z) => heightAt(x, z);
     ctx.atmosphere.setShadowRange(16);
     ctx.post.setGrade({
       exposure: 1.08,

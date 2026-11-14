@@ -164,6 +164,7 @@ export function arcadeScreen(ctx: AppContext): Screen {
     probe.ready = false;
     probe.lobby = true;
     root.replaceChildren(lobby());
+    ctx.audio.music('arcade');
   }
 
   function gameTitle(id: ArcadeGameId): string {
@@ -177,6 +178,8 @@ export function arcadeScreen(ctx: AppContext): Screen {
     probe.game = id;
     probe.lobby = false;
     probe.ready = false;
+    // The classic games bring their own sound: the lobby's tune steps aside while one runs.
+    ctx.audio.music(null);
     const f = h('iframe', {
       class: 'arcade__frame',
       title: gameTitle(id),
@@ -268,6 +271,8 @@ export function arcadeScreen(ctx: AppContext): Screen {
   }
 
   root.append(lobby());
+  // T34: the Game Room has its own tune.
+  ctx.audio.music('arcade');
 
   return {
     el: root,

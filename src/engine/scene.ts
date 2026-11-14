@@ -294,6 +294,9 @@ export class SceneManager {
     e.materials.restoreAll(0, 0);
     e.post.setGrade();
     e.atmosphere.groundAt = () => 0;
+    // The camera's floor and walls belong to the scene that set them: the next scene starts free
+    // (T34: the Meadow's hills used to lift the camera in whatever scene came after it).
+    e.rig.groundAt = () => -Infinity;
     e.rig.colliders = [];
     if (this.baseline) {
       e.renderOnce();

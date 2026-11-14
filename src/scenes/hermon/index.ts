@@ -340,6 +340,8 @@ export class HermonScene implements GameScene {
     this.lastSky = -1;
     this.applySky(0);
     ctx.atmosphere.groundAt = (x, z) => landHeight(x, z);
+    // The eagle's seat never dips into a ridge, even on a hard bank or a shake (T34).
+    ctx.rig.groundAt = (x, z) => landHeight(x, z);
     ctx.atmosphere.setShadowRange(24);
     ctx.post.setGrade(
       ctx.theme === 'dark'
@@ -1087,6 +1089,7 @@ export class HermonScene implements GameScene {
   /** The music builds with the combo tier; a new tier rings a chime and a great wing beat. */
   private hearTier(tier: number): void {
     if (tier > this.heardTier) {
+      this.feedback.tierUp(tier);
       this.ctx.audio.play('tier', tier);
       this.dyo.cheer(2 + tier);
       this.beat = 1;

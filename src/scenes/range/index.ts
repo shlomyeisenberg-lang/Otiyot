@@ -679,7 +679,10 @@ export class RangeScene implements GameScene {
 
   /** The music builds with the combo tier; a new tier rings a chime. */
   private hearTier(tier: number): void {
-    if (tier > this.heardTier) this.ctx.audio.play('tier', tier);
+    if (tier > this.heardTier) {
+      this.ctx.audio.play('tier', tier);
+      this.feedback.tierUp(tier);
+    }
     this.heardTier = tier;
     this.ctx.audio.intensity(tierIntensity(tier));
   }
