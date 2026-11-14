@@ -6,8 +6,8 @@ _Last updated 2026-11-14. This page is generated from `docs/progress.json`; to c
 
 ## Summary
 
-- ✅ **40** of **44** tasks done
-- 🛠️ 1 in progress · ⛔ 0 blocked · ⬜ 3 pending
+- ✅ **41** of **44** tasks done
+- 🛠️ 0 in progress · ⛔ 0 blocked · ⬜ 3 pending
 - ⬜ **3** manual steps waiting for you
 - 💡 16 feature ideas open
 
@@ -100,7 +100,7 @@ Work done before or outside the numbered tasks.
 - ✅ T33 · Progression, abilities, shop and cosmetics — 2026-11-14 · [PR #54](https://github.com/shlomyeisenberg-lang/Otiyot/pull/54)
 - ✅ T34 · Art, lighting, VFX and music pass — 2026-11-14 · [PR #55](https://github.com/shlomyeisenberg-lang/Otiyot/pull/55)
 - ✅ T35 · Full story: cutscenes and voice — 2026-11-14 · [PR #56](https://github.com/shlomyeisenberg-lang/Otiyot/pull/56)
-- 🛠️ T36 · Settings, accessibility and health
+- ✅ T36 · Settings, accessibility and health — 2026-11-14 · [PR #57](https://github.com/shlomyeisenberg-lang/Otiyot/pull/57)
 - ⬜ T37 · Ghosts and local leaderboards
 - ⬜ T38 · Performance pass and full smoke tests
 - ⬜ T39 · Release: website and Otzaria plugin 1.0
@@ -1675,9 +1675,9 @@ Every region now has a short story chapter before it opens and after it is first
 
 Story lines are never typed, so the learned-letters rule does not apply; a unit test checks both languages are present and the content rules (men only, nothing unseemly).
 
-### 🛠️ T36 · Settings, accessibility and health
+### ✅ T36 · Settings, accessibility and health
 
-**Status:** In progress
+**Status:** Done · **Finished:** 2026-11-14 · **Pull request:** [PR #57](https://github.com/shlomyeisenberg-lang/Otiyot/pull/57)
 
 Settings now has seven tabs (display, accessibility, graphics, sound, typing, health, keys) and every option changes the game at once and is saved. New: camera shake and screen flash sliders, optional translation lines, a graphics preset, a starting difficulty, Dyo's break and posture reminders, and your own pause key.
 

@@ -2261,9 +2261,9 @@
       "notes": "Story lines are never typed, so the learned-letters rule does not apply; a unit test checks both languages are present and the content rules (men only, nothing unseemly)."
     },
     "T36": {
-      "status": "in_progress",
-      "finished": "",
-      "pr": "",
+      "status": "done",
+      "finished": "2026-11-14",
+      "pr": "https://github.com/shlomyeisenberg-lang/Otiyot/pull/57",
       "summary": "Settings now has seven tabs (display, accessibility, graphics, sound, typing, health, keys) and every option changes the game at once and is saved. New: camera shake and screen flash sliders, optional translation lines, a graphics preset, a starting difficulty, Dyo's break and posture reminders, and your own pause key.",
       "changes": [
         "src/save/schema.ts, migrations.ts: save version 10; settings gain shake, flash, captions, breakMinutes, postureTips, menuKey and difficulty (with BREAK_CHOICES and MENU_KEYS)",
